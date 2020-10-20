@@ -65,7 +65,7 @@ class EvaluatorConstraintManifold
             if(surf==6) return U.x;
             else{  
 		 Scalar3 delta = U - L;
-		return dot(delta, delta) - R.x*R.x;
+		return delta.x*delta.x*R.x + delta.y*delta.y*R.y + delta.z*delta.z*R.z - 1;
 	    }
             }
             }
@@ -101,7 +101,12 @@ class EvaluatorConstraintManifold
             if(surf==5) N.y = 1;
 	    else{
             if(surf==6) N.x = 1;
-	    else N = 2*(U - L);
+	    else{ 
+		N = 2*(U - L);
+                N.x *= R.x;
+                N.y *= R.y;
+                N.z *= R.z;
+	    }
             }
             }
             }

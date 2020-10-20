@@ -920,10 +920,10 @@ class nve_rattle(_integration_method):
             self.cpp_method = _md.TwoStepRATTLENVE(hoomd.context.current.system_definition, group.cpp_group, manifold.cpp_manifold, False, eta);
         else:
             #raise RuntimeError("Not supported on GPU yet");
-            if (manifold.__class__.__name__ == "tpms" or manifold.__class__.__name__ == "plane" or manifold.__class__.__name__ == "sphere" ):
-                   self.cpp_method = _md.TwoStepRATTLENVEGPU(hoomd.context.current.system_definition, group.cpp_group,manifold.cpp_manifold);
-            else:
-                   raise RuntimeError("Active force constraint is not accepted (currently only accepts gyroid, plane and sphere)")
+            #if (manifold.__class__.__name__ == "tpms" or manifold.__class__.__name__ == "plane" or manifold.__class__.__name__ == "sphere" ):
+            self.cpp_method = _md.TwoStepRATTLENVEGPU(hoomd.context.current.system_definition, group.cpp_group,manifold.cpp_manifold);
+            #else:
+            #       raise RuntimeError("Active force constraint is not accepted (currently only accepts gyroid, plane and sphere)")
 
         # set the limit
         if limit is not None:
@@ -1326,7 +1326,7 @@ class langevin_rattle(_integration_method):
                                    suffix);
         else:
             #raise RuntimeError("Not supported on GPU yet");
-            if (manifold.__class__.__name__ == "tpms" or manifold.__class__.__name__ == "plane" or manifold.__class__.__name__ == "sphere" ):
+            #if (manifold.__class__.__name__ == "tpms" or manifold.__class__.__name__ == "plane" or manifold.__class__.__name__ == "sphere" ):
                   self.cpp_method = _md.TwoStepRATTLELangevinGPU(hoomd.context.current.system_definition,
                                    group.cpp_group,
 	        		   manifold.cpp_manifold,
@@ -1339,8 +1339,8 @@ class langevin_rattle(_integration_method):
 	        		   eta,
                                    suffix);
             
-            else:
-                   raise RuntimeError("Active force constraint is not accepted (currently only accepts gyroid, plane and sphere)")
+            #else:
+            #       raise RuntimeError("Active force constraint is not accepted (currently only accepts gyroid, plane and sphere)")
 
         self.cpp_method.setTally(tally);
 
@@ -1776,7 +1776,7 @@ class brownian_rattle(_integration_method):
                                    noiseless_r,
                                    eta);
         else:
-            if (manifold.__class__.__name__ == "tpms" or manifold.__class__.__name__ == "plane" or manifold.__class__.__name__ == "sphere" ):
+            #if (manifold.__class__.__name__ == "tpms" or manifold.__class__.__name__ == "plane" or manifold.__class__.__name__ == "sphere" ):
                      self.cpp_method = _md.TwoStepRATTLEBDGPU(hoomd.context.current.system_definition,
                                    group.cpp_group,
                                    manifold.cpp_manifold,
@@ -1787,8 +1787,8 @@ class brownian_rattle(_integration_method):
                                    noiseless_t,
                                    noiseless_r,
                                    eta);
-            else:
-                raise RuntimeError("Manifold constraint is not accepted (currently only accepts gyroid, plane and sphere for GPU)")
+            #else:
+            #    raise RuntimeError("Manifold constraint is not accepted (currently only accepts gyroid, plane and sphere for GPU)")
 
         self.cpp_method.validateGroup()
 

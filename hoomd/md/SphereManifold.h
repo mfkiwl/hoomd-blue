@@ -46,7 +46,7 @@ class PYBIND11_EXPORT SphereManifold : public Manifold
 
 	Scalar3 returnL(){return m_P;};
 
-	Scalar3 returnR(){return make_scalar3(m_r, m_r, m_r);};
+	Scalar3 returnR(){return make_scalar3(1.0/(m_r*m_r), 1.0/(m_r*m_r), 1.0/(m_r*m_r));};
 
     protected:
         Scalar m_r; //! The radius of the sphere.
