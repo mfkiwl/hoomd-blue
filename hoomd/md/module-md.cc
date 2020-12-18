@@ -5,6 +5,7 @@
 // Maintainer: joaander All developers are free to add the calls needed to export their modules
 
 #include "ActiveForceCompute.h"
+#include "ActiveVicsekForceCompute.h"
 #include "AllAnisoPairPotentials.h"
 #include "AllBondPotentials.h"
 #include "AllExternalPotentials.h"
@@ -67,6 +68,7 @@
 // include GPU classes
 #ifdef ENABLE_CUDA
 #include "ActiveForceComputeGPU.h"
+#include "ActiveVicsekForceComputeGPU.h"
 #include "AnisoPotentialPairGPU.h"
 #include "BondTablePotentialGPU.h"
 #include "ConstraintEllipsoidGPU.h"
@@ -252,6 +254,7 @@ void export_PotentialExternalWall(py::module& m, const std::string& name)
 PYBIND11_MODULE(_md, m)
     {
     export_ActiveForceCompute(m);
+    export_ActiveVicsekForceCompute(m);
     export_ConstExternalFieldDipoleForceCompute(m);
     export_HarmonicAngleForceCompute(m);
     export_CosineSqAngleForceCompute(m);
@@ -366,6 +369,7 @@ PYBIND11_MODULE(_md, m)
     // export_ConstExternalFieldDipoleForceComputeGPU(m);
     export_PPPMForceComputeGPU(m);
     export_ActiveForceComputeGPU(m);
+    export_ActiveVicsekForceComputeGPU(m);
     export_PotentialExternalGPU<PotentialExternalPeriodicGPU, PotentialExternalPeriodic>(m, "PotentialExternalPeriodicGPU");
     export_PotentialExternalGPU<PotentialExternalElectricFieldGPU, PotentialExternalElectricField>(m, "PotentialExternalElectricFieldGPU");
     export_PotentialExternalGPU<WallsPotentialLJGPU, WallsPotentialLJ>(m, "WallsPotentialLJGPU");

@@ -379,6 +379,123 @@ class constant(_force):
     def update_coeffs(self):
         pass
 
+class active_vicsek(_force):
+    R""" Active force.
+
+    Args:
+        seed (int): required user-specified seed number for random number generator.
+        f_list (list): An array of (x,y,z) tuples for the active force vector for each individual particle.
+        t_list (list): An array of (x,y,z) tuples that indicate active torque vectors for each particle
+        group (:py:mod:`hoomd.group`): Group for which the force will be set
+        orientation_link (bool): if True then forces and torques are applied in the particle's reference frame. If false, then the box
+         reference frame is used. Only relevant for non-point-like anisotropic particles.
+        orientation_reverse_link (bool): When True, the particle's orientation is set to match the active force vector. Useful for
+         for using a particle's orientation to log the active force vector. Not recommended for anisotropic particles. Quaternion rotation
+         assumes base vector of (0,0,1).
+        rotation_diff (float): rotational diffusion constant, :math:`D_r`, for all particles in the group.
+        constraint (:py:class:`hoomd.md.update.constraint_ellipsoid`) specifies a constraint surface, to which particles are confined,
+          such as update.constraint_ellipsoid.
+
+    :py:class:`active` specifies that an active force should be added to all particles.
+    Obeys :math:`\delta {\bf r}_i = \delta t v_0 \hat{p}_i`, where :math:`v_0` is the active velocity. In 2D
+    :math:`\hat{p}_i = (\cos \theta_i, \sin \theta_i)` is the active force vector for particle :math:`i`; and the
+    diffusion of the active force vector follows :math:`\delta \theta / \delta t = \sqrt{2 D_r / \delta t} \Gamma`,
+    where :math:`D_r` is the rotational diffusion constant, and the gamma function is a unit-variance random variable,
+    whose components are uncorrelated in time, space, and between particles.
+    In 3D, :math:`\hat{p}_i` is a unit vector in 3D space, and diffusion follows
+    :math:`\delta \hat{p}_i / \delta t = \sqrt{2 D_r / \delta t} \Gamma (\hat{p}_i (\cos \theta - 1) + \hat{p}_r \sin \theta)`, where
+    :math:`\hat{p}_r` is an uncorrelated random unit vector. The persistence length of an active particle's path is
+    :math:`v_0 / D_r`.
+
+    .. attention::
+        :py:meth:`active` does not support MPI execution.
+
+    Examples::
+
+        force.active( seed=13, f_list=[tuple(3,0,0) for i in range(N)])
+
+        ellipsoid = update.constraint_ellipsoid(group=groupA, P=(0,0,0), rx=3, ry=4, rz=5)
+        force.active( seed=7, f_list=[tuple(1,2,3) for i in range(N)], orientation_link=False, rotation_diff=100, constraint=ellipsoid)
+    """
+    def __init__(self, seed, group, nlist, f_lst=None, t_lst=None, orientation_link=True, orientation_reverse_link=False, rotation_diff=0, manifold=None):
+        hoomd.util.print_status_line();
+
+        # initialize the base class
+        _force.__init__(self);
+
+        if (f_lst is None) and (t_lst is None):
+            raise RuntimeError('No forces or torques are being set')
+
+        # input check
+        if (f_lst is not None):
+            for element in f_lst:
+                if type(element) != tuple or len(element) != 3:
+                    raise RuntimeError("Active force passed in should be a list of 3-tuples (fx, fy, fz)")
+        else:
+            f_lst = []
+            for element in t_lst:
+                f_lst.append((0,0,0))
+
+        if (t_lst is not None):
+            for element in t_lst:
+                if type(element) != tuple or len(element) != 3:
+                    raise RuntimeError("Active torque passed in should be a list of 3-tuples (tx, ty, tz)")
+        else:
+            t_lst = []
+            for element in f_lst:
+                t_lst.append((0,0,0))
+
+        # create the c++ mirror class
+        if not hoomd.context.exec_conf.isCUDAEnabled():
+            self.cpp_force = _md.ActiveVicsekForceCompute(hoomd.context.current.system_definition, group.cpp_group, nlist.cpp_nlist, seed, f_lst, t_lst,
+                                                      orientation_link, orientation_reverse_link, rotation_diff);
+            if (manifold is not None):
+                  self.cpp_force.addManifold(manifold.cpp_manifold)
+        else: 
+            self.cpp_force = _md.ActiveVicsekForceComputeGPU(hoomd.context.current.system_definition, group.cpp_group, nlist.cpp_nlist, seed, f_lst, t_lst,
+                                                         orientation_link, orientation_reverse_link, rotation_diff);
+            if (manifold is not None):
+                #if (manifold.__class__.__name__ is "tpms" or manifold.__class__.__name__ is "plane" or manifold.__class__.__name__ is "sphere" ):
+                        self.cpp_force.addManifold(manifold.cpp_manifold)
+                #else:
+                #   raise RuntimeError("Active force constraint is not accepted (currently only accepts gyroid, plane and sphere)")
+
+
+
+        # store metadata
+        self.metadata_fields = ['group', 'nlist' 'seed', 'orientation_link', 'rotation_diff', 'manifold']
+        self.group = group
+        self.nlist = nlist
+        self.seed = seed
+        self.orientation_link = orientation_link
+        self.orientation_reverse_link = orientation_reverse_link
+        self.rotation_diff = rotation_diff
+        self.manifold = manifold
+
+        hoomd.context.current.system.addCompute(self.cpp_force, self.force_name);
+
+    def add_manifold(self, manifold):
+        R""" Change the constant field and dipole moment.
+
+        Args:
+            field_x (float): x-component of the field (units?)
+            field_y (float): y-component of the field (units?)
+            field_z (float): z-component of the field (units?)
+            p (float): magnitude of the particles' dipole moment in the local z direction
+
+        Examples::
+
+            const_ext_f_dipole = force.external_field_dipole(field_x=0.0, field_y=1.0 ,field_z=0.5, p=1.0)
+            const_ext_f_dipole.setParams(field_x=0.1, field_y=0.1, field_z=0.0, p=1.0))
+
+        """
+        self.cpp_force.addManifold(manifold.cpp_manifold)
+        self.manifold = manifold
+
+    # there are no coeffs to update in the active force compute
+    def update_coeffs(self):
+        pass
+
 class active(_force):
     R""" Active force.
 
