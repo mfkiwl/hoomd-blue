@@ -36,6 +36,7 @@ class PYBIND11_EXPORT ActiveVicsekForceCompute : public ActiveForceCompute
                              std::shared_ptr<ParticleGroup> group,
                              std::shared_ptr<NeighborList> nlist,
                              int seed, pybind11::list f_lst, pybind11::list t_lst,
+			     Scalar r_dist,
                              bool orientation_link, bool orientation_reverse_link,
                              Scalar rotation_diff);
 
@@ -47,7 +48,7 @@ class PYBIND11_EXPORT ActiveVicsekForceCompute : public ActiveForceCompute
         virtual void computeForces(unsigned int timestep);
 
         //! Set constraints if particles confined to a surface
-        virtual void setMeanVelocity();
+        virtual void setMeanVelocity(unsigned int timestep);
 
         std::shared_ptr<NeighborList> m_nlist;    //!< The neighborlist to use for the computation
 

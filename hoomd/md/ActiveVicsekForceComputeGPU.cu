@@ -26,49 +26,55 @@ using namespace hoomd;
     \param rz radius of the ellipsoid in z direction
 */
 __global__ void gpu_compute_active_vicsek_force_set_mean_velocity_kernel(const unsigned int group_size,
+                                                   unsigned int *d_rtag,
                                                    unsigned int *d_groupTags,
                                                    Scalar3 *d_f_actVec,
                                                    const Scalar3 *d_f_actVec_backup,
-                                                   const unsigned int d_n_neigh,
-                                                   const unsigned int d_nlist,
-                                                   const unsigned int d_head_list,
+                                                   const unsigned int *d_n_neigh,
+                                                   const unsigned int *d_nlist,
+                                                   const unsigned int *d_head_list,
                                                    EvaluatorConstraintManifold manifold)
     {
     unsigned int group_idx = blockIdx.x * blockDim.x + threadIdx.x;
     if (group_idx >= group_size)
         return;
 
-        const unsigned int myHead = d_head_list[i];
-        const unsigned int size = (unsigned int)d_n_neigh[i];
-        
-        Scalar3 mean_vel = d_f_actVec_backup[i];
-        for (unsigned int k = 0; k < size; k++)
-            {
-            // access the index of this neighbor (MEM TRANSFER: 1 scalar)
-            unsigned int j = d_nlist[myHead + k];
-            mean_vel += d_f_actVec_backup[j];
-            }
-        mean_vel /= (size+1);
+    unsigned int tag = d_groupTags[group_idx];
+    unsigned int idx = d_rtag[tag];
 
-        Scalar new_norm = Scalar(1.0)/slow::sqrt(mean_vel.x*mean_vel.x + mean_vel.y*mean_vel.y + mean_vel.z*mean_vel.z);
+    const unsigned int myHead = d_head_list[idx];
+    const unsigned int size = (unsigned int)d_n_neigh[idx];
+    
+    Scalar3 mean_vel = d_f_actVec_backup[tag];
+    for (unsigned int k = 0; k < size; k++)
+        {
+        // access the index of this neighbor (MEM TRANSFER: 1 scalar)
+        unsigned int j = d_nlist[myHead + k];
+        mean_vel += d_f_actVec_backup[j];
+        }
+    mean_vel /= (size+1);
 
-        mean_vel *= new_norm;
+    Scalar new_norm = Scalar(1.0)/slow::sqrt(mean_vel.x*mean_vel.x + mean_vel.y*mean_vel.y + mean_vel.z*mean_vel.z);
 
-        d_f_actVec[i].x = mean_vel.x;
-        d_f_actVec[i].y = mean_vel.y;
-        d_f_actVec[i].z = mean_vel.z;
+    mean_vel *= new_norm;
+
+    d_f_actVec[tag].x = mean_vel.x;
+    d_f_actVec[tag].y = mean_vel.y;
+    d_f_actVec[tag].z = mean_vel.z;
     }
 
 
 
 
 cudaError_t gpu_compute_active_vicsek_force_set_mean_velocity(const unsigned int group_size,
+                                           	   unsigned int *d_rtag,
+                                          	   unsigned int *d_groupTags,
                                                    Scalar3 *d_f_actVec,
                                                    const Scalar3 *d_f_actVec_backup,
                                                    const unsigned int *d_n_neigh,
                                                    const unsigned int *d_nlist,
                                                    const unsigned int *d_head_list,
-                                           	       EvaluatorConstraintManifold manifold,
+                                           	   EvaluatorConstraintManifold manifold,
                                                    unsigned int block_size)
     {
     // setup the grid to run the kernel
@@ -77,6 +83,8 @@ cudaError_t gpu_compute_active_vicsek_force_set_mean_velocity(const unsigned int
 
     // run the kernel
     gpu_compute_active_vicsek_force_set_mean_velocity_kernel<<< grid, threads>>>(group_size,
+                                                                    d_rtag,
+                                                                    d_groupTags,
                                                                     d_f_actVec,
                                                                     d_f_actVec_backup,
                                                                     d_n_neigh,

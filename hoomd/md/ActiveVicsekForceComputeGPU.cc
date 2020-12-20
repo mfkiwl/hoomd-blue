@@ -232,7 +232,7 @@ void ActiveVicsekForceComputeGPU::setConstraint()
     m_exec_conf->endMultiGPU();
     }
 
-void ActiveVicsekForceComputeGPU::setMeanVelocity()
+void ActiveVicsekForceComputeGPU::setMeanVelocity(unsigned int timestep)
     {
         m_nlist->compute(timestep);
 
@@ -241,20 +241,26 @@ void ActiveVicsekForceComputeGPU::setMeanVelocity()
         unsigned int N_backup = m_pdata->getN();
         {
             ArrayHandle<Scalar3> d_f_actVec_backup(m_f_activeVec_backup, access_location::device, access_mode::overwrite);
-            memcpy(d_f_actVec_backup.data, h_f_actVec.data, sizeof(Scalar4) * N_backup);
+            memcpy(d_f_actVec_backup.data, d_f_actVec.data, sizeof(Scalar3) * N_backup);
         }
 
         // access the neighbor list
         ArrayHandle<unsigned int> d_n_neigh(m_nlist->getNNeighArray(), access_location::device, access_mode::read);
         ArrayHandle<unsigned int> d_nlist(m_nlist->getNListArray(), access_location::device, access_mode::read);
         ArrayHandle<unsigned int> d_head_list(m_nlist->getHeadList(), access_location::device, access_mode::read);
+    	ArrayHandle<unsigned int> d_rtag(m_pdata->getRTags(), access_location::device, access_mode::read);
+    	ArrayHandle<unsigned int> d_groupTags(m_groupTags, access_location::device, access_mode::read);
         ArrayHandle<Scalar3> d_f_actVec_backup(m_f_activeVec_backup, access_location::device, access_mode::read);
 
         EvaluatorConstraintManifold manifoldGPU (m_manifold->returnL(), m_manifold->returnR(), m_manifold->returnSurf());
 
+    	unsigned int group_size = m_group->getNumMembers();
+
         m_exec_conf->beginMultiGPU();
 
-        gpu_compute_vicsek_active_force_set_mean_velocity(group_size,
+        gpu_compute_active_vicsek_force_set_mean_velocity(group_size,
+                                             	 d_rtag.data,
+                                             	 d_groupTags.data,
                                                  d_f_actVec.data,
                                                  d_f_actVec_backup.data,
                                                  d_n_neigh.data,

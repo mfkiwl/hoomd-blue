@@ -16,7 +16,9 @@
 #define __ACTIVE_VICSEK_FORCE_COMPUTE_GPU_CUH__
 
 
-cudaError_t gpu_compute_vicsek_active_force_set_mean_velocity(const unsigned int group_size,
+cudaError_t gpu_compute_active_vicsek_force_set_mean_velocity(const unsigned int group_size,
+                                           		unsigned int *d_rtag,
+                                           		unsigned int *d_groupTags,
                                                        Scalar3 *d_f_actVec,
                                                        const Scalar3 *d_f_actVec_backup,
                                                        const unsigned int *d_n_neigh,

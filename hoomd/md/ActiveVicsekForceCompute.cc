@@ -57,7 +57,7 @@ ActiveVicsekForceCompute::~ActiveVicsekForceCompute()
 
 /*! This function sets an ellipsoid surface constraint for all active particles. Torque is not considered here
 */
-void ActiveVicsekForceCompute::setMeanVelocity()
+void ActiveVicsekForceCompute::setMeanVelocity(unsigned int timestep)
     {
     //  array handles
 
@@ -117,7 +117,7 @@ void ActiveVicsekForceCompute::computeForces(unsigned int timestep)
 
         last_computed = timestep;
 
-        setMeanVelocity()
+        setMeanVelocity(timestep);
 
         if (m_constraint)
             {

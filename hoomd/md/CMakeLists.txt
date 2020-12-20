@@ -2,6 +2,7 @@
 
 set(_md_sources module-md.cc
                    ActiveForceCompute.cc
+                   ActiveVicsekForceCompute.cc
                    BondTablePotential.cc
                    CommunicatorGrid.cc
                    ConstExternalFieldDipoleForceCompute.cc
@@ -48,7 +49,11 @@ set(_md_sources module-md.cc
                    )
 
 set(_md_headers ActiveForceComputeGPU.h
+		ActiveForceComputeGPU.cuh
+		ActiveVicsekForceComputeGPU.h
+		ActiveVicsekForceComputeGPU.cuh
                 ActiveForceCompute.h
+                ActiveVicsekForceCompute.h
                 AllAnisoPairPotentials.h
                 AllBondPotentials.h
                 AllExternalPotentials.h
@@ -182,6 +187,7 @@ set(_md_headers ActiveForceComputeGPU.h
 
 if (ENABLE_CUDA)
 list(APPEND _md_sources ActiveForceComputeGPU.cc
+			   ActiveVicsekForceComputeGPU.cc
                            BondTablePotentialGPU.cc
                            CommunicatorGridGPU.cc
                            ConstraintEllipsoidGPU.cc
@@ -219,6 +225,7 @@ list(APPEND _md_sources ActiveForceComputeGPU.cc
 endif()
 
 set(_md_cu_sources ActiveForceComputeGPU.cu
+		      ActiveVicsekForceComputeGPU.cu
                       AllDriverAnisoPotentialPairGPU.cu
                       AllDriverPotentialBondGPU.cu
                       AllDriverPotentialSpecialPairGPU.cu

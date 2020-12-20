@@ -48,7 +48,7 @@ class PYBIND11_EXPORT ActiveVicsekForceComputeGPU : public ActiveVicsekForceComp
         virtual void setConstraint();
 
         //! Set constraints if particles confined to a surface
-        virtual void setMeanVelocity();
+        virtual void setMeanVelocity(unsigned int timestep);
 
         GPUArray<unsigned int>  m_groupTags; //! Stores list converting group index to global tag
     };
