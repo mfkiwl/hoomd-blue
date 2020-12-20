@@ -24,7 +24,9 @@ cudaError_t gpu_compute_active_vicsek_force_set_mean_velocity(const unsigned int
                                                        const unsigned int *d_n_neigh,
                                                        const unsigned int *d_nlist,
                                                        const unsigned int *d_head_list,
-                                                       EvaluatorConstraintManifold manifold,
+                                                       const Scalar4 *d_pos,
+                                                       const BoxDim& box,
+                                                       const Scalar r_dist_sq,
                                                        unsigned int block_size);
 
 

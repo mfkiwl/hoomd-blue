@@ -488,7 +488,6 @@ class pair(force._force):
                         r_cut_dict.set_pair(type_list[i],type_list[j], r_cut);
                 else: # use the global default
                     r_cut_dict.set_pair(type_list[i],type_list[j],self.global_r_cut);
-
         return r_cut_dict;
 
     ## \internal

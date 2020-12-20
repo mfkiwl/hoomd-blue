@@ -28,13 +28,14 @@ using namespace std;
 ActiveVicsekForceComputeGPU::ActiveVicsekForceComputeGPU(std::shared_ptr<SystemDefinition> sysdef,
                                         std::shared_ptr<ParticleGroup> group,
                                         std::shared_ptr<NeighborList> nlist,
+			                            Scalar r_dist,
                                         int seed,
                                         pybind11::list f_lst,
                                         pybind11::list t_lst,
                                         bool orientation_link,
                                         bool orientation_reverse_link,
                                         Scalar rotation_diff)
-        : ActiveVicsekForceCompute(sysdef, group, nlist, seed, f_lst, t_lst, orientation_link, orientation_reverse_link, rotation_diff), m_block_size(256)
+        : ActiveVicsekForceCompute(sysdef, group, nlist, r_dist, seed, f_lst, t_lst, orientation_link, orientation_reverse_link, rotation_diff), m_block_size(256)
     {
     if (!m_exec_conf->isCUDAEnabled())
         {
@@ -251,10 +252,11 @@ void ActiveVicsekForceComputeGPU::setMeanVelocity(unsigned int timestep)
     	ArrayHandle<unsigned int> d_rtag(m_pdata->getRTags(), access_location::device, access_mode::read);
     	ArrayHandle<unsigned int> d_groupTags(m_groupTags, access_location::device, access_mode::read);
         ArrayHandle<Scalar3> d_f_actVec_backup(m_f_activeVec_backup, access_location::device, access_mode::read);
-
-        EvaluatorConstraintManifold manifoldGPU (m_manifold->returnL(), m_manifold->returnR(), m_manifold->returnSurf());
+        ArrayHandle<Scalar4> d_pos(m_pdata->getPositions(), access_location::device, access_mode::read);
 
     	unsigned int group_size = m_group->getNumMembers();
+
+        BoxDim box = m_pdata->getBox();
 
         m_exec_conf->beginMultiGPU();
 
@@ -266,7 +268,9 @@ void ActiveVicsekForceComputeGPU::setMeanVelocity(unsigned int timestep)
                                                  d_n_neigh.data,
                                                  d_nlist.data,
                                                  d_head_list.data,
-                                         	     manifoldGPU,
+                                                 d_pos.data,
+                                                 box,
+                                         	     m_r_dist_sq,
                                                  m_block_size);
 
         if(m_exec_conf->isCUDAErrorCheckingEnabled())
@@ -282,6 +286,7 @@ void export_ActiveVicsekForceComputeGPU(py::module& m)
         .def(py::init<  std::shared_ptr<SystemDefinition>,
                         std::shared_ptr<ParticleGroup>,
                         std::shared_ptr<NeighborList>,
+                        Scalar,
                         int,
                         pybind11::list,
                         pybind11::list,

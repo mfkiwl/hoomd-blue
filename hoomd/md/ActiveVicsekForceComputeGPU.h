@@ -30,6 +30,7 @@ class PYBIND11_EXPORT ActiveVicsekForceComputeGPU : public ActiveVicsekForceComp
         ActiveVicsekForceComputeGPU(std::shared_ptr<SystemDefinition> sysdef,
                              std::shared_ptr<ParticleGroup> group,
                              std::shared_ptr<NeighborList> nlist,
+			                 Scalar r_dist,
                              int seed, pybind11::list f_lst, pybind11::list t_lst,
                              bool orientation_link, bool orientation_reverse_link, Scalar rotation_diff);
 

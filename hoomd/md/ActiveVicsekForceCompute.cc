@@ -30,13 +30,14 @@ namespace py = pybind11;
 ActiveVicsekForceCompute::ActiveVicsekForceCompute(std::shared_ptr<SystemDefinition> sysdef,
                                         std::shared_ptr<ParticleGroup> group,
                                         std::shared_ptr<NeighborList> nlist,
+			                            Scalar r_dist,
                                         int seed,
                                         py::list f_lst,
                                         py::list t_lst,
                                         bool orientation_link,
                                         bool orientation_reverse_link,
                                         Scalar rotation_diff)
-        : ActiveForceCompute(sysdef,group,seed,f_lst,t_lst,orientation_link,orientation_reverse_link,rotation_diff), m_nlist(nlist)
+        : ActiveForceCompute(sysdef,group,seed,f_lst,t_lst,orientation_link,orientation_reverse_link,rotation_diff), m_nlist(nlist), m_r_dist_sq(r_dist*r_dist)
     {
     assert(m_nlist);
     }
@@ -76,23 +77,42 @@ void ActiveVicsekForceCompute::setMeanVelocity(unsigned int timestep)
     ArrayHandle<unsigned int> h_nlist(m_nlist->getNListArray(), access_location::host, access_mode::read);
     //Index2D nli = m_nlist->getNListIndexer();
     ArrayHandle<unsigned int> h_head_list(m_nlist->getHeadList(), access_location::host, access_mode::read);
+    ArrayHandle<Scalar4> h_pos(m_pdata->getPositions(), access_location::host, access_mode::read);
 
     ArrayHandle<Scalar3> h_f_actVec_backup(m_f_activeVec_backup, access_location::host, access_mode::read);
 
+    const BoxDim& box = m_pdata->getGlobalBox();
+
     for (unsigned int i = 0; i < m_group->getNumMembers(); i++)
         {
+        Scalar3 pi = make_scalar3(h_pos.data[i].x, h_pos.data[i].y, h_pos.data[i].z);
+
         const unsigned int myHead = h_head_list.data[i];
         const unsigned int size = (unsigned int)h_n_neigh.data[i];
         
         Scalar3 mean_vel = h_f_actVec_backup.data[i];
+        unsigned int nneigh = 1;
         for (unsigned int k = 0; k < size; k++)
             {
             // access the index of this neighbor (MEM TRANSFER: 1 scalar)
             unsigned int j = h_nlist.data[myHead + k];
             assert(j < m_pdata->getN() + m_pdata->getNGhosts());
-            mean_vel += h_f_actVec_backup.data[j];
+
+            Scalar3 pj = make_scalar3(h_pos.data[j].x, h_pos.data[j].y, h_pos.data[j].z);
+            Scalar3 dx = pi - pj;
+
+            // apply periodic boundary conditions
+            dx = box.minImage(dx);
+
+            // calculate r_ij squared (FLOPS: 5)
+            Scalar rsq = dot(dx, dx);
+
+            if (rsq < m_r_dist_sq){
+                mean_vel += h_f_actVec_backup.data[j];
+                nneigh++;
             }
-        mean_vel /= (size+1);
+            }
+        mean_vel /= nneigh;
 
         Scalar new_norm = Scalar(1.0)/slow::sqrt(mean_vel.x*mean_vel.x + mean_vel.y*mean_vel.y + mean_vel.z*mean_vel.z);
 
@@ -145,6 +165,6 @@ void ActiveVicsekForceCompute::computeForces(unsigned int timestep)
 void export_ActiveVicsekForceCompute(py::module& m)
     {
     py::class_< ActiveVicsekForceCompute, std::shared_ptr<ActiveVicsekForceCompute> >(m, "ActiveVicsekForceCompute", py::base<ForceCompute>())
-    .def(py::init< std::shared_ptr<SystemDefinition>, std::shared_ptr<ParticleGroup>, std::shared_ptr<NeighborList>, int, py::list, py::list,  bool, bool, Scalar>())
+    .def(py::init< std::shared_ptr<SystemDefinition>, std::shared_ptr<ParticleGroup>, std::shared_ptr<NeighborList>, Scalar, int, py::list, py::list,  bool, bool, Scalar>())
     ;
     }

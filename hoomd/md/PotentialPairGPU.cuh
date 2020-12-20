@@ -53,7 +53,7 @@ struct pair_args_t
               const unsigned int _shift_mode,
               const unsigned int _compute_virial,
               const unsigned int _threads_per_particle,
-              const GPUPartition& _gpu_partition)
+              conssGPUPartition& _gpu_partition)
                 : d_force(_d_force),
                   d_virial(_d_virial),
                   virial_pitch(_virial_pitch),
@@ -138,7 +138,7 @@ struct pair_args_t
 
     <b>Implementation details</b>
     Each block will calculate the forces on a block of particles.
-    Each group of \a tpp threads will calculate the total force on one particle.
+    Each group of \a tpp thrads will calculate the total force on one particle.
     The neighborlist is arranged in columns so that reads are fully coalesced when doing this.
 */
 template< class evaluator, unsigned int shift_mode, unsigned int compute_virial, int tpp>
