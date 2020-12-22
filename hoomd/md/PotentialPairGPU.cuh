@@ -53,7 +53,7 @@ struct pair_args_t
               const unsigned int _shift_mode,
               const unsigned int _compute_virial,
               const unsigned int _threads_per_particle,
-              conssGPUPartition& _gpu_partition)
+              const GPUPartition& _gpu_partition)
                 : d_force(_d_force),
                   d_virial(_d_virial),
                   virial_pitch(_virial_pitch),

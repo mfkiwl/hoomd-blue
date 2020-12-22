@@ -5,8 +5,12 @@
 // Maintainer: joaander
 
 #include "hoomd/HOOMDMath.h"
+#include "hoomd/TextureTools.h"
 #include "hoomd/ParticleData.cuh"
 #include "EvaluatorConstraintManifold.h"
+#include "hoomd/Index1D.h"
+
+#include "hoomd/GPUPartition.cuh"
 
 /*! \file ActiveVicsekForceComputeGPU.cuh
     \brief Declares GPU kernel code for calculating active forces forces on the GPU. Used by ActiveVicsekForceComputeGPU.

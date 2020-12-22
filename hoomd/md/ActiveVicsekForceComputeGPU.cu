@@ -44,31 +44,19 @@ __global__ void gpu_compute_active_vicsek_force_set_mean_velocity_kernel(const u
     unsigned int tag = d_groupTags[group_idx];
     unsigned int idx = d_rtag[tag];
 
-    unsigned int n_neigh = d_n_neigh[idx];
-
     // read in the position of our particle.
-    Scalar4 postypei = __ldg(d_pos + idx);
+    Scalar4 postypei = d_pos[idx];
     Scalar3 posi = make_scalar3(postypei.x, postypei.y, postypei.z);
 
     unsigned int my_head = d_head_list[idx];
-    unsigned int cur_j = 0;
+    unsigned int size = d_n_neigh[idx];
 
-    unsigned int next_j(0);
-    next_j = threadIdx.x%tpp < n_neigh ? __ldg(d_nlist + my_head + threadIdx.x%tpp) : 0;
-
-    
     Scalar3 mean_vel = d_f_actVec_backup[idx];
     unsigned int nneigh = 1;
-    for (int neigh_idx = threadIdx.x%tpp; neigh_idx < n_neigh; neigh_idx+=tpp)
+    for (unsigned int k = 0; k < size; k++)
         {
-        // read the current neighbor index
-        cur_j = next_j;
-        if (neigh_idx+tpp < n_neigh)
-            {
-            next_j = __ldg(d_nlist + my_head + neigh_idx+tpp);
-            }
-        // get the neighbor's position
-        Scalar4 postypej = __ldg(d_pos + cur_j);
+        unsigned int jdx = d_nlist[my_head + k];
+        Scalar4 postypej = d_pos[jdx];
         Scalar3 posj = make_scalar3(postypej.x, postypej.y, postypej.z);
 
         // calculate dr (with periodic boundary conditions)
@@ -82,9 +70,10 @@ __global__ void gpu_compute_active_vicsek_force_set_mean_velocity_kernel(const u
         
         if(rsq < r_dist_sq)
             {
-            mean_vel += d_f_actVec_backup[j];
+            mean_vel += d_f_actVec_backup[jdx];
             nneigh++;
-        }
+            }
+	}
     mean_vel /= nneigh;
 
     Scalar new_norm = Scalar(1.0)/slow::sqrt(mean_vel.x*mean_vel.x + mean_vel.y*mean_vel.y + mean_vel.z*mean_vel.z);
