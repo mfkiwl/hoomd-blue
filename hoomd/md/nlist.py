@@ -80,9 +80,9 @@ class nlist:
         self.subscriber_callbacks.append(callable);
 
     ## \internal
-    # \brief Updates r_cut based on the subscriber's requests
+    # \brief Updates r_cut based on the ssubscriber_callbacksubscriber's requests
     # \details This method is triggered every time the run command is called
-    #
+    #subscriber_callback
     def update_rcut(self):
         r_cut_max = rcut();
         for c in self.subscriber_callbacks:

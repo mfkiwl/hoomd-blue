@@ -4,7 +4,8 @@
 
 // Maintainer: joaander
 
-#include "ActiveForceComputeGPU.h"
+#include "ActiveVicsekForceComputeGPU.h"
+#include "ActiveVicsekForceComputeGPU.cuh"
 #include "ActiveForceComputeGPU.cuh"
 
 #include <vector>
@@ -24,15 +25,18 @@ using namespace std;
     \param constraint specifies a constraint surface, to which particles are confined,
     such as update.constraint_ellipsoid.
 */
-ActiveForceComputeGPU::ActiveForceComputeGPU(std::shared_ptr<SystemDefinition> sysdef,
+ActiveVicsekForceComputeGPU::ActiveVicsekForceComputeGPU(std::shared_ptr<SystemDefinition> sysdef,
                                         std::shared_ptr<ParticleGroup> group,
+                                        std::shared_ptr<NeighborList> nlist,
+			                Scalar r_dist,
+			                Scalar coupling,
                                         int seed,
                                         pybind11::list f_lst,
                                         pybind11::list t_lst,
                                         bool orientation_link,
                                         bool orientation_reverse_link,
                                         Scalar rotation_diff)
-        : ActiveForceCompute(sysdef, group, seed, f_lst, t_lst, orientation_link, orientation_reverse_link, rotation_diff), m_block_size(256)
+        : ActiveVicsekForceCompute(sysdef, group, nlist, r_dist, coupling,  seed, f_lst, t_lst, orientation_link, orientation_reverse_link, rotation_diff), m_block_size(256)
     {
     if (!m_exec_conf->isCUDAEnabled())
         {
@@ -81,11 +85,19 @@ ActiveForceComputeGPU::ActiveForceComputeGPU(std::shared_ptr<SystemDefinition> s
     m_t_activeVec.swap(tmp_t_activeVec);
     m_t_activeMag.swap(tmp_t_activeMag);
     m_groupTags.swap(tmp_groupTags);
+
     }
+
+
+void ActiveVicsekForceComputeGPU::addManifold(std::shared_ptr<Manifold> manifold)
+	{
+	m_manifold = manifold;
+	m_constraint = true;
+	}
 
 /*! This function sets appropriate active forces and torques on all active particles.
 */
-void ActiveForceComputeGPU::setForces()
+void ActiveVicsekForceComputeGPU::setForces()
     {
     //  array handles
     ArrayHandle<Scalar3> d_f_actVec(m_f_activeVec, access_location::device, access_mode::read);
@@ -115,7 +127,7 @@ void ActiveForceComputeGPU::setForces()
     unsigned int N = m_pdata->getN();
     EvaluatorConstraintManifold manifoldGPU (m_manifold->returnL(), m_manifold->returnR(), m_manifold->returnSurf());
 
-    //m_exec_conf->beginMultiGPU();
+    m_exec_conf->beginMultiGPU();
 
     gpu_compute_active_force_set_forces(group_size,
                                      d_rtag.data,
@@ -134,17 +146,17 @@ void ActiveForceComputeGPU::setForces()
                                      N,
                                      m_block_size);
 
-        if(m_exec_conf->isCUDAErrorCheckingEnabled())
-            CHECK_CUDA_ERROR();
+    if(m_exec_conf->isCUDAErrorCheckingEnabled())
+        CHECK_CUDA_ERROR();
 
-        //m_exec_conf->endMultiGPU();
+    m_exec_conf->endMultiGPU();
     }
 
 /*! This function applies rotational diffusion to all active particles. The angle between the torque vector and
  * force vector does not change
     \param timestep Current timestep
 */
-void ActiveForceComputeGPU::rotationalDiffusion(unsigned int timestep)
+void ActiveVicsekForceComputeGPU::rotationalDiffusion(unsigned int timestep)
     {
     //  array handles
     ArrayHandle<Scalar3> d_f_actVec(m_f_activeVec, access_location::device, access_mode::readwrite);
@@ -154,6 +166,11 @@ void ActiveForceComputeGPU::rotationalDiffusion(unsigned int timestep)
     ArrayHandle<Scalar4> d_torque(m_torque, access_location::device, access_mode::overwrite);
     ArrayHandle<unsigned int> d_rtag(m_pdata->getRTags(), access_location::device, access_mode::read);
     ArrayHandle<unsigned int> d_groupTags(m_groupTags, access_location::device, access_mode::read);
+
+    ArrayHandle<unsigned int> d_n_neigh(m_nlist->getNNeighArray(), access_location::device, access_mode::read);
+    ArrayHandle<unsigned int> d_nlist(m_nlist->getNListArray(), access_location::device, access_mode::read);
+    ArrayHandle<unsigned int> d_head_list(m_nlist->getHeadList(), access_location::device, access_mode::read);
+    ArrayHandle<Scalar3> d_f_actVec_backup(m_f_activeVec, access_location::device, access_mode::read);
 
     assert(d_pos.data != NULL);
 
@@ -161,33 +178,42 @@ void ActiveForceComputeGPU::rotationalDiffusion(unsigned int timestep)
     unsigned int group_size = m_group->getNumMembers();
     EvaluatorConstraintManifold manifoldGPU (m_manifold->returnL(), m_manifold->returnR(), m_manifold->returnSurf());
 
-    //m_exec_conf->beginMultiGPU();
+    BoxDim box = m_pdata->getBox();
 
-    gpu_compute_active_force_rotational_diffusion(group_size,
+    m_exec_conf->beginMultiGPU();
+
+    gpu_compute_active_vicsek_force_rotational_diffusion(group_size,
                                                 d_rtag.data,
                                                 d_groupTags.data,
                                                 d_pos.data,
                                                 d_force.data,
                                                 d_torque.data,
                                                 d_f_actVec.data,
+                                                d_f_actVec_backup.data,
                                                 d_t_actVec.data,
+                                                d_n_neigh.data,
+                                                d_nlist.data,
+                                                d_head_list.data,
+                                                box,
                                      		manifoldGPU,
                                      		m_constraint,
                                                 is2D,
                                                 m_rotationConst,
                                                 timestep,
+                                       	        m_r_dist_sq,
+                                       	        m_coupling,
                                                 m_seed,
                                                 m_block_size);
 
-        if(m_exec_conf->isCUDAErrorCheckingEnabled())
-            CHECK_CUDA_ERROR();
+    if(m_exec_conf->isCUDAErrorCheckingEnabled())
+        CHECK_CUDA_ERROR();
 
-        //m_exec_conf->endMultiGPU();
+    m_exec_conf->endMultiGPU();
     }
 
 /*! This function sets an ellipsoid surface constraint for all active particles. Torque is not considered here
 */
-void ActiveForceComputeGPU::setConstraint()
+void ActiveVicsekForceComputeGPU::setConstraint()
     {
     //  array handles
     ArrayHandle<Scalar3> d_f_actVec(m_f_activeVec, access_location::device, access_mode::readwrite);
@@ -203,7 +229,7 @@ void ActiveForceComputeGPU::setConstraint()
     unsigned int group_size = m_group->getNumMembers();
     EvaluatorConstraintManifold manifoldGPU (m_manifold->returnL(), m_manifold->returnR(), m_manifold->returnSurf());
 
-    //m_exec_conf->beginMultiGPU();
+    m_exec_conf->beginMultiGPU();
 
     gpu_compute_active_force_set_constraints(group_size,
                                              d_rtag.data,
@@ -216,24 +242,79 @@ void ActiveForceComputeGPU::setConstraint()
                                      	     manifoldGPU,
                                      	     m_constraint,
                                              m_block_size);
-    
-        if(m_exec_conf->isCUDAErrorCheckingEnabled())
-            CHECK_CUDA_ERROR();
 
-        //m_exec_conf->endMultiGPU();
+    if(m_exec_conf->isCUDAErrorCheckingEnabled())
+        CHECK_CUDA_ERROR();
+
+    m_exec_conf->endMultiGPU();
     }
 
-void export_ActiveForceComputeGPU(py::module& m)
+//void ActiveVicsekForceComputeGPU::setMeanVelocity(unsigned int timestep)
+//    {
+//
+//	std::cout << "start nlist"<< std::endl;
+//        m_nlist->compute(timestep);
+//	std::cout << "end nlist"<< std::endl;
+//
+//
+//	std::cout << "access forces"<< std::endl;
+//        ArrayHandle<Scalar3> d_f_actVec(m_f_activeVec, access_location::device, access_mode::readwrite);
+//
+//        // access the neighbor list
+//        ArrayHandle<unsigned int> d_n_neigh(m_nlist->getNNeighArray(), access_location::device, access_mode::read);
+//        ArrayHandle<unsigned int> d_nlist(m_nlist->getNListArray(), access_location::device, access_mode::read);
+//        ArrayHandle<unsigned int> d_head_list(m_nlist->getHeadList(), access_location::device, access_mode::read);
+//        ArrayHandle<Scalar3> d_f_actVec_backup(m_f_activeVec, access_location::device, access_mode::read);
+//    	ArrayHandle<unsigned int> d_rtag(m_pdata->getRTags(), access_location::device, access_mode::read);
+//    	ArrayHandle<unsigned int> d_groupTags(m_groupTags, access_location::device, access_mode::read);
+//        ArrayHandle<Scalar4> d_pos(m_pdata->getPositions(), access_location::device, access_mode::read);
+//
+//    	unsigned int group_size = m_group->getNumMembers();
+//
+//	std::cout << "forces accessed"<< std::endl;
+//
+//        BoxDim box = m_pdata->getBox();
+//
+//	std::cout << "start loop"<< std::endl;
+//
+//        m_exec_conf->beginMultiGPU();
+//
+//        gpu_compute_active_vicsek_force_set_mean_velocity(group_size,
+//                                             	 d_rtag.data,
+//                                             	 d_groupTags.data,
+//                                                 d_f_actVec.data,
+//                                                 d_f_actVec_backup.data,
+//                                                 d_n_neigh.data,
+//                                                 d_nlist.data,
+//                                                 d_head_list.data,
+//                                                 d_pos.data,
+//                                                 box,
+//                                         	 m_r_dist_sq,
+//                                                 m_block_size);
+//
+//        if(m_exec_conf->isCUDAErrorCheckingEnabled())
+//            CHECK_CUDA_ERROR();
+//
+//        m_exec_conf->endMultiGPU();
+//
+//	std::cout << "end loop"<< std::endl;
+//
+//    }
+
+void export_ActiveVicsekForceComputeGPU(py::module& m)
     {
-    py::class_< ActiveForceComputeGPU, std::shared_ptr<ActiveForceComputeGPU> >(m, "ActiveForceComputeGPU", py::base<ActiveForceCompute>())
+    py::class_< ActiveVicsekForceComputeGPU, std::shared_ptr<ActiveVicsekForceComputeGPU> >(m, "ActiveVicsekForceComputeGPU", py::base<ActiveVicsekForceCompute>())
         .def(py::init<  std::shared_ptr<SystemDefinition>,
                         std::shared_ptr<ParticleGroup>,
+                        std::shared_ptr<NeighborList>,
+                        Scalar,
+                        Scalar,
                         int,
                         pybind11::list,
                         pybind11::list,
                         bool,
                         bool,
                         Scalar >())
-    .def("addManifold", &ActiveForceComputeGPU::addManifold)
+    .def("addManifold", &ActiveVicsekForceComputeGPU::addManifold)
     ;
     }
