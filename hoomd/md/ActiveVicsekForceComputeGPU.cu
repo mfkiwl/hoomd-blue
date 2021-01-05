@@ -84,11 +84,11 @@ __global__ void gpu_compute_active_vicsek_force_rotational_diffusion_kernel(cons
            	    {
                 Scalar theta_n; 
 	        theta_n = atan2(d_f_actVec_backup[j].y, d_f_actVec_backup[j].x);
-                //mean_delta_theta += coupling*slow::sin(theta_n-theta);
-                mean_delta_theta += coupling*slow::sin(0.5*(theta_n-theta));
+                //mean_delta_theta += slow::sin(theta_n-theta);
+                mean_delta_theta += slow::sin(0.5*(theta_n-theta));
                 }
             }
-        theta += (delta_theta+mean_delta_theta);
+        theta += delta_theta + coupling*mean_delta_theta;
         d_f_actVec[tag].x = cos(theta);
         d_f_actVec[tag].y = sin(theta);
         // in 2D there is only one meaningful direction for torque
@@ -177,18 +177,24 @@ __global__ void gpu_compute_active_vicsek_force_rotational_diffusion_kernel(cons
 	    	    aux_n.z /= nNorm;
 
                     Scalar theta_n = dot(aux_n,aux_vec); 
-	    	    //theta_n = slow::sqrt(1-theta_n*theta_n);
-	    	    theta_n = slow::sqrt((1-theta_n)/2);
-	    	    if(dot(aux_n,current_vec) > 0)
-	    	    	theta_n *= -1;
-                    mean_delta_theta += (coupling*theta_n);
+	    	    theta_n = 1-theta_n*theta_n;
+	    	    //theta_n = (1-theta_n)/2;
+                    if (theta_n < 0)
+			theta_n = 0;
+	    	    else{ 
+	    	    	theta_n = slow::sqrt(theta_n);
+			if(dot(aux_n,current_vec) > 0)
+	    	    		theta_n = -theta_n;
+		    }
+                    mean_delta_theta += theta_n;
                     }
+
                 }
 
             Scalar delta_theta; // rotational diffusion angle
             delta_theta = hoomd::NormalDistribution<Scalar>(rotationDiff)(rng);
 
-	    delta_theta += mean_delta_theta;
+	    delta_theta  = delta_theta + mean_delta_theta*coupling;
 
             d_f_actVec[tag].x = cos(delta_theta) * current_vec.x + sin(delta_theta) * aux_vec.x;
             d_f_actVec[tag].y = cos(delta_theta) * current_vec.y + sin(delta_theta) * aux_vec.y;

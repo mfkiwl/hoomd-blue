@@ -40,10 +40,9 @@ ActiveVicsekForceCompute::ActiveVicsekForceCompute(std::shared_ptr<SystemDefinit
                                         bool orientation_link,
                                         bool orientation_reverse_link,
                                         Scalar rotation_diff)
-        : ActiveForceCompute(sysdef,group,seed,f_lst,t_lst,orientation_link,orientation_reverse_link,rotation_diff), m_nlist(nlist), m_r_dist_sq(r_dist*r_dist)
+        : ActiveForceCompute(sysdef,group,seed,f_lst,t_lst,orientation_link,orientation_reverse_link,rotation_diff), m_nlist(nlist), m_r_dist_sq(r_dist*r_dist), m_coupling(coupling)
     {
 
-    m_coupling = m_deltaT*coupling;
     assert(m_nlist);
     }
 
@@ -51,6 +50,18 @@ ActiveVicsekForceCompute::~ActiveVicsekForceCompute()
     {
     m_exec_conf->msg->notice(5) << "Destroying ActiveVicsekForceCompute" << endl;
     }
+
+
+
+/*! this function adds a mainfold constraint to the active particles
+*/
+
+
+void ActiveVicsekForceCompute::addManifold(std::shared_ptr<Manifold> manifold)
+	{
+	m_manifold = manifold;
+	m_constraint = true;
+	}
 
 
 /*! This function applies rotational diffusion to all active particles. The orientation of any torque vector
@@ -113,11 +124,11 @@ void ActiveVicsekForceCompute::rotationalDiffusion(unsigned int timestep)
                	    {
                     Scalar theta_n; 
 		    theta_n = atan2(h_f_actVec_backup.data[j].y, h_f_actVec_backup.data[j].x);
-                    //mean_delta_theta += m_coupling*slow::sin(theta_n-theta);
-                    mean_delta_theta += m_coupling*slow::sin(0.5*(theta_n-theta));
+                    mean_delta_theta += slow::sin(theta_n-theta);
+                    //mean_delta_theta += slow::sin(0.5*(theta_n-theta));
                     }
                 }
-            theta += (delta_theta+mean_delta_theta);
+            theta += (delta_theta+m_coupling*m_deltaT*mean_delta_theta);
             h_f_actVec.data[i].x = slow::cos(theta);
             h_f_actVec.data[i].y = slow::sin(theta);
             // In 2D, the only meaningful torque vector is out of plane and should not change
@@ -178,18 +189,22 @@ void ActiveVicsekForceCompute::rotationalDiffusion(unsigned int timestep)
 			aux_n *= norm_normal;
 
                         Scalar theta_n = dot(aux_n,aux_vec); 
-			//theta_n = slow::sqrt(1-theta_n*theta_n);
-			theta_n = slow::sqrt((1-theta_n)/2);
-			if(dot(aux_n,current_f_vec) > 0)
+			theta_n = 1-theta_n*theta_n;
+			//theta_n = slow::sqrt((1-theta_n)/2);
+			if( theta_n > 0)
+			    {
+                            theta_n = slow::sqrt(theta_n);
+			    if(dot(aux_n,current_f_vec) > 0)
 				theta_n *= -1;
-                        mean_delta_theta += (m_coupling*theta_n);
+                            mean_delta_theta += theta_n;
+			    }
                         }
                     }
 
                 // rotational diffusion angle
                 Scalar delta_theta = hoomd::NormalDistribution<Scalar>(m_rotationConst)(rng);
 
-		delta_theta += mean_delta_theta;
+		delta_theta += m_deltaT*m_coupling*mean_delta_theta;
 
                 h_f_actVec.data[i].x = slow::cos(delta_theta)*current_f_vec.x + slow::sin(delta_theta)*aux_vec.x;
                 h_f_actVec.data[i].y = slow::cos(delta_theta)*current_f_vec.y + slow::sin(delta_theta)*aux_vec.y;
@@ -241,5 +256,6 @@ void export_ActiveVicsekForceCompute(py::module& m)
     {
     py::class_< ActiveVicsekForceCompute, std::shared_ptr<ActiveVicsekForceCompute> >(m, "ActiveVicsekForceCompute", py::base<ForceCompute>())
     .def(py::init< std::shared_ptr<SystemDefinition>, std::shared_ptr<ParticleGroup>, std::shared_ptr<NeighborList>, Scalar, Scalar, int, py::list, py::list,  bool, bool, Scalar>())
+    .def("addManifold", &ActiveVicsekForceCompute::addManifold)
     ;
     }

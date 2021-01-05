@@ -201,7 +201,7 @@ void ActiveVicsekForceComputeGPU::rotationalDiffusion(unsigned int timestep)
                                                 m_rotationConst,
                                                 timestep,
                                        	        m_r_dist_sq,
-                                       	        m_coupling,
+                                       	        m_coupling*m_deltaT,
                                                 m_seed,
                                                 m_block_size);
 

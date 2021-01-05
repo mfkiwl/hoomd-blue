@@ -44,6 +44,8 @@ class PYBIND11_EXPORT ActiveVicsekForceCompute : public ActiveForceCompute
         //! Destructor
         ~ActiveVicsekForceCompute();
 
+	void addManifold(std::shared_ptr<Manifold> manifold);
+
     protected:
         //! Orientational diffusion for spherical particles
         virtual void rotationalDiffusion(unsigned int timestep);
