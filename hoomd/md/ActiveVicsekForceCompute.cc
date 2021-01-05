@@ -113,7 +113,8 @@ void ActiveVicsekForceCompute::rotationalDiffusion(unsigned int timestep)
                	    {
                     Scalar theta_n; 
 		    theta_n = atan2(h_f_actVec_backup.data[j].y, h_f_actVec_backup.data[j].x);
-                    mean_delta_theta += m_coupling*slow::sin(theta_n-theta);
+                    //mean_delta_theta += m_coupling*slow::sin(theta_n-theta);
+                    mean_delta_theta += m_coupling*slow::sin(0.5*(theta_n-theta));
                     }
                 }
             theta += (delta_theta+mean_delta_theta);
@@ -177,7 +178,8 @@ void ActiveVicsekForceCompute::rotationalDiffusion(unsigned int timestep)
 			aux_n *= norm_normal;
 
                         Scalar theta_n = dot(aux_n,aux_vec); 
-			theta_n = slow::sqrt(1-theta_n*theta_n);
+			//theta_n = slow::sqrt(1-theta_n*theta_n);
+			theta_n = slow::sqrt((1-theta_n)/2);
 			if(dot(aux_n,current_f_vec) > 0)
 				theta_n *= -1;
                         mean_delta_theta += (m_coupling*theta_n);
