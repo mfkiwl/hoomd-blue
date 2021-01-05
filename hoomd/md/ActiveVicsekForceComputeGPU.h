@@ -3,7 +3,6 @@
 
 
 // Maintainer: joaander
-
 #include "ActiveVicsekForceCompute.h"
 #include "EvaluatorConstraintManifold.h"
 
@@ -30,7 +29,8 @@ class PYBIND11_EXPORT ActiveVicsekForceComputeGPU : public ActiveVicsekForceComp
         ActiveVicsekForceComputeGPU(std::shared_ptr<SystemDefinition> sysdef,
                              std::shared_ptr<ParticleGroup> group,
                              std::shared_ptr<NeighborList> nlist,
-			                 Scalar r_dist,
+			     Scalar r_dist,
+			     Scalar coupling,
                              int seed, pybind11::list f_lst, pybind11::list t_lst,
                              bool orientation_link, bool orientation_reverse_link, Scalar rotation_diff);
 
@@ -47,9 +47,6 @@ class PYBIND11_EXPORT ActiveVicsekForceComputeGPU : public ActiveVicsekForceComp
 
         //! Set constraints if particles confined to a surface
         virtual void setConstraint();
-
-        //! Set constraints if particles confined to a surface
-        virtual void setMeanVelocity(unsigned int timestep);
 
         GPUArray<unsigned int>  m_groupTags; //! Stores list converting group index to global tag
     };

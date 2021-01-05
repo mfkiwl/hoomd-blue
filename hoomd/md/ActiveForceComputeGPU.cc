@@ -122,7 +122,7 @@ void ActiveForceComputeGPU::setForces()
     unsigned int N = m_pdata->getN();
     EvaluatorConstraintManifold manifoldGPU (m_manifold->returnL(), m_manifold->returnR(), m_manifold->returnSurf());
 
-    m_exec_conf->beginMultiGPU();
+    //m_exec_conf->beginMultiGPU();
 
     gpu_compute_active_force_set_forces(group_size,
                                      d_rtag.data,
@@ -144,7 +144,7 @@ void ActiveForceComputeGPU::setForces()
         if(m_exec_conf->isCUDAErrorCheckingEnabled())
             CHECK_CUDA_ERROR();
 
-        m_exec_conf->endMultiGPU();
+        //m_exec_conf->endMultiGPU();
     }
 
 /*! This function applies rotational diffusion to all active particles. The angle between the torque vector and
@@ -168,7 +168,7 @@ void ActiveForceComputeGPU::rotationalDiffusion(unsigned int timestep)
     unsigned int group_size = m_group->getNumMembers();
     EvaluatorConstraintManifold manifoldGPU (m_manifold->returnL(), m_manifold->returnR(), m_manifold->returnSurf());
 
-    m_exec_conf->beginMultiGPU();
+    //m_exec_conf->beginMultiGPU();
 
     gpu_compute_active_force_rotational_diffusion(group_size,
                                                 d_rtag.data,
@@ -189,7 +189,7 @@ void ActiveForceComputeGPU::rotationalDiffusion(unsigned int timestep)
         if(m_exec_conf->isCUDAErrorCheckingEnabled())
             CHECK_CUDA_ERROR();
 
-        m_exec_conf->endMultiGPU();
+        //m_exec_conf->endMultiGPU();
     }
 
 /*! This function sets an ellipsoid surface constraint for all active particles. Torque is not considered here
@@ -210,7 +210,7 @@ void ActiveForceComputeGPU::setConstraint()
     unsigned int group_size = m_group->getNumMembers();
     EvaluatorConstraintManifold manifoldGPU (m_manifold->returnL(), m_manifold->returnR(), m_manifold->returnSurf());
 
-    m_exec_conf->beginMultiGPU();
+    //m_exec_conf->beginMultiGPU();
 
     gpu_compute_active_force_set_constraints(group_size,
                                              d_rtag.data,
@@ -227,7 +227,7 @@ void ActiveForceComputeGPU::setConstraint()
         if(m_exec_conf->isCUDAErrorCheckingEnabled())
             CHECK_CUDA_ERROR();
 
-        m_exec_conf->endMultiGPU();
+        //m_exec_conf->endMultiGPU();
     }
 
 void export_ActiveForceComputeGPU(py::module& m)
@@ -241,5 +241,6 @@ void export_ActiveForceComputeGPU(py::module& m)
                         bool,
                         bool,
                         Scalar >())
+    .def("addManifold", &ActiveForceComputeGPU::addManifold)
     ;
     }

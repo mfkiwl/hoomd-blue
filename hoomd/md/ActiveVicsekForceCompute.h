@@ -35,7 +35,8 @@ class PYBIND11_EXPORT ActiveVicsekForceCompute : public ActiveForceCompute
         ActiveVicsekForceCompute(std::shared_ptr<SystemDefinition> sysdef,
                              std::shared_ptr<ParticleGroup> group,
                              std::shared_ptr<NeighborList> nlist,
-			                 Scalar r_dist,
+			     Scalar r_dist,
+			     Scalar coupling,
                              int seed, pybind11::list f_lst, pybind11::list t_lst,
                              bool orientation_link, bool orientation_reverse_link,
                              Scalar rotation_diff);
@@ -44,17 +45,13 @@ class PYBIND11_EXPORT ActiveVicsekForceCompute : public ActiveForceCompute
         ~ActiveVicsekForceCompute();
 
     protected:
-        //! Actually compute the forces
-        virtual void computeForces(unsigned int timestep);
-
-        //! Set constraints if particles confined to a surface
-        virtual void setMeanVelocity(unsigned int timestep);
+        //! Orientational diffusion for spherical particles
+        virtual void rotationalDiffusion(unsigned int timestep);
 
         std::shared_ptr<NeighborList> m_nlist;    //!< The neighborlist to use for the computation
 
         Scalar m_r_dist_sq;
-
-        GPUArray<Scalar3> m_f_activeVec_backup;             //!< hold backup copy of particle f_activeVec
+        Scalar m_coupling;
     };
 
 //! Exports the ActiveVicsekForceComputeClass to python

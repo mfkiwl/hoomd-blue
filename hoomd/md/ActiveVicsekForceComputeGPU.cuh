@@ -20,17 +20,27 @@
 #define __ACTIVE_VICSEK_FORCE_COMPUTE_GPU_CUH__
 
 
-cudaError_t gpu_compute_active_vicsek_force_set_mean_velocity(const unsigned int group_size,
-                                           		unsigned int *d_rtag,
-                                           		unsigned int *d_groupTags,
+cudaError_t gpu_compute_active_vicsek_force_rotational_diffusion(const unsigned int group_size,
+                                                       unsigned int *d_rtag,
+                                                       unsigned int *d_groupTags,
+                                                       const Scalar4 *d_pos,
+                                                       Scalar4 *d_force,
+                                                       Scalar4 *d_torque,
                                                        Scalar3 *d_f_actVec,
                                                        const Scalar3 *d_f_actVec_backup,
-                                                       const unsigned int *d_n_neigh,
+                                                       Scalar3 *d_t_actVec,
+                                               	       const unsigned int *d_n_neigh,
                                                        const unsigned int *d_nlist,
                                                        const unsigned int *d_head_list,
-                                                       const Scalar4 *d_pos,
-                                                       const BoxDim& box,
+                                                       const BoxDim box,
+                                                       const EvaluatorConstraintManifold manifold,
+                                                       bool constraint,
+                                                       bool is2D,
+                                                       const Scalar rotationDiff,
+                                                       const unsigned int timestep,
                                                        const Scalar r_dist_sq,
+                                                       const Scalar coupling,
+                                                       const int seed,
                                                        unsigned int block_size);
 
 

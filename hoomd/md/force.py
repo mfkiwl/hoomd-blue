@@ -417,7 +417,7 @@ class active_vicsek(_force):
         ellipsoid = update.constraint_ellipsoid(group=groupA, P=(0,0,0), rx=3, ry=4, rz=5)
         force.active( seed=7, f_list=[tuple(1,2,3) for i in range(N)], orientation_link=False, rotation_diff=100, constraint=ellipsoid)
     """
-    def __init__(self, seed, group, nlist, r_cut, f_lst=None, t_lst=None, orientation_link=True, orientation_reverse_link=False, rotation_diff=0, manifold=None):
+    def __init__(self, seed, group, nlist, r_cut, coupling, f_lst=None, t_lst=None, orientation_link=True, orientation_reverse_link=False, rotation_diff=0, manifold=None):
         hoomd.util.print_status_line();
 
         # initialize the base class
@@ -447,12 +447,12 @@ class active_vicsek(_force):
 
         # create the c++ mirror class
         if not hoomd.context.exec_conf.isCUDAEnabled():
-            self.cpp_force = _md.ActiveVicsekForceCompute(hoomd.context.current.system_definition, group.cpp_group, nlist.cpp_nlist, r_cut, seed, f_lst, t_lst,
+            self.cpp_force = _md.ActiveVicsekForceCompute(hoomd.context.current.system_definition, group.cpp_group, nlist.cpp_nlist, r_cut, coupling, seed, f_lst, t_lst,
                                                       orientation_link, orientation_reverse_link, rotation_diff);
             if (manifold is not None):
                   self.cpp_force.addManifold(manifold.cpp_manifold)
         else: 
-            self.cpp_force = _md.ActiveVicsekForceComputeGPU(hoomd.context.current.system_definition, group.cpp_group, nlist.cpp_nlist, r_cut, seed, f_lst, t_lst,
+            self.cpp_force = _md.ActiveVicsekForceComputeGPU(hoomd.context.current.system_definition, group.cpp_group, nlist.cpp_nlist, r_cut, coupling, seed, f_lst, t_lst,
                                                          orientation_link, orientation_reverse_link, rotation_diff);
             if (manifold is not None):
                 #if (manifold.__class__.__name__ is "tpms" or manifold.__class__.__name__ is "plane" or manifold.__class__.__name__ is "sphere" ):
@@ -463,10 +463,11 @@ class active_vicsek(_force):
 
 
         # store metadata
-        self.metadata_fields = ['group', 'nlist', 'r_cut', 'seed', 'orientation_link', 'rotation_diff', 'manifold']
+        self.metadata_fields = ['group', 'nlist', 'r_cut', 'coupling','seed', 'orientation_link', 'rotation_diff', 'manifold']
         self.group = group
         self.nlist = nlist
         self.r_cut = r_cut
+        self.coupling = coupling
         self.seed = seed
         self.orientation_link = orientation_link
         self.orientation_reverse_link = orientation_reverse_link
