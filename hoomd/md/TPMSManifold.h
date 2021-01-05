@@ -31,6 +31,7 @@ class PYBIND11_EXPORT TPMSManifold : public Manifold
         */
         TPMSManifold(std::shared_ptr<SystemDefinition> sysdef,
                   std::string surf, 
+                  Scalar epsilon, 
                  unsigned int Nx,
                   unsigned int Ny,
                   unsigned int Nz);
@@ -50,10 +51,13 @@ class PYBIND11_EXPORT TPMSManifold : public Manifold
 
         Scalar3 returnL();
 
+	Scalar3 returnR(){return make_scalar3(m_epsilon, m_epsilon, m_epsilon);};
+
     protected:
         Scalar m_Nx; //! number of unit cells in x direction
         Scalar m_Ny; //! number of unit cells in x direction
         Scalar m_Nz; //! number of unit cells in x direction
+	Scalar m_epsilon;
 
     private:
         //! setting up the TPMS properly

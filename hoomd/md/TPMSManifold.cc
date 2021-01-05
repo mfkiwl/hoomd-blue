@@ -23,10 +23,11 @@ using namespace std;
 
 TPMSManifold::TPMSManifold(std::shared_ptr<SystemDefinition> sysdef,
                   		std::string surf, 
+				Scalar epsilon,
                   		unsigned int Nx,
                   		unsigned int Ny,
                   		unsigned int Nz)
-  : Manifold(sysdef), m_Nx(Nx), m_Ny(Ny), m_Nz(Nz) 
+  : Manifold(sysdef), m_Nx(Nx), m_Ny(Ny), m_Nz(Nz), m_epsilon(epsilon)
        {
     m_exec_conf->msg->notice(5) << "Constructing TPMSManifold" << endl;
 
@@ -65,12 +66,12 @@ Scalar TPMSManifold::implicit_function(Scalar3 point)
        {
 
        if(gyroid)
-          return slow::sin(Lx*point.x)*slow::cos(Ly*point.y) + slow::sin(Ly*point.y)*slow::cos(Lz*point.z) + slow::sin(Lz*point.z)*slow::cos(Lx*point.x);	
+          return slow::sin(Lx*point.x)*slow::cos(Ly*point.y) + slow::sin(Ly*point.y)*slow::cos(Lz*point.z) + slow::sin(Lz*point.z)*slow::cos(Lx*point.x) - m_epsilon;	
        else{ 
             if(diamond)
-                return slow::cos(Lx*point.x)*slow::cos(Ly*point.y)*slow::cos(Lz*point.z) - slow::sin(Lx*point.x)*slow::sin(Ly*point.y)*slow::sin(Lz*point.z);
+                return slow::cos(Lx*point.x)*slow::cos(Ly*point.y)*slow::cos(Lz*point.z) - slow::sin(Lx*point.x)*slow::sin(Ly*point.y)*slow::sin(Lz*point.z) - m_epsilon;
             else
-                return  slow::cos(Lx*point.x) + slow::cos(Ly*point.y) + slow::cos(Lz*point.z);
+                return  slow::cos(Lx*point.x) + slow::cos(Ly*point.y) + slow::cos(Lz*point.z) - m_epsilon;
        }
        }
 
@@ -130,9 +131,10 @@ void TPMSManifold::setup()
 void export_TPMSManifold(pybind11::module& m)
     {
     py::class_< TPMSManifold, std::shared_ptr<TPMSManifold> >(m, "TPMSManifold", py::base<Manifold>())
-    .def(py::init< std::shared_ptr<SystemDefinition>, std::string, Scalar, Scalar, Scalar >())
+    .def(py::init< std::shared_ptr<SystemDefinition>, std::string, Scalar, int, int, int >())
     .def("implicit_function", &TPMSManifold::implicit_function)
     .def("derivative", &TPMSManifold::derivative)
     .def("returnL", &TPMSManifold::returnL)
+    .def("returnR", &TPMSManifold::returnR)
     ;
     }

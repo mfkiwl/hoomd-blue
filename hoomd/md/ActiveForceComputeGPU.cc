@@ -83,13 +83,6 @@ ActiveForceComputeGPU::ActiveForceComputeGPU(std::shared_ptr<SystemDefinition> s
     m_groupTags.swap(tmp_groupTags);
     }
 
-
-void ActiveForceComputeGPU::addManifold(std::shared_ptr<Manifold> manifold)
-	{
-	m_manifold = manifold;
-	m_constraint = true;
-	}
-
 /*! This function sets appropriate active forces and torques on all active particles.
 */
 void ActiveForceComputeGPU::setForces()

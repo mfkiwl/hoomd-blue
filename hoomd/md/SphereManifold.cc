@@ -74,6 +74,6 @@ void export_SphereManifold(pybind11::module& m)
     .def("implicit_function", &SphereManifold::implicit_function)
     .def("derivative", &SphereManifold::derivative)
     .def("returnL", &SphereManifold::returnL)
-    .def("returnR", &SphereManifold::returnL)
+    .def("returnR", &SphereManifold::returnR)
     ;
     }

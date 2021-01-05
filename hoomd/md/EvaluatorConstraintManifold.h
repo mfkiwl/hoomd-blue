@@ -52,11 +52,11 @@ class EvaluatorConstraintManifold
 
         DEVICE Scalar implicit_function(const Scalar3& U)
         {
-            if( surf==1) return slow::sin(L.x*U.x)*slow::cos(L.y*U.y) + slow::sin(L.y*U.y)*slow::cos(L.z*U.z) + slow::sin(L.z*U.z)*slow::cos(L.x*U.x);	
+            if( surf==1) return slow::sin(L.x*U.x)*slow::cos(L.y*U.y) + slow::sin(L.y*U.y)*slow::cos(L.z*U.z) + slow::sin(L.z*U.z)*slow::cos(L.x*U.x) - R.x;	
 	    else{ 
-	    if(surf==2) return slow::cos(L.x*U.x)*slow::cos(L.y*U.y)*slow::cos(L.z*U.z) - slow::sin(L.x*U.x)*slow::sin(L.y*U.y)*slow::sin(L.z*U.z);
+	    if(surf==2) return slow::cos(L.x*U.x)*slow::cos(L.y*U.y)*slow::cos(L.z*U.z) - slow::sin(L.x*U.x)*slow::sin(L.y*U.y)*slow::sin(L.z*U.z) - R.x;
 	    else{ 
-            if(surf==3) return slow::cos(L.x*U.x) + slow::cos(L.y*U.y) + slow::cos(L.z*U.z);
+            if(surf==3) return slow::cos(L.x*U.x) + slow::cos(L.y*U.y) + slow::cos(L.z*U.z) - R.x;
             else{ 
             if(surf==4) return U.z;
             else{ 

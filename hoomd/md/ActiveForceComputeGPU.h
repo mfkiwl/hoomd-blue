@@ -32,8 +32,6 @@ class PYBIND11_EXPORT ActiveForceComputeGPU : public ActiveForceCompute
                              int seed, pybind11::list f_lst, pybind11::list t_lst,
                              bool orientation_link, bool orientation_reverse_link, Scalar rotation_diff);
 
-        void addManifold(std::shared_ptr<Manifold> manifold);
-
     protected:
         unsigned int m_block_size;  //!< block size to execute on the GPU
 

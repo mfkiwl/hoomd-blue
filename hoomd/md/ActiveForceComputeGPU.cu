@@ -27,10 +27,6 @@ using namespace hoomd;
     \param d_f_actMag particle active force vector magnitude
     \param d_t_actVec particle active torque unit vector
     \param d_t_actMag particle active torque vector magnitude
-    \param P position of the ellipsoid constraint
-    \param rx radius of the ellipsoid in x direction
-    \param ry radius of the ellipsoid in y direction
-    \param rz radius of the ellipsoid in z direction
     \param orientationLink check if particle orientation is linked to active force vector
 */
 __global__ void gpu_compute_active_force_set_forces_kernel(const unsigned int group_size,

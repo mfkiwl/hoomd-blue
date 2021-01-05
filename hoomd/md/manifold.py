@@ -52,7 +52,7 @@ class sphere(_manifold):
         self.cpp_manifold = _md.SphereManifold(hoomd.context.current.system_definition, r, P );
 
 class tpms(_manifold):
-    def __init__(self,surface,N=None,Nx=None,Ny=None,Nz=None):
+    def __init__(self,surface,N=None,Nx=None,Ny=None,Nz=None,epsilon=0):
         hoomd.util.print_status_line();
         # initialize the base class
         _manifold.__init__(self);
@@ -65,11 +65,12 @@ class tpms(_manifold):
         if N is not None:
             Nx = Ny = Nz = N;
 
-        self.cpp_manifold = _md.TPMSManifold(hoomd.context.current.system_definition, surface, Nx, Ny, Nz );
+        self.cpp_manifold = _md.TPMSManifold(hoomd.context.current.system_definition, surface, epsilon, Nx, Ny, Nz );
 
         # store metadata
         self.surface = surface
         self.Nx = Nx
         self.Ny = Ny
         self.Nz = Nz
-        self.metadata_fields = ['surface','Nx','Ny','Nz']
+        self.epsilon = epsilon
+        self.metadata_fields = ['surface','epsilon','Nx','Ny','Nz']
