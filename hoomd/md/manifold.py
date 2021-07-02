@@ -51,6 +51,14 @@ class sphere(_manifold):
         P = _hoomd.make_scalar3(P[0], P[1], P[2]);
         self.cpp_manifold = _md.SphereManifold(hoomd.context.current.system_definition, r, P );
 
+class torus(_manifold):
+    def __init__(self,rr,rc, P):
+        hoomd.util.print_status_line();
+        # initialize the base class
+        _manifold.__init__(self);
+        P = _hoomd.make_scalar3(P[0], P[1], P[2]);
+        self.cpp_manifold = _md.TorusManifold(hoomd.context.current.system_definition, rr, rc, P );
+
 class tpms(_manifold):
     def __init__(self,surface,N=None,Nx=None,Ny=None,Nz=None,epsilon=0):
         hoomd.util.print_status_line();
