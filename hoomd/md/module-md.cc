@@ -45,6 +45,7 @@
 #include "QuaternionMath.h"
 #include "EllipsoidManifold.h"
 #include "FlatManifold.h"
+#include "GaussPeakManifold.h"
 #include "SphereManifold.h"
 #include "TorusManifold.h"
 #include "TPMSManifold.h"
@@ -303,6 +304,7 @@ PYBIND11_MODULE(_md, m)
     export_OneDConstraint(m);
     export_EllipsoidManifold(m);
     export_FlatManifold(m);
+    export_GaussPeakManifold(m);
     export_SphereManifold(m);
     export_TorusManifold(m);
     export_TPMSManifold(m);

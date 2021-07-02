@@ -43,6 +43,13 @@ class plane(_manifold):
             shift = 0;
         self.cpp_manifold = _md.FlatManifold(hoomd.context.current.system_definition, surface, shift );
 
+class gauss_peak(_manifold):
+    def __init__(self,a, sigma):
+        hoomd.util.print_status_line();
+        # initialize the base class
+        _manifold.__init__(self);
+        self.cpp_manifold = _md.GaussPeakManifold(hoomd.context.current.system_definition, a, sigma );
+
 class sphere(_manifold):
     def __init__(self,r, P):
         hoomd.util.print_status_line();

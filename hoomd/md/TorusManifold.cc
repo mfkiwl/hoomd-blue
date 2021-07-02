@@ -26,7 +26,7 @@ TorusManifold::TorusManifold(std::shared_ptr<SystemDefinition> sysdef,
   : Manifold(sysdef), m_rr(r_r), m_rc(r_c), m_P(P) 
        {
     m_exec_conf->msg->notice(5) << "Constructing TorusManifold" << endl;
-    m_surf = 7;
+    m_surf = 8;
     validate();
        }
 

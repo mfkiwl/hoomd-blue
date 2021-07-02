@@ -28,6 +28,7 @@ set(_md_sources module-md.cc
                    PPPMForceCompute.cc
                    EllipsoidManifold.cc
                    FlatManifold.cc
+		   GaussPeakManifold.cc
                    SphereManifold.cc
                    TorusManifold.cc
                    TPMSManifold.cc
@@ -154,6 +155,7 @@ set(_md_headers ActiveForceComputeGPU.h
                 QuaternionMath.h
                 EllipsoidManifold.h
                 FlatManifold.h
+		GaussPeakManifold.h
                 SphereManifold.h
                 TorusManifold.h
                 TPMSManifold.h

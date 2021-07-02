@@ -64,13 +64,16 @@ class EvaluatorConstraintManifold
             else{ 
             if(surf==6) return U.x;
             else{  
+            if(surf==7) return R.x*fast::exp(-0.5 * (U.x*U.x + U.y*U.y) * R.y) - U.z;
+            else{
 	    Scalar3 delta = U - L;
-            if(surf==7){ 
+            if(surf==8){ 
                     Scalar c = R.x - fast::sqrt(delta.x*delta.x+delta.y*delta.y);
 		    return c*c + delta.z*delta.z - R.y*R.y;
 	    }
 	    else{
 		return delta.x*delta.x*R.x + delta.y*delta.y*R.y + delta.z*delta.z*R.z - 1;
+	    }
 	    }
 	    }
             }
@@ -108,8 +111,14 @@ class EvaluatorConstraintManifold
 	    else{
             if(surf==6) N.x = 1;
 	    else{ 
+            if(surf==7){
+                Scalar factor = -R.y*R.x*fast::exp(-0.5 * (U.x*U.x + U.y*U.y) * R.y);
+                N.x = factor * U.x;
+                N.y = factor * U.y;
+                N.z = -1;
+            }else{
 	    N = (U - L);
-            if(surf==7){ 
+            if(surf==8){ 
                 Scalar c = R.x - fast::sqrt(N.x*N.x+N.y*N.y);
                 N.x = -2*N.x*c/(R.x-c);
                 N.y = -2*N.y*c/(R.x-c);
@@ -119,6 +128,7 @@ class EvaluatorConstraintManifold
                 N.x *= 2*R.x;
                 N.y *= 2*R.y;
                 N.z *= 2*R.z;
+	    }
 	    }
 	    }
             }
