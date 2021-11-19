@@ -223,10 +223,10 @@ void ForceDistanceConstraintGPU::solveConstraints(uint64_t timestep)
         {
         // copy new sparse values to host sparse matrix
         ArrayHandle<double> h_sparse_val(m_sparse_val, access_location::device, access_mode::read);
-        hipMemcpy(m_sparse.valuePtr(),
-                  h_sparse_val.data,
-                  sizeof(double) * m_sparse.data().size(),
-                  hipMemcpyDeviceToHost);
+        HIP_CALL_WITH_CHECK(hipMemcpy(m_sparse.valuePtr(),
+                                      h_sparse_val.data,
+                                      sizeof(double) * m_sparse.data().size(),
+                                      hipMemcpyDeviceToHost));
         }
 
     // solve on CPU
@@ -667,7 +667,7 @@ void ForceDistanceConstraintGPU::solveConstraints(uint64_t timestep)
 
     // copy RHS into solution vector
     ArrayHandle<double> d_vec(m_cvec, access_location::device, access_mode::read);
-    hipMemcpy(d_lagrange.data, d_vec.data, sizeof(double) * n_constraint, hipMemcpyDeviceToDevice);
+    HIP_CALL_WITH_CHIP_CALL_WITH_CHECK(hipMemcpy(d_lagrange.data, d_vec.data, sizeof(double) * n_constraint, hipMemcpyDeviceToDevice);
 
     int nrhs = 1;
     // solve

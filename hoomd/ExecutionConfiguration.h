@@ -440,6 +440,11 @@ class PYBIND11_EXPORT ExecutionConfiguration
             this->m_exec_conf->handleHIPError(err_async, __FILE__, __LINE__);         \
             }                                                                         \
         }
+#define HIP_CALL_WITH_CHECK(call)                                   \
+        {                                                           \
+        auto err = call;                                            \
+        this->m_exec_conf->handleHIPError(err, __FILE__, __LINE__); \
+        }
 #else
 #define CHECK_CUDA_ERROR()
 #endif

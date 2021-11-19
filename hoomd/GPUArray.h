@@ -1096,7 +1096,10 @@ template<class T> void GPUArray<T>::memcpyDeviceToHost(bool async) const
         }
     else
         {
-        hipMemcpy(h_data.get(), d_data.get(), sizeof(T) * m_num_elements, hipMemcpyDeviceToHost);
+        HIP_CALL_WITH_CHECK(hipMemcpy(h_data.get(),
+                                      d_data.get(),
+                                      sizeof(T) * m_num_elements,
+                                      hipMemcpyDeviceToHost));
         }
 #endif
     if (m_exec_conf->isCUDAErrorCheckingEnabled())
@@ -1131,7 +1134,10 @@ template<class T> void GPUArray<T>::memcpyHostToDevice(bool async) const
 #endif
     else
 #ifdef ENABLE_HIP
-        hipMemcpy(d_data.get(), h_data.get(), sizeof(T) * m_num_elements, hipMemcpyHostToDevice);
+        HIP_CALL_WITH_CHECK(hipMemcpy(d_data.get(),
+                                      h_data.get(),
+                                      sizeof(T) * m_num_elements,
+                                      hipMemcpyHostToDevice));
 #endif
     if (m_exec_conf->isCUDAErrorCheckingEnabled())
         CHECK_CUDA_ERROR();
@@ -1493,7 +1499,8 @@ template<class T> T* GPUArray<T>::resizeDeviceArray(size_t num_elements)
     // copy over data
     size_t num_copy_elements = m_num_elements > num_elements ? num_elements : m_num_elements;
 #ifdef ENABLE_HIP
-    hipMemcpy(d_tmp, d_data.get(), sizeof(T) * num_copy_elements, hipMemcpyDeviceToDevice);
+    HIP_CALL_WITH_CHECK(
+        hipMemcpy(d_tmp, d_data.get(), sizeof(T) * num_copy_elements, hipMemcpyDeviceToDevice));
 #endif
     CHECK_CUDA_ERROR();
 
@@ -1546,10 +1553,10 @@ T* GPUArray<T>::resize2DDeviceArray(size_t pitch,
     for (size_t i = 0; i < num_copy_rows; i++)
         {
 #ifdef ENABLE_HIP
-        hipMemcpy(d_tmp + i * new_pitch,
-                  d_data.get() + i * pitch,
-                  sizeof(T) * num_copy_columns,
-                  hipMemcpyDeviceToDevice);
+        HIP_CALL_WITH_CHECK(hipMemcpy(d_tmp + i * new_pitch,
+                                      d_data.get() + i * pitch,
+                                      sizeof(T) * num_copy_columns,
+                                      hipMemcpyDeviceToDevice));
 #endif
         CHECK_CUDA_ERROR();
         }
