@@ -660,6 +660,9 @@ class Patchy(AnisotropicPair):
         patchy.patches.default = []
         simulation.operations.integrator.forces = [patchy]
 
+    Warning:
+        This class should not be instantiated by users. The class can be used
+        for `isinstance` or `issubclass` checks.
 
     .. py:attribute:: params
 
