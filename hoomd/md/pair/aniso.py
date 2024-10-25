@@ -660,7 +660,7 @@ class Patchy(AnisotropicPair):
                                               default_r_cut = 3.0)
         pair_params = {'epsilon': 10, 'sigma': 1}
 
-        patchy.params.default = dict(pair_params = pair_params,
+        patchy.params.default = dict(pair_params=pair_params,
                                      envelope_params = {'alpha': math.pi/4,
                                                         'omega': 30})
         patchy.directors.default = []
@@ -689,8 +689,8 @@ class Patchy(AnisotropicPair):
         .. code-block:: python
 
             envelope_params = {'alpha': math.pi/4, 'omega': 30}
-            patchy.params[('A', 'A')] = dict(pair_params = pair_params,
-                                             envelope_params = envelope_params)
+            patchy.params[('A', 'A')] = dict(pair_params=pair_params,
+                                             envelope_params=envelope_params)
 
         Type: `TypeParameter` [`tuple` [``particle_type``, ``particle_type``],
         `dict`]
@@ -767,13 +767,13 @@ class PatchyLJ(Patchy):
 
     .. code-block:: python
 
-        lj_params = dict(epsilon = 1, sigma = 1)
-        envelope_params = dict(alpha = math.pi/2, omega = 20)
+        lj_params = dict(epsilon=1, sigma=1)
+        envelope_params=dict(alpha=math.pi/2, omega=20)
 
-        patchylj = hoomd.md.pair.aniso.PatchyLJ(nlist = neighbor_list,
-                                                default_r_cut = 3.0)
-        patchylj.params[('A', 'A')] = dict(pair_params = lj_params,
-                                           envelope_params = envelope_params)
+        patchylj = hoomd.md.pair.aniso.PatchyLJ(nlist=neighbor_list,
+                                                default_r_cut=3.0)
+        patchylj.params[('A', 'A')] = dict(pair_params=lj_params,
+                                           envelope_params=envelope_params)
         patchylj.directors['A'] = [(1,0,0)]
         simulation.operations.integrator.forces = [patchylj]
 
@@ -810,15 +810,15 @@ class PatchyExpandedGaussian(Patchy):
 
     .. code-block:: python
 
-        gauss_params = dict(epsilon = 1, sigma = 1, delta = 0.5)
-        envelope_params = dict(alpha = math.pi/2, omega = 40)
+        gauss_params=dict(epsilon=1, sigma=1, delta=0.5)
+        envelope_params=dict(alpha=math.pi/2, omega=40)
 
         patchy_expanded_gaussian = hoomd.md.pair.aniso.PatchyExpandedGaussian(
-            nlist = neighbor_list,
-            default_r_cut = 3.0)
+            nlist=neighbor_list,
+            default_r_cut=3.0)
         patchy_expanded_gaussian.params[('A', 'A')] = dict(
-            pair_params = gauss_params,
-            envelope_params = envelope_params)
+            pair_params=gauss_params,
+            envelope_params=envelope_params)
         patchy_expanded_gaussian.directors['A'] = [(1,0,0), (1,1,1)]
         simulation.operations.integrator.forces = [patchy_expanded_gaussian]
 
@@ -856,13 +856,13 @@ class PatchyExpandedLJ(Patchy):
 
     .. code-block:: python
 
-        lj_params = dict(epsilon = 1, sigma = 1)
-        envelope_params = dict(alpha = math.pi/2, omega = 20)
+        lj_params=dict(epsilon=1, sigma=1)
+        envelope_params=dict(alpha=math.pi/2, omega=20)
 
-        patchylj = hoomd.md.pair.aniso.PatchyLJ(nlist = neighbor_list,
-                                                default_r_cut = 3.0)
-        patchylj.params[('A', 'A')] = dict(pair_params = lj_params,
-                                           envelope_params = envelope_params)
+        patchylj = hoomd.md.pair.aniso.PatchyLJ(nlist=neighbor_list,
+                                                default_r_cut=3.0)
+        patchylj.params[('A', 'A')] = dict(pair_params=lj_params,
+                                           envelope_params=envelope_params)
         patchylj.directors['A'] = [(1,0,0)]
         simulation.operation.integrator.forces = [patchylj]
 
@@ -901,15 +901,15 @@ class PatchyExpandedMie(Patchy):
 
     .. code-block:: python
 
-        expanded_mie_params = {'epsilon': 1, 'sigma': 1,
-                               'n': 10, 'm': 15, 'delta': 1}
-        envelope_params = {'alpha': math.pi/3, 'omega': 20}
+        expanded_mie_params = dict(epsilon=1, sigma=1,
+                               n=15, m=10, delta=1)
+        envelope_params = dict(alpha=math.pi/3, omega=20)
 
         patchy_expanded_mie = hoomd.md.pair.aniso.PatchyExpandedMie(
-            nlist = neighbor_list, default_r_cut = 3.0)
+            nlist=neighbor_list, default_r_cut=3.0)
         patchy_expanded_mie.params[('A', 'A')] = dict(
-            pair_params = expanded_mie_params
-            envelope_params = envelope_params)
+            pair_params=expanded_mie_params
+            envelope_params=envelope_params)
         patchy_expanded_mie.directors['A'] = [(1,0,0)]
         simulation.operations.integrator.forces = [patchy_expanded_mie]
 
@@ -957,13 +957,13 @@ class PatchyGaussian(Patchy):
 
     .. code-block:: python
 
-        gauss_params = dict(epsilon = 1, sigma = 1)
-        envelope_params = dict(alpha = math.pi/4, omega = 30)
+        gauss_params=dict(epsilon=1, sigma=1)
+        envelope_params=dict(alpha=math.pi/4, omega=30)
 
-        patchy_gaussian = hoomd.md.pair.aniso.PatchyGaussian(nlist = neighbor_list,
-                                                             default_r_cut = 3.0)
-        patchy_gaussian.params[('A', 'A')] = dict(pair_params = gauss_params,
-                                                  envelope_params = envelope_params)
+        patchy_gaussian = hoomd.md.pair.aniso.PatchyGaussian(nlist=neighbor_list,
+                                                             default_r_cut=3.0)
+        patchy_gaussian.params[('A', 'A')] = dict(pair_params=gauss_params,
+                                                  envelope_params=envelope_params)
         patchy_gaussian.directors['A'] = [(1,0,0)]
         simulation.operations.integrator.forces = [patchy_gaussian]
 
@@ -1005,12 +1005,12 @@ class PatchyMie(Patchy):
 
     .. code-block:: python
 
-        mie_params = {'epsilon': 1, 'sigma': 1, 'n': 10, 'm': 15}
-        envelope_params = {'alpha': math.pi/3, 'omega': 20}
+        mie_params = dict(epsilon=1, sigma=1, n=15, m=10)
+        envelope_params = dict(alpha=math.pi/3, omega=20)
 
-        patchy_mie = hoomd.md.pair.aniso.PatchyMie(nlist = neighbor_list,
-                                                   default_r_cut = 3.0)
-        patchy_mie.params[('A', 'A')] = dict(pair_params = mie_params
+        patchy_mie = hoomd.md.pair.aniso.PatchyMie(nlist=neighbor_list,
+                                                   default_r_cut=3.0)
+        patchy_mie.params[('A', 'A')] = dict(pair_params=mie_params
                                              envelope_params = envelope_params)
         patchy_mie.directors['A'] = [(1,0,0)]
         simulation.operations.integrator.forces = [patchy_mie]
@@ -1051,13 +1051,13 @@ class PatchyYukawa(Patchy):
 
     .. code-block:: python
 
-        yukawa_params = {'epsilon': 1, 'kappa': 10}
-        envelope_params = {'alpha': math.pi/4, 'omega':25}
+        yukawa_params = dict(epsilon=1, kappa=10)
+        envelope_params = dict(alpha=math.pi/4, omega=25)
 
-        patchy_yukawa = hoomd.md.pair.aniso.PatchyYukawa(nlist = neighbor_list,
-                                                         default_r_cut = 5.0)
-        patchy_yukawa.params[('A', 'A')] = dict(pair_params = yukawa_params
-                                                envelope_params = envelope_params)
+        patchy_yukawa = hoomd.md.pair.aniso.PatchyYukawa(nlist=neighbor_list,
+                                                         default_r_cut=5.0)
+        patchy_yukawa.params[('A', 'A')] = dict(pair_params=yukawa_params
+                                                envelope_params=envelope_params)
         patchy_yukawa.directors['A'] = [(1,0,0)]
         simulation.operations.integrator.forces = [patchy_yukawa]
 
