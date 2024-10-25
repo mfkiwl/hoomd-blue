@@ -268,7 +268,7 @@ class BoxMC(Updater):
             different streams of random numbers.
     """
 
-    def __init__(self, trigger, betaP):
+    def __init__(self, trigger, P):
         super().__init__(trigger)
 
         _default_dict = dict(weight=0.0, delta=0.0)
@@ -280,12 +280,12 @@ class BoxMC(Updater):
             aspect=_default_dict,
             length=dict(weight=0.0, delta=(0.0,) * 3),
             shear=dict(weight=0.0, delta=(0.0,) * 3, reduce=0.0),
-            betaP=hoomd.variant.Variant,
+            P=hoomd.variant.Variant,
             instance=int,
         )
         self._param_dict.update(param_dict)
         self.volume["mode"] = "standard"
-        self.betaP = betaP
+        self.P = P
         self.instance = 0
 
     def _attach_hook(self):
@@ -300,7 +300,7 @@ class BoxMC(Updater):
 
         self._cpp_obj = _hpmc.UpdaterBoxMC(self._simulation.state._cpp_sys_def,
                                            self.trigger, integrator._cpp_obj,
-                                           self.betaP)
+                                           self.P)
 
     @property
     def counter(self):

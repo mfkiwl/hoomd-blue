@@ -33,6 +33,10 @@ For some functionalities, you will need to update your scripts to use a new API:
 
   * Use `hoomd.hpmc.external.Linear` or a custom component (compiled).
 
+* ``hoomd.hpmc.update.BoxMC.betaP``
+
+  * Use `hoomd.hpmc.update.P` / kT
+
 Removed functionalities
 ^^^^^^^^^^^^^^^^^^^^^^^
 

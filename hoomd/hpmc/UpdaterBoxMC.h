@@ -204,15 +204,15 @@ class UpdaterBoxMC : public Updater
     //! Get pressure parameter
     /*! \returns pressure variant object
      */
-    std::shared_ptr<Variant> getBetaP()
+    std::shared_ptr<Variant> getP()
         {
-        return m_beta_P;
+        return m_P;
         }
 
     //! Set pressure parameter
-    void setBetaP(const std::shared_ptr<Variant>& betaP)
+    void setP(const std::shared_ptr<Variant>& P)
         {
-        m_beta_P = betaP;
+        m_P = P;
         }
 
     //! Reset statistics counters
@@ -242,31 +242,31 @@ class UpdaterBoxMC : public Updater
     /*! \param timestep timestep at which update is being evaluated
         \param rng pseudo random number generator instance
     */
-    void update_L(uint64_t timestep, hoomd::RandomGenerator& rng);
+    void update_L(uint64_t timestep, hoomd::RandomGenerator& rng, Scalar kT);
 
     //! Perform box update in NpT volume distribution
     /*! \param timestep timestep at which update is being evaluated
         \param rng pseudo random number generator instance
     */
-    void update_V(uint64_t timestep, hoomd::RandomGenerator& rng);
+    void update_V(uint64_t timestep, hoomd::RandomGenerator& rng, Scalar kT);
 
     //! Perform box update in NpT ln(V) distribution
     /*! \param timestep timestep at which update is being evaluated
         \param rng pseudo random number generator instance
     */
-    void update_lnV(uint64_t timestep, hoomd::RandomGenerator& rng);
+    void update_lnV(uint64_t timestep, hoomd::RandomGenerator& rng, Scalar kT);
 
     //! Perform box update in NpT shear distribution
     /*! \param timestep timestep at which update is being evaluated
         \param rng pseudo random number generator instance
     */
-    void update_shear(uint64_t timestep, hoomd::RandomGenerator& rng);
+    void update_shear(uint64_t timestep, hoomd::RandomGenerator& rng, Scalar kT);
 
     //! Perform non-thermodynamic MC move in aspect ratio.
     /*! \param timestep timestep at which update is being evaluated
         \param rng pseudo random number generator instance
     */
-    void update_aspect(uint64_t timestep, hoomd::RandomGenerator& rng);
+    void update_aspect(uint64_t timestep, hoomd::RandomGenerator& rng, Scalar kT);
 
     /// Set the RNG instance
     void setInstance(unsigned int instance)
@@ -282,7 +282,7 @@ class UpdaterBoxMC : public Updater
 
     private:
     std::shared_ptr<IntegratorHPMC> m_mc; //!< HPMC integrator object
-    std::shared_ptr<Variant> m_beta_P;    //!< Reduced pressure in isobaric ensembles
+    std::shared_ptr<Variant> m_P;         //!< Reduced pressure in isobaric ensembles
 
     unsigned int m_instance = 0; //!< Unique ID for RNG seeding
 
@@ -322,6 +322,7 @@ class UpdaterBoxMC : public Updater
                                  Scalar xy,
                                  Scalar xz,
                                  Scalar yz,
+                                 Scalar kT,
                                  uint64_t timestep,
                                  Scalar boltzmann,
                                  Scalar logVterm,
