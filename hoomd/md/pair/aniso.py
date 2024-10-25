@@ -648,6 +648,10 @@ class Patchy(AnisotropicPair):
         patchy.directors.default = []
         simulation.operations.integrator.forces = [patchy]
 
+    Warning:
+        This class should not be instantiated by users. The class can be used
+        for `isinstance` or `issubclass` checks.
+
     .. py:attribute:: params
 
         The Patchy potential parameters unique to each pair of particle types. The
