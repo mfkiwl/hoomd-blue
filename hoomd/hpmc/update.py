@@ -25,9 +25,9 @@ class BoxMC(Updater):
     r"""Apply box updates to sample isobaric and related ensembles.
 
     Args:
-        betaP (hoomd.variant.variant_like): :math:`\frac{p}{k_{\mathrm{B}}T}`
-            :math:`[\mathrm{length}^{-2}]` in 2D or
-            :math:`[\mathrm{length}^{-3}]` in 3D.
+        P (hoomd.variant.variant_like): :math:`p`
+            :math:`[\mathrm{energy} \ \mathrm{length}^{-2}]` in 2D or
+            :math:`[\mathrm{energy} \ \mathrm{length}^{-3}]` in 3D.
         trigger (hoomd.trigger.trigger_like): Select the timesteps to perform
             box trial moves.
 

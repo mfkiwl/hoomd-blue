@@ -26,9 +26,10 @@ namespace hoomd
 namespace hpmc
     {
 //! Update box for HPMC simulation in the NPT ensemble, etc.
-/*! The pressure parameter is beta*P. For a unitless reduced pressure, the user must adopt and apply
+/*! The pressure parameter is P. For a unitless reduced pressure, the user must adopt and apply
    the convention of their choice externally. E.g. \f$ P^* \equiv \frac{P \sigma^3}{k_B T} \f$
-   implies a user should pass \f$ P^* / \sigma^3 \f$ as the UpdaterBoxMC P parameter.
+   implies a user should pass \f$ P^* / \sigma^3 \f$ as the UpdaterBoxMC P parameter and set
+   the \f$ k_B T \f$ parameter in the integrator.
 */
 class UpdaterBoxMC : public Updater
     {
@@ -36,7 +37,7 @@ class UpdaterBoxMC : public Updater
     //! Constructor
     /*! \param sysdef System definition
         \param mc HPMC integrator object
-        \param P Pressure times thermodynamic beta to apply in isobaric ensembles
+        \param P Pressure to apply in isobaric ensembles
 
         Variant parameters are possible, but changing MC parameters violates detailed balance.
     */
