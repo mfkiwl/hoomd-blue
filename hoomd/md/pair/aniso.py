@@ -614,19 +614,37 @@ class Patchy(AnisotropicPair):
         f_{min} &= \big( 1 + e^{-\omega (-1 - \cos{\alpha}) } \big)^{-1} \\
         \end{align}
 
+    .. image:: patchy-pair.svg
+         :align: center
+         :height: 400px
+         :alt: Two dashed circles not quite touching. Circle i on the left has a faded
+         shaded slice pointing up and to the right at a 35 degree angle.
+         Circle j on the right has its shaded region pointing left and slightly up at a
+         25 degree angle. A vector labeled r i j points from particle i to j.
+
     `directors` sets the locations of the patches **in the local reference frame** of
     the particle. `Patchy` rotates the local director :math:`\vec{d}` by the particle's
     orientation and computes the :math:`cos(\theta)` in :math:`f` as the cosine of the
     angle between the director and :math:`\vec{r}_{ij}`:
+    :math:`cos(\theta_i) = \mathbf{q} \hat{d} \mathbf{q}^* \cdot \hat{r}_{ij}` and
+    :math:`cos(\theta_j) = \mathbf{q} \hat{d} \mathbf{q}^* \cdot -\hat{r}_{ij}`.
 
-    .. math::
-        cos(\theta) = \mathbf{q} \hat{d} \mathbf{q}^* \cdot \hat{r}_{ij}
-
-    Here is a graphical representation: TODO: link to figure.
+    .. image:: patchy-def.svg
+         :align: center
+         :height: 400px
+         :alt: A single dashed circle centered at the origin of Cartesian x y axes.
+         Vector p points from the center of the circle at a 35 degree angle from the
+         right towards the center of the shaded region but does not reach the circle
+         boundary. Alpha is indicated as half of the arc of the shaded region.
 
     :math:`\alpha` and :math:`\omega` control the shape of the patch:
 
-    TODO: link to a figure.
+    .. image:: patchy-modulator.svg
+         :alt: Plots of modulator f with alpha equals pi over 3 for omegas of 2, 5, 10,
+         20 and 50. For omega of 50, the plot is a barely rounded step from 0 to 1 at
+         negative pi over 3 and back down to 0 at pi over 3. The omega 2 line is so
+         rounded that there are no noticeable elbows, but f still reaches 1 at theta of
+         0. The other lines appear between these.
 
     See Also:
 
@@ -694,6 +712,7 @@ class Patchy(AnisotropicPair):
         .. code-block:: python
 
             patchy.directors['A'] = []
+
     """
 
     _doc_args = r"""
