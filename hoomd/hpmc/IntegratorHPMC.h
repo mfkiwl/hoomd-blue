@@ -264,7 +264,7 @@ class PYBIND11_EXPORT IntegratorHPMC : public Integrator
     //! Set kT variant
     /*! \param kT new k_BT variant to set
      */
-    void setKT(std::shared_ptr<Variant> kT)
+    void setKT(const std::shared_ptr<Variant>& kT)
         {
         m_kT = kT;
         }
