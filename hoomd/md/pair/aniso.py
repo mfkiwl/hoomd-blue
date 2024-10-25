@@ -583,20 +583,20 @@ class Patchy(AnisotropicPair):
     with a repulsive potential to create localized bumps. `Patchy` computes both forces
     and torques on particles.
 
-    Note: 
+    Note:
 
         `Patchy` provides *no* interaction when there are no patches or particles are
         oriented such that :math:`f = 0`. Use `Patchy` along with a  repulsive isotropic
         `Pair <hoomd.md.pair.Pair>` potential to prevent particles from passing through
         each other.
-        
+
     The specific form of the patchy pair potential between particles :math:`i` and
     :math:`j` is:
 
     .. math::
 
-        U(r_{ij}, \theta_i, \theta_j) = 
-        \sum_{m=1}^{N_{\mathrm{patches},i}}  
+        U(r_{ij}, \theta_i, \theta_j) =
+        \sum_{m=1}^{N_{\mathrm{patches},i}}
         \sum_{n=1}^{N_{\mathrm{patches},j}}
         f(\theta_{m,i}, \alpha, \omega)
         f(\theta_{n,j}, \alpha, \omega)
@@ -652,7 +652,7 @@ class Patchy(AnisotropicPair):
 
         `hoomd.hpmc.pair.AngularStep` provides a similar functional form for HPMC,
         except that :math:`f` is a step function.
-        
+
     .. _Beltran-Villegas et. al.: https://dx.doi.org/10.1039/C3SM53136H
 
     .. invisible-code-block: python
@@ -722,10 +722,10 @@ class Patchy(AnisotropicPair):
         mode (str): energy shifting/smoothing mode.
     """
 
-    _doc_inherited = r"""    
+    _doc_inherited = r"""
 
     **Inherited from:** `Patchy <hoomd.md.pair.aniso.Patchy>`
-    
+
     .. py:attribute:: directors
 
         List of vectors pointing to patch centers, by particle type.
@@ -875,7 +875,7 @@ class PatchyExpandedLJ(Patchy):
         * ``envelope_params`` (`dict`, **required**)
 
           * `Read more... <Patchy.params>`
-        
+
         * ``pair_params`` (`dict`, **required**) -
           passed to `md.pair.ExpandedLJ.params`.
 
@@ -921,7 +921,7 @@ class PatchyExpandedMie(Patchy):
         * ``envelope_params`` (`dict`, **required**)
 
           * `Read more... <Patchy.params>`
-                
+
         * ``pair_params`` (`dict`, **required**) -
           passed to `md.pair.ExpandedMie.params`.
 
@@ -1080,7 +1080,7 @@ class PatchyYukawa(Patchy):
         Type: `TypeParameter` [`tuple` [``particle_type``, ``particle_type``],
         `dict`]
     """
-    
+
     __doc__ += "\n" + Patchy._doc_args + _doc + Patchy._doc_inherited
     _cpp_class_name = "AnisoPotentialPairPatchyYukawa"
     _pair_params = {"epsilon": float, "kappa": float}
