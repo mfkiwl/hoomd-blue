@@ -274,7 +274,7 @@ template<typename PairEvaluator, typename DirectionalEnvelope> class PairModulat
         }
     static std::string getShapeParamName()
         {
-        return "Patches";
+        return "Directors";
         }
     std::string getShapeSpec() const
         {

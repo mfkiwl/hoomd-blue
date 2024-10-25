@@ -645,7 +645,7 @@ class Patchy(AnisotropicPair):
         patchy.params.default = dict(pair_params = pair_params,
                                      envelope_params = {'alpha': math.pi/4,
                                                         'omega': 30})
-        patchy.patches.default = []
+        patchy.directors.default = []
         simulation.operations.integrator.forces = [patchy]
 
     .. py:attribute:: params
@@ -685,11 +685,11 @@ class Patchy(AnisotropicPair):
 
         .. code-block:: python
 
-            patchy.patches['A'] = [(1,0,0), (1,1,1)]
+            patchy.directors['A'] = [(1,0,0), (1,1,1)]
 
         .. code-block:: python
 
-            patchy.patches['A'] = []
+            patchy.directors['A'] = []
     """
 
     _doc_args = r"""
@@ -724,7 +724,7 @@ class Patchy(AnisotropicPair):
                 },
                 len_keys=2))
         envelope = TypeParameter(
-            'patches', 'particle_types',
+            'directors', 'particle_types',
             TypeParameterDict([(float, float, float)], len_keys=1))
         self._extend_typeparam((params, envelope))
 
@@ -751,7 +751,7 @@ class PatchyLJ(Patchy):
                                                 default_r_cut = 3.0)
         patchylj.params[('A', 'A')] = dict(pair_params = lj_params,
                                            envelope_params = envelope_params)
-        patchylj.patches['A'] = [(1,0,0)]
+        patchylj.directors['A'] = [(1,0,0)]
         simulation.operations.integrator.forces = [patchylj]
 
     .. py:attribute:: params
@@ -796,7 +796,7 @@ class PatchyExpandedGaussian(Patchy):
         patchy_expanded_gaussian.params[('A', 'A')] = dict(
             pair_params = gauss_params,
             envelope_params = envelope_params)
-        patchy_expanded_gaussian.patches['A'] = [(1,0,0), (1,1,1)]
+        patchy_expanded_gaussian.directors['A'] = [(1,0,0), (1,1,1)]
         simulation.operations.integrator.forces = [patchy_expanded_gaussian]
 
     .. py:attribute:: params
@@ -840,7 +840,7 @@ class PatchyExpandedLJ(Patchy):
                                                 default_r_cut = 3.0)
         patchylj.params[('A', 'A')] = dict(pair_params = lj_params,
                                            envelope_params = envelope_params)
-        patchylj.patches['A'] = [(1,0,0)]
+        patchylj.directors['A'] = [(1,0,0)]
         simulation.operation.integrator.forces = [patchylj]
 
 
@@ -887,7 +887,7 @@ class PatchyExpandedMie(Patchy):
         patchy_expanded_mie.params[('A', 'A')] = dict(
             pair_params = expanded_mie_params
             envelope_params = envelope_params)
-        patchy_expanded_mie.patches['A'] = [(1,0,0)]
+        patchy_expanded_mie.directors['A'] = [(1,0,0)]
         simulation.operations.integrator.forces = [patchy_expanded_mie]
 
     .. py:attribute:: params
@@ -941,7 +941,7 @@ class PatchyGaussian(Patchy):
                                                              default_r_cut = 3.0)
         patchy_gaussian.params[('A', 'A')] = dict(pair_params = gauss_params,
                                                   envelope_params = envelope_params)
-        patchy_gaussian.patches['A'] = [(1,0,0)]
+        patchy_gaussian.directors['A'] = [(1,0,0)]
         simulation.operations.integrator.forces = [patchy_gaussian]
 
     .. py:attribute:: params
@@ -989,7 +989,7 @@ class PatchyMie(Patchy):
                                                    default_r_cut = 3.0)
         patchy_mie.params[('A', 'A')] = dict(pair_params = mie_params
                                              envelope_params = envelope_params)
-        patchy_mie.patches['A'] = [(1,0,0)]
+        patchy_mie.directors['A'] = [(1,0,0)]
         simulation.operations.integrator.forces = [patchy_mie]
 
     .. py:attribute:: params
@@ -1035,7 +1035,7 @@ class PatchyYukawa(Patchy):
                                                          default_r_cut = 5.0)
         patchy_yukawa.params[('A', 'A')] = dict(pair_params = yukawa_params
                                                 envelope_params = envelope_params)
-        patchy_yukawa.patches['A'] = [(1,0,0)]
+        patchy_yukawa.directors['A'] = [(1,0,0)]
         simulation.operations.integrator.forces = [patchy_yukawa]
 
     .. py:attribute:: params

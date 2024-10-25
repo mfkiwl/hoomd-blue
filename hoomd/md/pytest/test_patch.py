@@ -87,15 +87,15 @@ def test_before_attaching(patch_cls, patch_args, params, patches_A, patches_B,
                           default_r_cut=4,
                           **patch_args)
     potential.params.default = params
-    potential.patches['A'] = patches_A
-    potential.patches['B'] = patches_B
+    potential.directors['A'] = patches_A
+    potential.directors['B'] = patches_B
     for key in params:
         assert potential.params[('A', 'A')][key] == pytest.approx(params[key])
     for i, patch in enumerate(patches_A):
         # only normalized after attaching
-        assert potential.patches['A'][i] == pytest.approx(patch)
+        assert potential.directors['A'][i] == pytest.approx(patch)
     for i, patch in enumerate(patches_B):
-        assert potential.patches['B'][i] == pytest.approx(patch)
+        assert potential.directors['B'][i] == pytest.approx(patch)
 
 
 @pytest.mark.parametrize(
@@ -109,8 +109,8 @@ def test_after_attaching(patchy_snapshot_factory, simulation_factory, patch_cls,
                           default_r_cut=4,
                           **patch_args)
     potential.params.default = params
-    potential.patches['A'] = patches_A
-    potential.patches['B'] = patches_B
+    potential.directors['A'] = patches_A
+    potential.directors['B'] = patches_B
 
     sim.operations.integrator = hoomd.md.Integrator(
         dt=0.05, forces=[potential], integrate_rotational_dof=True)
@@ -121,12 +121,12 @@ def test_after_attaching(patchy_snapshot_factory, simulation_factory, patch_cls,
         # patch is returned normalized, so normalize it before checking
         nn = numpy.array(patch)
         patch = nn / numpy.linalg.norm(nn)
-        assert potential.patches['A'][i] == pytest.approx(patch)
+        assert potential.directors['A'][i] == pytest.approx(patch)
     for i, patch in enumerate(patches_B):
         # patch is returned normalized, so normalize it before checking
         nn = numpy.array(patch)
         patch = tuple(nn / numpy.linalg.norm(nn))
-        assert potential.patches['B'][i] == pytest.approx(patch)
+        assert potential.directors['B'][i] == pytest.approx(patch)
 
 
 @pytest.mark.parametrize(
@@ -147,8 +147,8 @@ def test_forces_energies_torques(patchy_snapshot_factory, simulation_factory,
                           default_r_cut=4,
                           **patch_args)
     potential.params.default = params
-    potential.patches['A'] = patches_A
-    potential.patches['B'] = patches_B
+    potential.directors['A'] = patches_A
+    potential.directors['B'] = patches_B
 
     sim.operations.integrator = hoomd.md.Integrator(
         dt=0.005, forces=[potential], integrate_rotational_dof=True)
