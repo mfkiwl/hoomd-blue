@@ -604,42 +604,44 @@ _PATCHY_ATTRIBUTE_DOC = r"""
         Type: `TypeParameter` [`tuple` [``particle_type``, ``particle_type``],
         `dict`]
 
-    .. py:attribute:: patches
+    .. py:attribute:: directors
 
-        List of vectors pointing to patch centers. Unnormalized vectors are normalized.
-        If a particle type does not have patches, set the patches to an empty list.
+        List of vectors pointing to patch centers, by particle type.
 
-        Type: `list` [`tuple` [`float`, `float`, `float`]] or `list` [()]
-
-        .. rubric:: Example:
-
-        .. code-block:: python
-
-            patchy.patches['A'] = [(1,0,0), (1,1,1)]
-
+        `Read more... <Patchy.directors>`
 """
 
 
 class Patchy(AnisotropicPair):
-    r"""Pair potential made directional by an envelope.
+    r"""Patchy pair potentials.
 
-    Patchy potentials compute the  potential between particles with
-    angular patches with an implementation based on
-    `Beltran-Villegas et. al.`_. With distance between particles
-    :math:`r` and minimal angles between respective particle direction and
-    the displacement vector :math:`\theta_i`, :math:`\theta_j` the patchy potential
-    computes:
+    `Patchy` combines an isotropic `Pair <hoomd.md.pair.Pair>` potential with an
+    orientation dependent modulation function :math:`f`. Use `Patchy` with an attractive
+    potential to create localized sticky patches on the surface of a particle. Use it
+    with a repulsive potential to create localized bumps.
 
-    .. _Beltran-Villegas et. al.: https://dx.doi.org/10.1039/C3SM53136H
+    Note: 
+
+        `Patchy` provides *no* interaction when there are no patches or particles are
+        oriented such that :math:`f = 0`. Use `Patchy` along with a  repulsive isotropic
+        `Pair <hoomd.md.pair.Pair>` potential to prevent particles from passing through
+        each other.
+        
+    The specific form of the patchy pair potential between particles :math:`i` and
+    :math:`j` is:
 
     .. math::
 
-        U(r, \theta_i, \theta_j) = f(\theta_i, \alpha, \omega)
-        f(\theta_j, \alpha, \omega)
-        U_{\mathrm{pair}}(r)
+        U(r_{ij}, \theta_i, \theta_j) = 
+        \sum_{m=1}^{N_{\mathrm{patches},i}}  
+        \sum_{n=1}^{N_{\mathrm{patches},j}}
+        f(\theta_{m,i}, \alpha, \omega)
+        f(\theta_{n,j}, \alpha, \omega)
+        U_{\mathrm{pair}}(r_{ij})
 
-    where :math:`f` is an orientation-dependent factor of the patchy spherical
-    cap half-angle :math:`\alpha` and patch steepness :math:`\omega`.
+    where :math:`U_{\mathrm{pair}}(r_{ij})` is the isotropic pair potential and
+    :math:`f` is an orientation-dependent factor of the patchy spherical cap half-angle
+    :math:`\alpha` and patch steepness :math:`\omega`:
 
     .. math::
         \begin{align}
@@ -648,6 +650,17 @@ class Patchy(AnisotropicPair):
         f_{max} &= \big( 1 + e^{-\omega (1 - \cos{\alpha}) } \big)^{-1} \\
         f_{min} &= \big( 1 + e^{-\omega (-1 - \cos{\alpha}) } \big)^{-1} \\
         \end{align}
+
+    TODO: directors
+
+    See Also:
+
+        `Beltran-Villegas et. al.`_
+
+        `hoomd.hpmc.pair.AngularStep` provides a similar functional form for HPMC,
+        except that :math:`f` is a step function.
+        
+    .. _Beltran-Villegas et. al.: https://dx.doi.org/10.1039/C3SM53136H
 
     .. invisible-code-block: python
         patchy = hoomd.md.pair.aniso.PatchyLJ(nlist = neighbor_list,
@@ -663,7 +676,8 @@ class Patchy(AnisotropicPair):
 
     .. py:attribute:: params
 
-        The Patchy potential parameters. The dictionary has the following keys:
+        The Patchy potential parameters unique to each pair of particle types. The
+        dictionary has the following keys:
 
         * ``envelope_params`` (`dict`, **required**)
 
@@ -685,18 +699,23 @@ class Patchy(AnisotropicPair):
         Type: `TypeParameter` [`tuple` [``particle_type``, ``particle_type``],
         `dict`]
 
-    .. py:attribute:: patches
+    .. py:attribute:: directors
 
-        List of vectors pointing to patch centers. Unnormalized vectors are normalized.
-        If a particle type does not have patches, set the patches to an empty list.
+        List of vectors pointing to patch centers, by particle type (normalized when
+        set). When a particle type does not have patches, set an empty list.
 
-        Type: `list` [`tuple` [`float`, `float`, `float`]] or `list` [()]
+        Type: `TypeParameter` [``particle_type``, `list` [`tuple` [`float`, `float`,
+        `float`]]
 
-        .. rubric:: Example:
+        .. rubric:: Examples:
 
         .. code-block:: python
 
             patchy.patches['A'] = [(1,0,0), (1,1,1)]
+
+        .. code-block:: python
+
+            patchy.patches['A'] = []
     """
 
     def __init__(self, nlist, default_r_cut=None, mode='none'):
