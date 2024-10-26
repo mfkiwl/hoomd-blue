@@ -429,7 +429,7 @@ void UpdaterBoxMC::update(uint64_t timestep)
 void UpdaterBoxMC::update_L(uint64_t timestep, hoomd::RandomGenerator& rng, Scalar kT)
     {
     // Get updater parameters for current timestep
-    Scalar beta_P = (*m_P)(timestep)*kT;
+    Scalar beta_P = (*m_P)(timestep) / kT;
 
     // Get current particle data and box lattice parameters
     assert(m_pdata);
@@ -532,7 +532,7 @@ void UpdaterBoxMC::update_L(uint64_t timestep, hoomd::RandomGenerator& rng, Scal
 void UpdaterBoxMC::update_lnV(uint64_t timestep, hoomd::RandomGenerator& rng, Scalar kT)
     {
     // Get updater parameters for current timestep
-    Scalar beta_P = (*m_P)(timestep)*kT;
+    Scalar beta_P = (*m_P)(timestep) / kT;
 
     // Get current particle data and box lattice parameters
     assert(m_pdata);
@@ -617,7 +617,7 @@ void UpdaterBoxMC::update_lnV(uint64_t timestep, hoomd::RandomGenerator& rng, Sc
 void UpdaterBoxMC::update_V(uint64_t timestep, hoomd::RandomGenerator& rng, Scalar kT)
     {
     // Get updater parameters for current timestep
-    Scalar beta_P = (*m_P)(timestep)*kT;
+    Scalar beta_P = (*m_P)(timestep) / kT;
 
     // Get current particle data and box lattice parameters
     assert(m_pdata);

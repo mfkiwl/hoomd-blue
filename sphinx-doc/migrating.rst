@@ -35,7 +35,7 @@ For some functionalities, you will need to update your scripts to use a new API:
 
 * ``hoomd.hpmc.update.BoxMC.betaP``
 
-  * Use `hoomd.hpmc.update.BoxMC.P` / kT
+  * Use `hoomd.hpmc.update.BoxMC.P` and set kT in the integrator.
 
 Removed functionalities
 ^^^^^^^^^^^^^^^^^^^^^^^
