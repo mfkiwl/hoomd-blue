@@ -115,6 +115,8 @@ class Helfrich(MeshPotential):
 
     .. rubric:: Example:
 
+    .. skip: next if(hoomd.version.mpi_enabled)
+
     .. code-block:: python
 
         helfrich_potential = hoomd.md.mesh.bending.Helfrich(mesh)
