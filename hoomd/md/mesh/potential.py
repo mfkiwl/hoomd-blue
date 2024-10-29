@@ -72,10 +72,10 @@ class MeshPotential(Force):
         self._mesh = mesh
 
 
-class MeshConvervationPotential(MeshPotential):
+class MeshConservationPotential(MeshPotential):
     """Constructs the conservation potential applied to a mesh.
 
-    `MeshConvervationPotential` is the base class for global conservation
+    `MeshConservationPotential` is the base class for global conservation
     potentials applied to meshes.
 
     Warning:
