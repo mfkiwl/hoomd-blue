@@ -76,7 +76,7 @@ class CPPPotentialBase(AutotunedObject):
                 HOOMD-blue source code.
 
     .. _VectorMath.h: https://github.com/glotzerlab/hoomd-blue/blob/\
-            v4.8.2/hoomd/VectorMath.h
+            v4.9.0/hoomd/VectorMath.h
 
     Note:
         Your code *must* return a value.
