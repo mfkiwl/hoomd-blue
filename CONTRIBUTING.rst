@@ -107,4 +107,4 @@ contributed to the code.
 Propose a change log entry
 __________________________
 
-Propose a concise entry describing the change in `CHANGELOG.rst`.
+Propose a concise entry describing the change in ``CHANGELOG.rst``.
