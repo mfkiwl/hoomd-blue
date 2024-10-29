@@ -56,8 +56,6 @@ body:
         - Compiled from source
         - Conda-forge package
         - glotzerlab-software package
-    validations:
-      required: true
   - type: input
     attributes:
       label: HOOMD-blue version
