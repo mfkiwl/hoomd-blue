@@ -7,10 +7,30 @@ Change Log
 4.x
 ---
 
+4.9.0 (2024-10-29)
+^^^^^^^^^^^^^^^^^^
+
+*Added*
+
+* ``hoomd.hpmc.pair.LJGauss`` and ``hoomd.hpmc.pair.OPP``
+  (`#1889 <https://github.com/glotzerlab/hoomd-blue/pull/1889>`__).
+
+*Fixed*
+
+* Typographical errors in the documentation
+  (`#1872 <https://github.com/glotzerlab/hoomd-blue/pull/1872>`__,
+  `#1884 <https://github.com/glotzerlab/hoomd-blue/pull/1884>`__,
+  `#1896 <https://github.com/glotzerlab/hoomd-blue/pull/1896>`__).
+* Thermalize momenta of particles with floppy body tags
+  (`#1891 <https://github.com/glotzerlab/hoomd-blue/pull/1891>`__).
+* Spheropolyhedra with two vertices can now be saved as a valid `gsd_shape_spec`
+  (`#1898 <https://github.com/glotzerlab/hoomd-blue/pull/1898>`__).
+
+
 4.8.2 (2024-07-23)
 ^^^^^^^^^^^^^^^^^^
 
-Fixed:
+*Fixed*
 
 * Correct citation to Langevin piston paper
   (`#1849 <https://github.com/glotzerlab/hoomd-blue/pull/1849>`__).
@@ -24,7 +44,7 @@ Fixed:
 4.8.1 (2024-07-18)
 ^^^^^^^^^^^^^^^^^^
 
-Fixed:
+*Fixed*
 
 * Prevent illegal instruction when accessing 0 length snapshot arrays
   (`#1846 <https://github.com/glotzerlab/hoomd-blue/pull/1846>`__)
