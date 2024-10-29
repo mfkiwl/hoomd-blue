@@ -15,15 +15,21 @@ See Also:
    See the documentation in `hoomd.mesh.Mesh` for more information on the
    initialization of the mesh object.
 
+.. invisible-code-block: python
+
+    mesh = hoomd.mesh.Mesh()
+    mesh.types = ["mesh"]
+    mesh.triangulation = dict(type_ids = [0,0,0,0],
+          triangles = [[0,1,2],[0,2,3],[0,1,3],[1,2,3]])
 """
 
-from hoomd.md.mesh.potential import MeshPotential, MeshConvervationPotential
+from hoomd.md.mesh.potential import MeshPotential, MeshConservationPotential
 from hoomd.data.typeparam import TypeParameter
 from hoomd.data.parameterdicts import TypeParameterDict
 from hoomd.logging import log
 
 
-class Area(MeshConvervationPotential):
+class Area(MeshConservationPotential):
     r"""Area conservation potential.
 
     `Area` specifies a global area conservation energy for each
@@ -53,9 +59,11 @@ class Area(MeshConvervationPotential):
             * ``A0`` (`float`, **required**) - targeted global surface area
               :math:`[\mathrm{length}]^2]`
 
-    Examples::
+    .. rubric:: Example:
 
-        area_conservation_potential = mesh.conservation.Area(mesh)
+    .. code-block:: python
+
+        area_conservation_potential = hoomd.md.mesh.conservation.Area(mesh)
         area_conservation_potential.params["mesh"] = dict(k=10.0, A0=250)
     """
     _cpp_class_name = "AreaConservationMeshForceCompute"
@@ -105,9 +113,12 @@ class TriangleArea(MeshPotential):
               of a single triangle in the mesh
               :math:`[\mathrm{length}]^2`
 
-    Examples::
+    .. rubric:: Example:
 
-        tringle_area_conservation_potential = mesh.conservation.TriangleArea(mesh)
+    .. code-block:: python
+
+        tringle_area_conservation_potential = \
+            hoomd.md.mesh.conservation.TriangleArea(mesh)
         tringle_area_conservation_potential.params["mesh"] = dict(k=10.0, A0=250)
     """
     _cpp_class_name = "TriangleAreaConservationMeshForceCompute"
@@ -125,7 +136,7 @@ class TriangleArea(MeshPotential):
         return self._cpp_obj.getArea()
 
 
-class Volume(MeshConvervationPotential):
+class Volume(MeshConservationPotential):
     r"""Volume conservation potential.
 
     :py:class:`Volume` specifies a volume constraint on the whole mesh
@@ -152,9 +163,11 @@ class Volume(MeshConvervationPotential):
             * ``V0`` (`float`, **required**) - target volume
               :math:`[\mathrm{length}^{3}]`
 
-    Examples::
+    .. rubric:: Example:
 
-        volume = mesh.conservation.Volume(mesh)
+    .. code-block:: python
+
+        volume = hoomd.md.mesh.conservation.Volume(mesh)
         volume.params["mesh"] = dict(k=10.0, V0=100)
     """
     _cpp_class_name = "VolumeConservationMeshForceCompute"

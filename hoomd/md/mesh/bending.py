@@ -17,6 +17,13 @@ The curvature at each vertex particle :math:`j` is determined at its position
 See Also:
    See the documentation in `hoomd.mesh.Mesh` for more information on the
    initialization of the mesh object.
+
+.. invisible-code-block: python
+
+    mesh = hoomd.mesh.Mesh()
+    mesh.types = ["mesh"]
+    mesh.triangulation = dict(type_ids = [0,0,0,0],
+          triangles = [[0,1,2],[0,2,3],[0,1,3],[1,2,3]])
 """
 
 from hoomd.md.mesh.potential import MeshPotential
@@ -51,9 +58,11 @@ class BendingRigidity(MeshPotential):
             * ``k`` (`float`, **required**) - bending stiffness
               :math:`[\mathrm{energy}]`
 
-    Examples::
+    .. rubric:: Example:
 
-        bending_potential = mesh.bond.BendingRigidity(mesh)
+    .. code-block:: python
+
+        bending_potential = hoomd.md.mesh.bending.BendingRigidity(mesh)
         bending_potential.params["mesh"] = dict(k=10.0)
     """
     _cpp_class_name = "BendingRigidityMeshForceCompute"
@@ -104,9 +113,13 @@ class Helfrich(MeshPotential):
             * ``k`` (`float`, **required**) - bending stiffness
               :math:`[\mathrm{energy}]`
 
-    Examples::
+    .. rubric:: Example:
 
-        helfrich_potential = mesh.bond.Helfrich(mesh)
+    .. skip: next if(hoomd.version.mpi_enabled)
+
+    .. code-block:: python
+
+        helfrich_potential = hoomd.md.mesh.bending.Helfrich(mesh)
         helfrich_potential.params["mesh"] = dict(k=10.0)
     """
     _cpp_class_name = "HelfrichMeshForceCompute"

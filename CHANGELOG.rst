@@ -19,7 +19,7 @@ Change Log
   ``hoomd.md.pair.aniso.PatchyGaussian``, ``hoomd.md.pair.aniso.PatchyLJ``,
   ``hoomd.md.pair.aniso.PatchyMie``, and ``hoomd.md.pair.aniso.PatchyYukawa``
   (`#1412 <https://github.com/glotzerlab/hoomd-blue/pull/1412>`__).
-* ``hoomd.hpmc.pair.LJGauss`` and ``hoomd.hpmc.pair.OPP``
+* Double-well potentials in HPMC: ``hoomd.hpmc.pair.LJGauss`` and ``hoomd.hpmc.pair.OPP``
   (`#1889 <https://github.com/glotzerlab/hoomd-blue/pull/1889>`__).
 * Mesh potentials: ``hoomd.md.mesh.bending.BendingRigidity``, ``hoomd.md.mesh.bending.Helfrich``,
   ``hoomd.md.mesh.conservation.Area``, ``hoomd.md.mesh.conservation.TriangleArea``, and

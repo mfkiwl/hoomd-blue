@@ -41,7 +41,7 @@ class Burst(GSD):
             when `hoomd.Simulation.run` is called. Defaults to ``False``.
         clear_whole_buffer_after_dump (bool): When ``True`` the buffer is
             emptied after calling `dump` each time. When ``False``, `dump`
-            removes frames from the buffer unil the ``end`` index. Defaults
+            removes frames from the buffer until the ``end`` index. Defaults
             to ``True``.
 
     Warning:
@@ -87,7 +87,7 @@ class Burst(GSD):
 
         clear_whole_buffer_after_dump (bool): When ``True`` the buffer is
             emptied after calling `dump` each time. When ``False``, `dump`
-            removes frames from the buffer unil the ``end`` index.
+            removes frames from the buffer until the ``end`` index.
 
             .. rubric:: Example:
 
