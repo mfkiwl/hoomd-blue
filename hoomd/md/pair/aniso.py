@@ -584,7 +584,6 @@ class Patchy(AnisotropicPair):
     and torques on particles.
 
     Note:
-
         `Patchy` provides *no* interaction when there are no patches or particles are
         oriented such that :math:`f = 0`. Use `Patchy` along with a  repulsive isotropic
         `Pair <hoomd.md.pair.Pair>` potential to prevent particles from passing through
@@ -647,7 +646,6 @@ class Patchy(AnisotropicPair):
           0. The other lines appear between these.
 
     See Also:
-
         `Beltran-Villegas et. al.`_
 
         `hoomd.hpmc.pair.AngularStep` provides a similar functional form for HPMC,
