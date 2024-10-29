@@ -594,7 +594,7 @@ class Patchy(AnisotropicPair):
 
     .. math::
 
-        U(r_{ij}, \theta_i, \theta_j) =
+        U(r_{ij}, \mathbf{q}_i, \mathbf{q}_j) =
         \sum_{m=1}^{N_{\mathrm{patches},i}}
         \sum_{n=1}^{N_{\mathrm{patches},j}}
         f(\theta_{m,i}, \alpha, \omega)
