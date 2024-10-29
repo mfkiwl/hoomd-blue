@@ -26,10 +26,57 @@ Removed:
 4.x
 ---
 
+4.9.0 (2024-10-29)
+^^^^^^^^^^^^^^^^^^
+
+*Added*
+
+* Support Python 3.13
+  (`#1915 <https://github.com/glotzerlab/hoomd-blue/pull/1915>`__)
+* Patchy potentials for MD simulations: ``hoomd.md.pair.aniso.PatchyExpandedGaussian``,
+  ``hoomd.md.pair.aniso.PatchyExpandedLJ``, ``hoomd.md.pair.aniso.PatchyExpandedMie``,
+  ``hoomd.md.pair.aniso.PatchyGaussian``, ``hoomd.md.pair.aniso.PatchyLJ``,
+  ``hoomd.md.pair.aniso.PatchyMie``, and ``hoomd.md.pair.aniso.PatchyYukawa``
+  (`#1412 <https://github.com/glotzerlab/hoomd-blue/pull/1412>`__).
+* Double-well potentials in HPMC: ``hoomd.hpmc.pair.LJGauss`` and ``hoomd.hpmc.pair.OPP``
+  (`#1889 <https://github.com/glotzerlab/hoomd-blue/pull/1889>`__).
+* Mesh potentials: ``hoomd.md.mesh.bending.BendingRigidity``, ``hoomd.md.mesh.bending.Helfrich``,
+  ``hoomd.md.mesh.conservation.Area``, ``hoomd.md.mesh.conservation.TriangleArea``, and
+  ``hoomd.md.mesh.conservation.Volume``
+  (`#1792 <https://github.com/glotzerlab/hoomd-blue/pull/1792>`__,
+  `#1793 <https://github.com/glotzerlab/hoomd-blue/pull/1793>`__,
+  `#1794 <https://github.com/glotzerlab/hoomd-blue/pull/1794>`__,
+  `#1795 <https://github.com/glotzerlab/hoomd-blue/pull/1795>`__).
+* ``start`` and ``end`` arguments to ``hoomd.write.Burst.dump``
+  (`#1870 <https://github.com/glotzerlab/hoomd-blue/pull/1870>`__)
+* ``hoomd.mpcd.geometry.CosineChannel`` for a serpentine (cosine) channel
+  (`#1836 <https://github.com/glotzerlab/hoomd-blue/pull/1836>`__).
+* ``hoomd.mpcd.geometry.CosineExpansionContraction`` for an expansion-contraction channel
+  (`#1836 <https://github.com/glotzerlab/hoomd-blue/pull/1836>`__).
+
+*Fixed*
+
+* Errors in the documentation
+  (`#1830 <https://github.com/glotzerlab/hoomd-blue/pull/1830>`__,
+  `#1861 <https://github.com/glotzerlab/hoomd-blue/pull/1861>`__,
+  `#1872 <https://github.com/glotzerlab/hoomd-blue/pull/1872>`__,
+  `#1884 <https://github.com/glotzerlab/hoomd-blue/pull/1884>`__,
+  `#1896 <https://github.com/glotzerlab/hoomd-blue/pull/1896>`__).
+* Thermalize momenta of particles with floppy body tags
+  (`#1891 <https://github.com/glotzerlab/hoomd-blue/pull/1891>`__).
+* Spheropolyhedra with two vertices can now be saved as a valid ``gsd_shape_spec``
+  (`#1898 <https://github.com/glotzerlab/hoomd-blue/pull/1898>`__).
+
+*Changed*
+
+* Improved build instructions
+  (`#1909 <https://github.com/glotzerlab/hoomd-blue/pull/1909>`__).
+
+
 4.8.2 (2024-07-23)
 ^^^^^^^^^^^^^^^^^^
 
-Fixed:
+*Fixed*
 
 * Correct citation to Langevin piston paper
   (`#1849 <https://github.com/glotzerlab/hoomd-blue/pull/1849>`__).
@@ -43,7 +90,7 @@ Fixed:
 4.8.1 (2024-07-18)
 ^^^^^^^^^^^^^^^^^^
 
-Fixed:
+*Fixed*
 
 * Prevent illegal instruction when accessing 0 length snapshot arrays
   (`#1846 <https://github.com/glotzerlab/hoomd-blue/pull/1846>`__)
