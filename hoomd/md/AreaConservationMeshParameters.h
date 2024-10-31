@@ -9,7 +9,9 @@
 
 #pragma once
 
-namespace hoomd::md
+namespace hoomd
+    {
+namespace md
     {
 struct area_conservation_param_t
     {
@@ -39,4 +41,5 @@ struct area_conservation_param_t
     __attribute__((aligned(8)));
 #endif
 
-    } // namespace hoomd::md
+    } // namespace md
+    } // namespace hoomd

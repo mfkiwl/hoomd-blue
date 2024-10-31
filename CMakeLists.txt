@@ -68,11 +68,11 @@ set(CMAKE_HIP_STANDARD 14)
 
 # Enable compiler warnings on gcc and clang (common compilers used by developers)
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wno-sign-conversion -Wno-unknown-pragmas -Wno-deprecated-declarations -Wno-unused-result")
-
     if (NOT (ENABLE_GPU AND HOOMD_GPU_PLATFORM STREQUAL "HIP"))
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wconversion")
     endif()
+
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wno-sign-conversion -Wno-unknown-pragmas -Wno-deprecated-declarations -Wno-unused-result")
 
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall")
 endif()

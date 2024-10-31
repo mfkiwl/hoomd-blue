@@ -9,8 +9,11 @@
 
 #pragma once
 
-namespace hoomd::md
+namespace hoomd
     {
+namespace md
+    {
+
 struct triangle_area_conservation_param_t
     {
     Scalar k;
@@ -39,4 +42,5 @@ struct triangle_area_conservation_param_t
     __attribute__((aligned(8)));
 #endif
 
-    } // namespace hoomd::md
+    } // namespace md
+    } // namespace hoomd
