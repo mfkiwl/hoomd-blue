@@ -1,6 +1,7 @@
 // Copyright (c) 2009-2024 The Regents of the University of Michigan.
 // Part of HOOMD-blue, released under the BSD 3-Clause License.
 
+#include "VolumeConservationMeshParameters.h"
 #include "hoomd/ForceCompute.h"
 #include "hoomd/MeshDefinition.h"
 
@@ -31,33 +32,6 @@ namespace md
 */
 class PYBIND11_EXPORT VolumeConservationMeshForceCompute : public ForceCompute
     {
-    struct volume_conservation_params
-        {
-        Scalar k;
-        Scalar V0;
-
-#ifndef __HIPCC__
-        volume_conservation_params() : k(0), V0(0) { }
-
-        volume_conservation_params(pybind11::dict params)
-            : k(params["k"].cast<Scalar>()), V0(params["V0"].cast<Scalar>())
-            {
-            }
-
-        pybind11::dict asDict()
-            {
-            pybind11::dict v;
-            v["k"] = k;
-            v["V0"] = V0;
-            return v;
-            }
-#endif
-        }
-#if HOOMD_LONGREAL_SIZE == 32
-        __attribute__((aligned(4)));
-#else
-        __attribute__((aligned(8)));
-#endif
     public:
     //! Constructs the compute
     VolumeConservationMeshForceCompute(std::shared_ptr<SystemDefinition> sysdef,
@@ -68,7 +42,7 @@ class PYBIND11_EXPORT VolumeConservationMeshForceCompute : public ForceCompute
     virtual ~VolumeConservationMeshForceCompute();
 
     //! Set the parameters
-    virtual void setParams(unsigned int type, Scalar K, Scalar V0);
+    virtual void setParams(unsigned int type, const volume_conservation_param_t& params);
 
     virtual void setParamsPython(std::string type, pybind11::dict params);
 
@@ -95,7 +69,7 @@ class PYBIND11_EXPORT VolumeConservationMeshForceCompute : public ForceCompute
 #endif
 
     protected:
-    GPUArray<Scalar2> m_params; //!< Parameters
+    GPUArray<volume_conservation_param_t> m_params; //!< Parameters
 
     std::shared_ptr<MeshDefinition> m_mesh_data; //!< Mesh data to use in computing volume energy
 

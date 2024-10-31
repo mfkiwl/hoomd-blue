@@ -105,7 +105,7 @@ class Helfrich(MeshPotential):
         mesh (:py:mod:`hoomd.mesh.Mesh`): Mesh data structure constraint.
 
     Attributes:
-        parameter (TypeParameter[dict]):
+        params (TypeParameter[dict]):
             The parameter of the Helfrich energy for the defined mesh.
             As the mesh can only have one type a type name does not have
             to be stated. The dictionary has the following keys:

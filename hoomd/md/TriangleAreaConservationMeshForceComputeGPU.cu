@@ -42,7 +42,7 @@ gpu_compute_TriangleAreaConservation_force_kernel(Scalar4* d_force,
                                                   const unsigned int* tpos_list,
                                                   const Index2D tlist_idx,
                                                   const unsigned int* n_triangles_list,
-                                                  Scalar2* d_params,
+                                                  triangle_area_conservation_param_t* d_params,
                                                   const unsigned int n_triangle_type)
     {
     // start by identifying which particle we are to handle
@@ -121,9 +121,9 @@ gpu_compute_TriangleAreaConservation_force_kernel(Scalar4* d_force,
         Scalar s_baac = sqrt(1.0 - c_baac * c_baac);
         Scalar inv_s_baac = 1.0 / s_baac;
 
-        Scalar2 params = __ldg(d_params + cur_triangle_type);
-        Scalar K = params.x;
-        Scalar At = params.y;
+        triangle_area_conservation_param_t params = d_params[cur_triangle_type];
+        Scalar K = params.k;
+        Scalar At = params.A0;
 
         Scalar3 dc_drab = -nac / rab + c_baac / rab * nab;
         Scalar3 ds_drab = -c_baac * inv_s_baac * dc_drab;
@@ -202,7 +202,7 @@ hipError_t gpu_compute_TriangleAreaConservation_force(Scalar4* d_force,
                                                       const unsigned int* tpos_list,
                                                       const Index2D tlist_idx,
                                                       const unsigned int* n_triangles_list,
-                                                      Scalar2* d_params,
+                                                      triangle_area_conservation_param_t* d_params,
                                                       const unsigned int n_triangle_type,
                                                       int block_size)
     {

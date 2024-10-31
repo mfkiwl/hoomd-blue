@@ -30,7 +30,7 @@ TriangleAreaConservationMeshForceCompute::TriangleAreaConservationMeshForceCompu
 
     unsigned int n_types = m_mesh_data->getMeshTriangleData()->getNTypes();
 
-    GPUArray<Scalar2> params(n_types, m_exec_conf);
+    GPUArray<triangle_area_conservation_param_t> params(n_types, m_exec_conf);
     m_params.swap(params);
 
     GPUArray<Scalar> area(n_types, m_exec_conf);
@@ -43,22 +43,23 @@ TriangleAreaConservationMeshForceCompute::~TriangleAreaConservationMeshForceComp
     }
 
 /*! \param type Type of the angle to set parameters for
-    \param K Stiffness parameter for the force computation
-    \param A0 desired surface area to maintain for the force computation
+    \param params Parameters to set.
 
     Sets parameters for the potential of a particular mesh type
 */
-void TriangleAreaConservationMeshForceCompute::setParams(unsigned int type, Scalar K, Scalar A0)
+void TriangleAreaConservationMeshForceCompute::setParams(
+    unsigned int type,
+    const triangle_area_conservation_param_t& params)
     {
-    ArrayHandle<Scalar2> h_params(m_params, access_location::host, access_mode::readwrite);
-    // update the local copy of the memory
-    h_params.data[type] = make_scalar2(K, A0);
+    ArrayHandle<triangle_area_conservation_param_t> h_params(m_params,
+                                                             access_location::host,
+                                                             access_mode::readwrite);
+    h_params.data[type] = params;
 
-    // check for some silly errors a user could make
-    if (K <= 0)
+    if (params.k <= 0)
         m_exec_conf->msg->warning() << "TriangleAreaConservation: specified K <= 0" << endl;
 
-    if (A0 <= 0)
+    if (params.A0 <= 0)
         m_exec_conf->msg->warning() << "TriangleAreaConservation: specified A0 <= 0" << endl;
     }
 
@@ -66,8 +67,7 @@ void TriangleAreaConservationMeshForceCompute::setParamsPython(std::string type,
                                                                pybind11::dict params)
     {
     auto typ = m_mesh_data->getMeshTriangleData()->getTypeByName(type);
-    auto _params = area_conservation_params(params);
-    setParams(typ, _params.k, _params.A0);
+    setParams(typ, triangle_area_conservation_param_t(params));
     }
 
 pybind11::dict TriangleAreaConservationMeshForceCompute::getParams(std::string type)
@@ -79,11 +79,10 @@ pybind11::dict TriangleAreaConservationMeshForceCompute::getParams(std::string t
                                   << endl;
         throw runtime_error("Error setting parameters in TriangleAreaConservationMeshForceCompute");
         }
-    ArrayHandle<Scalar2> h_params(m_params, access_location::host, access_mode::read);
-    pybind11::dict params;
-    params["k"] = h_params.data[typ].x;
-    params["A0"] = h_params.data[typ].y;
-    return params;
+    ArrayHandle<triangle_area_conservation_param_t> h_params(m_params,
+                                                             access_location::host,
+                                                             access_mode::read);
+    return h_params.data[typ].asDict();
     }
 
 /*! Actually perform the force computation
@@ -100,7 +99,9 @@ void TriangleAreaConservationMeshForceCompute::computeForces(uint64_t timestep)
     ArrayHandle<Scalar4> h_force(m_force, access_location::host, access_mode::overwrite);
     ArrayHandle<Scalar> h_virial(m_virial, access_location::host, access_mode::overwrite);
     size_t virial_pitch = m_virial.getPitch();
-    ArrayHandle<Scalar2> h_params(m_params, access_location::host, access_mode::read);
+    ArrayHandle<triangle_area_conservation_param_t> h_params(m_params,
+                                                             access_location::host,
+                                                             access_mode::read);
 
     ArrayHandle<typename Angle::members_t> h_triangles(
         m_mesh_data->getMeshTriangleData()->getMembersArray(),
@@ -191,12 +192,12 @@ void TriangleAreaConservationMeshForceCompute::computeForces(uint64_t timestep)
 
         unsigned int triangle_type = m_mesh_data->getMeshTriangleData()->getTypeByIndex(i);
 
-        Scalar At = h_params.data[triangle_type].y;
+        Scalar At = h_params.data[triangle_type].A0;
 
         Scalar tri_area = rab * rac * s_baac / 6; // triangle area/3
         Scalar Ut = 3 * tri_area - At;
 
-        Scalar prefactor = h_params.data[triangle_type].x / (2 * At) * Ut;
+        Scalar prefactor = h_params.data[triangle_type].k / (2 * At) * Ut;
 
         Scalar3 Fab, Fac;
         Fab = prefactor * (-nab * rac * s_baac + ds_drab * rab * rac);
@@ -225,7 +226,7 @@ void TriangleAreaConservationMeshForceCompute::computeForces(uint64_t timestep)
             h_force.data[idx_a].x += (Fab.x + Fac.x);
             h_force.data[idx_a].y += (Fab.y + Fac.y);
             h_force.data[idx_a].z += (Fab.z + Fac.z);
-            h_force.data[idx_a].w += h_params.data[triangle_type].x / (6.0 * At) * Ut
+            h_force.data[idx_a].w += h_params.data[triangle_type].k / (6.0 * At) * Ut
                                      * Ut; // divided by 3 because of three
                                            // particles sharing the energy
 
@@ -250,7 +251,7 @@ void TriangleAreaConservationMeshForceCompute::computeForces(uint64_t timestep)
             h_force.data[idx_b].x -= Fab.x;
             h_force.data[idx_b].y -= Fab.y;
             h_force.data[idx_b].z -= Fab.z;
-            h_force.data[idx_b].w += h_params.data[triangle_type].x / (6.0 * At) * Ut * Ut;
+            h_force.data[idx_b].w += h_params.data[triangle_type].k / (6.0 * At) * Ut * Ut;
             for (int j = 0; j < 6; j++)
                 h_virial.data[j * virial_pitch + idx_b] += triangle_area_conservation_virial[j];
             }
@@ -272,7 +273,7 @@ void TriangleAreaConservationMeshForceCompute::computeForces(uint64_t timestep)
             h_force.data[idx_c].x -= Fac.x;
             h_force.data[idx_c].y -= Fac.y;
             h_force.data[idx_c].z -= Fac.z;
-            h_force.data[idx_c].w += h_params.data[triangle_type].x / (6.0 * At) * Ut * Ut;
+            h_force.data[idx_c].w += h_params.data[triangle_type].k / (6.0 * At) * Ut * Ut;
             for (int j = 0; j < 6; j++)
                 h_virial.data[j * virial_pitch + idx_c] += triangle_area_conservation_virial[j];
             }
