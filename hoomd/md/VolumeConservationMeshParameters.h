@@ -7,36 +7,36 @@
 #include <pybind11/pybind11.h>
 #endif
 
-
 #pragma once
 
-namespace hoomd::md {
-    struct volume_conservation_param_t
-        {
-        Scalar k;
-        Scalar V0;
+namespace hoomd::md
+    {
+struct volume_conservation_param_t
+    {
+    Scalar k;
+    Scalar V0;
 
 #ifndef __HIPCC__
-        volume_conservation_param_t() : k(0), V0(0) { }
+    volume_conservation_param_t() : k(0), V0(0) { }
 
-        volume_conservation_param_t(pybind11::dict params)
-            : k(params["k"].cast<Scalar>()), V0(params["V0"].cast<Scalar>())
-            {
-            }
-
-        pybind11::dict asDict()
-            {
-            pybind11::dict v;
-            v["k"] = k;
-            v["V0"] = V0;
-            return v;
-            }
-#endif
+    volume_conservation_param_t(pybind11::dict params)
+        : k(params["k"].cast<Scalar>()), V0(params["V0"].cast<Scalar>())
+        {
         }
+
+    pybind11::dict asDict()
+        {
+        pybind11::dict v;
+        v["k"] = k;
+        v["V0"] = V0;
+        return v;
+        }
+#endif
+    }
 #if HOOMD_LONGREAL_SIZE == 32
-        __attribute__((aligned(4)));
+    __attribute__((aligned(4)));
 #else
-        __attribute__((aligned(8)));
+    __attribute__((aligned(8)));
 #endif
 
-}
+    } // namespace hoomd::md

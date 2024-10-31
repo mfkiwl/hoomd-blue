@@ -1,11 +1,11 @@
 // Copyright (c) 2009-2024 The Regents of the University of Michigan.
 // Part of HOOMD-blue, released under the BSD 3-Clause License.
 
+#include "VolumeConservationMeshParameters.h"
 #include "hoomd/BondedGroupData.cuh"
 #include "hoomd/HOOMDMath.h"
 #include "hoomd/Index1D.h"
 #include "hoomd/ParticleData.cuh"
-#include "VolumeConservationMeshParameters.h"
 #include <hip/hip_runtime.h>
 
 /*! \file MeshVolumeConservationGPU.cuh

@@ -1,9 +1,9 @@
 // Copyright (c) 2009-2024 The Regents of the University of Michigan.
 // Part of HOOMD-blue, released under the BSD 3-Clause License.
 
+#include "TriangleAreaConservationMeshParameters.h"
 #include "hoomd/ForceCompute.h"
 #include "hoomd/MeshDefinition.h"
-#include "TriangleAreaConservationMeshParameters.h"
 
 #include <memory>
 
@@ -68,7 +68,7 @@ class PYBIND11_EXPORT TriangleAreaConservationMeshForceCompute : public ForceCom
 
     protected:
     GPUArray<triangle_area_conservation_param_t> m_params; //!< Parameters
-    GPUArray<Scalar> m_area;    //!< memory space for area
+    GPUArray<Scalar> m_area;                               //!< memory space for area
 
     std::shared_ptr<MeshDefinition>
         m_mesh_data; //!< Mesh data to use in computing area conservation energy

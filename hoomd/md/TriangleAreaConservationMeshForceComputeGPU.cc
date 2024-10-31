@@ -76,7 +76,9 @@ void TriangleAreaConservationMeshForceComputeGPU::computeForces(uint64_t timeste
 
     ArrayHandle<Scalar4> d_force(m_force, access_location::device, access_mode::overwrite);
     ArrayHandle<Scalar> d_virial(m_virial, access_location::device, access_mode::overwrite);
-    ArrayHandle<triangle_area_conservation_param_t> d_params(m_params, access_location::device, access_mode::read);
+    ArrayHandle<triangle_area_conservation_param_t> d_params(m_params,
+                                                             access_location::device,
+                                                             access_mode::read);
 
     m_tuner->begin();
     kernel::gpu_compute_TriangleAreaConservation_force(

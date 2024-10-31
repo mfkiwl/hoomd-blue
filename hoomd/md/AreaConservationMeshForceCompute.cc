@@ -51,11 +51,14 @@ AreaConservationMeshForceCompute::~AreaConservationMeshForceCompute()
 
     Sets parameters for the potential of a particular mesh type
 */
-void AreaConservationMeshForceCompute::setParams(unsigned int type, const area_conservation_param_t &params)
+void AreaConservationMeshForceCompute::setParams(unsigned int type,
+                                                 const area_conservation_param_t& params)
     {
     if (!m_ignore_type || type == 0)
         {
-        ArrayHandle<area_conservation_param_t> h_params(m_params, access_location::host, access_mode::readwrite);
+        ArrayHandle<area_conservation_param_t> h_params(m_params,
+                                                        access_location::host,
+                                                        access_mode::readwrite);
         h_params.data[type] = params;
 
         if (params.k <= 0)
@@ -81,7 +84,9 @@ pybind11::dict AreaConservationMeshForceCompute::getParams(std::string type)
         }
     if (m_ignore_type)
         typ = 0;
-    ArrayHandle<area_conservation_param_t> h_params(m_params, access_location::host, access_mode::read);
+    ArrayHandle<area_conservation_param_t> h_params(m_params,
+                                                    access_location::host,
+                                                    access_mode::read);
     return h_params.data[typ].asDict();
     }
 
@@ -100,7 +105,9 @@ void AreaConservationMeshForceCompute::computeForces(uint64_t timestep)
     ArrayHandle<Scalar4> h_force(m_force, access_location::host, access_mode::overwrite);
     ArrayHandle<Scalar> h_virial(m_virial, access_location::host, access_mode::overwrite);
     size_t virial_pitch = m_virial.getPitch();
-    ArrayHandle<area_conservation_param_t> h_params(m_params, access_location::host, access_mode::read);
+    ArrayHandle<area_conservation_param_t> h_params(m_params,
+                                                    access_location::host,
+                                                    access_mode::read);
     ArrayHandle<Scalar> h_area(m_area, access_location::host, access_mode::read);
 
     ArrayHandle<typename Angle::members_t> h_triangles(
@@ -203,7 +210,8 @@ void AreaConservationMeshForceCompute::computeForces(uint64_t timestep)
         Scalar energy = h_params.data[triangle_type].k * AreaDiff * AreaDiff
                         / (6 * h_params.data[triangle_type].A0 * triN);
 
-        AreaDiff = h_params.data[triangle_type].k / h_params.data[triangle_type].A0 * AreaDiff / 2.0;
+        AreaDiff
+            = h_params.data[triangle_type].k / h_params.data[triangle_type].A0 * AreaDiff / 2.0;
 
         Fab = AreaDiff * (-nab * rac * s_baac + ds_drab * rab * rac);
         Fac = AreaDiff * (-nac * rab * s_baac + ds_drac * rab * rac);

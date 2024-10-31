@@ -51,11 +51,14 @@ VolumeConservationMeshForceCompute::~VolumeConservationMeshForceCompute()
 
     Sets parameters for the potential of a particular angle type
 */
-void VolumeConservationMeshForceCompute::setParams(unsigned int type, const volume_conservation_param_t& params)
+void VolumeConservationMeshForceCompute::setParams(unsigned int type,
+                                                   const volume_conservation_param_t& params)
     {
     if (!m_ignore_type || type == 0)
         {
-        ArrayHandle<volume_conservation_param_t> h_params(m_params, access_location::host, access_mode::readwrite);
+        ArrayHandle<volume_conservation_param_t> h_params(m_params,
+                                                          access_location::host,
+                                                          access_mode::readwrite);
         h_params.data[type] = params;
 
         if (params.k <= 0)
@@ -79,8 +82,10 @@ pybind11::dict VolumeConservationMeshForceCompute::getParams(std::string type)
         m_exec_conf->msg->error() << "mesh.volume: Invalid mesh type specified" << endl;
         throw runtime_error("Error setting parameters in VolumeConservationMeshForceCompute");
         }
-    ArrayHandle<volume_conservation_param_t> h_params(m_params, access_location::host, access_mode::read);
-    return h_params.data[typ].asDict();    
+    ArrayHandle<volume_conservation_param_t> h_params(m_params,
+                                                      access_location::host,
+                                                      access_mode::read);
+    return h_params.data[typ].asDict();
     }
 
 /*! Actually perform the force computation
@@ -99,7 +104,9 @@ void VolumeConservationMeshForceCompute::computeForces(uint64_t timestep)
     ArrayHandle<Scalar4> h_force(m_force, access_location::host, access_mode::overwrite);
     ArrayHandle<Scalar> h_virial(m_virial, access_location::host, access_mode::overwrite);
     size_t virial_pitch = m_virial.getPitch();
-    ArrayHandle<volume_conservation_param_t> h_params(m_params, access_location::host, access_mode::read);
+    ArrayHandle<volume_conservation_param_t> h_params(m_params,
+                                                      access_location::host,
+                                                      access_mode::read);
     ArrayHandle<Scalar> h_volume(m_volume, access_location::host, access_mode::read);
 
     ArrayHandle<typename Angle::members_t> h_triangles(

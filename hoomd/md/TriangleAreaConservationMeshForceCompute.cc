@@ -47,9 +47,13 @@ TriangleAreaConservationMeshForceCompute::~TriangleAreaConservationMeshForceComp
 
     Sets parameters for the potential of a particular mesh type
 */
-void TriangleAreaConservationMeshForceCompute::setParams(unsigned int type, const triangle_area_conservation_param_t& params)
+void TriangleAreaConservationMeshForceCompute::setParams(
+    unsigned int type,
+    const triangle_area_conservation_param_t& params)
     {
-    ArrayHandle<triangle_area_conservation_param_t> h_params(m_params, access_location::host, access_mode::readwrite);
+    ArrayHandle<triangle_area_conservation_param_t> h_params(m_params,
+                                                             access_location::host,
+                                                             access_mode::readwrite);
     h_params.data[type] = params;
 
     if (params.k <= 0)
@@ -75,7 +79,9 @@ pybind11::dict TriangleAreaConservationMeshForceCompute::getParams(std::string t
                                   << endl;
         throw runtime_error("Error setting parameters in TriangleAreaConservationMeshForceCompute");
         }
-    ArrayHandle<triangle_area_conservation_param_t> h_params(m_params, access_location::host, access_mode::read);
+    ArrayHandle<triangle_area_conservation_param_t> h_params(m_params,
+                                                             access_location::host,
+                                                             access_mode::read);
     return h_params.data[typ].asDict();
     }
 
@@ -93,7 +99,9 @@ void TriangleAreaConservationMeshForceCompute::computeForces(uint64_t timestep)
     ArrayHandle<Scalar4> h_force(m_force, access_location::host, access_mode::overwrite);
     ArrayHandle<Scalar> h_virial(m_virial, access_location::host, access_mode::overwrite);
     size_t virial_pitch = m_virial.getPitch();
-    ArrayHandle<triangle_area_conservation_param_t> h_params(m_params, access_location::host, access_mode::read);
+    ArrayHandle<triangle_area_conservation_param_t> h_params(m_params,
+                                                             access_location::host,
+                                                             access_mode::read);
 
     ArrayHandle<typename Angle::members_t> h_triangles(
         m_mesh_data->getMeshTriangleData()->getMembersArray(),

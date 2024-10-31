@@ -1,9 +1,9 @@
 // Copyright (c) 2009-2024 The Regents of the University of Michigan.
 // Part of HOOMD-blue, released under the BSD 3-Clause License.
 
+#include "AreaConservationMeshParameters.h"
 #include "hoomd/ForceCompute.h"
 #include "hoomd/MeshDefinition.h"
-#include "AreaConservationMeshParameters.h"
 
 #include <memory>
 
@@ -68,11 +68,11 @@ class PYBIND11_EXPORT AreaConservationMeshForceCompute : public ForceCompute
 #endif
 
     protected:
-    GPUArray<area_conservation_param_t> m_params;                  //!< Parameters
-    GPUArray<Scalar> m_area;                     //!< memory space for area
-                                                 //
-    std::shared_ptr<MeshDefinition> m_mesh_data; //!< Mesh data to use in computing energy
-    bool m_ignore_type;                          //! ignore type to calculate global area if true
+    GPUArray<area_conservation_param_t> m_params; //!< Parameters
+    GPUArray<Scalar> m_area;                      //!< memory space for area
+                                                  //
+    std::shared_ptr<MeshDefinition> m_mesh_data;  //!< Mesh data to use in computing energy
+    bool m_ignore_type;                           //! ignore type to calculate global area if true
 
     //! Actually compute the forces
     virtual void computeForces(uint64_t timestep);
