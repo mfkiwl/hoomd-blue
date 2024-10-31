@@ -3,6 +3,7 @@
 
 #include "hoomd/ForceCompute.h"
 #include "hoomd/MeshDefinition.h"
+#include "TriangleAreaConservationMeshParameters.h"
 
 #include <memory>
 
@@ -39,7 +40,7 @@ class PYBIND11_EXPORT TriangleAreaConservationMeshForceCompute : public ForceCom
     virtual ~TriangleAreaConservationMeshForceCompute();
 
     //! Set the parameters
-    virtual void setParams(unsigned int type, Scalar K, Scalar A0);
+    virtual void setParams(unsigned int type, const triangle_area_conservation_param_t& params);
 
     virtual void setParamsPython(std::string type, pybind11::dict params);
 
@@ -66,7 +67,7 @@ class PYBIND11_EXPORT TriangleAreaConservationMeshForceCompute : public ForceCom
 #endif
 
     protected:
-    GPUArray<Scalar2> m_params; //!< Parameters
+    GPUArray<triangle_area_conservation_param_t> m_params; //!< Parameters
     GPUArray<Scalar> m_area;    //!< memory space for area
 
     std::shared_ptr<MeshDefinition>

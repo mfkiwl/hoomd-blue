@@ -195,6 +195,7 @@ set(_md_headers ActiveForceComputeGPU.h
                 TableAngleForceCompute.h
                 TableDihedralForceComputeGPU.h
                 TableDihedralForceCompute.h
+                TriangleAreaConservationMeshParameters.h
                 TriangleAreaConservationMeshForceCompute.h
                 TriangleAreaConservationMeshForceComputeGPU.h
                 TriangleAreaConservationMeshForceComputeGPU.cuh
