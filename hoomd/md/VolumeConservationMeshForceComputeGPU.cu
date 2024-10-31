@@ -277,7 +277,7 @@ __global__ void gpu_compute_volume_constraint_force_kernel(Scalar4* d_force,
                                                            const unsigned int* tpos_list,
                                                            const Index2D tlist_idx,
                                                            const unsigned int* n_triangles_list,
-                                                           Scalar2* d_params,
+                                                           volume_conservation_param_t* d_params,
                                                            const bool ignore_type)
     {
     // start by identifying which particle we are to handle
@@ -318,10 +318,9 @@ __global__ void gpu_compute_volume_constraint_force_kernel(Scalar4* d_force,
         else
             triN = gN[cur_triangle_type];
 
-        // get the angle parameters (MEM TRANSFER: 8 bytes)
-        Scalar2 params = __ldg(d_params + cur_triangle_type);
-        Scalar K = params.x;
-        Scalar V0 = params.y;
+        volume_conservation_param_t params = d_params[cur_triangle_type];
+        Scalar K = params.k;
+        Scalar V0 = params.V0;
 
         Scalar VolDiff = volume[cur_triangle_type] - V0;
 
@@ -417,7 +416,7 @@ hipError_t gpu_compute_volume_constraint_force(Scalar4* d_force,
                                                const unsigned int* tpos_list,
                                                const Index2D tlist_idx,
                                                const unsigned int* n_triangles_list,
-                                               Scalar2* d_params,
+                                               volume_conservation_param_t* d_params,
                                                const bool ignore_type,
                                                int block_size)
     {

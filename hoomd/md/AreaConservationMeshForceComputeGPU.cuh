@@ -5,6 +5,7 @@
 #include "hoomd/HOOMDMath.h"
 #include "hoomd/Index1D.h"
 #include "hoomd/ParticleData.cuh"
+#include "AreaConservationMeshParameters.h"
 #include <hip/hip_runtime.h>
 
 /*! \file MeshAreaConservationGPU.cuh
@@ -50,7 +51,7 @@ hipError_t gpu_compute_area_constraint_force(Scalar4* d_force,
                                              const unsigned int* tpos_list,
                                              const Index2D tlist_idx,
                                              const unsigned int* n_triangles_list,
-                                             Scalar2* d_params,
+                                             area_conservation_param_t* d_params,
                                              const bool ignore_type,
                                              int block_size);
     } // end namespace kernel

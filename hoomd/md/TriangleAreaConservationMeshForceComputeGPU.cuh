@@ -4,6 +4,7 @@
 #include "hoomd/BondedGroupData.cuh"
 #include "hoomd/HOOMDMath.h"
 #include "hoomd/Index1D.h"
+#include "TriangleAreaConservationMeshParameters.h"
 #include "hoomd/ParticleData.cuh"
 
 /*! \file TriangleAreaConservationMeshForceComputeGPU.cuh
@@ -31,7 +32,7 @@ hipError_t gpu_compute_TriangleAreaConservation_force(Scalar4* d_force,
                                                       const unsigned int* tpos_list,
                                                       const Index2D tlist_idx,
                                                       const unsigned int* n_triangles_list,
-                                                      Scalar2* d_params,
+                                                      triangle_area_conservation_param_t* d_params,
                                                       const unsigned int n_triangle_type,
                                                       int block_size);
     } // end namespace kernel
