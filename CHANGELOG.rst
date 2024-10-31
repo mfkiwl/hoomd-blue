@@ -7,6 +7,14 @@ Change Log
 4.x
 ---
 
+4.9.1 (2024-10-31)
+^^^^^^^^^^^^^^^^^^
+
+*Fixed*
+
+* Prevent compile errors with ``-DENABLE_GPU=on -DHOOMD_GPU_PLATFORM=HIP``
+  (`#1920 <https://github.com/glotzerlab/hoomd-blue/pull/1915>`__)
+
 4.9.0 (2024-10-29)
 ^^^^^^^^^^^^^^^^^^
 
