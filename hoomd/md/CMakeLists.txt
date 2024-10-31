@@ -70,6 +70,7 @@ set(_md_headers ActiveForceComputeGPU.h
                 AnisoPotentialPairGPU.cuh
                 AnisoPotentialPairGPU.h
                 AnisoPotentialPair.h
+                AreaConservationMeshParameters.h
                 AreaConservationMeshForceCompute.h
                 AreaConservationMeshForceComputeGPU.h
                 AreaConservationMeshForceComputeGPU.cuh

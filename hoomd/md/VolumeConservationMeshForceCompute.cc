@@ -47,8 +47,7 @@ VolumeConservationMeshForceCompute::~VolumeConservationMeshForceCompute()
     }
 
 /*! \param type Type of the angle to set parameters for
-    \param K Stiffness parameter for the force computation
-    \param V0 desired volume to maintain for the force computation
+    \param params Parameters to set.
 
     Sets parameters for the potential of a particular angle type
 */

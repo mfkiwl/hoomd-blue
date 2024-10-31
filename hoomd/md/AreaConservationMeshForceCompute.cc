@@ -34,7 +34,7 @@ AreaConservationMeshForceCompute::AreaConservationMeshForceCompute(
     if (m_ignore_type)
         n_types = 1;
 
-    GPUArray<Scalar2> params(n_types, m_exec_conf);
+    GPUArray<area_conservation_param_t> params(n_types, m_exec_conf);
     m_params.swap(params);
 
     GPUArray<Scalar> area(n_types, m_exec_conf);
@@ -47,23 +47,20 @@ AreaConservationMeshForceCompute::~AreaConservationMeshForceCompute()
     }
 
 /*! \param type Type of the angle to set parameters for
-    \param K Stiffness parameter for the force computation
-    \param A0 desired surface area to maintain for the force computation
+    \param params Parameters to set
 
     Sets parameters for the potential of a particular mesh type
 */
-void AreaConservationMeshForceCompute::setParams(unsigned int type, Scalar K, Scalar A0)
+void AreaConservationMeshForceCompute::setParams(unsigned int type, const area_conservation_param_t &params)
     {
     if (!m_ignore_type || type == 0)
         {
-        ArrayHandle<Scalar2> h_params(m_params, access_location::host, access_mode::readwrite);
-        // update the local copy of the memory
-        h_params.data[type] = make_scalar2(K, A0);
+        ArrayHandle<area_conservation_param_t> h_params(m_params, access_location::host, access_mode::readwrite);
+        h_params.data[type] = params;
 
-        // check for some silly errors a user could make
-        if (K <= 0)
+        if (params.k <= 0)
             m_exec_conf->msg->warning() << "area: specified K <= 0" << endl;
-        if (A0 <= 0)
+        if (params.A0 <= 0)
             m_exec_conf->msg->warning() << "area: specified A0 <= 0" << endl;
         }
     }
@@ -71,8 +68,7 @@ void AreaConservationMeshForceCompute::setParams(unsigned int type, Scalar K, Sc
 void AreaConservationMeshForceCompute::setParamsPython(std::string type, pybind11::dict params)
     {
     auto typ = m_mesh_data->getMeshBondData()->getTypeByName(type);
-    auto _params = area_conservation_params(params);
-    setParams(typ, _params.k, _params.A0);
+    setParams(typ, area_conservation_param_t(params));
     }
 
 pybind11::dict AreaConservationMeshForceCompute::getParams(std::string type)
@@ -85,11 +81,8 @@ pybind11::dict AreaConservationMeshForceCompute::getParams(std::string type)
         }
     if (m_ignore_type)
         typ = 0;
-    ArrayHandle<Scalar2> h_params(m_params, access_location::host, access_mode::read);
-    pybind11::dict params;
-    params["k"] = h_params.data[typ].x;
-    params["A0"] = h_params.data[typ].y;
-    return params;
+    ArrayHandle<area_conservation_param_t> h_params(m_params, access_location::host, access_mode::read);
+    return h_params.data[typ].asDict();
     }
 
 /*! Actually perform the force computation
@@ -107,7 +100,7 @@ void AreaConservationMeshForceCompute::computeForces(uint64_t timestep)
     ArrayHandle<Scalar4> h_force(m_force, access_location::host, access_mode::overwrite);
     ArrayHandle<Scalar> h_virial(m_virial, access_location::host, access_mode::overwrite);
     size_t virial_pitch = m_virial.getPitch();
-    ArrayHandle<Scalar2> h_params(m_params, access_location::host, access_mode::read);
+    ArrayHandle<area_conservation_param_t> h_params(m_params, access_location::host, access_mode::read);
     ArrayHandle<Scalar> h_area(m_area, access_location::host, access_mode::read);
 
     ArrayHandle<typename Angle::members_t> h_triangles(
@@ -205,12 +198,12 @@ void AreaConservationMeshForceCompute::computeForces(uint64_t timestep)
         else
             triN = h_pts.data[triangle_type];
 
-        Scalar AreaDiff = h_area.data[triangle_type] - h_params.data[triangle_type].y;
+        Scalar AreaDiff = h_area.data[triangle_type] - h_params.data[triangle_type].A0;
 
-        Scalar energy = h_params.data[triangle_type].x * AreaDiff * AreaDiff
-                        / (6 * h_params.data[triangle_type].y * triN);
+        Scalar energy = h_params.data[triangle_type].k * AreaDiff * AreaDiff
+                        / (6 * h_params.data[triangle_type].A0 * triN);
 
-        AreaDiff = h_params.data[triangle_type].x / h_params.data[triangle_type].y * AreaDiff / 2.0;
+        AreaDiff = h_params.data[triangle_type].k / h_params.data[triangle_type].A0 * AreaDiff / 2.0;
 
         Fab = AreaDiff * (-nab * rac * s_baac + ds_drab * rab * rac);
         Fac = AreaDiff * (-nac * rab * s_baac + ds_drac * rab * rac);

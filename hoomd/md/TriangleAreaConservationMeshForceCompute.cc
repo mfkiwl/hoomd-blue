@@ -43,8 +43,7 @@ TriangleAreaConservationMeshForceCompute::~TriangleAreaConservationMeshForceComp
     }
 
 /*! \param type Type of the angle to set parameters for
-    \param K Stiffness parameter for the force computation
-    \param A0 desired surface area to maintain for the force computation
+    \param params Parameters to set.
 
     Sets parameters for the potential of a particular mesh type
 */
@@ -53,7 +52,6 @@ void TriangleAreaConservationMeshForceCompute::setParams(unsigned int type, cons
     ArrayHandle<triangle_area_conservation_param_t> h_params(m_params, access_location::host, access_mode::readwrite);
     h_params.data[type] = params;
 
-    // check for some silly errors a user could make
     if (params.k <= 0)
         m_exec_conf->msg->warning() << "TriangleAreaConservation: specified K <= 0" << endl;
 

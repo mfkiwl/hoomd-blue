@@ -47,7 +47,6 @@ void BendingRigidityMeshForceCompute::setParams(unsigned int type, Scalar K)
     ArrayHandle<Scalar> h_params(m_params, access_location::host, access_mode::readwrite);
     h_params.data[type] = K;
 
-    // check for some silly errors a user could make
     if (K <= 0)
         m_exec_conf->msg->warning() << "rigidity: specified K <= 0" << endl;
     }
