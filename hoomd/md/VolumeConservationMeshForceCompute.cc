@@ -34,7 +34,7 @@ VolumeConservationMeshForceCompute::VolumeConservationMeshForceCompute(
     if (m_ignore_type)
         n_types = 1;
 
-    GPUArray<Scalar2> params(n_types, m_exec_conf);
+    GPUArray<volume_conservation_param_t> params(n_types, m_exec_conf);
     m_params.swap(params);
 
     GPUArray<Scalar> volume(n_types, m_exec_conf);
@@ -47,21 +47,23 @@ VolumeConservationMeshForceCompute::~VolumeConservationMeshForceCompute()
     }
 
 /*! \param type Type of the angle to set parameters for
-    \param K Stiffness parameter for the force computation
-    \param V0 desired volume to maintain for the force computation
+    \param params Parameters to set.
 
     Sets parameters for the potential of a particular angle type
 */
-void VolumeConservationMeshForceCompute::setParams(unsigned int type, Scalar K, Scalar V0)
+void VolumeConservationMeshForceCompute::setParams(unsigned int type,
+                                                   const volume_conservation_param_t& params)
     {
     if (!m_ignore_type || type == 0)
         {
-        ArrayHandle<Scalar2> h_params(m_params, access_location::host, access_mode::readwrite);
-        h_params.data[type] = make_scalar2(K, V0);
+        ArrayHandle<volume_conservation_param_t> h_params(m_params,
+                                                          access_location::host,
+                                                          access_mode::readwrite);
+        h_params.data[type] = params;
 
-        if (K <= 0)
+        if (params.k <= 0)
             m_exec_conf->msg->warning() << "volume: specified K <= 0" << endl;
-        if (V0 <= 0)
+        if (params.V0 <= 0)
             m_exec_conf->msg->warning() << "volume: specified V0 <= 0" << endl;
         }
     }
@@ -69,8 +71,7 @@ void VolumeConservationMeshForceCompute::setParams(unsigned int type, Scalar K, 
 void VolumeConservationMeshForceCompute::setParamsPython(std::string type, pybind11::dict params)
     {
     auto typ = m_mesh_data->getMeshBondData()->getTypeByName(type);
-    auto _params = volume_conservation_params(params);
-    setParams(typ, _params.k, _params.V0);
+    setParams(typ, volume_conservation_param_t(params));
     }
 
 pybind11::dict VolumeConservationMeshForceCompute::getParams(std::string type)
@@ -81,11 +82,10 @@ pybind11::dict VolumeConservationMeshForceCompute::getParams(std::string type)
         m_exec_conf->msg->error() << "mesh.volume: Invalid mesh type specified" << endl;
         throw runtime_error("Error setting parameters in VolumeConservationMeshForceCompute");
         }
-    ArrayHandle<Scalar2> h_params(m_params, access_location::host, access_mode::read);
-    pybind11::dict params;
-    params["k"] = h_params.data[typ].x;
-    params["V0"] = h_params.data[typ].y;
-    return params;
+    ArrayHandle<volume_conservation_param_t> h_params(m_params,
+                                                      access_location::host,
+                                                      access_mode::read);
+    return h_params.data[typ].asDict();
     }
 
 /*! Actually perform the force computation
@@ -104,7 +104,9 @@ void VolumeConservationMeshForceCompute::computeForces(uint64_t timestep)
     ArrayHandle<Scalar4> h_force(m_force, access_location::host, access_mode::overwrite);
     ArrayHandle<Scalar> h_virial(m_virial, access_location::host, access_mode::overwrite);
     size_t virial_pitch = m_virial.getPitch();
-    ArrayHandle<Scalar2> h_params(m_params, access_location::host, access_mode::read);
+    ArrayHandle<volume_conservation_param_t> h_params(m_params,
+                                                      access_location::host,
+                                                      access_mode::read);
     ArrayHandle<Scalar> h_volume(m_volume, access_location::host, access_mode::read);
 
     ArrayHandle<typename Angle::members_t> h_triangles(
@@ -179,12 +181,12 @@ void VolumeConservationMeshForceCompute::computeForces(uint64_t timestep)
         else
             triN = h_pts.data[triangle_type];
 
-        Scalar VolDiff = h_volume.data[triangle_type] - h_params.data[triangle_type].y;
+        Scalar VolDiff = h_volume.data[triangle_type] - h_params.data[triangle_type].V0;
 
-        Scalar energy = h_params.data[triangle_type].x * VolDiff * VolDiff
-                        / (6 * h_params.data[triangle_type].y * triN);
+        Scalar energy = h_params.data[triangle_type].k * VolDiff * VolDiff
+                        / (6 * h_params.data[triangle_type].V0 * triN);
 
-        VolDiff = -h_params.data[triangle_type].x / h_params.data[triangle_type].y * VolDiff / 6.0;
+        VolDiff = -h_params.data[triangle_type].k / h_params.data[triangle_type].V0 * VolDiff / 6.0;
 
         Fa.x = VolDiff * dVol_a.x;
         Fa.y = VolDiff * dVol_a.y;

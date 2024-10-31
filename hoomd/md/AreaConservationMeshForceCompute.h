@@ -1,6 +1,7 @@
 // Copyright (c) 2009-2024 The Regents of the University of Michigan.
 // Part of HOOMD-blue, released under the BSD 3-Clause License.
 
+#include "AreaConservationMeshParameters.h"
 #include "hoomd/ForceCompute.h"
 #include "hoomd/MeshDefinition.h"
 
@@ -23,34 +24,6 @@ namespace hoomd
     {
 namespace md
     {
-struct area_conservation_params
-    {
-    Scalar k;
-    Scalar A0;
-
-#ifndef __HIPCC__
-    area_conservation_params() : k(0), A0(0) { }
-
-    area_conservation_params(pybind11::dict params)
-        : k(params["k"].cast<Scalar>()), A0(params["A0"].cast<Scalar>())
-        {
-        }
-
-    pybind11::dict asDict()
-        {
-        pybind11::dict v;
-        v["k"] = k;
-        v["A0"] = A0;
-        return v;
-        }
-#endif
-    }
-#if HOOMD_LONGREAL_SIZE == 32
-    __attribute__((aligned(4)));
-#else
-    __attribute__((aligned(8)));
-#endif
-
 //! Computes area constraint forces on the mesh
 /*! Area constraint forces are computed on every particle in a mesh.
 
@@ -68,7 +41,7 @@ class PYBIND11_EXPORT AreaConservationMeshForceCompute : public ForceCompute
     virtual ~AreaConservationMeshForceCompute();
 
     //! Set the parameters
-    virtual void setParams(unsigned int type, Scalar K, Scalar A0);
+    virtual void setParams(unsigned int type, const area_conservation_param_t& params);
 
     virtual void setParamsPython(std::string type, pybind11::dict params);
 
@@ -95,11 +68,11 @@ class PYBIND11_EXPORT AreaConservationMeshForceCompute : public ForceCompute
 #endif
 
     protected:
-    GPUArray<Scalar2> m_params;                  //!< Parameters
-    GPUArray<Scalar> m_area;                     //!< memory space for area
-                                                 //
-    std::shared_ptr<MeshDefinition> m_mesh_data; //!< Mesh data to use in computing energy
-    bool m_ignore_type;                          //! ignore type to calculate global area if true
+    GPUArray<area_conservation_param_t> m_params; //!< Parameters
+    GPUArray<Scalar> m_area;                      //!< memory space for area
+                                                  //
+    std::shared_ptr<MeshDefinition> m_mesh_data;  //!< Mesh data to use in computing energy
+    bool m_ignore_type;                           //! ignore type to calculate global area if true
 
     //! Actually compute the forces
     virtual void computeForces(uint64_t timestep);

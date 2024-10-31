@@ -89,7 +89,9 @@ void AreaConservationMeshForceComputeGPU::computeForces(uint64_t timestep)
 
     ArrayHandle<Scalar4> d_force(m_force, access_location::device, access_mode::overwrite);
     ArrayHandle<Scalar> d_virial(m_virial, access_location::device, access_mode::overwrite);
-    ArrayHandle<Scalar2> d_params(m_params, access_location::device, access_mode::read);
+    ArrayHandle<area_conservation_param_t> d_params(m_params,
+                                                    access_location::device,
+                                                    access_mode::read);
 
     ArrayHandle<Scalar> d_area(m_area, access_location::device, access_mode::read);
 

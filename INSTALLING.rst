@@ -22,7 +22,7 @@ channel:
 
 .. code-block:: bash
 
-    micromamba install hoomd=4.9.0
+    micromamba install hoomd=4.9.1
 
 .. _conda-forge: https://conda-forge.org/docs/user/introduction.html
 
@@ -32,13 +32,13 @@ appropriate package. Override this and force the GPU enabled package installatio
 .. code-block:: bash
 
     export CONDA_OVERRIDE_CUDA="12.0"
-    micromamba install "hoomd=4.9.0=*gpu*" "cuda-version=12.0"
+    micromamba install "hoomd=4.9.1=*gpu*" "cuda-version=12.0"
 
 Similarly, you can force CPU-only package installation with:
 
 .. code-block:: bash
 
-    micromamba install "hoomd=4.9.0=*cpu*"
+    micromamba install "hoomd=4.9.1=*cpu*"
 
 .. note::
 
