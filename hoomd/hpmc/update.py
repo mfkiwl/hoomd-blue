@@ -26,8 +26,8 @@ class BoxMC(Updater):
 
     Args:
         P (hoomd.variant.variant_like): The pressure :math:`P`
-            :math:`[\mathrm{energy} \ \mathrm{length}^{-2}]` in 2D or
-            :math:`[\mathrm{energy} \ \mathrm{length}^{-3}]` in 3D.
+            :math:`[\mathrm{energy}] \cdot [\mathrm{length}^{-2}]` in 2D or
+            :math:`[\mathrm{energy}] \cdot [\mathrm{length}^{-3}]` in 3D.
         trigger (hoomd.trigger.trigger_like): Select the timesteps to perform
             box trial moves.
 
@@ -204,11 +204,11 @@ class BoxMC(Updater):
         1 & \beta \Delta H + \beta \Delta U \le 0 \\
         \end{cases}
 
-    where :math:`\beta = \frac{1}{kT}` (set in `HPMCIntegrator.kT`),
-    :math:`\Delta U = U^t - U` is the difference in potential energy,
-    and :math:`\beta \Delta H = \beta P (V^t - V) - N_\mathrm{particles} \cdot
-    \ln(V^t / V)` for most move types. It is :math:`\beta P (V^t - V) -
-    (N_\mathrm{particles}+1) \cdot \ln(V^t / V)` for ln volume moves.
+    where :math:`\beta = \frac{1}{kT}` (set in `HPMCIntegrator.kT`) and
+    :math:`\Delta U = U^t - U` is the difference in potential energy.
+    :math:`\Delta H = P (V^t - V) - N_\mathrm{particles} \cdot
+    \ln(V^t / V) / \beta` for most move types. It is :math:`P (V^t - V) -
+    (N_\mathrm{particles}+1) \cdot \ln(V^t / V) / \beta` for ln volume moves.
 
     When the trial move is accepted, the system state is set to the the trial
     configuration. When it is not accepted, the move is rejected and the state

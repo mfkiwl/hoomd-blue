@@ -284,7 +284,7 @@ class SDF(Compute):
     where :math:`d` is the dimensionality of the system, :math:`\rho` is the
     number density, and :math:`\beta = \frac{1}{kT}`. This measurement of the
     pressure is inherently noisy due to the nature of the sampling. Average
-    `betaP` over many timesteps to obtain accurate results.
+    `P` over many timesteps to obtain accurate results.
 
     Assuming particle diameters are ~1, these parameter values typically
     achieve good results:
