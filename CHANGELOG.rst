@@ -26,7 +26,17 @@ Change Log
 * ``HDF5Log.write``.
   (`#1699 <https://github.com/glotzerlab/hoomd-blue/pull/1699>`__).
 * ``hoomd.util.GPUNotAvailableError``
-  (`#1694 <https://github.com/glotzerlab/hoomd-blue/pull/1694>`__).
+  (`#1708 <https://github.com/glotzerlab/hoomd-blue/pull/1708>`__).
+* ``Snapshot.from_gsd_snapshot``
+  (`#1888 <https://github.com/glotzerlab/hoomd-blue/pull/1888>`__).
+* ``box1``, ``box2``, and ``variant`` arguments to ``hoomd.update.BoxResize``
+  (`#1888 <https://github.com/glotzerlab/hoomd-blue/pull/1888>`__).
+* ``hpmc.pair.user.CPPPotentialBase``, ``hpmc.pair.user.CPPPotential``,
+  ``hpmc.pair.user.CPPPotentialUnion``, and ``hpmc.integrate.HPMCIntegrator.pair_potential``
+  (`#1888 <https://github.com/glotzerlab/hoomd-blue/pull/1888>`__).
+* ``hoomd.hpmc.external.user.CPPExternalPotential``
+  (`#1888 <https://github.com/glotzerlab/hoomd-blue/pull/1888>`__).
+
 
 4.x
 ---
