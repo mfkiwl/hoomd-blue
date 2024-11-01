@@ -116,7 +116,7 @@ jobs:
         apt-get update
         apt-get install git --yes
     - name: Checkout
-      uses: actions/checkout@d632683dd7b4114ad314bca15554477dd762a938 # v4.2.0
+      uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
       with:
         path: code
         submodules: true
@@ -198,13 +198,13 @@ jobs:
       run: tar --use-compress-program='zstd -10 -T0' -cvf install.tar install
 
     - name: 'Upload build'
-      uses: actions/upload-artifact@50769540e7f4bd5e21e526ee35c689e35e0d6874 # v4.4.0
+      uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882 # v4.4.3
       with:
         name: build-${{ inputs.config }}-${{ github.sha }}
         path: build.tar
         retention-days: 7
     - name: 'Upload install'
-      uses: actions/upload-artifact@50769540e7f4bd5e21e526ee35c689e35e0d6874 # v4.4.0
+      uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882 # v4.4.3
       with:
         name: install-${{ inputs.config }}-${{ github.sha }}
         path: install.tar
@@ -228,7 +228,7 @@ jobs:
         apt-get update
         apt-get install git --yes
     - name: Checkout
-      uses: actions/checkout@d632683dd7b4114ad314bca15554477dd762a938 # v4.2.0
+      uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
       with:
         path: code
 
