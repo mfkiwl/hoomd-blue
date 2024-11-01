@@ -25,7 +25,7 @@ class BoxMC(Updater):
     r"""Apply box updates to sample isobaric and related ensembles.
 
     Args:
-        P (hoomd.variant.variant_like): :math:`p`
+        P (hoomd.variant.variant_like): The pressure :math:`P`
             :math:`[\mathrm{energy} \ \mathrm{length}^{-2}]` in 2D or
             :math:`[\mathrm{energy} \ \mathrm{length}^{-3}]` in 3D.
         trigger (hoomd.trigger.trigger_like): Select the timesteps to perform
@@ -204,8 +204,9 @@ class BoxMC(Updater):
         1 & \beta \Delta H + \beta \Delta U \le 0 \\
         \end{cases}
 
-    where :math:`\Delta U = U^t - U` is the difference in potential energy,
-    :math:`\beta \Delta H = \beta P (V^t - V) - N_\mathrm{particles} \cdot
+    where :math:`\beta = \frac{1}{kT}` (set in `HPMCIntegrator.kT`),
+    :math:`\Delta U = U^t - U` is the difference in potential energy,
+    and :math:`\beta \Delta H = \beta P (V^t - V) - N_\mathrm{particles} \cdot
     \ln(V^t / V)` for most move types. It is :math:`\beta P (V^t - V) -
     (N_\mathrm{particles}+1) \cdot \ln(V^t / V)` for ln volume moves.
 
@@ -219,6 +220,10 @@ class BoxMC(Updater):
     for particle overlaps in the local particle reference frame.
 
     Attributes:
+        P (hoomd.variant.Variant): The pressure :math:`P`
+            :math:`[\mathrm{energy} \ \mathrm{length}^{-2}]` in 2D or
+            :math:`[\mathrm{energy} \ \mathrm{length}^{-3}]` in 3D.
+
         volume (dict):
             Parameters for isobaric volume moves that scale the box lengths
             uniformly. The dictionary has the following keys:
@@ -411,7 +416,7 @@ class MuVT(Updater):
           to swap depletants
         fugacity (`TypeParameter` [ ``particle type``, `float`]):
             Particle fugacity
-            :math:`[\mathrm{volume}^{-1}]` (**default:** 0).
+            :math:`[\mathrm{energy}] \cdot [\mathrm{volume}^{-1}]` (**default:** 0).
     """
 
     def __init__(self,

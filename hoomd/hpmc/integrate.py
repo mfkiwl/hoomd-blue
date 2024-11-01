@@ -28,11 +28,11 @@ not modified.
 
 .. rubric:: Temperature
 
-HPMC assumes that :math:`\beta = \frac{1}{kT} = 1`. This is not relevant to
-systems of purely hard particles where :math:`\Delta U` is either 0 or
-:math:`\infty`. To adjust the effective temperature in systems with finite
-interactions (see *Energy evaluation* below), scale the magnitude of the
-energetic interactions accordingly.
+`HPMCIntegrator.kT` (and the related :math:`\beta = \frac{1}{kT}`) are used throughout
+all HPMC operations. Set `HPMCIntegrator.kT` to control the temperature in systems with
+finite interactions (see *Energy evaluation* below). Use the default :math:`kT = 1`
+for systems of purely hard particles where :math:`\Delta U` is either 0 or
+:math:`\infty`.
 
 .. rubric:: Local trial moves
 
@@ -364,6 +364,9 @@ class HPMCIntegrator(Integrator):
         nselect (int): Number of trial moves to perform per particle per
             timestep.
 
+        kT (hoomd.variant.Variant): Temperature set point
+            :math:`[\\mathrm{energy}]`.
+
     .. rubric:: Attributes
     """
     _ext_module = _hpmc
@@ -673,6 +676,8 @@ class Sphere(HPMCIntegrator):
             translation moves.
         nselect (int): Number of trial moves to perform per particle per
             timestep.
+        kT (hoomd.variant.variant_like): Temperature set point
+            :math:`[\\mathrm{energy}]`.
 
     Perform hard particle Monte Carlo of spheres.
     The shape :math:`S` includes all points inside and on the surface of a
@@ -766,6 +771,8 @@ class ConvexPolygon(HPMCIntegrator):
             translation moves.
         nselect (int): Number of trial moves to perform per particle per
             timestep.
+        kT (hoomd.variant.variant_like): Temperature set point
+            :math:`[\\mathrm{energy}]`.
 
     Perform hard particle Monte Carlo of convex polygons. The shape :math:`S`
     of a convex polygon includes the points inside and on the surface of the
@@ -867,6 +874,8 @@ class ConvexSpheropolygon(HPMCIntegrator):
             translation moves.
         nselect (int): Number of trial moves to perform per particle per
             timestep.
+        kT (hoomd.variant.variant_like): Temperature set point
+            :math:`[\\mathrm{energy}]`.
 
     Perform hard particle Monte Carlo of convex spheropolygons. The shape
     :math:`S` of a convex spheropolygon includes the points inside and on the
@@ -979,6 +988,8 @@ class SimplePolygon(HPMCIntegrator):
             translation moves.
         nselect (int): Number of trial moves to perform per particle per
             timestep.
+        kT (hoomd.variant.variant_like): Temperature set point
+            :math:`[\\mathrm{energy}]`.
 
     Perform hard particle Monte Carlo of simple polygons. The shape :math:`S` of
     a simple polygon includes the points inside and on the surface of the simple
@@ -1080,6 +1091,8 @@ class Polyhedron(HPMCIntegrator):
             translation moves.
         nselect (int): Number of trial moves to perform per particle per
             timestep.
+        kT (hoomd.variant.variant_like): Temperature set point
+            :math:`[\\mathrm{energy}]`.
 
     Perform hard particle Monte Carlo of general polyhedra. The shape :math:`S`
     contains the points inside the polyhedron defined by vertices and faces (see
@@ -1225,6 +1238,8 @@ class ConvexPolyhedron(HPMCIntegrator):
             translation moves.
         nselect (int): Number of trial moves to perform per particle per
             timestep.
+        kT (hoomd.variant.variant_like): Temperature set point
+            :math:`[\\mathrm{energy}]`.
 
     Perform hard particle Monte Carlo of convex polyhedra. The shape :math:`S`
     of a convex polyhedron includes the points inside and on the surface of the
@@ -1320,6 +1335,8 @@ class FacetedEllipsoid(HPMCIntegrator):
             translation moves.
         nselect (int): Number of trial moves to perform per particle per
             timestep.
+        kT (hoomd.variant.variant_like): Temperature set point
+            :math:`[\\mathrm{energy}]`.
 
     Perform hard particle Monte Carlo of faceted ellipsoids. The shape :math:`S`
     of a faceted ellipsoid is the intersection of an ellipsoid with a convex
@@ -1445,6 +1462,8 @@ class Sphinx(HPMCIntegrator):
             translation moves.
         nselect (int): Number of trial moves to perform per particle per
             timestep.
+        kT (hoomd.variant.variant_like): Temperature set point
+            :math:`[\\mathrm{energy}]`.
 
     Perform hard particle Monte Carlo of sphere unions and differences,
     depending on the sign of the diameter. The shape :math:`S` is:
@@ -1519,6 +1538,8 @@ class ConvexSpheropolyhedron(HPMCIntegrator):
             translation moves.
         nselect (int): Number of trial moves to perform per particle per
             timestep.
+        kT (hoomd.variant.variant_like): Temperature set point
+            :math:`[\\mathrm{energy}]`.
 
     Perform hard particle Monte Carlo of convex spheropolyhedra. The shape
     :math:`S` of a convex spheropolyhedron includes the points inside and on the
@@ -1630,6 +1651,8 @@ class Ellipsoid(HPMCIntegrator):
             translation moves.
         nselect (int): Number of trial moves to perform per particle per
             timestep.
+        kT (hoomd.variant.variant_like): Temperature set point
+            :math:`[\\mathrm{energy}]`.
 
     Perform hard particle Monte Carlo of ellipsoids. The shape :math:`S`
     includes all points inside and on the surface of an ellipsoid:
@@ -1719,6 +1742,8 @@ class SphereUnion(HPMCIntegrator):
             translation moves.
         nselect (int): Number of trial moves to perform per particle per
             timestep.
+        kT (hoomd.variant.variant_like): Temperature set point
+            :math:`[\\mathrm{energy}]`.
 
     Perform hard particle Monte Carlo of unions of spheres. The union shape
     :math:`S` is the set union of the given spheres:
@@ -1849,6 +1874,8 @@ class ConvexSpheropolyhedronUnion(HPMCIntegrator):
             translation moves.
         nselect (int): Number of trial moves to perform per particle per
             timestep.
+        kT (hoomd.variant.variant_like): Temperature set point
+            :math:`[\\mathrm{energy}]`.
 
     Perform hard particle Monte Carlo of unions of convex sphereopolyhedra. The
     union shape :math:`S` is the set union of the given convex spheropolyhedra:
@@ -1977,6 +2004,8 @@ class FacetedEllipsoidUnion(HPMCIntegrator):
             translation moves.
         nselect (int): Number of trial moves to perform per particle per
             timestep.
+        kT (hoomd.variant.variant_like): Temperature set point
+            :math:`[\\mathrm{energy}]`.
 
     Perform hard particle Monte Carlo of unions of faceted ellipsoids. The union
     shape :math:`S` is the set union of the given faceted ellipsoids:
