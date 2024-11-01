@@ -4,6 +4,17 @@
 Change Log
 ==========
 
+5.x
+---
+
+5.0.0 (not yet released)
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+*Added*
+
+* `mpcd.geometry.ConcentricCylinders` for concentric cylinders
+  (`#1894 <https://github.com/glotzerlab/hoomd-blue/pull/1894>`__)
+
 4.x
 ---
 
@@ -13,7 +24,7 @@ Change Log
 *Fixed*
 
 * Correct compile errors with ``-DENABLE_GPU=on -DHOOMD_GPU_PLATFORM=HIP``
-  (`#1920 <https://github.com/glotzerlab/hoomd-blue/pull/1915>`__)
+  (`#1920 <https://github.com/glotzerlab/hoomd-blue/pull/1920>`__)
 
 4.9.0 (2024-10-29)
 ^^^^^^^^^^^^^^^^^^
