@@ -1509,7 +1509,7 @@ template<class Shape> void UpdaterMuVT<Shape>::update(uint64_t timestep)
                          m_gibbs_other,
                          0,
                          m_exec_conf->getHOOMDWorldMPICommunicator());
-                MPI_Send(&lnb,
+                MPI_Send(&delta_u,
                          1,
                          MPI_HOOMD_SCALAR,
                          m_gibbs_other,
@@ -1808,7 +1808,7 @@ bool UpdaterMuVT<Shape>::tryRemoveParticle(uint64_t timestep, unsigned int tag, 
         if (m_sysdef->isDomainDecomposed())
             {
             MPI_Allreduce(MPI_IN_PLACE,
-                          &lnboltzmann,
+                          &delta_u,
                           1,
                           MPI_HOOMD_SCALAR,
                           MPI_SUM,
@@ -1903,7 +1903,7 @@ bool UpdaterMuVT<Shape>::tryRemoveParticle(uint64_t timestep, unsigned int tag, 
                                                   true,
                                                   type_d))
                     {
-                    lnboltzmann += lnb;
+                    delta_u += lnb;
                     }
                 else
                     {
@@ -2151,7 +2151,7 @@ bool UpdaterMuVT<Shape>::tryInsertParticle(uint64_t timestep,
     if (m_sysdef->isDomainDecomposed())
         {
         MPI_Allreduce(MPI_IN_PLACE,
-                      &lnboltzmann,
+                      &delta_u,
                       1,
                       MPI_HOOMD_SCALAR,
                       MPI_SUM,
@@ -2231,7 +2231,7 @@ bool UpdaterMuVT<Shape>::tryInsertParticle(uint64_t timestep,
                                                   lnb,
                                                   type_d))
                     {
-                    lnboltzmann -= lnb;
+                    delta_u -= lnb;
                     }
                 else
                     {
