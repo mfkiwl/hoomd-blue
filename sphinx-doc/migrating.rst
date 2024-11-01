@@ -10,8 +10,6 @@ Migrating to HOOMD-blue 5
 Breaking changes to existing functionalities
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-For some functionalities, you will need to update your scripts to use a new API:
-
 * ``hoomd.snapshot.from_gsd_snapshot``
 
   * Use `hoomd.Snapshot.from_gsd_frame`.
@@ -39,8 +37,6 @@ For some functionalities, you will need to update your scripts to use a new API:
 
 Removed functionalities
 ^^^^^^^^^^^^^^^^^^^^^^^
-
-HOOMD-blue 5 removes functionalities deprecated in v4.x releases:
 
 * ``_InternalCustomUpdater.update``
 

@@ -47,7 +47,6 @@ void BendingRigidityMeshForceCompute::setParams(unsigned int type, Scalar K)
     ArrayHandle<Scalar> h_params(m_params, access_location::host, access_mode::readwrite);
     h_params.data[type] = K;
 
-    // check for some silly errors a user could make
     if (K <= 0)
         m_exec_conf->msg->warning() << "rigidity: specified K <= 0" << endl;
     }
@@ -55,7 +54,7 @@ void BendingRigidityMeshForceCompute::setParams(unsigned int type, Scalar K)
 void BendingRigidityMeshForceCompute::setParamsPython(std::string type, pybind11::dict params)
     {
     auto typ = m_mesh_data->getMeshBondData()->getTypeByName(type);
-    auto _params = rigidity_params(params);
+    auto _params = bending_params(params);
     setParams(typ, _params.k);
     }
 

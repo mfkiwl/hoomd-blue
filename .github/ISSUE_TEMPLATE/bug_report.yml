@@ -56,13 +56,11 @@ body:
         - Compiled from source
         - Conda-forge package
         - glotzerlab-software package
-    validations:
-      required: true
   - type: input
     attributes:
       label: HOOMD-blue version
       description: What version of HOOMD-blue are you using?
-      placeholder: 4.8.2
+      placeholder: 4.9.1
     validations:
       required: true
   - type: markdown

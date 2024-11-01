@@ -42,24 +42,24 @@ jobs:
       fail-fast: false
       matrix:
         include:
-        - config: [clang, 18, -py, 312, -mpi, -tbb]
+        - config: [clang, 18, -py, 313, -mpi, -tbb]
           validate: true
 
-        - config: [gcc, 14, -py, 312]
+        - config: [gcc, 14, -py, 313]
           validate: true
 
-        - config: [gcc, 14, -py, 312, -nomd]
-        - config: [gcc, 14, -py, 312, -nohpmc]
-        - config: [gcc, 14, -py, 312, -nomd, -nohpmc]
+        - config: [gcc, 14, -py, 313, -nomd]
+        - config: [gcc, 14, -py, 313, -nohpmc]
+        - config: [gcc, 14, -py, 313, -nomd, -nohpmc]
         - config: [gcc, 10, -py, 39, -mpi, -tbb]
 
-        - config: [cuda, 125, -py, 312, -mpi]
+        - config: [cuda, 125, -py, 313, -mpi]
           validate: true
 
-        - config: [cuda, 125, -py, 312]
+        - config: [cuda, 125, -py, 313]
           validate: true
 
-        - config: [cuda, 125, -py, 312, -mpi, -debug]
+        - config: [cuda, 125, -py, 313, -mpi, -debug]
 
 
   release:
@@ -85,47 +85,17 @@ jobs:
       fail-fast: false
       matrix:
         include:
+        - config: [clang, 17, -py, 313, -mpi, -tbb]
         - config: [clang, 17, -py, 312, -mpi, -tbb]
         - config: [clang, 16, -py, 312, -mpi, -tbb]
         - config: [clang, 15, -py, 311, -mpi, -tbb]
         - config: [clang, 14, -py, 310, -mpi, -tbb]
         - config: [clang, 13, -py, 39, -mpi, -tbb]
+        - config: [gcc, 13, -py, 313, -mpi, -tbb]
         - config: [gcc, 13, -py, 312, -mpi, -tbb]
         - config: [gcc, 12, -py, 311, -mpi, -tbb]
         - config: [gcc, 11, -py, 310, -mpi, -tbb]
         - config: [gcc, 10, -py, 310, -mpi, -tbb]
-
-  check-links:
-    name: "Check links"
-    runs-on: ubuntu-latest
-    steps:
-    - name: Check out repo
-      uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29 # v4.1.6
-      with:
-        submodules: true
-    - name: Set up Python
-      uses: actions/setup-python@82c7e631bb3cdc910f68e0081d67478d79c6982d # v5.1.0
-      with:
-        python-version: "3.12"
-    - name: Setup uv
-      uses: glotzerlab/workflows/setup-uv@5cfac9da9cb78e16ae97a9119b6fd13c1c2d6f5e # 0.1.0
-    - name: Install dependencies
-      run: uv pip install -r sphinx-doc/requirements.txt --system
-    - name: Install tools
-      run: sudo apt-get install pandoc
-    - name: Build Sphinx Docs
-      run: sphinx-build -b html sphinx-doc doc_build
-    - name: Link Checker
-      id: lychee
-      uses: lycheeverse/lychee-action@2b973e86fc7b1f6b36a93795fe2c9c6ae1118621  # v1.10.0
-      with:
-        args: -n
-              --exclude-path 'sphinx-doc/_templates/page.html'
-              --exclude-path 'hoomd/extern'
-              --exclude https://glotzerlab.engin.umich.edu
-              --exclude doi.org
-              './**/*.md' './**/*.html' './**/*.rst'
-        fail: true
 
   tests_complete:
     name: Unit test
