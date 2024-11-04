@@ -33,7 +33,8 @@ Breaking changes to existing functionalities
 
 * ``hoomd.hpmc.update.BoxMC.betaP``
 
-  * Use `hoomd.hpmc.update.BoxMC.P` and set kT in the integrator.
+  * Set `hoomd.hpmc.update.BoxMC.P` to ``P = betaP / beta`` and set the appropriate ``kT = 1/beta``
+    in the integrator.
 
 Removed functionalities
 ^^^^^^^^^^^^^^^^^^^^^^^
