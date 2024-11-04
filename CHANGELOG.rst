@@ -14,6 +14,8 @@ Change Log
 
 * Correct compile errors with ``-DENABLE_GPU=on -DHOOMD_GPU_PLATFORM=HIP``
   (`#1920 <https://github.com/glotzerlab/hoomd-blue/pull/1915>`__)
+* Ensure that users set unique seeds on all partitions when performing Gibbs ensemble simulations
+  (`#1925 <https://github.com/glotzerlab/hoomd-blue/pull/1925>`__)
 
 4.9.0 (2024-10-29)
 ^^^^^^^^^^^^^^^^^^
