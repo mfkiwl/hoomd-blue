@@ -393,12 +393,22 @@ UpdaterMuVT<Shape>::UpdaterMuVT(std::shared_ptr<SystemDefinition> sysdef,
                 }
             }
 
-        // syncronize move types across ranks
-        MPI_Bcast(&m_move_type_seed,
-                  1,
-                  MPI_UINT16_T,
-                  0,
-                  m_exec_conf->getHOOMDWorldMPICommunicator());
+        // synchronize move types across all ranks within each group
+        for (unsigned int group = 0; group < this->m_exec_conf->getNPartitions() / npartition; group++)
+            {
+            uint16_t tmp = m_move_type_seed;
+            MPI_Bcast(&tmp,
+                      1,
+                      MPI_UINT16_T,
+                      group * npartition * this->m_exec_conf->getNRanks(),
+                      m_exec_conf->getHOOMDWorldMPICommunicator());
+
+            unsigned int my_group = this->m_exec_conf->getPartition() / npartition;
+            if (my_group == group)
+                {
+                m_move_type_seed = tmp;
+                }
+            }
         }
     else
 #endif
