@@ -10,6 +10,11 @@ Change Log
 5.0.0 (not yet released)
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
+*Fixed*
+
+* Ensure that users set unique seeds on all partitions when performing Gibbs ensemble simulations
+  (`#1925 <https://github.com/glotzerlab/hoomd-blue/pull/1925>`__)
+
 *Added*
 
 * `mpcd.geometry.ConcentricCylinders` for concentric cylinders

@@ -34,7 +34,7 @@ struct RNGIdentifier
     static const uint8_t UpdaterClusters = 8;
     static const uint8_t UpdaterClustersPairwise = 9;
     static const uint8_t UpdaterExternalFieldWall = 10;
-    static const uint8_t UpdaterMuVT = 11;
+    static const uint8_t UpdaterMuVTGroup = 11;
     static const uint8_t UpdaterMuVTDepletants1 = 12;
     static const uint8_t UpdaterMuVTDepletants2 = 13;
     static const uint8_t UpdaterMuVTDepletants3 = 14;
@@ -42,8 +42,8 @@ struct RNGIdentifier
     static const uint8_t UpdaterMuVTDepletants5 = 16;
     static const uint8_t UpdaterMuVTDepletants6 = 17;
     static const uint8_t UpdaterMuVTPoisson = 18;
-    static const uint8_t UpdaterMuVTBox1 = 19;
-    static const uint8_t UpdaterMuVTBox2 = 20;
+    static const uint8_t UpdaterMuVTInsertRemove = 19;
+    static const uint8_t Unused1 = 20;
     static const uint8_t ActiveForceCompute = 21;
     static const uint8_t EvaluatorPairDPDThermo = 22;
     static const uint8_t IntegrationMethodTwoStep = 23;
