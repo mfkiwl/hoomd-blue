@@ -394,7 +394,8 @@ UpdaterMuVT<Shape>::UpdaterMuVT(std::shared_ptr<SystemDefinition> sysdef,
             }
 
         // synchronize move types across all ranks within each group
-        for (unsigned int group = 0; group < this->m_exec_conf->getNPartitions() / npartition; group++)
+        for (unsigned int group = 0; group < this->m_exec_conf->getNPartitions() / npartition;
+             group++)
             {
             uint16_t tmp = m_move_type_seed;
             MPI_Bcast(&tmp,
