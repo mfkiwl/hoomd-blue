@@ -156,6 +156,7 @@ template<class Shape> class UpdaterMuVT : public Updater
         m_mc;                  //!< The MC Integrator this Updater is associated with
     unsigned int m_npartition; //!< The number of partitions to use for Gibbs ensemble
     bool m_gibbs;              //!< True if we simulate a Gibbs ensemble
+    uint16_t m_move_type_seed; //!< Random number seed to use for move types.
 
     GPUVector<Scalar4> m_postype_backup; //!< Backup of postype array
 
@@ -347,6 +348,8 @@ UpdaterMuVT<Shape>::UpdaterMuVT(std::shared_ptr<SystemDefinition> sysdef,
         m_gibbs = true;
         }
 
+    m_move_type_seed = m_sysdef->getSeed();
+
 #ifdef ENABLE_MPI
     if (m_gibbs)
         {
@@ -361,6 +364,41 @@ UpdaterMuVT<Shape>::UpdaterMuVT(std::shared_ptr<SystemDefinition> sysdef,
 
         m_exec_conf->msg->notice(5) << "Constructing UpdaterMuVT: Gibbs ensemble with "
                                     << m_npartition << " partitions" << std::endl;
+
+        // Ensure that the user sets unique seeds on all partitions so that local trial moves
+        // are decorrelated.
+        unsigned int my_partition = this->m_exec_conf->getPartition();
+        unsigned int my_group = this->m_exec_conf->getPartition() / npartition;
+        uint16_t my_seed = this->m_sysdef->getSeed();
+
+        for (unsigned int check_partition = 0;
+             check_partition < this->m_exec_conf->getNPartitions();
+             check_partition++)
+            {
+            unsigned int check_group = check_partition / npartition;
+            uint16_t check_seed = my_seed;
+            MPI_Bcast(&check_seed,
+                      1,
+                      MPI_UINT16_T,
+                      check_partition * m_exec_conf->getMPIConfig()->getNRanks(),
+                      m_exec_conf->getHOOMDWorldMPICommunicator());
+
+            if (my_group == check_group && my_partition != check_partition && my_seed == check_seed)
+                {
+                std::ostringstream s;
+                s << "Each partition within a group must set a unique seed. ";
+                s << "Partition " << check_partition << "'s " << "seed (" << check_seed << ") ";
+                s << "matches partition " << my_partition << "'s";
+                throw std::runtime_error(s.str());
+                }
+            }
+
+        // syncronize move types across ranks
+        MPI_Bcast(&m_move_type_seed,
+                  1,
+                  MPI_UINT16_T,
+                  0,
+                  m_exec_conf->getHOOMDWorldMPICommunicator());
         }
     else
 #endif
@@ -865,9 +903,11 @@ template<class Shape> void UpdaterMuVT<Shape>::update(uint64_t timestep)
 
     // initialize random number generator
     unsigned int group = (m_exec_conf->getPartition() / m_npartition);
+    unsigned int partition = (m_exec_conf->getPartition() % m_npartition);
 
-    hoomd::RandomGenerator rng(
-        hoomd::Seed(hoomd::RNGIdentifier::UpdaterMuVT, timestep, this->m_sysdef->getSeed()),
+    // Make a RNG that is seeded the same across the whole group
+    hoomd::RandomGenerator rng_group(
+        hoomd::Seed(hoomd::RNGIdentifier::UpdaterMuVTGroup, timestep, m_move_type_seed),
         hoomd::Counter(group));
 
     bool active = true;
@@ -884,31 +924,30 @@ template<class Shape> void UpdaterMuVT<Shape>::update(uint64_t timestep)
     // the other MPI partition
     if (m_gibbs)
         {
-        unsigned int p = m_exec_conf->getPartition() % m_npartition;
-
         // choose a random pair of communicating boxes
-        src = hoomd::UniformIntDistribution(m_npartition - 1)(rng);
-        dest = hoomd::UniformIntDistribution(m_npartition - 2)(rng);
+        src = hoomd::UniformIntDistribution(m_npartition - 1)(rng_group);
+        dest = hoomd::UniformIntDistribution(m_npartition - 2)(rng_group);
         if (src <= dest)
             dest++;
 
-        if (p == src)
+        if (partition == src)
             {
             m_gibbs_other = (dest + group * m_npartition) * m_exec_conf->getNRanks();
             mod = 0;
             }
-        if (p == dest)
+        if (partition == dest)
             {
             m_gibbs_other = (src + group * m_npartition) * m_exec_conf->getNRanks();
             mod = 1;
             }
-        if (p != src && p != dest)
+        if (partition != src && partition != dest)
             {
             active = false;
             }
 
         // order the expanded ensembles
-        volume_move = hoomd::detail::generate_canonical<Scalar>(rng) < m_volume_move_probability;
+        Scalar r = hoomd::detail::generate_canonical<Scalar>(rng_group);
+        volume_move = r < m_volume_move_probability;
 
         if (active && m_exec_conf->getRank() == 0)
             {
@@ -973,7 +1012,14 @@ template<class Shape> void UpdaterMuVT<Shape>::update(uint64_t timestep)
 #endif
 
         // whether we insert or remove a particle
-        bool insert = m_gibbs ? mod : hoomd::UniformIntDistribution(1)(rng);
+        bool insert = m_gibbs ? mod : hoomd::UniformIntDistribution(1)(rng_group);
+
+        // Use a partition specific RNG stream on each partition in Gibbs ensembles.
+        hoomd::RandomGenerator rng_insert_remove(
+            hoomd::Seed(hoomd::RNGIdentifier::UpdaterMuVTInsertRemove,
+                        timestep,
+                        this->m_sysdef->getSeed()),
+            hoomd::Counter(group, partition));
 
         if (insert)
             {
@@ -992,7 +1038,7 @@ template<class Shape> void UpdaterMuVT<Shape>::update(uint64_t timestep)
                 {
                 // choose a random particle type out of those being inserted or removed
                 type = m_transfer_types[hoomd::UniformIntDistribution(
-                    (unsigned int)(m_transfer_types.size() - 1))(rng)];
+                    (unsigned int)(m_transfer_types.size() - 1))(rng_insert_remove)];
                 }
             else
                 {
@@ -1045,15 +1091,15 @@ template<class Shape> void UpdaterMuVT<Shape>::update(uint64_t timestep)
 
                 // Propose a random position uniformly in the box
                 Scalar3 f;
-                f.x = hoomd::detail::generate_canonical<Scalar>(rng);
-                f.y = hoomd::detail::generate_canonical<Scalar>(rng);
+                f.x = hoomd::detail::generate_canonical<Scalar>(rng_insert_remove);
+                f.y = hoomd::detail::generate_canonical<Scalar>(rng_insert_remove);
                 if (m_sysdef->getNDimensions() == 2)
                     {
                     f.z = Scalar(0.5);
                     }
                 else
                     {
-                    f.z = hoomd::detail::generate_canonical<Scalar>(rng);
+                    f.z = hoomd::detail::generate_canonical<Scalar>(rng_insert_remove);
                     }
                 vec3<Scalar> pos_test = vec3<Scalar>(m_pdata->getGlobalBox().makeCoordinates(f));
 
@@ -1061,7 +1107,7 @@ template<class Shape> void UpdaterMuVT<Shape>::update(uint64_t timestep)
                 if (shape_test.hasOrientation())
                     {
                     // set particle orientation
-                    shape_test.orientation = generateRandomOrientation(rng, ndim);
+                    shape_test.orientation = generateRandomOrientation(rng_insert_remove, ndim);
                     }
 
                 if (m_gibbs)
@@ -1140,7 +1186,8 @@ template<class Shape> void UpdaterMuVT<Shape>::update(uint64_t timestep)
                 bool accept = false;
                 if (nonzero)
                     {
-                    accept = (hoomd::detail::generate_canonical<double>(rng) < exp(lnboltzmann));
+                    accept = (hoomd::detail::generate_canonical<double>(rng_insert_remove)
+                              < exp(lnboltzmann));
                     }
 
 #ifdef ENABLE_MPI
@@ -1190,16 +1237,10 @@ template<class Shape> void UpdaterMuVT<Shape>::update(uint64_t timestep)
             // try removing a particle
             unsigned int tag = UINT_MAX;
 
-            // in Gibbs ensemble, we should not use correlated random numbers with box 1
-            hoomd::RandomGenerator rng_local(hoomd::Seed(hoomd::RNGIdentifier::UpdaterMuVTBox1,
-                                                         timestep,
-                                                         this->m_sysdef->getSeed()),
-                                             hoomd::Counter(group));
-
             // choose a random particle type out of those being transferred
             assert(m_transfer_types.size() > 0);
             unsigned int type = m_transfer_types[hoomd::UniformIntDistribution(
-                (unsigned int)(m_transfer_types.size() - 1))(rng_local)];
+                (unsigned int)(m_transfer_types.size() - 1))(rng_insert_remove)];
 
             // choose a random particle of that type
             unsigned int nptl_type = getNumParticlesType(type);
@@ -1207,7 +1248,8 @@ template<class Shape> void UpdaterMuVT<Shape>::update(uint64_t timestep)
             if (nptl_type)
                 {
                 // get random tag of given type
-                unsigned int type_offset = hoomd::UniformIntDistribution(nptl_type - 1)(rng_local);
+                unsigned int type_offset
+                    = hoomd::UniformIntDistribution(nptl_type - 1)(rng_insert_remove);
                 tag = getNthTypeTag(type, type_offset);
                 }
 
@@ -1319,8 +1361,8 @@ template<class Shape> void UpdaterMuVT<Shape>::update(uint64_t timestep)
                 // apply acceptance criterion
                 if (nonzero)
                     {
-                    accept
-                        = (hoomd::detail::generate_canonical<double>(rng_local) < exp(lnboltzmann));
+                    accept = (hoomd::detail::generate_canonical<double>(rng_insert_remove)
+                              < exp(lnboltzmann));
                     }
                 else
                     {
@@ -1410,18 +1452,20 @@ template<class Shape> void UpdaterMuVT<Shape>::update(uint64_t timestep)
 
             if (mod == 0)
                 {
-                Scalar ln_V_new = log(V / V_other)
-                                  + (hoomd::detail::generate_canonical<Scalar>(rng) - Scalar(0.5))
-                                        * m_max_vol_rescale;
+                Scalar ln_V_new
+                    = log(V / V_other)
+                      + (hoomd::detail::generate_canonical<Scalar>(rng_group) - Scalar(0.5))
+                            * m_max_vol_rescale;
                 V_new = (V + V_other) * exp(ln_V_new) / (Scalar(1.0) + exp(ln_V_new));
                 V_new_other
                     = (V + V_other) * (Scalar(1.0) - exp(ln_V_new) / (Scalar(1.0) + exp(ln_V_new)));
                 }
             else
                 {
-                Scalar ln_V_new = log(V_other / V)
-                                  + (hoomd::detail::generate_canonical<Scalar>(rng) - Scalar(0.5))
-                                        * m_max_vol_rescale;
+                Scalar ln_V_new
+                    = log(V_other / V)
+                      + (hoomd::detail::generate_canonical<Scalar>(rng_group) - Scalar(0.5))
+                            * m_max_vol_rescale;
                 V_new
                     = (V + V_other) * (Scalar(1.0) - exp(ln_V_new) / (Scalar(1.0) + exp(ln_V_new)));
                 }
@@ -1538,7 +1582,7 @@ template<class Shape> void UpdaterMuVT<Shape>::update(uint64_t timestep)
                              + log(V_new_other / V_other) * (Scalar)(other_ndof + 1) + lnb
                              + other_lnb;
 
-                accept = hoomd::detail::generate_canonical<double>(rng) < exp(arg);
+                accept = hoomd::detail::generate_canonical<double>(rng_group) < exp(arg);
                 accept &= !(has_overlaps || other_result);
 
                 // communicate if accepted
