@@ -31,8 +31,8 @@ struct RNGIdentifier
     static const uint8_t HPMCDepletantNum = 5;
     static const uint8_t HPMCMonoAccept = 6;
     static const uint8_t UpdaterBoxMC = 7;
-    static const uint8_t UpdaterClusters = 8;
-    static const uint8_t UpdaterClustersPairwise = 9;
+    static const uint8_t UpdaterGCA = 8;
+    static const uint8_t UpdaterGCAPairwise = 9;
     static const uint8_t UpdaterExternalFieldWall = 10;
     static const uint8_t UpdaterMuVTGroup = 11;
     static const uint8_t UpdaterMuVTDepletants1 = 12;
@@ -62,7 +62,7 @@ struct RNGIdentifier
     static const uint8_t HPMCDepletantsClusters = 37;
     static const uint8_t HPMCDepletantNumClusters = 38;
     static const uint8_t HPMCMonoPatch = 39;
-    static const uint8_t UpdaterClusters2 = 40;
+    static const uint8_t UpdaterGCA2 = 40;
     static const uint8_t HPMCMonoChainMove = 41;
     static const uint8_t UpdaterShapeUpdate = 42;
     static const uint8_t UpdaterShapeConstruct = 43;

@@ -12,7 +12,7 @@ hoomd.hpmc.update
     :nosignatures:
 
     BoxMC
-    Clusters
+    GCA
     MuVT
     QuickCompress
     Shape
@@ -21,5 +21,5 @@ hoomd.hpmc.update
 
 .. automodule:: hoomd.hpmc.update
     :synopsis: HPMC updaters.
-    :members: BoxMC, Clusters, MuVT, QuickCompress, Shape
+    :members: BoxMC, GCA, MuVT, QuickCompress, Shape
     :show-inheritance:

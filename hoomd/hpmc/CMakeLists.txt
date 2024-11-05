@@ -107,10 +107,10 @@ set(_hpmc_headers
     ShapeUtils.h
     SphinxOverlap.h
     UpdaterBoxMC.h
-    UpdaterClusters.h
-    UpdaterClustersGPU.cuh
-    UpdaterClustersGPU.h
-    UpdaterClustersGPUDepletants.cuh
+    UpdaterGCA.h
+    UpdaterGCAGPU.cuh
+    UpdaterGCAGPU.h
+    UpdaterGCAGPUDepletants.cuh
     UpdaterMuVT.h
     UpdaterQuickCompress.h
     UpdaterShape.h
@@ -121,7 +121,7 @@ set(_hpmc_headers
 
 set(_hpmc_cu_sources IntegratorHPMCMonoGPU.cu
                      IntegratorHPMCMonoGPUDepletants.cu
-                     UpdaterClustersGPU.cu
+                     UpdaterGCAGPU.cu
                      )
 
 set(_hpmc_kernel_templates kernel_free_volume

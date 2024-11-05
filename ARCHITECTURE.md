@@ -157,7 +157,7 @@ simulation in `System::run`. There are numerous types of operations, each with t
 ### HPMC
 
 The integrator `HPMCIntegrator` defines and stores the core parameters of the simulation, such as
-the particle shape. All HPMC specific operations (such as `UpdaterClusters` and `UpdaterBoxMC`) take
+the particle shape. All HPMC specific operations (such as `UpdaterGCA` and `UpdaterBoxMC`) take
 a shared pointer to the HPMC integrator to access this information.
 
 ### MD

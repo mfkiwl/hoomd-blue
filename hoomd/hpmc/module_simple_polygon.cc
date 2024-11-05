@@ -14,13 +14,13 @@
 #include "ExternalFieldHarmonic.h"
 #include "ExternalFieldWall.h"
 
-#include "UpdaterClusters.h"
+#include "UpdaterGCA.h"
 #include "UpdaterMuVT.h"
 
 #ifdef ENABLE_HIP
 #include "ComputeFreeVolumeGPU.h"
 #include "IntegratorHPMCMonoGPU.h"
-#include "UpdaterClustersGPU.h"
+#include "UpdaterGCAGPU.h"
 #endif
 
 namespace hoomd
@@ -36,7 +36,7 @@ void export_simple_polygon(pybind11::module& m)
     export_ComputeFreeVolume<ShapeSimplePolygon>(m, "ComputeFreeVolumeSimplePolygon");
     export_ComputeSDF<ShapeSimplePolygon>(m, "ComputeSDFSimplePolygon");
     export_UpdaterMuVT<ShapeSimplePolygon>(m, "UpdaterMuVTSimplePolygon");
-    export_UpdaterClusters<ShapeSimplePolygon>(m, "UpdaterClustersSimplePolygon");
+    export_UpdaterGCA<ShapeSimplePolygon>(m, "UpdaterGCASimplePolygon");
 
     export_ExternalFieldInterface<ShapeSimplePolygon>(m, "ExternalFieldSimplePolygon");
     export_HarmonicField<ShapeSimplePolygon>(m, "ExternalFieldHarmonicSimplePolygon");
@@ -45,7 +45,7 @@ void export_simple_polygon(pybind11::module& m)
 #ifdef ENABLE_HIP
     export_IntegratorHPMCMonoGPU<ShapeSimplePolygon>(m, "IntegratorHPMCMonoSimplePolygonGPU");
     export_ComputeFreeVolumeGPU<ShapeSimplePolygon>(m, "ComputeFreeVolumeSimplePolygonGPU");
-    export_UpdaterClustersGPU<ShapeSimplePolygon>(m, "UpdaterClustersSimplePolygonGPU");
+    export_UpdaterGCAGPU<ShapeSimplePolygon>(m, "UpdaterGCASimplePolygonGPU");
 #endif
     }
 

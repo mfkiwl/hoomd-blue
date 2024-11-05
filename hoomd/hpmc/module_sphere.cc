@@ -15,13 +15,13 @@
 #include "ExternalFieldHarmonic.h"
 #include "ExternalFieldWall.h"
 
-#include "UpdaterClusters.h"
+#include "UpdaterGCA.h"
 #include "UpdaterMuVT.h"
 
 #ifdef ENABLE_HIP
 #include "ComputeFreeVolumeGPU.h"
 #include "IntegratorHPMCMonoGPU.h"
-#include "UpdaterClustersGPU.h"
+#include "UpdaterGCAGPU.h"
 #endif
 
 namespace hoomd
@@ -38,7 +38,7 @@ void export_sphere(pybind11::module& m)
     export_ComputeFreeVolume<ShapeSphere>(m, "ComputeFreeVolumeSphere");
     export_ComputeSDF<ShapeSphere>(m, "ComputeSDFSphere");
     export_UpdaterMuVT<ShapeSphere>(m, "UpdaterMuVTSphere");
-    export_UpdaterClusters<ShapeSphere>(m, "UpdaterClustersSphere");
+    export_UpdaterGCA<ShapeSphere>(m, "UpdaterGCASphere");
 
     export_ExternalFieldInterface<ShapeSphere>(m, "ExternalFieldSphere");
     export_HarmonicField<ShapeSphere>(m, "ExternalFieldHarmonicSphere");
@@ -47,7 +47,7 @@ void export_sphere(pybind11::module& m)
 #ifdef ENABLE_HIP
     export_IntegratorHPMCMonoGPU<ShapeSphere>(m, "IntegratorHPMCMonoSphereGPU");
     export_ComputeFreeVolumeGPU<ShapeSphere>(m, "ComputeFreeVolumeSphereGPU");
-    export_UpdaterClustersGPU<ShapeSphere>(m, "UpdaterClustersSphereGPU");
+    export_UpdaterGCAGPU<ShapeSphere>(m, "UpdaterGCASphereGPU");
 #endif
     }
 

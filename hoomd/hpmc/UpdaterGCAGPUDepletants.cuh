@@ -1,7 +1,7 @@
 // Copyright (c) 2009-2024 The Regents of the University of Michigan.
 // Part of HOOMD-blue, released under the BSD 3-Clause License.
 
-/*! \file UpdaterClustersGPUDepletants.cuh
+/*! \file UpdaterGCAGPUDepletants.cuh
     \brief Implements the depletant kernels for the geometric cluster algorithm the GPU
 */
 
@@ -19,7 +19,7 @@
 #include "hoomd/hpmc/GPUHelpers.cuh"
 
 #include "IntegratorHPMCMonoGPUDepletants.cuh"
-#include "UpdaterClustersGPU.cuh"
+#include "UpdaterGCAGPU.cuh"
 
 #ifdef __HIP_PLATFORM_NVCC__
 #define MAX_BLOCK_SIZE 1024

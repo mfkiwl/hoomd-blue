@@ -5,7 +5,7 @@
 
 HPMC updaters work with the `hpmc.integrate.HPMCIntegrator` to apply changes to
 the system consistent with the particle shape and defined interaction energies.
-The `BoxMC`, `Clusters`, and `MuVT` updaters apply trial moves that enable
+The `BoxMC`, `GCA`, and `MuVT` updaters apply trial moves that enable
 enhanced sampling or the equilibration of different ensembles. `QuickCompress`
 helps prepare non-overlapping configurations of particles in a given box shape.
 """
@@ -639,7 +639,7 @@ class Shape(Updater):
         return self._cpp_obj.getShapeMoveEnergy(self._simulation.timestep)
 
 
-class Clusters(Updater):
+class GCA(Updater):
     """Apply geometric cluster algorithm (GCA) moves.
 
     Args:
@@ -668,7 +668,7 @@ class Clusters(Updater):
 
     .. rubric:: Mixed precision
 
-    `Clusters` uses reduced precision floating point arithmetic when checking
+    `GCA` uses reduced precision floating point arithmetic when checking
     for particle overlaps in the local particle reference frame.
 
     Attributes:
@@ -702,7 +702,7 @@ class Clusters(Updater):
         if not isinstance(integrator, integrate.HPMCIntegrator):
             raise RuntimeError("The integrator must be a HPMC integrator.")
 
-        cpp_cls_name = "UpdaterClusters"
+        cpp_cls_name = "UpdaterGCA"
         cpp_cls_name += integrator.__class__.__name__
         cpp_cls = getattr(_hpmc, cpp_cls_name)
         use_gpu = (isinstance(self._simulation.device, hoomd.device.GPU)

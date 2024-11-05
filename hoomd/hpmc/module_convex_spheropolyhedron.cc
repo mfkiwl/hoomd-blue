@@ -14,7 +14,7 @@
 #include "ExternalFieldHarmonic.h"
 #include "ExternalFieldWall.h"
 
-#include "UpdaterClusters.h"
+#include "UpdaterGCA.h"
 #include "UpdaterMuVT.h"
 
 #include "ShapeMoves.h"
@@ -23,7 +23,7 @@
 #ifdef ENABLE_HIP
 #include "ComputeFreeVolumeGPU.h"
 #include "IntegratorHPMCMonoGPU.h"
-#include "UpdaterClustersGPU.h"
+#include "UpdaterGCAGPU.h"
 #endif
 
 namespace hoomd
@@ -39,7 +39,7 @@ void export_convex_spheropolyhedron(pybind11::module& m)
     export_ComputeFreeVolume<ShapeSpheropolyhedron>(m, "ComputeFreeVolumeSpheropolyhedron");
     export_ComputeSDF<ShapeSpheropolyhedron>(m, "ComputeSDFConvexSpheropolyhedron");
     export_UpdaterMuVT<ShapeSpheropolyhedron>(m, "UpdaterMuVTConvexSpheropolyhedron");
-    export_UpdaterClusters<ShapeSpheropolyhedron>(m, "UpdaterClustersConvexSpheropolyhedron");
+    export_UpdaterGCA<ShapeSpheropolyhedron>(m, "UpdaterGCAConvexSpheropolyhedron");
 
     export_MassProperties<ShapeSpheropolyhedron>(m, "MassPropertiesConvexSpheropolyhedron");
 
@@ -55,7 +55,7 @@ void export_convex_spheropolyhedron(pybind11::module& m)
 
     export_IntegratorHPMCMonoGPU<ShapeSpheropolyhedron>(m, "IntegratorHPMCMonoSpheropolyhedronGPU");
     export_ComputeFreeVolumeGPU<ShapeSpheropolyhedron>(m, "ComputeFreeVolumeSpheropolyhedronGPU");
-    export_UpdaterClustersGPU<ShapeSpheropolyhedron>(m, "UpdaterClustersConvexSpheropolyhedronGPU");
+    export_UpdaterGCAGPU<ShapeSpheropolyhedron>(m, "UpdaterGCAConvexSpheropolyhedronGPU");
 
 #endif
     }
