@@ -58,7 +58,7 @@ def simulation(device, simulation_factory, lattice_snapshot_factory):
 def boxmc(move_definition_dict):
     split = move_definition_dict["attr"].split("_")
     attr = split[0]
-    boxmc = hpmc.update.BoxMC(trigger=1, betaP=0)
+    boxmc = hpmc.update.BoxMC(trigger=1, P=0)
     getattr(boxmc, attr)["weight"] = 1.0
     if len(split) > 1:
         getattr(boxmc, attr)["delta"] = (1e-1,) * 3
@@ -182,7 +182,7 @@ def boxmc_tuner_method_and_kwargs(request, rng):
 def boxmc_with_tuner(rng, boxmc_tuner_method_and_kwargs):
     cls, move_size_kwargs = boxmc_tuner_method_and_kwargs
     move = move_size_kwargs["moves"][0]
-    boxmc = hpmc.update.BoxMC(1, betaP=1.0)
+    boxmc = hpmc.update.BoxMC(1, P=1.0)
     if move == "aspect":
         boxmc.aspect = {"weight": 1.0, "delta": 0.4}
     elif move == "volume":

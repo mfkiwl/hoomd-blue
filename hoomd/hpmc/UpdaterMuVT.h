@@ -185,19 +185,19 @@ template<class Shape> class UpdaterMuVT : public Updater
      * \param type Type of particle to test
      * \param pos Position of fictitious particle
      * \param orientation Orientation of particle
-     * \param lnboltzmann Log of Boltzmann weight of insertion attempt (return value)
+     * \param delta_u Change in energy from insertion attempt (return value)
      * \returns True if boltzmann weight is non-zero
      */
     virtual bool tryInsertParticle(uint64_t timestep,
                                    unsigned int type,
                                    vec3<Scalar> pos,
                                    quat<Scalar> orientation,
-                                   Scalar& lnboltzmann);
+                                   Scalar& delta_u);
 
     /*! Try removing a particle
         \param timestep Current time step
         \param tag Tag of particle being removed
-        \param lnboltzmann Log of Boltzmann weight of removal attempt (return value)
+        \param delta_u Change in energy from removal attempt (return value)
         \returns True if boltzmann weight is non-zero
      */
     virtual bool tryRemoveParticle(uint64_t timestep, unsigned int tag, Scalar& lnboltzmann);
@@ -207,14 +207,14 @@ template<class Shape> class UpdaterMuVT : public Updater
      * \param new_box the old BoxDim
      * \param new_box the new BoxDim
      * \param extra_ndof (return value) extra degrees of freedom added before box resize
-     * \param lnboltzmann (return value) exponent of Boltzmann factor (-delta_E)
+     * \param delta_u (return value) change in energy from the box resize
      * \returns true if no overlaps
      */
     virtual bool boxResizeAndScale(uint64_t timestep,
                                    const BoxDim old_box,
                                    const BoxDim new_box,
                                    unsigned int& extra_ndof,
-                                   Scalar& lnboltzmann);
+                                   Scalar& delta_u);
 
     //! Map particles by type
     virtual void mapTypes();
@@ -571,15 +571,15 @@ bool UpdaterMuVT<Shape>::boxResizeAndScale(uint64_t timestep,
                                            const BoxDim old_box,
                                            const BoxDim new_box,
                                            unsigned int& extra_ndof,
-                                           Scalar& lnboltzmann)
+                                           Scalar& delta_u)
     {
-    lnboltzmann = Scalar(0.0);
+    delta_u = Scalar(0.0);
     unsigned int ndim = this->m_sysdef->getNDimensions();
 
     unsigned int N_old = m_pdata->getN();
 
     // energy of old configuration
-    lnboltzmann += m_mc->computeTotalPairEnergy(timestep);
+    delta_u += m_mc->computeTotalPairEnergy(timestep);
 
         {
         // Get particle positions
@@ -614,7 +614,7 @@ bool UpdaterMuVT<Shape>::boxResizeAndScale(uint64_t timestep,
     if (!overlap)
         {
         // energy of new configuration
-        lnboltzmann -= m_mc->computeTotalPairEnergy(timestep);
+        delta_u -= m_mc->computeTotalPairEnergy(timestep);
         }
 
     if (!overlap)
@@ -910,6 +910,8 @@ template<class Shape> void UpdaterMuVT<Shape>::update(uint64_t timestep)
     m_count_step_start = m_count_total;
     unsigned int ndim = this->m_sysdef->getNDimensions();
 
+    const Scalar kT = (*m_mc->getKT())(timestep);
+
     m_exec_conf->msg->notice(10) << "UpdaterMuVT update: " << timestep << std::endl;
 
     // initialize random number generator
@@ -1140,17 +1142,17 @@ template<class Shape> void UpdaterMuVT<Shape>::update(uint64_t timestep)
                         }
 
                     // acceptance probability
-                    lnboltzmann = log(fugacity * V / (Scalar)(nptl_type + 1));
+                    lnboltzmann = log(fugacity * V / ((Scalar)(nptl_type + 1) * kT));
                     }
 
                 // check if particle can be inserted without overlaps
-                Scalar lnb(0.0);
+                Scalar delta_u(0.0);
                 unsigned int nonzero
-                    = tryInsertParticle(timestep, type, pos_test, shape_test.orientation, lnb);
+                    = tryInsertParticle(timestep, type, pos_test, shape_test.orientation, delta_u);
 
                 if (nonzero)
                     {
-                    lnboltzmann += lnb;
+                    lnboltzmann += delta_u / kT;
                     }
 
 #ifdef ENABLE_MPI
@@ -1280,7 +1282,7 @@ template<class Shape> void UpdaterMuVT<Shape>::update(uint64_t timestep)
                     throw std::runtime_error("Error in UpdaterMuVT");
                     }
 
-                lnboltzmann -= log(fugacity);
+                lnboltzmann -= log(fugacity / kT);
                 }
             else
                 {
@@ -1324,10 +1326,10 @@ template<class Shape> void UpdaterMuVT<Shape>::update(uint64_t timestep)
             bool accept = true;
 
             // get weight for removal
-            Scalar lnb(0.0);
-            if (tryRemoveParticle(timestep, tag, lnb))
+            Scalar delta_u(0.0);
+            if (tryRemoveParticle(timestep, tag, delta_u))
                 {
-                lnboltzmann += lnb;
+                lnboltzmann += delta_u / kT;
                 }
             else
                 {
@@ -1523,13 +1525,13 @@ template<class Shape> void UpdaterMuVT<Shape>::update(uint64_t timestep)
         unsigned int extra_ndof = 0;
 
         // set new box and rescale coordinates
-        Scalar lnb(0.0);
+        Scalar delta_u(0.0);
         bool has_overlaps
-            = !boxResizeAndScale(timestep, global_box_old, global_box_new, extra_ndof, lnb);
+            = !boxResizeAndScale(timestep, global_box_old, global_box_new, extra_ndof, delta_u);
         ndof += extra_ndof;
 
         unsigned int other_result;
-        Scalar other_lnb;
+        Scalar other_delta_u;
 
         if (is_root)
             {
@@ -1544,7 +1546,7 @@ template<class Shape> void UpdaterMuVT<Shape>::update(uint64_t timestep)
                          0,
                          m_exec_conf->getHOOMDWorldMPICommunicator(),
                          &stat);
-                MPI_Recv(&other_lnb,
+                MPI_Recv(&other_delta_u,
                          1,
                          MPI_HOOMD_SCALAR,
                          m_gibbs_other,
@@ -1562,7 +1564,7 @@ template<class Shape> void UpdaterMuVT<Shape>::update(uint64_t timestep)
                          m_gibbs_other,
                          0,
                          m_exec_conf->getHOOMDWorldMPICommunicator());
-                MPI_Send(&lnb,
+                MPI_Send(&delta_u,
                          1,
                          MPI_HOOMD_SCALAR,
                          m_gibbs_other,
@@ -1590,8 +1592,8 @@ template<class Shape> void UpdaterMuVT<Shape>::update(uint64_t timestep)
 
                 // apply criterion on rank zero
                 Scalar arg = log(V_new / V) * (Scalar)(ndof + 1)
-                             + log(V_new_other / V_other) * (Scalar)(other_ndof + 1) + lnb
-                             + other_lnb;
+                             + log(V_new_other / V_other) * (Scalar)(other_ndof + 1)
+                             + (delta_u + other_delta_u) / kT;
 
                 accept = hoomd::detail::generate_canonical<double>(rng_group) < exp(arg);
                 accept &= !(has_overlaps || other_result);
@@ -1682,9 +1684,9 @@ template<class Shape> void UpdaterMuVT<Shape>::update(uint64_t timestep)
     }
 
 template<class Shape>
-bool UpdaterMuVT<Shape>::tryRemoveParticle(uint64_t timestep, unsigned int tag, Scalar& lnboltzmann)
+bool UpdaterMuVT<Shape>::tryRemoveParticle(uint64_t timestep, unsigned int tag, Scalar& delta_u)
     {
-    lnboltzmann = Scalar(0.0);
+    delta_u = Scalar(0.0);
 
     // guard against trying to modify empty particle data
     bool nonzero = true;
@@ -1718,16 +1720,15 @@ bool UpdaterMuVT<Shape>::tryRemoveParticle(uint64_t timestep, unsigned int tag, 
                 {
                 if (field)
                     {
-                    lnboltzmann += field->energy(box,
-                                                 type,
-                                                 pos,
-                                                 quat<float>(orientation),
-                                                 float(diameter), // diameter i
-                                                 float(charge)    // charge i
+                    delta_u += field->energy(box,
+                                             type,
+                                             pos,
+                                             quat<float>(orientation),
+                                             float(diameter), // diameter i
+                                             float(charge)    // charge i
                     );
                     }
-                lnboltzmann
-                    += m_mc->computeOneExternalEnergy(type, pos, orientation, charge, false);
+                delta_u += m_mc->computeOneExternalEnergy(type, pos, orientation, charge, false);
                 }
             }
 
@@ -1793,16 +1794,16 @@ bool UpdaterMuVT<Shape>::tryRemoveParticle(uint64_t timestep, unsigned int tag, 
                         {
                         vec3<Scalar> r_ij = pos - pos_image;
                         // self-energy
-                        lnboltzmann += m_mc->computeOnePairEnergy(dot(r_ij, r_ij),
-                                                                  r_ij,
-                                                                  type,
-                                                                  orientation,
-                                                                  diameter,
-                                                                  charge,
-                                                                  type,
-                                                                  orientation,
-                                                                  diameter,
-                                                                  charge);
+                        delta_u += m_mc->computeOnePairEnergy(dot(r_ij, r_ij),
+                                                              r_ij,
+                                                              type,
+                                                              orientation,
+                                                              diameter,
+                                                              charge,
+                                                              type,
+                                                              orientation,
+                                                              diameter,
+                                                              charge);
                         }
 
                     hoomd::detail::AABB aabb = aabb_local;
@@ -1835,16 +1836,16 @@ bool UpdaterMuVT<Shape>::tryRemoveParticle(uint64_t timestep, unsigned int tag, 
                                     if (h_tag.data[j] == tag)
                                         continue;
 
-                                    lnboltzmann += m_mc->computeOnePairEnergy(dot(r_ij, r_ij),
-                                                                              r_ij,
-                                                                              type,
-                                                                              orientation,
-                                                                              diameter,
-                                                                              charge,
-                                                                              typ_j,
-                                                                              orientation_j,
-                                                                              h_diameter.data[j],
-                                                                              h_charge.data[j]);
+                                    delta_u += m_mc->computeOnePairEnergy(dot(r_ij, r_ij),
+                                                                          r_ij,
+                                                                          type,
+                                                                          orientation,
+                                                                          diameter,
+                                                                          charge,
+                                                                          typ_j,
+                                                                          orientation_j,
+                                                                          h_diameter.data[j],
+                                                                          h_charge.data[j]);
                                     }
                                 }
                             }
@@ -1862,7 +1863,7 @@ bool UpdaterMuVT<Shape>::tryRemoveParticle(uint64_t timestep, unsigned int tag, 
         if (m_sysdef->isDomainDecomposed())
             {
             MPI_Allreduce(MPI_IN_PLACE,
-                          &lnboltzmann,
+                          &delta_u,
                           1,
                           MPI_HOOMD_SCALAR,
                           MPI_SUM,
@@ -1957,7 +1958,7 @@ bool UpdaterMuVT<Shape>::tryRemoveParticle(uint64_t timestep, unsigned int tag, 
                                                   true,
                                                   type_d))
                     {
-                    lnboltzmann += lnb;
+                    delta_u += lnb;
                     }
                 else
                     {
@@ -1980,13 +1981,13 @@ bool UpdaterMuVT<Shape>::tryInsertParticle(uint64_t timestep,
                                            unsigned int type,
                                            vec3<Scalar> pos,
                                            quat<Scalar> orientation,
-                                           Scalar& lnboltzmann)
+                                           Scalar& delta_u)
     {
     // do we have to compute a wall contribution?
     auto field = m_mc->getExternalField();
     bool has_field = field || (!m_mc->getExternalPotentials().empty());
 
-    lnboltzmann = Scalar(0.0);
+    delta_u = Scalar(0.0);
 
     unsigned int overlap = 0;
 
@@ -2023,21 +2024,21 @@ bool UpdaterMuVT<Shape>::tryInsertParticle(uint64_t timestep,
 
         if (has_field && (!m_gibbs || p == 0))
             {
-            lnboltzmann += m_mc->computeOneExternalEnergy(type, pos, orientation, 0.0, true);
+            delta_u += m_mc->computeOneExternalEnergy(type, pos, orientation, 0.0, true);
 
             const BoxDim& box = this->m_pdata->getGlobalBox();
             if (field)
                 {
-                lnboltzmann -= field->energy(box,
-                                             type,
-                                             pos,
-                                             quat<float>(orientation),
-                                             1.0, // diameter i
-                                             0.0  // charge i
+                delta_u -= field->energy(box,
+                                         type,
+                                         pos,
+                                         quat<float>(orientation),
+                                         1.0, // diameter i
+                                         0.0  // charge i
                 );
                 }
 
-            lnboltzmann += m_mc->computeOneExternalEnergy(type, pos, orientation, 0.0, true);
+            delta_u += m_mc->computeOneExternalEnergy(type, pos, orientation, 0.0, true);
             }
 
         if (m_mc->hasPairInteractions())
@@ -2087,16 +2088,16 @@ bool UpdaterMuVT<Shape>::tryInsertParticle(uint64_t timestep,
                         }
 
                     // self-energy
-                    lnboltzmann -= m_mc->computeOnePairEnergy(dot(r_ij, r_ij),
-                                                              r_ij,
-                                                              type,
-                                                              orientation,
-                                                              1.0, // diameter i
-                                                              0.0, // charge i
-                                                              type,
-                                                              orientation,
-                                                              1.0, // diameter i
-                                                              0.0  // charge i
+                    delta_u -= m_mc->computeOnePairEnergy(dot(r_ij, r_ij),
+                                                          r_ij,
+                                                          type,
+                                                          orientation,
+                                                          1.0, // diameter i
+                                                          0.0, // charge i
+                                                          type,
+                                                          orientation,
+                                                          1.0, // diameter i
+                                                          0.0  // charge i
                     );
                     }
                 }
@@ -2168,16 +2169,16 @@ bool UpdaterMuVT<Shape>::tryInsertParticle(uint64_t timestep,
                                     break;
                                     }
 
-                                lnboltzmann -= m_mc->computeOnePairEnergy(dot(r_ij, r_ij),
-                                                                          r_ij,
-                                                                          type,
-                                                                          orientation,
-                                                                          1.0, // diameter i
-                                                                          0.0, // charge i
-                                                                          typ_j,
-                                                                          orientation_j,
-                                                                          h_diameter.data[j],
-                                                                          h_charge.data[j]);
+                                delta_u -= m_mc->computeOnePairEnergy(dot(r_ij, r_ij),
+                                                                      r_ij,
+                                                                      type,
+                                                                      orientation,
+                                                                      1.0, // diameter i
+                                                                      0.0, // charge i
+                                                                      typ_j,
+                                                                      orientation_j,
+                                                                      h_diameter.data[j],
+                                                                      h_charge.data[j]);
                                 }
                             }
                         }
@@ -2205,7 +2206,7 @@ bool UpdaterMuVT<Shape>::tryInsertParticle(uint64_t timestep,
     if (m_sysdef->isDomainDecomposed())
         {
         MPI_Allreduce(MPI_IN_PLACE,
-                      &lnboltzmann,
+                      &delta_u,
                       1,
                       MPI_HOOMD_SCALAR,
                       MPI_SUM,
@@ -2285,7 +2286,7 @@ bool UpdaterMuVT<Shape>::tryInsertParticle(uint64_t timestep,
                                                   lnb,
                                                   type_d))
                     {
-                    lnboltzmann -= lnb;
+                    delta_u -= lnb;
                     }
                 else
                     {

@@ -17,8 +17,17 @@ Change Log
 
 *Added*
 
-* `mpcd.geometry.ConcentricCylinders` for concentric cylinders
-  (`#1894 <https://github.com/glotzerlab/hoomd-blue/pull/1894>`__)
+* ``mpcd.geometry.ConcentricCylinders`` for concentric cylinders
+  (`#1894 <https://github.com/glotzerlab/hoomd-blue/pull/1894>`__).
+* ``kT`` parameter to all HPMC integrators. All HPMC-related operations respect the set ``kT``
+  (`#1869 <https://github.com/glotzerlab/hoomd-blue/pull/1869>`__).
+* ``P`` property of ``hoomd.hpmc.compute.SDF``
+  (`#1869 <https://github.com/glotzerlab/hoomd-blue/pull/1869>`__).
+
+*Changed*
+
+* ``betaP`` is replaced by ``P`` in ``hoomd.hpmc.update.BoxMC``
+  (`#1869 <https://github.com/glotzerlab/hoomd-blue/pull/1869>`__)
 
 *Removed*
 

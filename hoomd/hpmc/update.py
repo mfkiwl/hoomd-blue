@@ -25,9 +25,9 @@ class BoxMC(Updater):
     r"""Apply box updates to sample isobaric and related ensembles.
 
     Args:
-        betaP (hoomd.variant.variant_like): :math:`\frac{p}{k_{\mathrm{B}}T}`
-            :math:`[\mathrm{length}^{-2}]` in 2D or
-            :math:`[\mathrm{length}^{-3}]` in 3D.
+        P (hoomd.variant.variant_like): The pressure :math:`P`
+            :math:`[\mathrm{energy}] \cdot [\mathrm{length}^{-2}]` in 2D or
+            :math:`[\mathrm{energy}] \cdot [\mathrm{length}^{-3}]` in 3D.
         trigger (hoomd.trigger.trigger_like): Select the timesteps to perform
             box trial moves.
 
@@ -204,10 +204,11 @@ class BoxMC(Updater):
         1 & \beta \Delta H + \beta \Delta U \le 0 \\
         \end{cases}
 
-    where :math:`\Delta U = U^t - U` is the difference in potential energy,
-    :math:`\beta \Delta H = \beta P (V^t - V) - N_\mathrm{particles} \cdot
-    \ln(V^t / V)` for most move types. It is :math:`\beta P (V^t - V) -
-    (N_\mathrm{particles}+1) \cdot \ln(V^t / V)` for ln volume moves.
+    where :math:`\beta = \frac{1}{kT}` (set in `HPMCIntegrator.kT`) and
+    :math:`\Delta U = U^t - U` is the difference in potential energy.
+    :math:`\Delta H = P (V^t - V) - N_\mathrm{particles} \cdot
+    \ln(V^t / V) / \beta` for most move types. It is :math:`P (V^t - V) -
+    (N_\mathrm{particles}+1) \cdot \ln(V^t / V) / \beta` for ln volume moves.
 
     When the trial move is accepted, the system state is set to the the trial
     configuration. When it is not accepted, the move is rejected and the state
@@ -219,6 +220,10 @@ class BoxMC(Updater):
     for particle overlaps in the local particle reference frame.
 
     Attributes:
+        P (hoomd.variant.Variant): The pressure :math:`P`
+            :math:`[\mathrm{energy} \ \mathrm{length}^{-2}]` in 2D or
+            :math:`[\mathrm{energy} \ \mathrm{length}^{-3}]` in 3D.
+
         volume (dict):
             Parameters for isobaric volume moves that scale the box lengths
             uniformly. The dictionary has the following keys:
@@ -268,7 +273,7 @@ class BoxMC(Updater):
             different streams of random numbers.
     """
 
-    def __init__(self, trigger, betaP):
+    def __init__(self, trigger, P):
         super().__init__(trigger)
 
         _default_dict = dict(weight=0.0, delta=0.0)
@@ -280,12 +285,12 @@ class BoxMC(Updater):
             aspect=_default_dict,
             length=dict(weight=0.0, delta=(0.0,) * 3),
             shear=dict(weight=0.0, delta=(0.0,) * 3, reduce=0.0),
-            betaP=hoomd.variant.Variant,
+            P=hoomd.variant.Variant,
             instance=int,
         )
         self._param_dict.update(param_dict)
         self.volume["mode"] = "standard"
-        self.betaP = betaP
+        self.P = P
         self.instance = 0
 
     def _attach_hook(self):
@@ -300,7 +305,7 @@ class BoxMC(Updater):
 
         self._cpp_obj = _hpmc.UpdaterBoxMC(self._simulation.state._cpp_sys_def,
                                            self.trigger, integrator._cpp_obj,
-                                           self.betaP)
+                                           self.P)
 
     @property
     def counter(self):
@@ -411,7 +416,7 @@ class MuVT(Updater):
           to swap depletants
         fugacity (`TypeParameter` [ ``particle type``, `float`]):
             Particle fugacity
-            :math:`[\mathrm{volume}^{-1}]` (**default:** 0).
+            :math:`[\mathrm{energy}] \cdot [\mathrm{volume}^{-1}]` (**default:** 0).
     """
 
     def __init__(self,
