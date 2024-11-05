@@ -171,9 +171,8 @@ __global__ void flip_clusters(Scalar4* d_postype,
 
     // seed by cluster id
     int component = d_components[i];
-    hoomd::RandomGenerator rng_i(
-        hoomd::Seed(hoomd::RNGIdentifier::UpdaterGCA2, timestep, seed),
-        hoomd::Counter(component));
+    hoomd::RandomGenerator rng_i(hoomd::Seed(hoomd::RNGIdentifier::UpdaterGCA2, timestep, seed),
+                                 hoomd::Counter(component));
 
     bool flip = hoomd::detail::generate_canonical<float>(rng_i) <= flip_probability;
 

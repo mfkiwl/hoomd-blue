@@ -150,7 +150,7 @@ def test_pivot_moves(device, simulation_factory, lattice_snapshot_factory):
     sim.operations.integrator = mc
 
     cl = hoomd.hpmc.update.GCA(trigger=hoomd.trigger.Periodic(5),
-                                    pivot_move_probability=0.5)
+                               pivot_move_probability=0.5)
     sim.operations.updaters.append(cl)
 
     sim.run(10)
@@ -168,7 +168,7 @@ def test_pickling(simulation_factory, two_particle_snapshot_factory):
     sim.operations.integrator = mc
 
     cl = hoomd.hpmc.update.GCA(trigger=hoomd.trigger.Periodic(5),
-                                    pivot_move_probability=0.1)
+                               pivot_move_probability=0.1)
     operation_pickling_check(cl, sim)
 
 
@@ -182,7 +182,7 @@ def test_kernel_parameters(simulation_factory, two_particle_snapshot_factory):
     sim.operations.integrator = mc
 
     cl = hoomd.hpmc.update.GCA(trigger=hoomd.trigger.Periodic(1),
-                                    pivot_move_probability=0.1)
+                               pivot_move_probability=0.1)
     sim.operations.updaters.append(cl)
 
     sim.run(0)

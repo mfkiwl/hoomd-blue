@@ -40,9 +40,7 @@ void export_union_faceted_ellipsoid(pybind11::module& m)
         "ComputeFreeVolumeFacetedEllipsoidUnion");
     export_ComputeSDF<ShapeUnion<ShapeFacetedEllipsoid>>(m, "ComputeSDFFacetedEllipsoidUnion");
     export_UpdaterMuVT<ShapeUnion<ShapeFacetedEllipsoid>>(m, "UpdaterMuVTFacetedEllipsoidUnion");
-    export_UpdaterGCA<ShapeUnion<ShapeFacetedEllipsoid>>(
-        m,
-        "UpdaterGCAFacetedEllipsoidUnion");
+    export_UpdaterGCA<ShapeUnion<ShapeFacetedEllipsoid>>(m, "UpdaterGCAFacetedEllipsoidUnion");
 
     export_ExternalFieldInterface<ShapeUnion<ShapeFacetedEllipsoid>>(
         m,
@@ -60,9 +58,8 @@ void export_union_faceted_ellipsoid(pybind11::module& m)
     export_ComputeFreeVolumeGPU<ShapeUnion<ShapeFacetedEllipsoid>>(
         m,
         "ComputeFreeVolumeFacetedEllipsoidUnionGPU");
-    export_UpdaterGCAGPU<ShapeUnion<ShapeFacetedEllipsoid>>(
-        m,
-        "UpdaterGCAFacetedEllipsoidUnionGPU");
+    export_UpdaterGCAGPU<ShapeUnion<ShapeFacetedEllipsoid>>(m,
+                                                            "UpdaterGCAFacetedEllipsoidUnionGPU");
 
 #endif
     }

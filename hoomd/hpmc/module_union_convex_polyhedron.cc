@@ -42,9 +42,8 @@ void export_union_convex_polyhedron(pybind11::module& m)
                                                          "ComputeSDFConvexSpheropolyhedronUnion");
     export_UpdaterMuVT<ShapeUnion<ShapeSpheropolyhedron>>(m,
                                                           "UpdaterMuVTConvexSpheropolyhedronUnion");
-    export_UpdaterGCA<ShapeUnion<ShapeSpheropolyhedron>>(
-        m,
-        "UpdaterGCAConvexSpheropolyhedronUnion");
+    export_UpdaterGCA<ShapeUnion<ShapeSpheropolyhedron>>(m,
+                                                         "UpdaterGCAConvexSpheropolyhedronUnion");
 
     export_ExternalFieldInterface<ShapeUnion<ShapeSpheropolyhedron>>(
         m,

@@ -29,9 +29,9 @@ template<class Shape> class UpdaterGCAGPU : public UpdaterGCA<Shape>
         \param seed PRNG seed
     */
     UpdaterGCAGPU(std::shared_ptr<SystemDefinition> sysdef,
-                       std::shared_ptr<Trigger> trigger,
-                       std::shared_ptr<IntegratorHPMCMono<Shape>> mc,
-                       std::shared_ptr<CellList> cl);
+                  std::shared_ptr<Trigger> trigger,
+                  std::shared_ptr<IntegratorHPMCMono<Shape>> mc,
+                  std::shared_ptr<CellList> cl);
 
     //! Destructor
     virtual ~UpdaterGCAGPU();
@@ -120,9 +120,9 @@ template<class Shape> class UpdaterGCAGPU : public UpdaterGCA<Shape>
 
 template<class Shape>
 UpdaterGCAGPU<Shape>::UpdaterGCAGPU(std::shared_ptr<SystemDefinition> sysdef,
-                                              std::shared_ptr<Trigger> trigger,
-                                              std::shared_ptr<IntegratorHPMCMono<Shape>> mc,
-                                              std::shared_ptr<CellList> cl)
+                                    std::shared_ptr<Trigger> trigger,
+                                    std::shared_ptr<IntegratorHPMCMono<Shape>> mc,
+                                    std::shared_ptr<CellList> cl)
     : UpdaterGCA<Shape>(sysdef, trigger, mc), m_cl(cl)
     {
     this->m_exec_conf->msg->notice(5) << "Constructing UpdaterGCAGPU" << std::endl;
@@ -571,9 +571,7 @@ template<class Shape> void UpdaterGCAGPU<Shape>::backupState()
     }
 
 template<class Shape>
-void UpdaterGCAGPU<Shape>::transform(const quat<Scalar>& q,
-                                          const vec3<Scalar>& pivot,
-                                          bool line)
+void UpdaterGCAGPU<Shape>::transform(const quat<Scalar>& q, const vec3<Scalar>& pivot, bool line)
     {
     ArrayHandle<Scalar4> d_postype(this->m_pdata->getPositions(),
                                    access_location::device,
@@ -653,9 +651,9 @@ template<class Shape> void UpdaterGCAGPU<Shape>::flip(uint64_t timestep)
 
 template<class Shape>
 void UpdaterGCAGPU<Shape>::findInteractions(uint64_t timestep,
-                                                 const quat<Scalar> q,
-                                                 const vec3<Scalar> pivot,
-                                                 bool line)
+                                            const quat<Scalar> q,
+                                            const vec3<Scalar> pivot,
+                                            bool line)
     {
     const auto& params = this->m_mc->getParams();
 
