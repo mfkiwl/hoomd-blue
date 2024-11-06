@@ -14,13 +14,13 @@
 #include "ExternalFieldHarmonic.h"
 #include "ExternalFieldWall.h"
 
-#include "UpdaterClusters.h"
+#include "UpdaterGCA.h"
 #include "UpdaterMuVT.h"
 
 #ifdef ENABLE_HIP
 #include "ComputeFreeVolumeGPU.h"
 #include "IntegratorHPMCMonoGPU.h"
-#include "UpdaterClustersGPU.h"
+#include "UpdaterGCAGPU.h"
 #endif
 
 namespace hoomd
@@ -42,9 +42,8 @@ void export_union_convex_polyhedron(pybind11::module& m)
                                                          "ComputeSDFConvexSpheropolyhedronUnion");
     export_UpdaterMuVT<ShapeUnion<ShapeSpheropolyhedron>>(m,
                                                           "UpdaterMuVTConvexSpheropolyhedronUnion");
-    export_UpdaterClusters<ShapeUnion<ShapeSpheropolyhedron>>(
-        m,
-        "UpdaterClustersConvexSpheropolyhedronUnion");
+    export_UpdaterGCA<ShapeUnion<ShapeSpheropolyhedron>>(m,
+                                                         "UpdaterGCAConvexSpheropolyhedronUnion");
 
     export_ExternalFieldInterface<ShapeUnion<ShapeSpheropolyhedron>>(
         m,
@@ -63,9 +62,9 @@ void export_union_convex_polyhedron(pybind11::module& m)
     export_ComputeFreeVolumeGPU<ShapeUnion<ShapeSpheropolyhedron>>(
         m,
         "ComputeFreeVolumeConvexPolyhedronUnionGPU");
-    export_UpdaterClustersGPU<ShapeUnion<ShapeSpheropolyhedron>>(
+    export_UpdaterGCAGPU<ShapeUnion<ShapeSpheropolyhedron>>(
         m,
-        "UpdaterClustersConvexSpheropolyhedronUnionGPU");
+        "UpdaterGCAConvexSpheropolyhedronUnionGPU");
 
 #endif
     }

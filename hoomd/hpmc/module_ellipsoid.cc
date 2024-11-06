@@ -14,7 +14,7 @@
 #include "ExternalFieldHarmonic.h"
 #include "ExternalFieldWall.h"
 
-#include "UpdaterClusters.h"
+#include "UpdaterGCA.h"
 #include "UpdaterMuVT.h"
 
 #include "ShapeMoves.h"
@@ -23,7 +23,7 @@
 #ifdef ENABLE_HIP
 #include "ComputeFreeVolumeGPU.h"
 #include "IntegratorHPMCMonoGPU.h"
-#include "UpdaterClustersGPU.h"
+#include "UpdaterGCAGPU.h"
 #endif
 
 namespace hoomd
@@ -39,7 +39,7 @@ void export_ellipsoid(pybind11::module& m)
     export_ComputeFreeVolume<ShapeEllipsoid>(m, "ComputeFreeVolumeEllipsoid");
     export_ComputeSDF<ShapeEllipsoid>(m, "ComputeSDFEllipsoid");
     export_UpdaterMuVT<ShapeEllipsoid>(m, "UpdaterMuVTEllipsoid");
-    export_UpdaterClusters<ShapeEllipsoid>(m, "UpdaterClustersEllipsoid");
+    export_UpdaterGCA<ShapeEllipsoid>(m, "UpdaterGCAEllipsoid");
 
     export_MassProperties<ShapeEllipsoid>(m, "MassPropertiesEllipsoid");
 
@@ -55,7 +55,7 @@ void export_ellipsoid(pybind11::module& m)
 #ifdef ENABLE_HIP
     export_IntegratorHPMCMonoGPU<ShapeEllipsoid>(m, "IntegratorHPMCMonoEllipsoidGPU");
     export_ComputeFreeVolumeGPU<ShapeEllipsoid>(m, "ComputeFreeVolumeEllipsoidGPU");
-    export_UpdaterClustersGPU<ShapeEllipsoid>(m, "UpdaterClustersEllipsoidGPU");
+    export_UpdaterGCAGPU<ShapeEllipsoid>(m, "UpdaterGCAEllipsoidGPU");
 #endif
     }
 

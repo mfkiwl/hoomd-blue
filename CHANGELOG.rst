@@ -28,6 +28,8 @@ Change Log
 
 * ``betaP`` is replaced by ``P`` in ``hoomd.hpmc.update.BoxMC``
   (`#1869 <https://github.com/glotzerlab/hoomd-blue/pull/1869>`__)
+* ``hoomd.update.Clusters`` is now ``hoomd.update.GCA``
+  (`#1926 <https://github.com/glotzerlab/hoomd-blue/pull/1926>`__)
 
 *Removed*
 

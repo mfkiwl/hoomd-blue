@@ -36,6 +36,8 @@ Breaking changes to existing functionalities
   * Set `hoomd.hpmc.update.BoxMC.P` to ``P = betaP / beta`` and set the appropriate ``kT = 1/beta``
     in the integrator.
 
+* ``hoomd.hpmc.update.Clusters`` is renamed to ``hoomd.hpmc.update.GCA``.
+
 Removed functionalities
 ^^^^^^^^^^^^^^^^^^^^^^^
 

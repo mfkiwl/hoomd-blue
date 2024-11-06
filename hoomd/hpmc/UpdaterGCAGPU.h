@@ -1,19 +1,14 @@
 // Copyright (c) 2009-2024 The Regents of the University of Michigan.
 // Part of HOOMD-blue, released under the BSD 3-Clause License.
 
-#ifndef _UPDATER_HPMC_CLUSTERS_GPU_
-#define _UPDATER_HPMC_CLUSTERS_GPU_
-
-/*! \file UpdaterBoxClusters.h
-    \brief Declaration of UpdaterBoxClusters
-*/
+#pragma once
 
 #ifdef ENABLE_HIP
 
 #include "IntegratorHPMCMonoGPUDepletants.cuh"
-#include "UpdaterClusters.h"
-#include "UpdaterClustersGPU.cuh"
-#include "UpdaterClustersGPUDepletants.cuh"
+#include "UpdaterGCA.h"
+#include "UpdaterGCAGPU.cuh"
+#include "UpdaterGCAGPUDepletants.cuh"
 
 #include <hip/hip_runtime.h>
 
@@ -22,10 +17,10 @@ namespace hoomd
 namespace hpmc
     {
 /*!
-   Implementation of UpdaterClusters on the GPU
+   Implementation of UpdaterGCA on the GPU
 */
 
-template<class Shape> class UpdaterClustersGPU : public UpdaterClusters<Shape>
+template<class Shape> class UpdaterGCAGPU : public UpdaterGCA<Shape>
     {
     public:
     //! Constructor
@@ -33,13 +28,13 @@ template<class Shape> class UpdaterClustersGPU : public UpdaterClusters<Shape>
         \param mc HPMC integrator
         \param seed PRNG seed
     */
-    UpdaterClustersGPU(std::shared_ptr<SystemDefinition> sysdef,
-                       std::shared_ptr<Trigger> trigger,
-                       std::shared_ptr<IntegratorHPMCMono<Shape>> mc,
-                       std::shared_ptr<CellList> cl);
+    UpdaterGCAGPU(std::shared_ptr<SystemDefinition> sysdef,
+                  std::shared_ptr<Trigger> trigger,
+                  std::shared_ptr<IntegratorHPMCMono<Shape>> mc,
+                  std::shared_ptr<CellList> cl);
 
     //! Destructor
-    virtual ~UpdaterClustersGPU();
+    virtual ~UpdaterGCAGPU();
 
     //! Take one timestep forward
     /*! \param timestep timestep at which update is being evaluated
@@ -124,13 +119,13 @@ template<class Shape> class UpdaterClustersGPU : public UpdaterClusters<Shape>
     };
 
 template<class Shape>
-UpdaterClustersGPU<Shape>::UpdaterClustersGPU(std::shared_ptr<SystemDefinition> sysdef,
-                                              std::shared_ptr<Trigger> trigger,
-                                              std::shared_ptr<IntegratorHPMCMono<Shape>> mc,
-                                              std::shared_ptr<CellList> cl)
-    : UpdaterClusters<Shape>(sysdef, trigger, mc), m_cl(cl)
+UpdaterGCAGPU<Shape>::UpdaterGCAGPU(std::shared_ptr<SystemDefinition> sysdef,
+                                    std::shared_ptr<Trigger> trigger,
+                                    std::shared_ptr<IntegratorHPMCMono<Shape>> mc,
+                                    std::shared_ptr<CellList> cl)
+    : UpdaterGCA<Shape>(sysdef, trigger, mc), m_cl(cl)
     {
-    this->m_exec_conf->msg->notice(5) << "Constructing UpdaterClustersGPU" << std::endl;
+    this->m_exec_conf->msg->notice(5) << "Constructing UpdaterGCAGPU" << std::endl;
 
     this->m_cl->setRadius(1);
     this->m_cl->setComputeTypeBody(false);
@@ -308,9 +303,9 @@ UpdaterClustersGPU<Shape>::UpdaterClustersGPU(std::shared_ptr<SystemDefinition> 
         }
     }
 
-template<class Shape> UpdaterClustersGPU<Shape>::~UpdaterClustersGPU()
+template<class Shape> UpdaterGCAGPU<Shape>::~UpdaterGCAGPU()
     {
-    this->m_exec_conf->msg->notice(5) << "Destroying UpdaterClustersGPU" << std::endl;
+    this->m_exec_conf->msg->notice(5) << "Destroying UpdaterGCAGPU" << std::endl;
 
     for (auto s : m_depletant_streams)
         {
@@ -331,7 +326,7 @@ template<class Shape> UpdaterClustersGPU<Shape>::~UpdaterClustersGPU()
 /*! Perform a cluster move
     \param timestep Current time step of the simulation
 */
-template<class Shape> void UpdaterClustersGPU<Shape>::update(uint64_t timestep)
+template<class Shape> void UpdaterGCAGPU<Shape>::update(uint64_t timestep)
     {
     Updater::update(timestep);
     // compute nominal cell width
@@ -398,10 +393,10 @@ template<class Shape> void UpdaterClustersGPU<Shape>::update(uint64_t timestep)
         }
 
     // perform the update
-    UpdaterClusters<Shape>::update(timestep);
+    UpdaterGCA<Shape>::update(timestep);
     }
 
-template<class Shape> void UpdaterClustersGPU<Shape>::connectedComponents()
+template<class Shape> void UpdaterGCAGPU<Shape>::connectedComponents()
     {
     // this will contain the number of strongly connected components
     unsigned int num_components = 0;
@@ -476,7 +471,7 @@ template<class Shape> void UpdaterClustersGPU<Shape>::connectedComponents()
     this->m_count_total.n_clusters += num_components;
     }
 
-template<class Shape> void UpdaterClustersGPU<Shape>::initializeExcellMem()
+template<class Shape> void UpdaterGCAGPU<Shape>::initializeExcellMem()
     {
     this->m_exec_conf->msg->notice(4) << "hpmc resizing expanded cells" << std::endl;
 
@@ -516,7 +511,7 @@ template<class Shape> void UpdaterClustersGPU<Shape>::initializeExcellMem()
 #endif
     }
 
-template<class Shape> void UpdaterClustersGPU<Shape>::backupState()
+template<class Shape> void UpdaterGCAGPU<Shape>::backupState()
     {
     unsigned int nptl = this->m_pdata->getN();
 
@@ -576,9 +571,7 @@ template<class Shape> void UpdaterClustersGPU<Shape>::backupState()
     }
 
 template<class Shape>
-void UpdaterClustersGPU<Shape>::transform(const quat<Scalar>& q,
-                                          const vec3<Scalar>& pivot,
-                                          bool line)
+void UpdaterGCAGPU<Shape>::transform(const quat<Scalar>& q, const vec3<Scalar>& pivot, bool line)
     {
     ArrayHandle<Scalar4> d_postype(this->m_pdata->getPositions(),
                                    access_location::device,
@@ -612,7 +605,7 @@ void UpdaterClustersGPU<Shape>::transform(const quat<Scalar>& q,
     this->m_exec_conf->endMultiGPU();
     }
 
-template<class Shape> void UpdaterClustersGPU<Shape>::flip(uint64_t timestep)
+template<class Shape> void UpdaterGCAGPU<Shape>::flip(uint64_t timestep)
     {
     ArrayHandle<Scalar4> d_postype(this->m_pdata->getPositions(),
                                    access_location::device,
@@ -657,10 +650,10 @@ template<class Shape> void UpdaterClustersGPU<Shape>::flip(uint64_t timestep)
     }
 
 template<class Shape>
-void UpdaterClustersGPU<Shape>::findInteractions(uint64_t timestep,
-                                                 const quat<Scalar> q,
-                                                 const vec3<Scalar> pivot,
-                                                 bool line)
+void UpdaterGCAGPU<Shape>::findInteractions(uint64_t timestep,
+                                            const quat<Scalar> q,
+                                            const vec3<Scalar> pivot,
+                                            bool line)
     {
     const auto& params = this->m_mc->getParams();
 
@@ -892,7 +885,7 @@ void UpdaterClustersGPU<Shape>::findInteractions(uint64_t timestep,
 
                 if (h_fugacity.data[itype] < 0)
                     throw std::runtime_error(
-                        "Negative fugacities are not supported by UpdaterClustersGPU.");
+                        "Negative fugacities are not supported by UpdaterGCAGPU.");
 
                 // draw random number of depletant insertions per particle from Poisson
                 // distribution
@@ -951,7 +944,7 @@ void UpdaterClustersGPU<Shape>::findInteractions(uint64_t timestep,
         } while (reallocate);
     }
 
-template<class Shape> bool UpdaterClustersGPU<Shape>::checkReallocate()
+template<class Shape> bool UpdaterGCAGPU<Shape>::checkReallocate()
     {
     // read back overflow condition and resize as necessary
     ArrayHandle<unsigned int> h_overflow(m_overflow, access_location::host, access_mode::read);
@@ -1007,7 +1000,7 @@ template<class Shape> bool UpdaterClustersGPU<Shape>::checkReallocate()
     return reallocate || maxn_changed;
     }
 
-template<class Shape> void UpdaterClustersGPU<Shape>::updateGPUAdvice()
+template<class Shape> void UpdaterGCAGPU<Shape>::updateGPUAdvice()
     {
 #ifdef __HIP_PLATFORM_NVCC__
     // update memory hints
@@ -1061,11 +1054,11 @@ template<class Shape> void UpdaterClustersGPU<Shape>::updateGPUAdvice()
 
 namespace detail
     {
-template<class Shape> void export_UpdaterClustersGPU(pybind11::module& m, const std::string& name)
+template<class Shape> void export_UpdaterGCAGPU(pybind11::module& m, const std::string& name)
     {
-    pybind11::class_<UpdaterClustersGPU<Shape>,
-                     UpdaterClusters<Shape>,
-                     std::shared_ptr<UpdaterClustersGPU<Shape>>>(m, name.c_str())
+    pybind11::class_<UpdaterGCAGPU<Shape>,
+                     UpdaterGCA<Shape>,
+                     std::shared_ptr<UpdaterGCAGPU<Shape>>>(m, name.c_str())
         .def(pybind11::init<std::shared_ptr<SystemDefinition>,
                             std::shared_ptr<Trigger>,
                             std::shared_ptr<IntegratorHPMCMono<Shape>>,
@@ -1077,4 +1070,3 @@ template<class Shape> void export_UpdaterClustersGPU(pybind11::module& m, const 
     } // end namespace hoomd
 
 #endif // ENABLE_CUDA
-#endif // _UPDATER_HPMC_CLUSTERS_GPU_

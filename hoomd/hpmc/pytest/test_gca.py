@@ -1,7 +1,7 @@
 # Copyright (c) 2009-2024 The Regents of the University of Michigan.
 # Part of HOOMD-blue, released under the BSD 3-Clause License.
 
-"""Test hoomd.hpmc.update.Clusters."""
+"""Test hoomd.hpmc.update.GCA."""
 
 import hoomd
 from hoomd.conftest import (operation_pickling_check, logging_check,
@@ -38,8 +38,8 @@ valid_attrs = [('trigger', hoomd.trigger.Periodic(10000)),
 @pytest.mark.serial
 @pytest.mark.parametrize("constructor_args", valid_constructor_args)
 def test_valid_construction(device, constructor_args):
-    """Test that Clusters can be constructed with valid arguments."""
-    cl = hoomd.hpmc.update.Clusters(**constructor_args)
+    """Test that GCA can be constructed with valid arguments."""
+    cl = hoomd.hpmc.update.GCA(**constructor_args)
 
     # validate the params were set properly
     for attr, value in constructor_args.items():
@@ -51,7 +51,7 @@ def test_valid_construction(device, constructor_args):
 def test_valid_construction_and_attach(device, simulation_factory,
                                        two_particle_snapshot_factory,
                                        constructor_args, valid_args):
-    """Test that Clusters can be attached with valid arguments."""
+    """Test that GCA can be attached with valid arguments."""
     integrator = valid_args[0]
     args = valid_args[1]
     n_dimensions = valid_args[2]
@@ -68,7 +68,7 @@ def test_valid_construction_and_attach(device, simulation_factory,
     mc.shape["A"] = args
     mc.shape["B"] = args
 
-    cl = hoomd.hpmc.update.Clusters(**constructor_args)
+    cl = hoomd.hpmc.update.GCA(**constructor_args)
     sim = simulation_factory(
         two_particle_snapshot_factory(particle_types=['A', 'B'],
                                       dimensions=n_dimensions,
@@ -87,8 +87,8 @@ def test_valid_construction_and_attach(device, simulation_factory,
 @pytest.mark.serial
 @pytest.mark.parametrize("attr,value", valid_attrs)
 def test_valid_setattr(device, attr, value):
-    """Test that Clusters can get and set attributes."""
-    cl = hoomd.hpmc.update.Clusters(trigger=hoomd.trigger.Periodic(10))
+    """Test that GCA can get and set attributes."""
+    cl = hoomd.hpmc.update.GCA(trigger=hoomd.trigger.Periodic(10))
 
     setattr(cl, attr, value)
     assert getattr(cl, attr) == value
@@ -98,7 +98,7 @@ def test_valid_setattr(device, attr, value):
 @pytest.mark.parametrize("attr,value", valid_attrs)
 def test_valid_setattr_attached(device, attr, value, simulation_factory,
                                 two_particle_snapshot_factory, valid_args):
-    """Test that Clusters can get and set attributes while attached."""
+    """Test that GCA can get and set attributes while attached."""
     integrator = valid_args[0]
     args = valid_args[1]
     n_dimensions = valid_args[2]
@@ -115,7 +115,7 @@ def test_valid_setattr_attached(device, attr, value, simulation_factory,
     mc.shape["A"] = args
     mc.shape["B"] = args
 
-    cl = hoomd.hpmc.update.Clusters(trigger=hoomd.trigger.Periodic(10))
+    cl = hoomd.hpmc.update.GCA(trigger=hoomd.trigger.Periodic(10))
     sim = simulation_factory(
         two_particle_snapshot_factory(particle_types=['A', 'B'],
                                       dimensions=n_dimensions,
@@ -132,10 +132,10 @@ def test_valid_setattr_attached(device, attr, value, simulation_factory,
 
 @pytest.mark.serial
 def test_pivot_moves(device, simulation_factory, lattice_snapshot_factory):
-    """Test that Clusters produces finite size clusters."""
+    """Test that GCA produces finite size clusters."""
     if (isinstance(device, hoomd.device.GPU)
             and hoomd.version.gpu_platform == 'ROCm'):
-        pytest.xfail("Clusters fails on ROCm (#1605)")
+        pytest.xfail("GCA fails on ROCm (#1605)")
 
     sim = simulation_factory(
         lattice_snapshot_factory(particle_types=['A', 'B'],
@@ -149,8 +149,8 @@ def test_pivot_moves(device, simulation_factory, lattice_snapshot_factory):
     mc.shape['B'] = dict(diameter=1.3)
     sim.operations.integrator = mc
 
-    cl = hoomd.hpmc.update.Clusters(trigger=hoomd.trigger.Periodic(5),
-                                    pivot_move_probability=0.5)
+    cl = hoomd.hpmc.update.GCA(trigger=hoomd.trigger.Periodic(5),
+                               pivot_move_probability=0.5)
     sim.operations.updaters.append(cl)
 
     sim.run(10)
@@ -167,8 +167,8 @@ def test_pickling(simulation_factory, two_particle_snapshot_factory):
     mc.shape['B'] = dict(diameter=1.3)
     sim.operations.integrator = mc
 
-    cl = hoomd.hpmc.update.Clusters(trigger=hoomd.trigger.Periodic(5),
-                                    pivot_move_probability=0.1)
+    cl = hoomd.hpmc.update.GCA(trigger=hoomd.trigger.Periodic(5),
+                               pivot_move_probability=0.1)
     operation_pickling_check(cl, sim)
 
 
@@ -181,8 +181,8 @@ def test_kernel_parameters(simulation_factory, two_particle_snapshot_factory):
     mc.shape['B'] = dict(diameter=1.3)
     sim.operations.integrator = mc
 
-    cl = hoomd.hpmc.update.Clusters(trigger=hoomd.trigger.Periodic(1),
-                                    pivot_move_probability=0.1)
+    cl = hoomd.hpmc.update.GCA(trigger=hoomd.trigger.Periodic(1),
+                               pivot_move_probability=0.1)
     sim.operations.updaters.append(cl)
 
     sim.run(0)
@@ -191,7 +191,7 @@ def test_kernel_parameters(simulation_factory, two_particle_snapshot_factory):
 
 
 def test_logging():
-    logging_check(hoomd.hpmc.update.Clusters, ('hpmc', 'update'), {
+    logging_check(hoomd.hpmc.update.GCA, ('hpmc', 'update'), {
         'avg_cluster_size': {
             'category': LoggerCategories.scalar,
             'default': True

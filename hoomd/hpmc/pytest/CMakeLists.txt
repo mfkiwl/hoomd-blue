@@ -1,7 +1,7 @@
 # copy python modules to the build directory to make it a working python package
 set(files __init__.py
           test_boxmc_move_tuner.py
-          test_clusters.py
+          test_gca.py
           test_compute_free_volume.py
           test_compute_sdf.py
           test_external_field.py

@@ -11,7 +11,7 @@ HOOMD-blue can perform simulations of hard particles using the Monte Carlo metho
 particles are defined by their shape, and the `HPMC integrator <hpmc.integrate>` supports
 polygons, spheropolygons, polyhedra, spheropolyhedra, ellipsoids, faceted ellipsoids, spheres,
 indented spheres, and unions of shapes. HPMC can make both constant volume and constant pressure
-box moves (`hpmc.update.BoxMC`), perform cluster moves (`hpmc.update.Clusters`)
+box moves (`hpmc.update.BoxMC`), execute the geometric cluster algorithm (`hpmc.update.GCA`)
 and can compute the pressure during constant volume simulations (`hpmc.compute.SDF`).
 
 HPMC can also apply external and pair potentials to the particles. Use

@@ -14,13 +14,13 @@
 #include "ExternalFieldHarmonic.h"
 #include "ExternalFieldWall.h"
 
-#include "UpdaterClusters.h"
+#include "UpdaterGCA.h"
 #include "UpdaterMuVT.h"
 
 #ifdef ENABLE_HIP
 #include "ComputeFreeVolumeGPU.h"
 #include "IntegratorHPMCMonoGPU.h"
-#include "UpdaterClustersGPU.h"
+#include "UpdaterGCAGPU.h"
 #endif
 
 namespace hoomd
@@ -36,7 +36,7 @@ void export_convex_polygon(pybind11::module& m)
     export_ComputeFreeVolume<ShapeConvexPolygon>(m, "ComputeFreeVolumeConvexPolygon");
     export_ComputeSDF<ShapeConvexPolygon>(m, "ComputeSDFConvexPolygon");
     export_UpdaterMuVT<ShapeConvexPolygon>(m, "UpdaterMuVTConvexPolygon");
-    export_UpdaterClusters<ShapeConvexPolygon>(m, "UpdaterClustersConvexPolygon");
+    export_UpdaterGCA<ShapeConvexPolygon>(m, "UpdaterGCAConvexPolygon");
 
     export_ExternalFieldInterface<ShapeConvexPolygon>(m, "ExternalFieldConvexPolygon");
     export_HarmonicField<ShapeConvexPolygon>(m, "ExternalFieldHarmonicConvexPolygon");
@@ -45,7 +45,7 @@ void export_convex_polygon(pybind11::module& m)
 #ifdef ENABLE_HIP
     export_IntegratorHPMCMonoGPU<ShapeConvexPolygon>(m, "IntegratorHPMCMonoConvexPolygonGPU");
     export_ComputeFreeVolumeGPU<ShapeConvexPolygon>(m, "ComputeFreeVolumeConvexPolygonGPU");
-    export_UpdaterClustersGPU<ShapeConvexPolygon>(m, "UpdaterClustersConvexPolygonGPU");
+    export_UpdaterGCAGPU<ShapeConvexPolygon>(m, "UpdaterGCAConvexPolygonGPU");
 #endif
     }
 

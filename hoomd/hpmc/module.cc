@@ -21,7 +21,7 @@
 #include "ShapeUnion.h"
 #include "ShapeUtils.h"
 #include "UpdaterBoxMC.h"
-#include "UpdaterClusters.h"
+#include "UpdaterGCA.h"
 #include "UpdaterMuVT.h"
 #include "UpdaterQuickCompress.h"
 

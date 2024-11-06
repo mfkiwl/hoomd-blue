@@ -80,6 +80,6 @@ repos:
       (?x)(
         ^CMake/|
         ^hoomd/extern/|
-        ^hoomd/hpmc/UpdaterClusters\.h|
+        ^hoomd/hpmc/UpdaterGCA\.h|
         ^hoomd/hpmc/IntegratorHPMCMono\.h
       )

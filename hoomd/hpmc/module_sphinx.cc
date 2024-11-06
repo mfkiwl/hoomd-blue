@@ -14,13 +14,13 @@
 #include "ExternalFieldHarmonic.h"
 #include "ExternalFieldWall.h"
 
-#include "UpdaterClusters.h"
+#include "UpdaterGCA.h"
 #include "UpdaterMuVT.h"
 
 #ifdef ENABLE_HIP
 #include "ComputeFreeVolumeGPU.h"
 #include "IntegratorHPMCMonoGPU.h"
-#include "UpdaterClustersGPU.h"
+#include "UpdaterGCAGPU.h"
 #endif
 
 namespace hoomd
@@ -36,7 +36,7 @@ void export_sphinx(pybind11::module& m)
     export_ComputeFreeVolume<ShapeSphinx>(m, "ComputeFreeVolumeSphinx");
     export_ComputeSDF<ShapeSphinx>(m, "ComputeSDFSphinx");
     export_UpdaterMuVT<ShapeSphinx>(m, "UpdaterMuVTSphinx");
-    export_UpdaterClusters<ShapeSphinx>(m, "UpdaterClustersSphinx");
+    export_UpdaterGCA<ShapeSphinx>(m, "UpdaterGCASphinx");
 
     export_ExternalFieldInterface<ShapeSphinx>(m, "ExternalFieldSphinx");
     export_HarmonicField<ShapeSphinx>(m, "ExternalFieldHarmonicSphinx");
@@ -47,7 +47,7 @@ void export_sphinx(pybind11::module& m)
 
     export_IntegratorHPMCMonoGPU<ShapeSphinx>(m, "IntegratorHPMCMonoSphinxGPU");
     export_ComputeFreeVolumeGPU<ShapeSphinx>(m, "ComputeFreeVolumeSphinxGPU");
-    export_UpdaterClustersGPU<ShapeSphinx>(m, "UpdaterClustersSphinxGPU");
+    export_UpdaterGCAGPU<ShapeSphinx>(m, "UpdaterGCASphinxGPU");
 
 #endif
 #endif

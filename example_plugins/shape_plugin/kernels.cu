@@ -8,8 +8,8 @@
 #include "hoomd/hpmc/IntegratorHPMCMonoGPUDepletantsAuxilliaryPhase1.cuh"
 #include "hoomd/hpmc/IntegratorHPMCMonoGPUDepletantsAuxilliaryPhase2.cuh"
 #include "hoomd/hpmc/IntegratorHPMCMonoGPUMoves.cuh"
-#include "hoomd/hpmc/UpdaterClustersGPU.cuh"
-#include "hoomd/hpmc/UpdaterClustersGPUDepletants.cuh"
+#include "hoomd/hpmc/UpdaterGCAGPU.cuh"
+#include "hoomd/hpmc/UpdaterGCAGPUDepletants.cuh"
 
 namespace hoomd
     {

@@ -13,7 +13,7 @@
 #include "hoomd/hpmc/ExternalFieldHarmonic.h"
 #include "hoomd/hpmc/ExternalFieldWall.h"
 
-#include "hoomd/hpmc/UpdaterClusters.h"
+#include "hoomd/hpmc/UpdaterGCA.h"
 #include "hoomd/hpmc/UpdaterMuVT.h"
 
 #include "ShapeMySphere.h"
@@ -21,7 +21,7 @@
 #ifdef ENABLE_HIP
 #include "hoomd/hpmc/ComputeFreeVolumeGPU.h"
 #include "hoomd/hpmc/IntegratorHPMCMonoGPU.h"
-#include "hoomd/hpmc/UpdaterClustersGPU.h"
+#include "hoomd/hpmc/UpdaterGCAGPU.h"
 #endif
 
 using namespace hoomd::hpmc::detail;
@@ -37,7 +37,7 @@ PYBIND11_MODULE(_shape_plugin, m)
     export_ComputeFreeVolume<ShapeMySphere>(m, "ComputeFreeVolumeMySphere");
     export_ComputeSDF<ShapeMySphere>(m, "ComputeSDFMySphere");
     export_UpdaterMuVT<ShapeMySphere>(m, "UpdaterMuVTMySphere");
-    export_UpdaterClusters<ShapeMySphere>(m, "UpdaterClustersMySphere");
+    export_UpdaterGCA<ShapeMySphere>(m, "UpdaterGCAMySphere");
 
     export_ExternalFieldInterface<ShapeMySphere>(m, "ExternalFieldMySphere");
     export_HarmonicField<ShapeMySphere>(m, "ExternalFieldHarmonicMySphere");
@@ -50,7 +50,7 @@ PYBIND11_MODULE(_shape_plugin, m)
 #ifdef ENABLE_HIP
     export_IntegratorHPMCMonoGPU<ShapeMySphere>(m, "IntegratorHPMCMonoMySphereGPU");
     export_ComputeFreeVolumeGPU<ShapeMySphere>(m, "ComputeFreeVolumeMySphereGPU");
-    export_UpdaterClustersGPU<ShapeMySphere>(m, "UpdaterClustersMySphereGPU");
+    export_UpdaterGCAGPU<ShapeMySphere>(m, "UpdaterGCAMySphereGPU");
 #endif
     }
 

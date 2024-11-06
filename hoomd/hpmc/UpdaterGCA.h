@@ -1,12 +1,7 @@
 // Copyright (c) 2009-2024 The Regents of the University of Michigan.
 // Part of HOOMD-blue, released under the BSD 3-Clause License.
 
-#ifndef _UPDATER_HPMC_CLUSTERS_
-#define _UPDATER_HPMC_CLUSTERS_
-
-/*! \file UpdaterBoxClusters.h
-    \brief Declaration of UpdaterBoxClusters
-*/
+#pragma once
 
 #include "hoomd/Updater.h"
 #include "hoomd/RandomNumbers.h"
@@ -281,19 +276,19 @@ void Graph::addEdge(unsigned int v, unsigned int w)
 */
 
 template< class Shape >
-class UpdaterClusters : public Updater
+class UpdaterGCA : public Updater
     {
     public:
         //! Constructor
         /*! \param sysdef System definition
             \param mc HPMC integrator
         */
-        UpdaterClusters(std::shared_ptr<SystemDefinition> sysdef,
+        UpdaterGCA(std::shared_ptr<SystemDefinition> sysdef,
                                      std::shared_ptr<Trigger> trigger,
                         std::shared_ptr<IntegratorHPMCMono<Shape> > mc);
 
         //! Destructor
-        virtual ~UpdaterClusters();
+        virtual ~UpdaterGCA();
 
         //! Take one timestep forward
         /*! \param timestep timestep at which update is being evaluated
@@ -418,13 +413,13 @@ class UpdaterClusters : public Updater
     };
 
 template< class Shape >
-UpdaterClusters<Shape>::UpdaterClusters(std::shared_ptr<SystemDefinition> sysdef,
+UpdaterGCA<Shape>::UpdaterGCA(std::shared_ptr<SystemDefinition> sysdef,
                                      std::shared_ptr<Trigger> trigger,
                                  std::shared_ptr<IntegratorHPMCMono<Shape> > mc)
         : Updater(sysdef, trigger), m_mc(mc), m_move_ratio(0.5),
             m_flip_probability(0.5)
     {
-    m_exec_conf->msg->notice(5) << "Constructing UpdaterClusters" << std::endl;
+    m_exec_conf->msg->notice(5) << "Constructing UpdaterGCA" << std::endl;
 
     #ifdef ENABLE_TBB_TASK
     m_G.setTaskArena(sysdef->getParticleData()->getExecConf()->getTaskArena());
@@ -443,9 +438,9 @@ UpdaterClusters<Shape>::UpdaterClusters(std::shared_ptr<SystemDefinition> sysdef
     }
 
 template< class Shape >
-UpdaterClusters<Shape>::~UpdaterClusters()
+UpdaterGCA<Shape>::~UpdaterGCA()
     {
-    m_exec_conf->msg->notice(5) << "Destroying UpdaterClusters" << std::endl;
+    m_exec_conf->msg->notice(5) << "Destroying UpdaterGCA" << std::endl;
     }
 
 /*! \param i The particle id in the list
@@ -462,7 +457,7 @@ UpdaterClusters<Shape>::~UpdaterClusters()
     NOTE: To avoid numerous acquires and releases of GPUArrays, data pointers are passed directly into this const function.
     */
 template<class Shape>
-inline void UpdaterClusters<Shape>::checkDepletantOverlap(unsigned int i, vec3<Scalar> pos_i, Shape shape_i, unsigned int typ_i,
+inline void UpdaterGCA<Shape>::checkDepletantOverlap(unsigned int i, vec3<Scalar> pos_i, Shape shape_i, unsigned int typ_i,
     const Scalar4 *h_postype_backup, const Scalar4 *h_orientation_backup,
     unsigned int *h_overlaps, const Scalar *h_fugacity,
     uint64_t timestep, const quat<Scalar> q, const vec3<Scalar> pivot, bool line)
@@ -526,7 +521,7 @@ inline void UpdaterClusters<Shape>::checkDepletantOverlap(unsigned int i, vec3<S
             bool repulsive = h_fugacity[type_a] < 0.0;
 
             if (repulsive)
-                throw std::runtime_error("Negative fugacities not supported in UpdaterClusters.\n");
+                throw std::runtime_error("Negative fugacities not supported in UpdaterGCA.\n");
 
             // find neighbors whose circumspheres overlap particle i's circumsphere in the old configuration
             // Here, circumsphere refers to the sphere around the depletant-excluded volume
@@ -1066,7 +1061,7 @@ inline void UpdaterClusters<Shape>::checkDepletantOverlap(unsigned int i, vec3<S
     }
 
 template< class Shape >
-void UpdaterClusters<Shape>::transform(const quat<Scalar>& q, const vec3<Scalar>& pivot, bool line)
+void UpdaterGCA<Shape>::transform(const quat<Scalar>& q, const vec3<Scalar>& pivot, bool line)
     {
     // store old locality data
     m_aabb_tree_old = m_mc->buildAABBTree();
@@ -1107,7 +1102,7 @@ void UpdaterClusters<Shape>::transform(const quat<Scalar>& q, const vec3<Scalar>
     }
 
 template< class Shape >
-void UpdaterClusters<Shape>::flip(uint64_t timestep)
+void UpdaterGCA<Shape>::flip(uint64_t timestep)
     {
     // move every cluster independently
     m_count_total.n_clusters += m_clusters.size();
@@ -1128,7 +1123,7 @@ void UpdaterClusters<Shape>::flip(uint64_t timestep)
             m_count_total.n_particles_in_clusters += m_clusters[icluster].size();
 
             // seed by id of first particle in cluster to make independent of cluster labeling
-            hoomd::RandomGenerator rng_i(hoomd::Seed(hoomd::RNGIdentifier::UpdaterClusters2, timestep, seed),
+            hoomd::RandomGenerator rng_i(hoomd::Seed(hoomd::RNGIdentifier::UpdaterGCA2, timestep, seed),
                                          hoomd::Counter(m_clusters[icluster][0]));
 
             bool flip = hoomd::detail::generate_canonical<LongReal>(rng_i) <= m_flip_probability;
@@ -1151,7 +1146,7 @@ void UpdaterClusters<Shape>::flip(uint64_t timestep)
     }
 
 template< class Shape >
-void UpdaterClusters<Shape>::findInteractions(uint64_t timestep, const quat<Scalar> q, const vec3<Scalar> pivot, bool line)
+void UpdaterGCA<Shape>::findInteractions(uint64_t timestep, const quat<Scalar> q, const vec3<Scalar> pivot, bool line)
     {
     // access parameters
     auto& params = m_mc->getParams();
@@ -1501,7 +1496,7 @@ void UpdaterClusters<Shape>::findInteractions(uint64_t timestep, const quat<Scal
     }
 
 template<class Shape>
-void UpdaterClusters<Shape>::backupState()
+void UpdaterGCA<Shape>::backupState()
     {
     unsigned int nptl = m_pdata->getN();
 
@@ -1530,7 +1525,7 @@ void UpdaterClusters<Shape>::backupState()
     }
 
 template<class Shape>
-void UpdaterClusters<Shape>::connectedComponents()
+void UpdaterGCA<Shape>::connectedComponents()
     {
     // compute connected components
     m_clusters.clear();
@@ -1541,15 +1536,15 @@ void UpdaterClusters<Shape>::connectedComponents()
     \param timestep Current time step of the simulation
 */
 template< class Shape >
-void UpdaterClusters<Shape>::update(uint64_t timestep)
+void UpdaterGCA<Shape>::update(uint64_t timestep)
     {
     Updater::update(timestep);
     #ifdef ENABLE_MPI
     if (this->m_pdata->getDomainDecomposition())
-        throw std::runtime_error("UpdaterClusters does not work with spatial domain decomposition.");
+        throw std::runtime_error("UpdaterGCA does not work with spatial domain decomposition.");
     #endif
 
-    m_exec_conf->msg->notice(10) << timestep << " UpdaterClusters" << std::endl;
+    m_exec_conf->msg->notice(10) << timestep << " UpdaterGCA" << std::endl;
 
     m_count_step_start = m_count_total;
 
@@ -1559,7 +1554,7 @@ void UpdaterClusters<Shape>::update(uint64_t timestep)
     const uint16_t seed = m_sysdef->getSeed();
 
     // generate the move, select a pivot
-    hoomd::RandomGenerator rng(hoomd::Seed(hoomd::RNGIdentifier::UpdaterClusters, timestep, seed),
+    hoomd::RandomGenerator rng(hoomd::Seed(hoomd::RNGIdentifier::UpdaterGCA, timestep, seed),
                                hoomd::Counter(m_instance));
     vec3<Scalar> pivot(0,0,0);
 
@@ -1710,7 +1705,7 @@ void UpdaterClusters<Shape>::update(uint64_t timestep)
                 unsigned int j = it->first.second;
 
                 // create a RNG specific to this particle pair
-                hoomd::RandomGenerator rng_ij(hoomd::Seed(hoomd::RNGIdentifier::UpdaterClustersPairwise, timestep, seed),
+                hoomd::RandomGenerator rng_ij(hoomd::Seed(hoomd::RNGIdentifier::UpdaterGCAPairwise, timestep, seed),
                                               hoomd::Counter(std::min(i,j), std::max(i,j)));
 
                 LongReal pij = 1.0f-exp(-delU / kT);
@@ -1738,14 +1733,14 @@ void UpdaterClusters<Shape>::update(uint64_t timestep)
 
 namespace detail {
 
-template < class Shape> void export_UpdaterClusters(pybind11::module& m, const std::string& name)
+template < class Shape> void export_UpdaterGCA(pybind11::module& m, const std::string& name)
     {
-    pybind11::class_< UpdaterClusters<Shape>, Updater, std::shared_ptr< UpdaterClusters<Shape> > >(m, name.c_str())
+    pybind11::class_< UpdaterGCA<Shape>, Updater, std::shared_ptr< UpdaterGCA<Shape> > >(m, name.c_str())
           .def( pybind11::init< std::shared_ptr<SystemDefinition>, std::shared_ptr<Trigger>,
                          std::shared_ptr< IntegratorHPMCMono<Shape> > >())
-        .def("getCounters", &UpdaterClusters<Shape>::getCounters)
-        .def_property("pivot_move_probability", &UpdaterClusters<Shape>::getMoveRatio, &UpdaterClusters<Shape>::setMoveRatio)
-        .def_property("flip_probability", &UpdaterClusters<Shape>::getFlipProbability, &UpdaterClusters<Shape>::setFlipProbability)
+        .def("getCounters", &UpdaterGCA<Shape>::getCounters)
+        .def_property("pivot_move_probability", &UpdaterGCA<Shape>::getMoveRatio, &UpdaterGCA<Shape>::setMoveRatio)
+        .def_property("flip_probability", &UpdaterGCA<Shape>::getFlipProbability, &UpdaterGCA<Shape>::setFlipProbability)
     ;
     }
 
@@ -1759,5 +1754,3 @@ inline void export_hpmc_clusters_counters(pybind11::module &m)
 } // end namespace detail
 } // end namespace hpmc
 } // end namespace hoomd
-
-#endif // _UPDATER_HPMC_CLUSTERS_

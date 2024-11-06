@@ -1,7 +1,7 @@
 // Copyright (c) 2009-2024 The Regents of the University of Michigan.
 // Part of HOOMD-blue, released under the BSD 3-Clause License.
 
-/*! \file UpdaterClustersGPU.cuh
+/*! \file UpdaterGCAGPU.cuh
     \brief Implements the overlap kernels for the geometric cluster algorithm the GPU
 */
 

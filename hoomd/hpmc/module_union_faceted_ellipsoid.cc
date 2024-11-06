@@ -14,13 +14,13 @@
 #include "ExternalFieldHarmonic.h"
 #include "ExternalFieldWall.h"
 
-#include "UpdaterClusters.h"
+#include "UpdaterGCA.h"
 #include "UpdaterMuVT.h"
 
 #ifdef ENABLE_HIP
 #include "ComputeFreeVolumeGPU.h"
 #include "IntegratorHPMCMonoGPU.h"
-#include "UpdaterClustersGPU.h"
+#include "UpdaterGCAGPU.h"
 #endif
 
 namespace hoomd
@@ -40,9 +40,7 @@ void export_union_faceted_ellipsoid(pybind11::module& m)
         "ComputeFreeVolumeFacetedEllipsoidUnion");
     export_ComputeSDF<ShapeUnion<ShapeFacetedEllipsoid>>(m, "ComputeSDFFacetedEllipsoidUnion");
     export_UpdaterMuVT<ShapeUnion<ShapeFacetedEllipsoid>>(m, "UpdaterMuVTFacetedEllipsoidUnion");
-    export_UpdaterClusters<ShapeUnion<ShapeFacetedEllipsoid>>(
-        m,
-        "UpdaterClustersFacetedEllipsoidUnion");
+    export_UpdaterGCA<ShapeUnion<ShapeFacetedEllipsoid>>(m, "UpdaterGCAFacetedEllipsoidUnion");
 
     export_ExternalFieldInterface<ShapeUnion<ShapeFacetedEllipsoid>>(
         m,
@@ -60,9 +58,8 @@ void export_union_faceted_ellipsoid(pybind11::module& m)
     export_ComputeFreeVolumeGPU<ShapeUnion<ShapeFacetedEllipsoid>>(
         m,
         "ComputeFreeVolumeFacetedEllipsoidUnionGPU");
-    export_UpdaterClustersGPU<ShapeUnion<ShapeFacetedEllipsoid>>(
-        m,
-        "UpdaterClustersFacetedEllipsoidUnionGPU");
+    export_UpdaterGCAGPU<ShapeUnion<ShapeFacetedEllipsoid>>(m,
+                                                            "UpdaterGCAFacetedEllipsoidUnionGPU");
 
 #endif
     }

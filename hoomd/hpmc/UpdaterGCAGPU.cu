@@ -2,7 +2,7 @@
 // Part of HOOMD-blue, released under the BSD 3-Clause License.
 
 #include "Moves.h"
-#include "UpdaterClustersGPU.cuh"
+#include "UpdaterGCAGPU.cuh"
 #include "hoomd/RNGIdentifiers.h"
 #include "hoomd/RandomNumbers.h"
 
@@ -29,7 +29,7 @@
 
 #include "hoomd/extern/ECL.cuh"
 
-/*! \file UpdaterClustersGPU.cu
+/*! \file UpdaterGCAGPU.cu
     \brief Implements a connected components algorithm on the GPU
 */
 
@@ -171,9 +171,8 @@ __global__ void flip_clusters(Scalar4* d_postype,
 
     // seed by cluster id
     int component = d_components[i];
-    hoomd::RandomGenerator rng_i(
-        hoomd::Seed(hoomd::RNGIdentifier::UpdaterClusters2, timestep, seed),
-        hoomd::Counter(component));
+    hoomd::RandomGenerator rng_i(hoomd::Seed(hoomd::RNGIdentifier::UpdaterGCA2, timestep, seed),
+                                 hoomd::Counter(component));
 
     bool flip = hoomd::detail::generate_canonical<float>(rng_i) <= flip_probability;
 
