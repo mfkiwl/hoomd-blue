@@ -371,7 +371,7 @@ def test_area_ignore_type(simulation_factory, tetrahedron_snapshot_factory):
     print(mesh_potential.area)
 
     np.testing.assert_allclose(mesh_potential.area,
-                               np.array([1.62633, 0]),
+                               np.array([1.62633]),
                                rtol=1e-2,
                                atol=1e-5)
 
@@ -502,7 +502,7 @@ def test_volume_ignore_type(simulation_factory, tetrahedron_snapshot_factory):
 
     sim.run(0)
 
-    np.testing.assert_allclose(mesh_potential.volume, [0.107227, 0.0],
+    np.testing.assert_allclose(mesh_potential.volume, [0.107227],
                                rtol=1e-2,
                                atol=1e-5)
 
