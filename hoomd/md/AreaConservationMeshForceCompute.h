@@ -50,9 +50,9 @@ class PYBIND11_EXPORT AreaConservationMeshForceCompute : public ForceCompute
 
     virtual pybind11::array_t<Scalar> getArea()
         {
-    	unsigned int n_types = m_mesh_data->getMeshTriangleData()->getNTypes();
-    	if (m_ignore_type)
-        	n_types = 1;
+        unsigned int n_types = m_mesh_data->getMeshTriangleData()->getNTypes();
+        if (m_ignore_type)
+            n_types = 1;
         ArrayHandle<Scalar> h_area(m_area, access_location::host, access_mode::read);
         return pybind11::array(n_types, h_area.data);
         };
