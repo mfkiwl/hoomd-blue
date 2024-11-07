@@ -14,6 +14,8 @@ Change Log
 
 * Ensure that users set unique seeds on all partitions when performing Gibbs ensemble simulations
   (`#1925 <https://github.com/glotzerlab/hoomd-blue/pull/1925>`__)
+* Mesh potentials return only one volume or area when `ignore_type == True`
+  (`#1928 <https://github.com/glotzerlab/hoomd-blue/pull/1928>`__)
 
 *Added*
 
