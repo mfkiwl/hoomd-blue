@@ -341,11 +341,6 @@ struct ShapeConvexPolygon
     /// Define the parameter type
     typedef detail::PolygonVertices param_type;
 
-    //! Temporary storage for depletant insertion
-    typedef struct
-        {
-        } depletion_storage_type;
-
     /// Construct a shape at a given orientation
     DEVICE ShapeConvexPolygon(const quat<Scalar>& _orientation, const param_type& _params)
         : orientation(_orientation), verts(_params)

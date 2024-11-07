@@ -24,10 +24,6 @@ namespace hpmc
     {
 namespace detail
     {
-/*! \file IntegratorHPMCMonoImplicit.cuh
-    \brief Declaration of CUDA kernels drivers
-*/
-
 //! Wraps arguments to gpu_hpmc_free_volume
 /*! \ingroup hpmc_data_structs */
 struct hpmc_free_volume_args_t

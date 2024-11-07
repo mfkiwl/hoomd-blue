@@ -68,12 +68,7 @@ class SupportFuncSpheropolygon
 
 //! Spheropolygon shape template
 /*! ShapeSpheropolygon represents a convex polygon swept out by a sphere. For simplicity, it uses
-   the same PolygonVertices struct as ShapeConvexPolygon. ShapeSpheropolygon interprets two fields
-   in that struct that ShapeConvexPolygon ignores. The first is sweep_radius which defines the
-   radius of the sphere to sweep around the polygon. The 2nd is ignore. When two shapes are checked
-   for overlap, if both of them have ignore set to true (non-zero) then there is assumed to be no
-   collision. This is intended for use with the penetrable hard-sphere model for depletants, but
-   could be useful in other cases.
+   the same PolygonVertices struct as ShapeConvexPolygon.
 
     The parameter defining a polygon is a structure containing a list of N vertices. They are
    assumed to be listed in counter-clockwise order and centered on 0,0. In fact, it is **required**
@@ -85,11 +80,6 @@ struct ShapeSpheropolygon
     {
     //! Define the parameter type
     typedef detail::PolygonVertices param_type;
-
-    //! Temporary storage for depletant insertion
-    typedef struct
-        {
-        } depletion_storage_type;
 
     //! Initialize a polygon
     DEVICE ShapeSpheropolygon(const quat<Scalar>& _orientation, const param_type& _params)

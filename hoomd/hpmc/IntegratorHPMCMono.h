@@ -338,8 +338,6 @@ class IntegratorHPMCMono : public IntegratorHPMC
         unsigned int m_aabbs_capacity;              //!< Capacity of m_aabbs list
         bool m_aabb_tree_invalid;                   //!< Flag if the aabb tree has been invalidated
 
-        Scalar m_extra_image_width;                 //! Extra width to extend the image list
-
         Index2D m_overlap_idx;                      //!!< Indexer for interaction matrix
 
         /// Cached maximum pair additive cutoff by type.
@@ -380,8 +378,7 @@ IntegratorHPMCMono<Shape>::IntegratorHPMCMono(std::shared_ptr<SystemDefinition> 
               m_update_order(m_pdata->getN()),
               m_image_list_is_initialized(false),
               m_image_list_valid(false),
-              m_hasOrientation(true),
-              m_extra_image_width(0.0)
+              m_hasOrientation(true)
     {
     // allocate the parameter storage, setting the managed flag
     m_params = std::vector<param_type, hoomd::detail::managed_allocator<param_type> >(m_pdata->getNTypes(),
@@ -1253,8 +1250,7 @@ inline const std::vector<vec3<Scalar> >& IntegratorHPMCMono<Shape>::updateImageL
         e3 = vec3<Scalar>(box.getLatticeVector(2));
 
     // The maximum interaction range is the sum of the max particle circumsphere diameter
-    // (accounting for non-additive interactions), the patch interaction and interaction with
-    // any depletants in the system
+    // (accounting for non-additive interactions) and the patch interaction.
     Scalar max_trans_d_and_diam(0.0);
         {
         // access the type parameters
@@ -1298,11 +1294,6 @@ inline const std::vector<vec3<Scalar> >& IntegratorHPMCMono<Shape>::updateImageL
     m_exec_conf->msg->notice(6) << "Image list: max_trans_d_and_diam = " << max_trans_d_and_diam << std::endl;
 
     Scalar range = max_trans_d_and_diam;
-
-    m_exec_conf->msg->notice(6) << "Image list: extra_image_width = " << m_extra_image_width << std::endl;
-
-    // add any extra requested width
-    range += m_extra_image_width;
 
     m_exec_conf->msg->notice(6) << "Image list: range = " << range << std::endl;
 
@@ -1430,14 +1421,6 @@ template <class Shape>
 void IntegratorHPMCMono<Shape>::updateCellWidth()
     {
     this->m_nominal_width = this->getMaxCoreDiameter();
-
-    Scalar max_d(0.0);
-
-    // extend the image list by the depletant diameter, since we're querying
-    // AABBs that are larger than the shape diameters themselves
-    this->m_extra_image_width = max_d;
-
-    this->m_nominal_width += this->m_extra_image_width;
 
     // Account for patch width
     if (hasPairInteractions())

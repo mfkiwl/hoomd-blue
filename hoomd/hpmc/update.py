@@ -412,8 +412,6 @@ class MuVT(Updater):
           Gibbs ensemble)
         move_ratio (float): The ratio between volume and exchange/transfer moves
           (applies to Gibbs ensemble)
-        ntrial (float): (**default**: 1) Number of configurational bias attempts
-          to swap depletants
         fugacity (`TypeParameter` [ ``particle type``, `float`]):
             Particle fugacity
             :math:`[\mathrm{energy}] \cdot [\mathrm{volume}^{-1}]` (**default:** 0).
@@ -429,12 +427,11 @@ class MuVT(Updater):
 
         self.ngibbs = int(ngibbs)
 
-        _default_dict = dict(ntrial=1)
         param_dict = ParameterDict(
             transfer_types=list(transfer_types),
             max_volume_rescale=float(max_volume_rescale),
             volume_move_probability=float(volume_move_probability),
-            **_default_dict)
+            )
         self._param_dict.update(param_dict)
 
         typeparam_fugacity = TypeParameter(
@@ -651,9 +648,8 @@ class GCA(Updater):
             perform cluster moves.
 
     The GCA as described in Liu and Lujten (2004),
-    https://doi.org/10.1103/PhysRevLett.92.035504 is used for hard shape, patch
-    interactions and depletants. Implicit depletants are supported and simulated
-    on-the-fly, as if they were present in the actual system.
+    https://doi.org/10.1103/PhysRevLett.92.035504 is used for hard shape and patch
+    interactions.
 
     Supported moves include pivot moves (point reflection) and line reflections
     (pi rotation around an axis).  With anisotropic particles, the pivot move

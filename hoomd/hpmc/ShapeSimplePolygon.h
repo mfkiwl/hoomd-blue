@@ -43,11 +43,6 @@ struct ShapeSimplePolygon
     //! Define the parameter type
     typedef detail::PolygonVertices param_type;
 
-    //! Temporary storage for depletant insertion
-    typedef struct
-        {
-        } depletion_storage_type;
-
     //! Initialize a polygon
     DEVICE ShapeSimplePolygon(const quat<Scalar>& _orientation, const param_type& _params)
         : orientation(_orientation), verts(_params)
