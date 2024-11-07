@@ -290,10 +290,11 @@ void AreaConservationMeshForceCompute::precomputeParameter()
 
     const BoxDim& box = m_pdata->getGlobalBox();
 
-    const unsigned int n_types = m_mesh_data->getMeshTriangleData()->getNTypes();
+    unsigned int n_types = m_mesh_data->getMeshTriangleData()->getNTypes();
+    if (m_ignore_type)
+        n_types = 1;
 
     std::vector<Scalar> global_area(n_types);
-
     for (unsigned int i = 0; i < n_types; i++)
         global_area[i] = 0;
 
