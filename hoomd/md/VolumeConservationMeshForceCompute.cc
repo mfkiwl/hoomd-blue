@@ -276,7 +276,6 @@ void VolumeConservationMeshForceCompute::computeVolume()
     const BoxDim& box = m_pdata->getGlobalBox();
 
     unsigned int n_types = m_mesh_data->getMeshTriangleData()->getNTypes();
-
     if (m_ignore_type)
         n_types = 1;
 

@@ -3,7 +3,6 @@
 
 import hoomd
 import pytest
-import math
 import numpy as np
 
 _harmonic_args = {'k': [30.0, 25.0, 20.0], 'r0': [1.6, 1.7, 1.8]}
@@ -224,9 +223,8 @@ def test_before_attaching(mesh_potential_cls, potential_kwargs):
 
     assert mesh is mesh_potential.mesh
     for key in potential_kwargs:
-        np.testing.assert_allclose(mesh_potential.params["mesh"][key],
-                                   potential_kwargs[key],
-                                   rtol=1e-6)
+        assert mesh_potential.params["mesh"][key] == pytest.approx(
+            potential_kwargs[key], rel=1e-6)
 
     mesh1 = hoomd.mesh.Mesh()
     mesh_potential.mesh = mesh1
@@ -263,9 +261,8 @@ def test_after_attaching(tetrahedron_snapshot_factory, simulation_factory,
 
     sim.run(0)
     for key in potential_kwargs:
-        np.testing.assert_allclose(mesh_potential.params["mesh"][key],
-                                   potential_kwargs[key],
-                                   rtol=1e-6)
+        assert mesh_potential.params["mesh"][key] == pytest.approx(
+            potential_kwargs[key], rel=1e-6)
 
     mesh1 = hoomd.mesh.Mesh()
     with pytest.raises(RuntimeError):
@@ -303,12 +300,10 @@ def test_multiple_types(tetrahedron_snapshot_factory, simulation_factory,
 
     sim.run(0)
     for key in potential_kwargs:
-        np.testing.assert_allclose(mesh_potential.params["mesh"][key],
-                                   potential_kwargs[key],
-                                   rtol=1e-6)
-        np.testing.assert_allclose(mesh_potential.params["patch"][key],
-                                   potential_kwargs[key],
-                                   rtol=1e-6)
+        assert mesh_potential.params["mesh"][key] == pytest.approx(
+            potential_kwargs[key], rel=1e-6)
+        assert mesh_potential.params["patch"][key] == pytest.approx(
+            potential_kwargs[key], rel=1e-6)
 
 
 def test_area(simulation_factory, tetrahedron_snapshot_factory):
@@ -371,7 +366,7 @@ def test_area_ignore_type(simulation_factory, tetrahedron_snapshot_factory):
     print(mesh_potential.area)
 
     np.testing.assert_allclose(mesh_potential.area,
-                               np.array([1.62633, 0]),
+                               np.array([1.62633]),
                                rtol=1e-2,
                                atol=1e-5)
 
@@ -400,10 +395,9 @@ def test_triangle_area(simulation_factory, tetrahedron_snapshot_factory):
 
     sim.run(0)
 
-    assert math.isclose(mesh_potential.area,
-                        1.62633,
-                        rel_tol=1e-2,
-                        abs_tol=1e-5)
+    np.testing.assert_allclose(mesh_potential.area, [1.62633],
+                               rtol=1e-2,
+                               atol=1e-5)
 
 
 @pytest.mark.parametrize("mesh_potential_cls, potential_kwargs, force, energy",
@@ -440,10 +434,7 @@ def test_forces_and_energies(tetrahedron_snapshot_factory, simulation_factory,
     sim_energies = sim.operations.integrator.forces[0].energies
     sim_forces = sim.operations.integrator.forces[0].forces
     if sim.device.communicator.rank == 0:
-        np.testing.assert_allclose(sum(sim_energies),
-                                   energy,
-                                   rtol=1e-2,
-                                   atol=1e-5)
+        assert sum(sim_energies) == pytest.approx(energy, rel=1e-2, abs=1e-5)
         np.testing.assert_allclose(sim_forces, force, rtol=1e-2, atol=1e-5)
 
 
@@ -502,7 +493,7 @@ def test_volume_ignore_type(simulation_factory, tetrahedron_snapshot_factory):
 
     sim.run(0)
 
-    np.testing.assert_allclose(mesh_potential.volume, [0.107227, 0.0],
+    np.testing.assert_allclose(mesh_potential.volume, [0.107227],
                                rtol=1e-2,
                                atol=1e-5)
 
