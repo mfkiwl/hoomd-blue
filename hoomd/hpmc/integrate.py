@@ -250,17 +250,6 @@ Note:
     intersection, `HPMCIntegrator` employs efficient computational geometry
     algorithms to determine whether there is or is not an overlap.
 
-.. rubric:: Implicit depletants
-
-Set `HPMCIntegrator.depletant_fugacity` to activate the implicit depletant code
-path. This inerts depletant particles during every trial move and modifies the
-acceptance criterion accordingly. See `Glaser 2015
-<https://dx.doi.org/10.1063/1.4935175>`_ for details.
-
-.. deprecated:: 4.4.0
-
-    ``depletant_fugacity > 0`` is deprecated.
-
 .. invisible-code-block: python
 
     simulation = hoomd.util.make_example_simulation()
@@ -312,15 +301,6 @@ class HPMCIntegrator(Integrator):
         gsd = hoomd.write.GSD(
             'trajectory.gsd', hoomd.trigger.Periodic(1000), log=log)
 
-    .. rubric:: Threading
-
-    HPMC integrators use threaded execution on multiple CPU cores only when
-    placing implicit depletants (``depletant_fugacity != 0``).
-
-    .. deprecated:: 4.4.0
-
-        ``num_cpu_threads >= 1`` is deprecated. Set ``num_cpu_threads = 1``.
-
     .. rubric:: Mixed precision
 
     All HPMC integrators use reduced precision floating point arithmetic when
@@ -336,20 +316,6 @@ class HPMCIntegrator(Integrator):
         d (`TypeParameter` [``particle type``, `float`]):
             Maximum size of displacement trial moves
             :math:`[\\mathrm{length}]`.
-
-        depletant_fugacity (`TypeParameter` [ ``particle type``, `float`]):
-            Depletant fugacity
-            :math:`[\\mathrm{volume}^{-1}]` (**default:** 0)
-
-            Allows setting the fugacity per particle type, e.g. ``'A'``
-            refers to a depletant of type **A**.
-
-        depletant_ntrial (`TypeParameter` [``particle type``, `int`]):
-            Multiplicative factor for the number of times a depletant is
-            inserted. This factor is accounted for in the acceptance criterion
-            so that detailed balance is unchanged. Higher values of ntrial (than
-            one) can be used to reduce the variance of the free energy estimate
-            and improve the acceptance rate of the Markov chain.
 
         interaction_matrix (`TypeParameter` [\
                             `tuple` [``particle type``, ``particle type``],\
@@ -398,23 +364,13 @@ class HPMCIntegrator(Integrator):
                                     param_dict=TypeParameterDict(
                                         float(default_a), len_keys=1))
 
-        typeparam_fugacity = TypeParameter('depletant_fugacity',
-                                           type_kind='particle_types',
-                                           param_dict=TypeParameterDict(
-                                               0., len_keys=1))
-
-        typeparam_ntrial = TypeParameter('depletant_ntrial',
-                                         type_kind='particle_types',
-                                         param_dict=TypeParameterDict(
-                                             1, len_keys=1))
-
         typeparam_inter_matrix = TypeParameter('interaction_matrix',
                                                type_kind='particle_types',
                                                param_dict=TypeParameterDict(
                                                    True, len_keys=2))
 
         self._extend_typeparam([
-            typeparam_d, typeparam_a, typeparam_fugacity, typeparam_ntrial,
+            typeparam_d, typeparam_a,
             typeparam_inter_matrix
         ])
 
@@ -431,19 +387,6 @@ class HPMCIntegrator(Integrator):
 
         HPMC uses RNGs. Warn the user if they did not set the seed.
         """
-        if any([f != 0 for f in self.depletant_fugacity.values()]):
-            warnings.warn("depletant_fugacity > 0 is deprecated since 4.4.0.",
-                          FutureWarning,
-                          stacklevel=1)
-
-            if (isinstance(self._simulation.device, hoomd.device.CPU)
-                    and self._simulation.device.num_cpu_threads > 1):
-                warnings.warn(
-                    "num_cpu_threads > 1 is deprecated since 4.4.0. "
-                    "Use num_cpu_threads=1.",
-                    FutureWarning,
-                    stacklevel=1)
-
         self._simulation._warn_if_seed_unset()
         sys_def = self._simulation.state._cpp_sys_def
         if (isinstance(self._simulation.device, hoomd.device.GPU)
@@ -1563,21 +1506,6 @@ class ConvexSpheropolyhedron(HPMCIntegrator):
                                                  (0.5, -0.5, -0.5),
                                                  (-0.5, 0.5, -0.5),
                                                  (-0.5, -0.5, 0.5)]);
-        print('vertices = ', mc.shape['tetrahedron']["vertices"])
-
-        mc.shape['SphericalDepletant'] = dict(vertices=[],
-                                              sweep_radius=0.1,
-                                              ignore_statistics=True);
-
-    Depletants example::
-
-        mc = hpmc.integrate.ConvexSpheropolyhedron(default_d=0.3, default_a=0.4)
-        mc.shape["tetrahedron"] = dict(vertices=[(0.5, 0.5, 0.5),
-                                                 (0.5, -0.5, -0.5),
-                                                 (-0.5, 0.5, -0.5),
-                                                 (-0.5, -0.5, 0.5)]);
-        mc.shape["SphericalDepletant"] = dict(vertices=[], sweep_radius=0.1);
-        mc.depletant_fugacity["SphericalDepletant"] = 3.0
 
     Attributes:
         shape (`TypeParameter` [``particle type``, `dict`]):
