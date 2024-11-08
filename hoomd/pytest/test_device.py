@@ -14,9 +14,7 @@ def test_gpu_profile(device):
         pass
 
 
-def _assert_common_properties(dev,
-                              notice_level,
-                              message_filename):
+def _assert_common_properties(dev, notice_level, message_filename):
     """Assert the properties common to all devices are correct."""
     assert dev.notice_level == notice_level
     assert dev.message_filename == message_filename
