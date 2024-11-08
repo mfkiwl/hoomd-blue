@@ -3,11 +3,10 @@
 
 """Compute properties of hard particle configurations.
 
-The HPMC compute classes analyze the system configuration and provide results
-as loggable quantities for use with `hoomd.logging.Logger` or by direct access
-via the Python API. `FreeVolume` computes the free volume available to small
-particles, such as depletants, and `SDF` computes the pressure in system of
-convex particles with a fixed box size.
+The HPMC compute classes analyze the system configuration and provide results as loggable quantities
+for use with `hoomd.logging.Logger` or by direct access via the Python API. `FreeVolume` computes
+the free volume available to small particles and `SDF` computes the pressure in system of convex
+particles with a fixed box size.
 """
 
 from __future__ import print_function

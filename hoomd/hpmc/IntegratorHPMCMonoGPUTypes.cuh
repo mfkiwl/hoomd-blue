@@ -48,7 +48,6 @@ struct hpmc_args_t
                 const unsigned int _block_size,
                 const unsigned int _tpp,
                 const unsigned int _overlap_threads,
-                const bool _have_auxilliary_variable,
                 unsigned int* _d_reject_out_of_cell,
                 Scalar4* _d_trial_postype,
                 Scalar4* _d_trial_orientation,
@@ -70,7 +69,6 @@ struct hpmc_args_t
           move_ratio(_move_ratio), timestep(_timestep), dim(_dim), box(_box), select(_select),
           ghost_fraction(_ghost_fraction), domain_decomposition(_domain_decomposition),
           block_size(_block_size), tpp(_tpp), overlap_threads(_overlap_threads),
-          have_auxilliary_variable(_have_auxilliary_variable),
           d_reject_out_of_cell(_d_reject_out_of_cell), d_trial_postype(_d_trial_postype),
           d_trial_orientation(_d_trial_orientation), d_trial_vel(_d_trial_vel),
           d_trial_move_type(_d_trial_move_type), d_update_order_by_ptl(_d_update_order_by_ptl),
@@ -104,8 +102,6 @@ struct hpmc_args_t
     unsigned int block_size;              //!< Block size to execute
     unsigned int tpp;                     //!< Threads per particle
     unsigned int overlap_threads;         //!< Number of parallel threads per overlap check
-    const bool have_auxilliary_variable;  //!< True if we are using the velocity field to store
-                                          //!< auxilliary state information
     unsigned int* d_reject_out_of_cell;   //!< Set to one to reject particle move
     Scalar4* d_trial_postype;             //!< New positions (and type) of particles
     Scalar4* d_trial_orientation;         //!< New orientations of particles
@@ -133,7 +129,6 @@ struct hpmc_update_args_t
                        hpmc_counters_t* _d_counters,
                        unsigned int _counters_pitch,
                        const GPUPartition& _gpu_partition,
-                       const bool _have_auxilliary_variable,
                        const Scalar4* _d_trial_postype,
                        const Scalar4* _d_trial_orientation,
                        const Scalar4* _d_trial_vel,
@@ -142,7 +137,7 @@ struct hpmc_update_args_t
                        const unsigned int _block_size)
         : d_postype(_d_postype), d_orientation(_d_orientation), d_vel(_d_vel),
           d_counters(_d_counters), counters_pitch(_counters_pitch), gpu_partition(_gpu_partition),
-          have_auxilliary_variable(_have_auxilliary_variable), d_trial_postype(_d_trial_postype),
+          d_trial_postype(_d_trial_postype),
           d_trial_orientation(_d_trial_orientation), d_trial_vel(_d_trial_vel),
           d_trial_move_type(_d_trial_move_type), d_reject(_d_reject), block_size(_block_size)
         {
@@ -155,7 +150,6 @@ struct hpmc_update_args_t
     hpmc_counters_t* d_counters;
     unsigned int counters_pitch;
     const GPUPartition& gpu_partition;
-    const bool have_auxilliary_variable;
     const Scalar4* d_trial_postype;
     const Scalar4* d_trial_orientation;
     const Scalar4* d_trial_vel;

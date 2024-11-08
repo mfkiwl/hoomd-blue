@@ -48,7 +48,6 @@ __global__ void hpmc_gen_moves(const Scalar4* d_postype,
                                const unsigned int select,
                                const Scalar3 ghost_fraction,
                                const bool domain_decomposition,
-                               const bool have_auxilliary_variable,
                                Scalar4* d_trial_postype,
                                Scalar4* d_trial_orientation,
                                Scalar4* d_trial_vel,
@@ -157,17 +156,6 @@ __global__ void hpmc_gen_moves(const Scalar4* d_postype,
             reject = 1;
         }
 
-    if (have_auxilliary_variable)
-        {
-        // generate a new random auxillary variable
-        unsigned int seed_i_new = hoomd::detail::generate_u32(rng);
-
-        // store it in the velocity .x field
-        Scalar4 vel = d_vel[idx];
-        vel.x = __int_as_scalar(seed_i_new);
-        d_trial_vel[idx] = vel;
-        }
-
     // stash the trial move in global memory
     d_trial_postype[idx] = make_scalar4(pos_i.x, pos_i.y, pos_i.z, __int_as_scalar(typ_i));
     d_trial_orientation[idx] = quat_to_scalar4(shape_i.orientation);
@@ -187,7 +175,6 @@ __global__ void hpmc_update_pdata(Scalar4* d_postype,
                                   hpmc_counters_t* d_counters,
                                   const unsigned int nwork,
                                   const unsigned int offset,
-                                  const bool have_auxilliary_variable,
                                   const Scalar4* d_trial_postype,
                                   const Scalar4* d_trial_orientation,
                                   const Scalar4* d_trial_vel,
@@ -237,9 +224,6 @@ __global__ void hpmc_update_pdata(Scalar4* d_postype,
                 // write out the updated position and orientation
                 d_postype[idx] = d_trial_postype[idx];
                 d_orientation[idx] = d_trial_orientation[idx];
-
-                if (have_auxilliary_variable)
-                    d_vel[idx] = d_trial_vel[idx];
                 }
 
             if (!ignore_stats && accept && move_type_translate)
@@ -327,7 +311,6 @@ void hpmc_gen_moves(const hpmc_args_t& args, const typename Shape::param_type* p
                            args.select,
                            args.ghost_fraction,
                            args.domain_decomposition,
-                           args.have_auxilliary_variable,
                            args.d_trial_postype,
                            args.d_trial_orientation,
                            args.d_trial_vel,
@@ -380,7 +363,6 @@ void hpmc_gen_moves(const hpmc_args_t& args, const typename Shape::param_type* p
                            args.select,
                            args.ghost_fraction,
                            args.domain_decomposition,
-                           args.have_auxilliary_variable,
                            args.d_trial_postype,
                            args.d_trial_orientation,
                            args.d_trial_vel,
@@ -419,7 +401,6 @@ void hpmc_update_pdata(const hpmc_update_args_t& args, const typename Shape::par
                            args.d_counters + idev * args.counters_pitch,
                            nwork,
                            range.first,
-                           args.have_auxilliary_variable,
                            args.d_trial_postype,
                            args.d_trial_orientation,
                            args.d_trial_vel,

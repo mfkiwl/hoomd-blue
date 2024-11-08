@@ -5,10 +5,8 @@
 
 #ifdef ENABLE_HIP
 
-#include "IntegratorHPMCMonoGPUDepletants.cuh"
 #include "UpdaterGCA.h"
 #include "UpdaterGCAGPU.cuh"
-#include "UpdaterGCAGPUDepletants.cuh"
 
 #include <hip/hip_runtime.h>
 
@@ -57,12 +55,6 @@ template<class Shape> class UpdaterGCAGPU : public UpdaterGCA<Shape>
     /// Autotuner for overlap checks.
     std::shared_ptr<Autotuner<3>> m_tuner_overlaps;
 
-    /// Autotuner for inserting depletants.
-    std::shared_ptr<Autotuner<3>> m_tuner_depletants;
-
-    /// Autotuner for calculating number of depletants.
-    std::shared_ptr<Autotuner<1>> m_tuner_num_depletants;
-
     /// Autotuner for contenating the per-particle neighbor lists.
     std::shared_ptr<Autotuner<2>> m_tuner_concatenate;
 
@@ -82,14 +74,8 @@ template<class Shape> class UpdaterGCAGPU : public UpdaterGCA<Shape>
     GlobalArray<unsigned int> m_overflow;     //!< Overflow condition for neighbor list
 
     GPUPartition m_old_gpu_partition;          //!< The partition in the old configuration
-    GlobalVector<unsigned int> m_n_depletants; //!< List of number of depletants, per particle
 
     std::vector<hipStream_t> m_overlaps_streams; //!< Stream for overlaps kernel, per device
-    std::vector<std::vector<hipStream_t>>
-        m_depletant_streams; //!< Stream for every particle type, and device
-
-    //!< Variables for implicit depletants
-    GlobalArray<Scalar> m_lambda; //!< Poisson means, per type pair
 
     //! Determine connected components of the interaction graph
     virtual void connectedComponents();
@@ -145,13 +131,6 @@ UpdaterGCAGPU<Shape>::UpdaterGCAGPU(std::shared_ptr<SystemDefinition> sysdef,
                          this->m_exec_conf,
                          "clusters_excell_block_size"));
 
-    m_tuner_num_depletants.reset(
-        new Autotuner<1>({AutotunerBase::makeBlockSizeRange(this->m_exec_conf)},
-                         this->m_exec_conf,
-                         "clusters_num_depletants",
-                         5,
-                         true));
-
     m_tuner_transform.reset(new Autotuner<1>({AutotunerBase::makeBlockSizeRange(this->m_exec_conf)},
                                              this->m_exec_conf,
                                              "clusters_transform"));
@@ -190,29 +169,6 @@ UpdaterGCAGPU<Shape>::UpdaterGCAGPU(std::shared_ptr<SystemDefinition> sysdef,
                          true,
                          is_overlaps_parameter_valid));
 
-    // Tuning parameters for depletants:
-    // 0: block size
-    // 1: depletants per thread
-    // 2: threads per particle
-
-    std::function<bool(const std::array<unsigned int, 3>&)> is_depletant_parameter_valid
-        = [](const std::array<unsigned int, 3>& parameter) -> bool
-    {
-        unsigned int block_size = parameter[0];
-        // unsigned int depletants_per_thread = parameter[1]; // unused
-        unsigned int threads_per_particle = parameter[2];
-        return (block_size % threads_per_particle) == 0;
-    };
-
-    m_tuner_depletants.reset(
-        new Autotuner<3>({AutotunerBase::makeBlockSizeRange(this->m_exec_conf),
-                          AutotunerBase::getTppListPow2(this->m_exec_conf),
-                          AutotunerBase::getTppListPow2(this->m_exec_conf, overlaps_max_tpp)},
-                         this->m_exec_conf,
-                         "clusters_depletants",
-                         3,
-                         true,
-                         is_depletant_parameter_valid));
 
     // Tuning parameters for nlist concatenation kernel:
     // 0: block size
@@ -234,11 +190,9 @@ UpdaterGCAGPU<Shape>::UpdaterGCAGPU(std::shared_ptr<SystemDefinition> sysdef,
 
     this->m_autotuners.insert(this->m_autotuners.end(),
                               {m_tuner_excell_block_size,
-                               m_tuner_num_depletants,
                                m_tuner_transform,
                                m_tuner_flip,
                                m_tuner_overlaps,
-                               m_tuner_depletants,
                                m_tuner_concatenate});
 
     GlobalArray<unsigned int> excell_size(0, this->m_exec_conf);
@@ -281,40 +235,11 @@ UpdaterGCAGPU<Shape>::UpdaterGCAGPU(std::shared_ptr<SystemDefinition> sysdef,
                                              access_mode::overwrite);
         *h_overflow.data = 0;
         }
-
-    // Depletants
-    unsigned int ntypes = this->m_pdata->getNTypes();
-    GlobalArray<Scalar> lambda(ntypes * ntypes, this->m_exec_conf);
-    m_lambda.swap(lambda);
-    TAG_ALLOCATION(m_lambda);
-
-    GlobalArray<unsigned int>(1, this->m_exec_conf).swap(m_n_depletants);
-    TAG_ALLOCATION(m_n_depletants);
-
-    m_depletant_streams.resize(ntypes);
-    for (unsigned int itype = 0; itype < this->m_pdata->getNTypes(); ++itype)
-        {
-        m_depletant_streams[itype].resize(this->m_exec_conf->getNumActiveGPUs());
-        for (int idev = this->m_exec_conf->getNumActiveGPUs() - 1; idev >= 0; --idev)
-            {
-            hipSetDevice(this->m_exec_conf->getGPUIds()[idev]);
-            hipStreamCreate(&m_depletant_streams[itype][idev]);
-            }
-        }
     }
 
 template<class Shape> UpdaterGCAGPU<Shape>::~UpdaterGCAGPU()
     {
     this->m_exec_conf->msg->notice(5) << "Destroying UpdaterGCAGPU" << std::endl;
-
-    for (auto s : m_depletant_streams)
-        {
-        for (int idev = this->m_exec_conf->getNumActiveGPUs() - 1; idev >= 0; --idev)
-            {
-            hipSetDevice(this->m_exec_conf->getGPUIds()[idev]);
-            hipStreamDestroy(s[idev]);
-            }
-        }
 
     for (int idev = this->m_exec_conf->getNumActiveGPUs() - 1; idev >= 0; --idev)
         {
@@ -330,20 +255,7 @@ template<class Shape> void UpdaterGCAGPU<Shape>::update(uint64_t timestep)
     {
     Updater::update(timestep);
     // compute nominal cell width
-    auto& params = this->m_mc->getParams();
     Scalar nominal_width = this->m_mc->getMaxCoreDiameter();
-    Scalar max_d(0.0);
-    for (unsigned int type_i = 0; type_i < this->m_pdata->getNTypes(); ++type_i)
-        {
-        if (this->m_mc->getDepletantFugacity(type_i) == Scalar(0.0))
-            {
-            continue;
-            }
-        quat<Scalar> o;
-        Shape tmp_i(o, params[type_i]);
-        max_d = std::max(max_d, static_cast<Scalar>(tmp_i.getCircumsphereDiameter()));
-        }
-    nominal_width += max_d;
     if (this->m_cl->getNominalWidth() != nominal_width)
         this->m_cl->setNominalWidth(nominal_width);
 
@@ -351,46 +263,6 @@ template<class Shape> void UpdaterGCAGPU<Shape>::update(uint64_t timestep)
     this->m_cl->compute(timestep);
 
     m_old_gpu_partition = this->m_pdata->getGPUPartition();
-
-    // reinitialize poisson means array
-
-    // this is slightly inelegant because it involves a sync / page migration, maybe this data
-    // could be cached or computed inside a kernel?
-    ArrayHandle<Scalar> h_lambda(m_lambda, access_location::host, access_mode::overwrite);
-
-    for (unsigned int i_type = 0; i_type < this->m_pdata->getNTypes(); ++i_type)
-        {
-        Shape shape_i(quat<Scalar>(), params[i_type]);
-        ShortReal d_i(shape_i.getCircumsphereDiameter());
-
-        for (unsigned int j_type = 0; j_type < this->m_pdata->getNTypes(); ++j_type)
-            {
-            Shape shape_j(quat<Scalar>(), params[j_type]);
-            ShortReal d_j(shape_j.getCircumsphereDiameter());
-
-            // we use the larger of the two diameters for insertion
-            ShortReal range = std::max(d_i, d_j);
-
-            for (unsigned int k_type = 0; k_type < this->m_pdata->getNTypes(); ++k_type)
-                {
-                // parameter for Poisson distribution
-                Shape shape_k(quat<Scalar>(), params[k_type]);
-
-                // get OBB and extend by depletant radius
-                detail::OBB obb = shape_k.getOBB(vec3<Scalar>(0, 0, 0));
-                obb.lengths.x += 0.5f * range;
-                obb.lengths.y += 0.5f * range;
-                if (this->m_sysdef->getNDimensions() == 3)
-                    obb.lengths.z += 0.5f * range;
-                else
-                    obb.lengths.z = 0.5f; // unit length
-
-                Scalar lambda = std::abs(this->m_mc->getDepletantFugacity(i_type)
-                                         * obb.getVolume(this->m_sysdef->getNDimensions()));
-                h_lambda.data[k_type * this->m_pdata->getNTypes() + i_type] = lambda;
-                }
-            }
-        }
 
     // perform the update
     UpdaterGCA<Shape>::update(timestep);
@@ -791,20 +663,6 @@ void UpdaterGCAGPU<Shape>::findInteractions(uint64_t timestep,
                                                access_location::device,
                                                access_mode::read);
 
-            // depletants
-            m_n_depletants.resize(this->m_pdata->getN() * this->m_pdata->getNTypes()
-                                  * this->m_pdata->getMaxN());
-
-            ArrayHandle<Scalar> d_lambda(m_lambda, access_location::device, access_mode::read);
-            ArrayHandle<unsigned int> d_n_depletants(m_n_depletants,
-                                                     access_location::device,
-                                                     access_mode::overwrite);
-
-            // depletant parameters
-            ArrayHandle<Scalar> h_fugacity(this->m_mc->getFugacityArray(),
-                                           access_location::host,
-                                           access_mode::read);
-
             ArrayHandle<unsigned int> d_overflow(m_overflow,
                                                  access_location::device,
                                                  access_mode::readwrite);
@@ -872,72 +730,6 @@ void UpdaterGCAGPU<Shape>::findInteractions(uint64_t timestep,
             if (this->m_exec_conf->isCUDAErrorCheckingEnabled())
                 CHECK_CUDA_ERROR();
             m_tuner_overlaps->end();
-
-            /*
-             * Insert depletants
-             */
-
-            // allow concurrency between depletant types in multi GPU block
-            for (unsigned int itype = 0; itype < this->m_pdata->getNTypes(); ++itype)
-                {
-                if (h_fugacity.data[itype] == 0)
-                    continue;
-
-                if (h_fugacity.data[itype] < 0)
-                    throw std::runtime_error(
-                        "Negative fugacities are not supported by UpdaterGCAGPU.");
-
-                // draw random number of depletant insertions per particle from Poisson
-                // distribution
-                m_tuner_num_depletants->begin();
-
-                gpu::generate_num_depletants(this->m_sysdef->getSeed(),
-                                             timestep,
-                                             0, // is select really always 0 here?
-                                             this->m_exec_conf->getRank(),
-                                             itype,
-                                             d_lambda.data,
-                                             d_postype.data,
-                                             d_n_depletants.data + itype * this->m_pdata->getMaxN(),
-                                             m_tuner_num_depletants->getParam()[0],
-                                             &m_depletant_streams[itype].front(),
-                                             m_old_gpu_partition,
-                                             this->m_pdata->getNTypes());
-                if (this->m_exec_conf->isCUDAErrorCheckingEnabled())
-                    CHECK_CUDA_ERROR();
-                m_tuner_num_depletants->end();
-
-                // max reduce over result
-                unsigned int max_n_depletants[this->m_exec_conf->getNumActiveGPUs()];
-                gpu::get_max_num_depletants(d_n_depletants.data + itype * this->m_pdata->getMaxN(),
-                                            &max_n_depletants[0],
-                                            &m_depletant_streams[itype].front(),
-                                            m_old_gpu_partition,
-                                            this->m_exec_conf->getCachedAllocatorManaged());
-                if (this->m_exec_conf->isCUDAErrorCheckingEnabled())
-                    CHECK_CUDA_ERROR();
-
-                // insert depletants on-the-fly
-                m_tuner_depletants->begin();
-                auto param = m_tuner_depletants->getParam();
-                args.block_size = param[0];
-                unsigned int depletants_per_thread = param[1];
-                args.tpp = param[2];
-
-                gpu::hpmc_implicit_args_t implicit_args(itype,
-                                                        0,     // implicit_counters
-                                                        0,     // implicit_counters pitch
-                                                        false, // repulsive
-                                                        d_n_depletants.data + itype,
-                                                        &max_n_depletants[0],
-                                                        depletants_per_thread,
-                                                        &m_depletant_streams[itype].front());
-                gpu::hpmc_clusters_depletants<Shape>(args, implicit_args, params.data());
-                if (this->m_exec_conf->isCUDAErrorCheckingEnabled())
-                    CHECK_CUDA_ERROR();
-                m_tuner_depletants->end();
-                this->m_exec_conf->endMultiGPU();
-                } // end ArrayHandle scope
 
             reallocate = checkReallocate();
             }

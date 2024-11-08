@@ -67,8 +67,8 @@ struct hpmc_free_volume_args_t
           d_n_overlap_all(_d_n_overlap_all), ghost_width(_ghost_width),
           d_check_overlaps(_d_check_overlaps), overlap_idx(_overlap_idx), devprop(_devprop) { };
 
-    unsigned int n_sample;                //!< Number of depletants particles to generate
-    unsigned int type;                    //!< Type of depletant particle
+    unsigned int n_sample;                //!< Number of particles to insert
+    unsigned int type;                    //!< Type of particle to insert
     Scalar4* d_postype;                   //!< postype array
     Scalar4* d_orientation;               //!< orientation array
     const unsigned int* d_cell_idx;       //!< Index data for each cell
@@ -91,7 +91,7 @@ struct hpmc_free_volume_args_t
     unsigned int stride;                  //!< Number of threads per overlap check
     unsigned int group_size;              //!< Size of the group to execute
     const unsigned int max_n;             //!< Maximum size of pdata arrays
-    unsigned int* d_n_overlap_all;        //!< Total number of depletants in overlap volume
+    unsigned int* d_n_overlap_all;        //!< Total number of inserted particles in the overlap
     const Scalar3 ghost_width;            //!< Width of ghost layer
     const unsigned int* d_check_overlaps; //!< Interaction matrix
     Index2D overlap_idx;                  //!< Interaction matrix indexer
@@ -130,9 +130,9 @@ __device__ inline unsigned int compute_cell_idx(const Scalar3 p,
     return ci(ib, jb, kb);
     }
 
-//! Kernel to estimate the colloid overlap volume and the depletant free volume
-/*! \param n_sample Number of probe depletant particles to generate
-    \param type Type of depletant particle
+//! Kernel to estimate the free volume
+/*! \param n_sample Number of probe particles to insert
+    \param type Type of particle to insert
     \param d_postype Particle positions and types by index
     \param d_orientation Particle orientation
     \param d_cell_size The size of each cell
@@ -257,7 +257,7 @@ __global__ void gpu_hpmc_free_volume_kernel(unsigned int n_sample,
 
     unsigned int my_cell;
 
-    // test depletant position
+    // insert particle at this position
     vec3<Scalar> pos_i;
     quat<Scalar> orientation_i;
     Shape shape_i(orientation_i, s_params[type]);
