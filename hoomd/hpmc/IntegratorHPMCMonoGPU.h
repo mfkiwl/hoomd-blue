@@ -863,114 +863,114 @@ template<class Shape> void IntegratorHPMCMonoGPU<Shape>::update(uint64_t timeste
                         CHECK_CUDA_ERROR();
                     }
 
-                    // ArrayHandle scope
-                    ArrayHandle<unsigned int> d_update_order_by_ptl(m_update_order.get(),
-                                                                    access_location::device,
-                                                                    access_mode::read);
-                    ArrayHandle<unsigned int> d_reject(m_reject,
-                                                       access_location::device,
-                                                       access_mode::read);
-                    ArrayHandle<unsigned int> d_reject_out(m_reject_out,
-                                                           access_location::device,
-                                                           access_mode::overwrite);
-                    ArrayHandle<unsigned int> d_reject_out_of_cell(m_reject_out_of_cell,
-                                                                   access_location::device,
-                                                                   access_mode::read);
-
-                    // access data for proposed moves
-                    ArrayHandle<Scalar4> d_trial_postype(m_trial_postype,
-                                                         access_location::device,
-                                                         access_mode::read);
-                    ArrayHandle<Scalar4> d_trial_orientation(m_trial_orientation,
-                                                             access_location::device,
-                                                             access_mode::read);
-                    ArrayHandle<Scalar4> d_trial_vel(m_trial_vel,
-                                                     access_location::device,
-                                                     access_mode::read);
-                    ArrayHandle<unsigned int> d_trial_move_type(m_trial_move_type,
+                // ArrayHandle scope
+                ArrayHandle<unsigned int> d_update_order_by_ptl(m_update_order.get(),
                                                                 access_location::device,
                                                                 access_mode::read);
-
-                    // access the particle data
-                    ArrayHandle<Scalar4> d_postype(this->m_pdata->getPositions(),
+                ArrayHandle<unsigned int> d_reject(m_reject,
                                                    access_location::device,
                                                    access_mode::read);
-                    ArrayHandle<Scalar4> d_orientation(this->m_pdata->getOrientationArray(),
+                ArrayHandle<unsigned int> d_reject_out(m_reject_out,
                                                        access_location::device,
-                                                       access_mode::read);
-                    ArrayHandle<Scalar4> d_vel(this->m_pdata->getVelocities(),
+                                                       access_mode::overwrite);
+                ArrayHandle<unsigned int> d_reject_out_of_cell(m_reject_out_of_cell,
+                                                               access_location::device,
+                                                               access_mode::read);
+
+                // access data for proposed moves
+                ArrayHandle<Scalar4> d_trial_postype(m_trial_postype,
+                                                     access_location::device,
+                                                     access_mode::read);
+                ArrayHandle<Scalar4> d_trial_orientation(m_trial_orientation,
+                                                         access_location::device,
+                                                         access_mode::read);
+                ArrayHandle<Scalar4> d_trial_vel(m_trial_vel,
+                                                 access_location::device,
+                                                 access_mode::read);
+                ArrayHandle<unsigned int> d_trial_move_type(m_trial_move_type,
+                                                            access_location::device,
+                                                            access_mode::read);
+
+                // access the particle data
+                ArrayHandle<Scalar4> d_postype(this->m_pdata->getPositions(),
                                                access_location::device,
                                                access_mode::read);
-                    ArrayHandle<unsigned int> d_tag(this->m_pdata->getTags(),
-                                                    access_location::device,
-                                                    access_mode::read);
+                ArrayHandle<Scalar4> d_orientation(this->m_pdata->getOrientationArray(),
+                                                   access_location::device,
+                                                   access_mode::read);
+                ArrayHandle<Scalar4> d_vel(this->m_pdata->getVelocities(),
+                                           access_location::device,
+                                           access_mode::read);
+                ArrayHandle<unsigned int> d_tag(this->m_pdata->getTags(),
+                                                access_location::device,
+                                                access_mode::read);
 
-                    // MC counters
-                    ArrayHandle<hpmc_counters_t> d_counters(this->m_count_total,
-                                                            access_location::device,
-                                                            access_mode::readwrite);
-                    ArrayHandle<hpmc_counters_t> d_counters_per_device(this->m_counters,
-                                                                       access_location::device,
-                                                                       access_mode::readwrite);
+                // MC counters
+                ArrayHandle<hpmc_counters_t> d_counters(this->m_count_total,
+                                                        access_location::device,
+                                                        access_mode::readwrite);
+                ArrayHandle<hpmc_counters_t> d_counters_per_device(this->m_counters,
+                                                                   access_location::device,
+                                                                   access_mode::readwrite);
 
-                    // fill the parameter structure for the GPU kernels
-                    gpu::hpmc_args_t args(d_postype.data,
-                                          d_orientation.data,
-                                          d_vel.data,
-                                          ngpu > 1 ? d_counters_per_device.data : d_counters.data,
-                                          (unsigned int)this->m_counters.getPitch(),
-                                          this->m_cl->getCellIndexer(),
-                                          this->m_cl->getDim(),
-                                          ghost_width,
-                                          this->m_pdata->getN(),
-                                          this->m_pdata->getNTypes(),
-                                          this->m_sysdef->getSeed(),
-                                          this->m_exec_conf->getRank(),
-                                          d_d.data,
-                                          d_a.data,
-                                          d_overlaps.data,
-                                          this->m_overlap_idx,
-                                          this->m_translation_move_probability,
-                                          timestep,
-                                          this->m_sysdef->getNDimensions(),
-                                          box,
-                                          i,
-                                          ghost_fraction,
-                                          domain_decomposition,
-                                          0, // block size
-                                          0, // tpp
-                                          0, // overlap threads
-                                          d_reject_out_of_cell.data,
-                                          d_trial_postype.data,
-                                          d_trial_orientation.data,
-                                          d_trial_vel.data,
-                                          d_trial_move_type.data,
-                                          d_update_order_by_ptl.data,
-                                          d_excell_idx.data,
-                                          d_excell_size.data,
-                                          m_excell_list_indexer,
-                                          d_reject.data,
-                                          d_reject_out.data,
-                                          this->m_exec_conf->dev_prop,
-                                          this->m_pdata->getGPUPartition(),
-                                          &m_narrow_phase_streams.front());
+                // fill the parameter structure for the GPU kernels
+                gpu::hpmc_args_t args(d_postype.data,
+                                      d_orientation.data,
+                                      d_vel.data,
+                                      ngpu > 1 ? d_counters_per_device.data : d_counters.data,
+                                      (unsigned int)this->m_counters.getPitch(),
+                                      this->m_cl->getCellIndexer(),
+                                      this->m_cl->getDim(),
+                                      ghost_width,
+                                      this->m_pdata->getN(),
+                                      this->m_pdata->getNTypes(),
+                                      this->m_sysdef->getSeed(),
+                                      this->m_exec_conf->getRank(),
+                                      d_d.data,
+                                      d_a.data,
+                                      d_overlaps.data,
+                                      this->m_overlap_idx,
+                                      this->m_translation_move_probability,
+                                      timestep,
+                                      this->m_sysdef->getNDimensions(),
+                                      box,
+                                      i,
+                                      ghost_fraction,
+                                      domain_decomposition,
+                                      0, // block size
+                                      0, // tpp
+                                      0, // overlap threads
+                                      d_reject_out_of_cell.data,
+                                      d_trial_postype.data,
+                                      d_trial_orientation.data,
+                                      d_trial_vel.data,
+                                      d_trial_move_type.data,
+                                      d_update_order_by_ptl.data,
+                                      d_excell_idx.data,
+                                      d_excell_size.data,
+                                      m_excell_list_indexer,
+                                      d_reject.data,
+                                      d_reject_out.data,
+                                      this->m_exec_conf->dev_prop,
+                                      this->m_pdata->getGPUPartition(),
+                                      &m_narrow_phase_streams.front());
 
-                    /*
-                     *  check overlaps, new configuration simultaneously against the old and the new
-                     * configuration
-                     */
+                /*
+                 *  check overlaps, new configuration simultaneously against the old and the new
+                 * configuration
+                 */
 
-                    this->m_exec_conf->beginMultiGPU();
+                this->m_exec_conf->beginMultiGPU();
 
-                    m_tuner_narrow->begin();
-                    auto param = m_tuner_narrow->getParam();
-                    args.block_size = param[0];
-                    args.tpp = param[1];
-                    args.overlap_threads = param[2];
-                    gpu::hpmc_narrow_phase<Shape>(args, params.data());
-                    if (this->m_exec_conf->isCUDAErrorCheckingEnabled())
-                        CHECK_CUDA_ERROR();
-                    m_tuner_narrow->end();
+                m_tuner_narrow->begin();
+                auto param = m_tuner_narrow->getParam();
+                args.block_size = param[0];
+                args.tpp = param[1];
+                args.overlap_threads = param[2];
+                gpu::hpmc_narrow_phase<Shape>(args, params.data());
+                if (this->m_exec_conf->isCUDAErrorCheckingEnabled())
+                    CHECK_CUDA_ERROR();
+                m_tuner_narrow->end();
 
                     {
                     ArrayHandle<unsigned int> d_reject_out_of_cell(m_reject_out_of_cell,

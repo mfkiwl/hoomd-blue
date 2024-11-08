@@ -369,10 +369,8 @@ class HPMCIntegrator(Integrator):
                                                param_dict=TypeParameterDict(
                                                    True, len_keys=2))
 
-        self._extend_typeparam([
-            typeparam_d, typeparam_a,
-            typeparam_inter_matrix
-        ])
+        self._extend_typeparam(
+            [typeparam_d, typeparam_a, typeparam_inter_matrix])
 
         self._pair_potentials = hoomd.data.syncedlist.SyncedList(
             hoomd.hpmc.pair.Pair,

@@ -431,7 +431,7 @@ class MuVT(Updater):
             transfer_types=list(transfer_types),
             max_volume_rescale=float(max_volume_rescale),
             volume_move_probability=float(volume_move_probability),
-            )
+        )
         self._param_dict.update(param_dict)
 
         typeparam_fugacity = TypeParameter(

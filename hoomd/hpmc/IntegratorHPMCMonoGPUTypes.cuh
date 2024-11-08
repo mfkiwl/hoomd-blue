@@ -137,9 +137,9 @@ struct hpmc_update_args_t
                        const unsigned int _block_size)
         : d_postype(_d_postype), d_orientation(_d_orientation), d_vel(_d_vel),
           d_counters(_d_counters), counters_pitch(_counters_pitch), gpu_partition(_gpu_partition),
-          d_trial_postype(_d_trial_postype),
-          d_trial_orientation(_d_trial_orientation), d_trial_vel(_d_trial_vel),
-          d_trial_move_type(_d_trial_move_type), d_reject(_d_reject), block_size(_block_size)
+          d_trial_postype(_d_trial_postype), d_trial_orientation(_d_trial_orientation),
+          d_trial_vel(_d_trial_vel), d_trial_move_type(_d_trial_move_type), d_reject(_d_reject),
+          block_size(_block_size)
         {
         }
 

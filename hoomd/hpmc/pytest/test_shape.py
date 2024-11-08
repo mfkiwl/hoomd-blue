@@ -747,4 +747,3 @@ def test_logging():
 
     for integrator in integrators:
         logging_check(integrator, ('hpmc', 'integrate'), type_shapes_check)
-

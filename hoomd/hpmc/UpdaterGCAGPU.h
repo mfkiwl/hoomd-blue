@@ -73,7 +73,7 @@ template<class Shape> class UpdaterGCAGPU : public UpdaterGCA<Shape>
     unsigned int m_maxn;                      //!< Max number of neighbors
     GlobalArray<unsigned int> m_overflow;     //!< Overflow condition for neighbor list
 
-    GPUPartition m_old_gpu_partition;          //!< The partition in the old configuration
+    GPUPartition m_old_gpu_partition; //!< The partition in the old configuration
 
     std::vector<hipStream_t> m_overlaps_streams; //!< Stream for overlaps kernel, per device
 
@@ -168,7 +168,6 @@ UpdaterGCAGPU<Shape>::UpdaterGCAGPU(std::shared_ptr<SystemDefinition> sysdef,
                          3,
                          true,
                          is_overlaps_parameter_valid));
-
 
     // Tuning parameters for nlist concatenation kernel:
     // 0: block size
