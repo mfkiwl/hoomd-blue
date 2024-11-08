@@ -49,6 +49,8 @@ Removed functionalities
 
 * ``HDF5Log.write``
 
+* Implicit depletants from HPMC.
+
 Migrating to HOOMD-blue 4
 -------------------------
 
