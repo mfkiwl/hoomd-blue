@@ -16,39 +16,29 @@ def test_gpu_profile(device):
 
 def _assert_common_properties(dev,
                               notice_level,
-                              message_filename,
-                              num_cpu_threads=None):
+                              message_filename):
     """Assert the properties common to all devices are correct."""
     assert dev.notice_level == notice_level
     assert dev.message_filename == message_filename
-    if num_cpu_threads is not None:
-        if hoomd.version.tbb_enabled:
-            assert dev.num_cpu_threads == num_cpu_threads
-        else:
-            assert dev.num_cpu_threads == 1
     assert type(dev.communicator) is hoomd.communicator.Communicator
 
 
 def test_common_properties(device, tmp_path):
-    # test default params, don't assert default tbb threads b/c it depends on
-    # hardware
+    # test default params, don't assert default
     _assert_common_properties(device, 2, None)
 
     # make sure we can set those properties
     device.notice_level = 3
     device.message_filename = str(tmp_path / "example.txt")
-    device.num_cpu_threads = 5
     _assert_common_properties(device, 3, str(tmp_path / "example.txt"), 5)
 
     # now make a device with non-default arguments
     device_type = type(device)
     dev = device_type(message_filename=str(tmp_path / "example2.txt"),
-                      notice_level=10,
-                      num_cpu_threads=10)
+                      notice_level=10)
     _assert_common_properties(dev,
                               notice_level=10,
-                              message_filename=str(tmp_path / "example2.txt"),
-                              num_cpu_threads=10)
+                              message_filename=str(tmp_path / "example2.txt"))
 
 
 @pytest.mark.gpu

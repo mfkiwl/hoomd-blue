@@ -250,7 +250,6 @@ class PYBIND11_EXPORT ExecutionConfiguration
         return m_mpi_config->isRoot();
         }
 
-
 #if defined(ENABLE_HIP)
     //! Returns the cached allocator for temporary allocations
     CachedAllocator& getCachedAllocator() const
