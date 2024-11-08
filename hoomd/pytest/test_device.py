@@ -28,7 +28,7 @@ def test_common_properties(device, tmp_path):
     # make sure we can set those properties
     device.notice_level = 3
     device.message_filename = str(tmp_path / "example.txt")
-    _assert_common_properties(device, 3, str(tmp_path / "example.txt"), 5)
+    _assert_common_properties(device, 3, str(tmp_path / "example.txt"))
 
     # now make a device with non-default arguments
     device_type = type(device)
