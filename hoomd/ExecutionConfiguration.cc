@@ -232,20 +232,6 @@ ExecutionConfiguration::ExecutionConfiguration(executionMode mode,
         }
 #endif
 
-#ifdef ENABLE_TBB
-    unsigned int num_threads = std::thread::hardware_concurrency();
-
-    char* env;
-    if ((env = getenv("OMP_NUM_THREADS")) != NULL)
-        {
-        num_threads = atoi(env);
-        msg->notice(2) << "Setting number of TBB threads to value of OMP_NUM_THREADS="
-                       << num_threads << std::endl;
-        }
-
-    setNumThreads(num_threads);
-#endif
-
 #if defined(ENABLE_HIP)
     // setup synchronization events
     m_events.resize(m_gpu_id.size());
@@ -697,10 +683,6 @@ void export_ExecutionConfiguration(pybind11::module& m)
         .def("getPartition", &ExecutionConfiguration::getPartition)
         .def("getNRanks", &ExecutionConfiguration::getNRanks)
         .def("getRank", &ExecutionConfiguration::getRank)
-#ifdef ENABLE_TBB
-        .def("setNumThreads", &ExecutionConfiguration::setNumThreads)
-#endif
-        .def("getNumThreads", &ExecutionConfiguration::getNumThreads)
         .def("setMemoryTracing", &ExecutionConfiguration::setMemoryTracing)
         .def("memoryTracingEnabled", &ExecutionConfiguration::memoryTracingEnabled)
         .def_static("getCapableDevices", &ExecutionConfiguration::getCapableDevices)

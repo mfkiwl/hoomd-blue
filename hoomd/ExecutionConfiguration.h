@@ -26,10 +26,6 @@
 #endif
 #endif
 
-#ifdef ENABLE_TBB
-#include <tbb/task_arena.h>
-#endif
-
 #include "Messenger.h"
 
 /*! \file ExecutionConfiguration.h
@@ -254,31 +250,6 @@ class PYBIND11_EXPORT ExecutionConfiguration
         return m_mpi_config->isRoot();
         }
 
-#ifdef ENABLE_TBB
-    //! set number of TBB threads
-    void setNumThreads(unsigned int num_threads)
-        {
-        m_task_arena = std::make_shared<tbb::task_arena>(num_threads);
-        m_num_threads = num_threads;
-        }
-
-    std::shared_ptr<tbb::task_arena> getTaskArena() const
-        {
-        if (!m_task_arena)
-            throw std::runtime_error("TBB task arena not set.");
-        return m_task_arena;
-        }
-#endif
-
-    //! Return the number of active threads
-    unsigned int getNumThreads() const
-        {
-#ifdef ENABLE_TBB
-        return m_num_threads;
-#else
-        return 0;
-#endif
-        }
 
 #if defined(ENABLE_HIP)
     //! Returns the cached allocator for temporary allocations
@@ -399,11 +370,6 @@ class PYBIND11_EXPORT ExecutionConfiguration
     std::unique_ptr<CachedAllocator> m_cached_alloc; //!< Cached allocator for temporary allocations
     std::unique_ptr<CachedAllocator>
         m_cached_alloc_managed; //!< Cached allocator for temporary allocations in managed memory
-#endif
-
-#ifdef ENABLE_TBB
-    std::shared_ptr<tbb::task_arena> m_task_arena; //!< The TBB task arena
-    unsigned int m_num_threads;                    //!<  The number of TBB threads used
 #endif
 
     //! Setup and print out stats on the chosen CPUs/GPUs

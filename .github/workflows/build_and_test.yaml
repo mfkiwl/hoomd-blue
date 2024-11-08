@@ -156,7 +156,6 @@ jobs:
                                -DCMAKE_BUILD_TYPE=${BUILD_TYPE} \
                                -DENABLE_GPU=${ENABLE_GPU:-"OFF"} \
                                -DENABLE_MPI=${ENABLE_MPI:-"OFF"} \
-                               -DENABLE_TBB=${ENABLE_TBB:-"OFF"} \
                                -DBUILD_MD=${BUILD_MD:-"ON"} \
                                -DBUILD_MPCD=${BUILD_MD:-"ON"} \
                                -DBUILD_METAL=${BUILD_MD:-"ON"} \
@@ -167,7 +166,6 @@ jobs:
       env:
         ENABLE_GPU: ${{ contains(inputs.config, 'cuda') }}
         ENABLE_MPI: ${{ contains(inputs.config, 'mpi') }}
-        ENABLE_TBB: ${{ contains(inputs.config, 'tbb') }}
         BUILD_MD: ${{ !contains(inputs.config, 'nomd') }}
         BUILD_HPMC: ${{ !contains(inputs.config, 'nohpmc') }}
         BUILD_DEBUG: ${{ contains(inputs.config, 'debug') }}

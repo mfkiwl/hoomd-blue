@@ -59,9 +59,6 @@ class BuildInfo
     /// Get the c++ compiler description
     static std::string getCXXCompiler();
 
-    /// Determine if ENABLE_TBB is set
-    static bool getEnableTBB();
-
     /// Determine if ENABLE_MPI is set
     static bool getEnableMPI();
 

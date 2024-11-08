@@ -54,8 +54,6 @@ Attributes:
 
     source_dir (str): The source directory.
 
-    tbb_enabled (bool): ``True`` when this build supports TBB threads.
-
     version (str): HOOMD-blue package version, following semantic versioning.
 """
 from hoomd import _hoomd
@@ -79,7 +77,6 @@ gpu_enabled = _hoomd.BuildInfo.getEnableGPU()
 gpu_api_version = _hoomd.BuildInfo.getGPUAPIVersion()
 gpu_platform = _hoomd.BuildInfo.getGPUPlatform()
 cxx_compiler = _hoomd.BuildInfo.getCXXCompiler()
-tbb_enabled = _hoomd.BuildInfo.getEnableTBB()
 mpi_enabled = _hoomd.BuildInfo.getEnableMPI()
 source_dir = _hoomd.BuildInfo.getSourceDir()
 install_dir = _hoomd.BuildInfo.getInstallDir()

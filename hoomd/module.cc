@@ -86,14 +86,6 @@ void export_ParticleDataSnapshot(pybind11::module& pybind11);
 #include <iostream>
 #include <sstream>
 
-#ifdef ENABLE_TBB
-#include <tbb/task_arena.h>
-#endif
-
-/*! \file hoomd_module.cc
-    \brief Brings all of the export_* functions together to export the hoomd python module
-*/
-
 namespace hoomd
     {
 namespace detail
@@ -219,7 +211,6 @@ PYBIND11_MODULE(_hoomd, m)
         .def_static("getGPUAPIVersion", BuildInfo::getGPUAPIVersion)
         .def_static("getGPUPlatform", BuildInfo::getGPUPlatform)
         .def_static("getCXXCompiler", BuildInfo::getCXXCompiler)
-        .def_static("getEnableTBB", BuildInfo::getEnableTBB)
         .def_static("getEnableMPI", BuildInfo::getEnableMPI)
         .def_static("getSourceDir", BuildInfo::getSourceDir)
         .def_static("getInstallDir", BuildInfo::getInstallDir)

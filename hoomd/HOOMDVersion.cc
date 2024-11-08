@@ -45,10 +45,6 @@ std::string BuildInfo::getCompileFlags()
     o << "MPI ";
 #endif
 
-#ifdef ENABLE_TBB
-    o << "TBB ";
-#endif
-
 #ifdef __SSE__
     o << "SSE ";
 #endif
@@ -141,15 +137,6 @@ std::string BuildInfo::getCXXCompiler()
 
 #else
     return string("unknown");
-#endif
-    }
-
-bool BuildInfo::getEnableTBB()
-    {
-#ifdef ENABLE_TBB
-    return true;
-#else
-    return false;
 #endif
     }
 
