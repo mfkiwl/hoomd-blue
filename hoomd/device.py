@@ -107,17 +107,6 @@ class Device:
 
     Warning:
         `Device` cannot be used directly. Instantate a `CPU` or `GPU` object.
-
-    .. rubric:: TBB threads
-
-    Set `num_cpu_threads` to `None` and TBB will auto-select the number of CPU
-    threads to execute. If the environment variable ``OMP_NUM_THREADS`` is set,
-    HOOMD will use this value. You can also set `num_cpu_threads` explicitly.
-
-    Note:
-        At this time **very few** features use TBB for threading. Most users
-        should employ MPI for parallel simulations. See `features` for more
-        information.
     """
 
     def __init__(self, communicator, notice_level, message_filename):
@@ -232,23 +221,6 @@ class Device:
         """str: Descriptions of the active hardware device."""
         return self._cpp_exec_conf.getActiveDevices()[0]
 
-    @property
-    def num_cpu_threads(self):
-        """int: Number of TBB threads to use."""
-        if not hoomd.version.tbb_enabled:
-            return 1
-        else:
-            return self._cpp_exec_conf.getNumThreads()
-
-    @num_cpu_threads.setter
-    def num_cpu_threads(self, num_cpu_threads):
-        if not hoomd.version.tbb_enabled:
-            self._cpp_msg.warning(
-                "HOOMD was compiled without thread support, ignoring request "
-                "to set number of threads.\n")
-        else:
-            self._cpp_exec_conf.setNumThreads(int(num_cpu_threads))
-
     def notice(self, message, level=1):
         """Write a notice message.
 
@@ -303,9 +275,6 @@ class GPU(Device):
             .. deprecated:: 4.5.0
 
                 Use ``gpu_id``.
-
-        num_cpu_threads (int): Number of TBB threads. Set to `None` to
-            auto-select.
 
         communicator (hoomd.communicator.Communicator): MPI communicator object.
             When `None`, create a default communicator that uses all MPI ranks.
@@ -368,7 +337,6 @@ class GPU(Device):
     def __init__(
         self,
         gpu_ids=None,
-        num_cpu_threads=None,
         communicator=None,
         message_filename=None,
         notice_level=2,
@@ -394,9 +362,6 @@ class GPU(Device):
         self._cpp_exec_conf = _hoomd.ExecutionConfiguration(
             _hoomd.ExecutionConfiguration.executionMode.GPU, gpu_ids,
             self.communicator.cpp_mpi_conf, self._cpp_msg)
-
-        if num_cpu_threads is not None:
-            self.num_cpu_threads = num_cpu_threads
 
     @property
     def gpu_error_checking(self):
@@ -488,9 +453,6 @@ class CPU(Device):
     """Select the CPU to execute simulations.
 
     Args:
-        num_cpu_threads (int): Number of TBB threads. Set to `None` to
-            auto-select.
-
         communicator (hoomd.communicator.Communicator): MPI communicator object.
             When `None`, create a default communicator that uses all MPI ranks.
 
@@ -513,7 +475,6 @@ class CPU(Device):
 
     def __init__(
         self,
-        num_cpu_threads=None,
         communicator=None,
         message_filename=None,
         notice_level=2,
@@ -524,9 +485,6 @@ class CPU(Device):
         self._cpp_exec_conf = _hoomd.ExecutionConfiguration(
             _hoomd.ExecutionConfiguration.executionMode.CPU, [],
             self.communicator.cpp_mpi_conf, self._cpp_msg)
-
-        if num_cpu_threads is not None:
-            self.num_cpu_threads = num_cpu_threads
 
 
 def auto_select(
@@ -558,6 +516,6 @@ def auto_select(
     """
     # Set class according to C++ object
     if len(GPU.get_available_devices()) > 0:
-        return GPU(None, None, communicator, message_filename, notice_level)
+        return GPU(None, communicator, message_filename, notice_level)
     else:
-        return CPU(None, communicator, message_filename, notice_level)
+        return CPU(communicator, message_filename, notice_level)

@@ -114,9 +114,6 @@ else()
 option(BUILD_MPCD "Build the mpcd package" ${BUILD_MD})
 endif()
 
-# Optionally use TBB for threading
-option(ENABLE_TBB "Enable support for Threading Building Blocks (TBB)" off)
-
 # Add list of plugins
 set(PLUGINS "example_plugins/pair_plugin;example_plugins/updater_plugin;example_plugins/shape_plugin" CACHE STRING "List of plugin directories.")
 
@@ -212,8 +209,7 @@ configure_package_config_file(hoomd-config.cmake.in
   INSTALL_DESTINATION ${CONFIG_INSTALL_DIR}
   PATH_VARS CMAKE_INSTALL_PREFIX)
 
-install(FILES CMake/hoomd/FindTBB.cmake
-              CMake/hoomd/FindCUDALibs.cmake
+install(FILES CMake/hoomd/FindCUDALibs.cmake
               CMake/hoomd/HOOMDHIPSetup.cmake
               CMake/hoomd/hoomd-macros.cmake
               ${HOOMD_BINARY_DIR}/hoomd-config.cmake

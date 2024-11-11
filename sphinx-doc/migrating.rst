@@ -51,6 +51,8 @@ Removed functionalities
 
 * Implicit depletants from HPMC.
 
+* ``Device.num_cpu_threads``.
+
 Migrating to HOOMD-blue 4
 -------------------------
 

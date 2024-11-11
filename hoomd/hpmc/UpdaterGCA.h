@@ -14,20 +14,6 @@
 #include "HPMCCounters.h"
 #include "IntegratorHPMCMono.h"
 
-#ifdef ENABLE_TBB
-#include <tbb/concurrent_unordered_map.h>
-#include <tbb/concurrent_unordered_set.h>
-#include <tbb/concurrent_vector.h>
-#include <tbb/parallel_for.h>
-#include <tbb/task.h>
-#include <atomic>
-
-#if TBB_VERSION_MAJOR < 2021
-#define ENABLE_TBB_TASK
-#endif
-
-#endif
-
 namespace hoomd {
 
 namespace hpmc
@@ -35,48 +21,6 @@ namespace hpmc
 
 namespace detail
 {
-
-#ifdef ENABLE_TBB_TASK
-//! Wrapper around std::atomic_flag to allow use in a std::vector
-class my_atomic_flag
-    {
-    public:
-        //! Default constructor
-        my_atomic_flag()
-            {
-            f.clear();
-            }
-
-        //! Copy constructor
-        /*! \note this constructor doesn't really copy the value of its argument,
-            it just reset's the flag to zero
-         */
-        my_atomic_flag(const my_atomic_flag& other)
-            {
-            f.clear();
-            }
-
-        //! Assignment operator (non-atomic)
-        /*! \note this assignment operator doesn't really copy the value of its argument,
-            it just reset's the flag to zero
-         */
-        my_atomic_flag& operator =( const my_atomic_flag& other)
-            {
-            f.clear();
-            return *this;
-            }
-
-        //! Sets flag and returns old value
-        bool test_and_set()
-            {
-            return f.test_and_set();
-            }
-
-    private:
-        std::atomic_flag f;
-    };
-#endif
-
 // Graph class represents a undirected graph
 // using adjacency list representation
 class Graph
@@ -92,118 +36,19 @@ class Graph
 
         inline void addEdge(unsigned int v, unsigned int w);
 
-        #ifdef ENABLE_TBB_TASK
-        inline void connectedComponents(std::vector<tbb::concurrent_vector<unsigned int> >& cc);
-        #else
         inline void connectedComponents(std::vector<std::vector<unsigned int> >& cc);
-        #endif
-
-        #ifdef ENABLE_TBB_TASK
-        void setTaskArena(std::shared_ptr<tbb::task_arena> task_arena)
-            {
-            m_task_arena = task_arena;
-            }
-        #endif
 
     private:
-        #ifndef ENABLE_TBB_TASK
         std::multimap<unsigned int,unsigned int> adj;
-        #else
-        tbb::concurrent_unordered_multimap<unsigned int, unsigned int> adj;
-        #endif
 
-        #ifndef ENABLE_TBB_TASK
         std::vector<unsigned int> visited;
-        #else
-        std::vector<my_atomic_flag> visited;
-        #endif
 
-        #ifdef ENABLE_TBB_TASK
-        /// The TBB task arena
-        std::shared_ptr<tbb::task_arena> m_task_arena;
-        #endif
-
-        #ifndef ENABLE_TBB_TASK
-        // A function used by DFS
         inline void DFSUtil(unsigned int v, std::vector<unsigned int>& visited, std::vector<unsigned int>& cur_cc);
-        #endif
-
-        #ifdef ENABLE_TBB_TASK
-        class DFSTask : public tbb::task
-            {
-            public:
-                DFSTask(unsigned int _root, std::vector<my_atomic_flag>& _visited,
-                    tbb::concurrent_vector<unsigned int>& _cc,
-                    const tbb::concurrent_unordered_multimap<unsigned int, unsigned int>& _adj)
-                    : root(_root), visited(_visited), cc(_cc), adj(_adj)
-                    { }
-
-                tbb::task* execute()
-                    {
-                    cc.push_back(root);
-
-                    unsigned int count = 0;
-                    tbb::task_list list;
-
-                    auto begin = adj.equal_range(root).first;
-                    auto end = adj.equal_range(root).second;
-
-                    for (auto it = begin; it != end; ++it)
-                        {
-                        unsigned int neighbor = it->second;
-                        if (!visited[neighbor].test_and_set())
-                            {
-                            if (count++ == 0)
-                                {
-                                root = neighbor; // for task recycling
-                                continue;
-                                }
-                            list.push_back(*new(allocate_child()) DFSTask(neighbor, visited, cc, adj));
-                            }
-                        }
-
-                    if (count)
-                        {
-                        set_ref_count(count);
-                        spawn(list);
-
-                        recycle_as_safe_continuation();
-                        }
-
-                    return NULL;
-                    }
-
-            private:
-                unsigned int root;
-                std::vector<my_atomic_flag> & visited;
-                tbb::concurrent_vector<unsigned int>& cc;
-                const tbb::concurrent_unordered_multimap<unsigned int, unsigned int>& adj;
-            };
-        #endif // ENABLE_TBB_TASK
-
     };
 
 // Gather connected components in an undirected graph
-#ifdef ENABLE_TBB_TASK
-void Graph::connectedComponents(std::vector<tbb::concurrent_vector<unsigned int> >& cc)
-#else
 void Graph::connectedComponents(std::vector<std::vector<unsigned int> >& cc)
-#endif
     {
-    #ifdef ENABLE_TBB_TASK
-    this->m_task_arena->execute([&]{
-    for (unsigned int v = 0; v < visited.size(); ++v)
-        {
-        if (! visited[v].test_and_set())
-            {
-            tbb::concurrent_vector<unsigned int> component;
-            DFSTask& a = *new(tbb::task::allocate_root()) DFSTask(v, visited, component, adj);
-            tbb::task::spawn_root_and_wait(a);
-            cc.push_back(component);
-            }
-        }
-    }); // end task arena execute()
-    #else
     std::fill(visited.begin(), visited.end(), 0);
 
     // Depth first search
@@ -216,10 +61,8 @@ void Graph::connectedComponents(std::vector<std::vector<unsigned int> >& cc)
             cc.push_back(cur_cc);
             }
         }
-    #endif
     }
 
-#ifndef ENABLE_TBB_TASK
 void Graph::DFSUtil(unsigned int v, std::vector<unsigned int>& visited, std::vector<unsigned int>& cur_cc)
     {
     visited[v] = 1;
@@ -235,24 +78,15 @@ void Graph::DFSUtil(unsigned int v, std::vector<unsigned int>& visited, std::vec
             DFSUtil(i->second, visited, cur_cc);
         }
     }
-#endif
+
 Graph::Graph(unsigned int V)
     {
-    #ifndef ENABLE_TBB_TASK
     visited.resize(V, 0);
-    #else
-    visited.resize(V);
-    #endif
     }
 
 void Graph::resize(unsigned int V)
     {
-    #ifndef ENABLE_TBB_TASK
     visited.resize(V, 0);
-    #else
-    visited.clear();
-    visited.resize(V);
-    #endif
 
     adj.clear();
     }
@@ -360,11 +194,7 @@ class UpdaterGCA : public Updater
 
         unsigned int m_instance=0;                  //!< Unique ID for RNG seeding
 
-        #ifdef ENABLE_TBB_TASK
-        std::vector<tbb::concurrent_vector<unsigned int> > m_clusters; //!< Cluster components
-        #else
         std::vector<std::vector<unsigned int> > m_clusters; //!< Cluster components
-        #endif
 
         detail::Graph m_G; //!< The graph
 
@@ -374,15 +204,9 @@ class UpdaterGCA : public Updater
         GlobalVector<Scalar4> m_orientation_backup;    //!< Old local orientations
         GlobalVector<int3> m_image_backup;             //!< Old local images
 
-        #ifndef ENABLE_TBB_TASK
         std::set<std::pair<unsigned int, unsigned int> > m_overlap;   //!< A local vector of particle pairs due to overlap
         std::map<std::pair<unsigned int, unsigned int>,LongReal > m_energy_old_old;    //!< Energy of interaction old-old
         std::map<std::pair<unsigned int, unsigned int>,LongReal > m_energy_new_old;    //!< Energy of interaction old-old
-        #else
-        tbb::concurrent_unordered_set<std::pair<unsigned int, unsigned int> > m_overlap;
-        tbb::concurrent_unordered_map<std::pair<unsigned int, unsigned int>,LongReal > m_energy_old_old;
-        tbb::concurrent_unordered_map<std::pair<unsigned int, unsigned int>,LongReal > m_energy_new_old;
-        #endif
 
         hpmc_clusters_counters_t m_count_total;                 //!< Total count since initialization
         hpmc_clusters_counters_t m_count_run_start;             //!< Count saved at run() start
@@ -414,10 +238,6 @@ UpdaterGCA<Shape>::UpdaterGCA(std::shared_ptr<SystemDefinition> sysdef,
             m_flip_probability(0.5)
     {
     m_exec_conf->msg->notice(5) << "Constructing UpdaterGCA" << std::endl;
-
-    #ifdef ENABLE_TBB_TASK
-    m_G.setTaskArena(sysdef->getParticleData()->getExecConf()->getTaskArena());
-    #endif
 
     // initialize stats
     resetStats();
@@ -564,12 +384,7 @@ void UpdaterGCA<Shape>::findInteractions(uint64_t timestep, const quat<Scalar> q
     if (m_mc->hasPairInteractions())
         {
         // test old configuration against itself
-        #ifdef ENABLE_TBB_TASK
-        this->m_exec_conf->getTaskArena()->execute([&]{
-        tbb::parallel_for((unsigned int)0,this->m_pdata->getN(), [&](unsigned int i)
-        #else
         for (unsigned int i = 0; i < this->m_pdata->getN(); ++i)
-        #endif
             {
             unsigned int typ_i = __scalar_as_int(h_postype_backup.data[i].w);
 
@@ -658,19 +473,10 @@ void UpdaterGCA<Shape>::findInteractions(uint64_t timestep, const quat<Scalar> q
                 } // end loop over images
 
             } // end loop over old configuration
-        #ifdef ENABLE_TBB_TASK
-            );
-        }); // end task arena execute()
-        #endif
         }
 
     // loop over new configuration
-    #ifdef ENABLE_TBB_TASK
-    this->m_exec_conf->getTaskArena()->execute([&]{
-    tbb::parallel_for((unsigned int)0,nptl, [&](unsigned int i)
-    #else
     for (unsigned int i = 0; i < nptl; ++i)
-    #endif
         {
         unsigned int typ_i = __scalar_as_int(h_postype.data[i].w);
 
@@ -824,10 +630,6 @@ void UpdaterGCA<Shape>::findInteractions(uint64_t timestep, const quat<Scalar> q
                 } // end loop over images
             } // end if patch
         } // end loop over local particles
-    #ifdef ENABLE_TBB_TASK
-        );
-    }); // end task arena execute()
-    #endif
     }
 
 template<class Shape>
@@ -959,12 +761,7 @@ void UpdaterGCA<Shape>::update(uint64_t timestep)
     // resize the number of graph nodes in place
     m_G.resize(this->m_pdata->getN());
 
-    #ifdef ENABLE_TBB_TASK
-    this->m_exec_conf->getTaskArena()->execute([&]{
-    tbb::parallel_for(m_overlap.range(), [&] (decltype(m_overlap.range()) r)
-    #else
     auto &r = m_overlap;
-    #endif
         {
         for (auto it = r.begin(); it != r.end(); ++it)
             {
@@ -976,19 +773,11 @@ void UpdaterGCA<Shape>::update(uint64_t timestep)
             m_G.addEdge(i,j);
             }
         }
-    #ifdef ENABLE_TBB_TASK
-        );
-    }); // end task arena execute()
-    #endif
 
     if (m_mc->hasPairInteractions())
         {
         // sum up interaction energies
-        #ifdef ENABLE_TBB_TASK
-        tbb::concurrent_unordered_map< std::pair<unsigned int, unsigned int>, LongReal> delta_U;
-        #else
         std::map< std::pair<unsigned int, unsigned int>, LongReal> delta_U;
-        #endif
 
         for (auto it = m_energy_old_old.begin(); it != m_energy_old_old.end(); ++it)
             {
@@ -1026,12 +815,7 @@ void UpdaterGCA<Shape>::update(uint64_t timestep)
 
         const Scalar kT = (*m_mc->getKT())(timestep);
 
-        #ifdef ENABLE_TBB_TASK
-        this->m_exec_conf->getTaskArena()->execute([&]{
-        tbb::parallel_for(delta_U.range(), [&] (decltype(delta_U.range()) r)
-        #else
         auto &r = delta_U;
-        #endif
             {
             for (auto it = r.begin(); it != r.end(); ++it)
                 {
@@ -1051,10 +835,6 @@ void UpdaterGCA<Shape>::update(uint64_t timestep)
                     }
                 }
             }
-        #ifdef ENABLE_TBB_TASK
-            );
-        }); // end task arena execute()
-        #endif
         } // end if (m_mc->hasPairInteractions)
 
     // compute connected components
