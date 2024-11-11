@@ -162,10 +162,8 @@ template<class Geometry> void export_RejectionVirtualParticleFiller(pybind11::mo
     namespace py = pybind11;
     const std::string name = Geometry::getName() + "GeometryFiller";
     py::class_<mpcd::RejectionVirtualParticleFiller<Geometry>,
-               std::shared_ptr<mpcd::RejectionVirtualParticleFiller<Geometry>>>(
-        m,
-        name.c_str(),
-        py::base<mpcd::VirtualParticleFiller>())
+               mpcd::VirtualParticleFiller,
+               std::shared_ptr<mpcd::RejectionVirtualParticleFiller<Geometry>>>(m, name.c_str())
         .def(pybind11::init<std::shared_ptr<SystemDefinition>,
                             const std::string&,
                             Scalar,
