@@ -79,7 +79,5 @@ repos:
     exclude: |
       (?x)(
         ^CMake/|
-        ^hoomd/extern/|
-        ^hoomd/hpmc/UpdaterGCA\.h|
-        ^hoomd/hpmc/IntegratorHPMCMono\.h
+        ^hoomd/extern/
       )
