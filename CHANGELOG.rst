@@ -54,6 +54,8 @@ Change Log
   (`#1888 <https://github.com/glotzerlab/hoomd-blue/pull/1888>`__).
 * ``hoomd.hpmc.external.user.CPPExternalPotential``
   (`#1888 <https://github.com/glotzerlab/hoomd-blue/pull/1888>`__).
+* Implicit depletants from HPMC.
+  (`#1931 <https://github.com/glotzerlab/hoomd-blue/pull/1931>`__).
 
 
 4.x

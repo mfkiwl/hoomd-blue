@@ -3,10 +3,8 @@
 
 // Include the defined classes that are to be exported to python
 #include "IntegratorHPMC.h"
-#include "IntegratorHPMCMono.h"
 #include "IntegratorHPMCMonoNEC.h"
 
-#include "ComputeSDF.h"
 #include "ExternalFieldWall.h"
 #include "ShapeConvexPolygon.h"
 #include "ShapeConvexPolyhedron.h"
@@ -146,9 +144,6 @@ PYBIND11_MODULE(_hpmc, m)
         "mfellipsoid_params")
         .def(pybind11::init<pybind11::dict>())
         .def("asDict", &ShapeUnion<ShapeFacetedEllipsoid>::param_type::asDict);
-
-    // export counters
-    export_hpmc_implicit_counters(m);
 
     export_hpmc_muvt_counters(m);
     export_hpmc_clusters_counters(m);
