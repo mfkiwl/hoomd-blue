@@ -189,67 +189,6 @@ void MolecularForceCompute::initMoleculesGPU()
 
         m_tuner_fill->end();
         }
-
-    // distribute molecules evenly over GPUs
-    // NOTE: going forward we could slave the GPU partition of the molecules
-    // to that of the local particles in the ParticleData
-    m_gpu_partition = GPUPartition(m_exec_conf->getGPUIds());
-    m_gpu_partition.setN(n_local_molecules);
-
-#if defined(ENABLE_HIP) && defined(__HIP_PLATFORM_NVCC__)
-    if (m_exec_conf->allConcurrentManagedAccess())
-        {
-        auto gpu_map = m_exec_conf->getGPUIds();
-
-        for (unsigned int idev = 0; idev < m_exec_conf->getNumActiveGPUs(); ++idev)
-            {
-            std::pair<unsigned int, unsigned int> range = m_gpu_partition.getRange(idev);
-            unsigned int nelem = range.second - range.first;
-
-            if (nelem == 0)
-                continue;
-
-            cudaMemAdvise(m_molecule_length.get() + range.first,
-                          sizeof(unsigned int) * nelem,
-                          cudaMemAdviseSetPreferredLocation,
-                          gpu_map[idev]);
-            cudaMemPrefetchAsync(m_molecule_length.get() + range.first,
-                                 sizeof(unsigned int) * nelem,
-                                 gpu_map[idev]);
-
-            if (m_molecule_indexer.getW() == 0)
-                continue;
-
-            cudaMemAdvise(m_molecule_list.get() + m_molecule_indexer(0, range.first),
-                          sizeof(unsigned int) * nelem * m_molecule_indexer.getW(),
-                          cudaMemAdviseSetPreferredLocation,
-                          gpu_map[idev]);
-            cudaMemPrefetchAsync(m_molecule_list.get() + m_molecule_indexer(0, range.first),
-                                 sizeof(unsigned int) * nelem * m_molecule_indexer.getW(),
-                                 gpu_map[idev]);
-            }
-
-        for (unsigned int idev = 0; idev < m_exec_conf->getNumActiveGPUs(); ++idev)
-            {
-            auto range = m_pdata->getGPUPartition().getRange(idev);
-            unsigned int nelem = range.second - range.first;
-
-            // skip if no hint set
-            if (!nelem)
-                continue;
-
-            cudaMemAdvise(m_molecule_idx.get() + range.first,
-                          sizeof(unsigned int) * nelem,
-                          cudaMemAdviseSetPreferredLocation,
-                          gpu_map[idev]);
-            cudaMemPrefetchAsync(m_molecule_idx.get() + range.first,
-                                 sizeof(unsigned int) * nelem,
-                                 gpu_map[idev]);
-            }
-
-        CHECK_CUDA_ERROR();
-        }
-#endif
     }
 #endif
 

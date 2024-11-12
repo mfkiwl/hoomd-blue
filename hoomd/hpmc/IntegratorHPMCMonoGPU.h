@@ -14,8 +14,6 @@
 #include "hoomd/RNGIdentifiers.h"
 #include "hoomd/RandomNumbers.h"
 
-#include "hoomd/GPUPartition.cuh"
-
 #include <hip/hip_runtime.h>
 
 #ifdef ENABLE_MPI

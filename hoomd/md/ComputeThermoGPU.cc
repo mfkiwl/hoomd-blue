@@ -7,7 +7,6 @@
 
 #include "ComputeThermoGPU.h"
 #include "ComputeThermoGPU.cuh"
-#include "hoomd/GPUPartition.cuh"
 
 #ifdef ENABLE_MPI
 #include "hoomd/Communicator.h"
@@ -37,14 +36,11 @@ ComputeThermoGPU::ComputeThermoGPU(std::shared_ptr<SystemDefinition> sysdef,
         }
 
     m_block_size = 256;
-
-    hipEventCreateWithFlags(&m_event, hipEventDisableTiming);
     }
 
 //! Destructor
 ComputeThermoGPU::~ComputeThermoGPU()
     {
-    hipEventDestroy(m_event);
     }
 
 /*! Computes all thermodynamic properties of the system in one fell swoop, on the GPU.
@@ -59,9 +55,8 @@ void ComputeThermoGPU::computeProperties()
 
     assert(m_pdata);
 
-    // number of blocks in reduction (round up for every GPU)
-    unsigned int num_blocks
-        = m_group->getNumMembers() / m_block_size + m_exec_conf->getNumActiveGPUs();
+    // number of blocks in reduction (round up)
+    unsigned int num_blocks = m_group->getNumMembers() / m_block_size + 1;
 
     // resize work space
     size_t old_size = m_scratch.size();
@@ -72,32 +67,7 @@ void ComputeThermoGPU::computeProperties()
 
     if (m_scratch.size() != old_size)
         {
-#ifdef __HIP_PLATFORM_NVCC__
-        if (m_exec_conf->allConcurrentManagedAccess())
-            {
-            auto& gpu_map = m_exec_conf->getGPUIds();
-
-            // map scratch array into memory of all GPUs
-            for (unsigned int idev = 0; idev < m_exec_conf->getNumActiveGPUs(); ++idev)
-                {
-                cudaMemAdvise(m_scratch.get(),
-                              sizeof(Scalar4) * m_scratch.getNumElements(),
-                              cudaMemAdviseSetAccessedBy,
-                              gpu_map[idev]);
-                cudaMemAdvise(m_scratch_pressure_tensor.get(),
-                              sizeof(Scalar) * m_scratch_pressure_tensor.getNumElements(),
-                              cudaMemAdviseSetAccessedBy,
-                              gpu_map[idev]);
-                cudaMemAdvise(m_scratch_rot.get(),
-                              sizeof(Scalar) * m_scratch_rot.getNumElements(),
-                              cudaMemAdviseSetAccessedBy,
-                              gpu_map[idev]);
-                }
-            CHECK_CUDA_ERROR();
-            }
-#endif
-
-        // reset to zero, to be on the safe side
+        // reset to zero
         ArrayHandle<Scalar4> d_scratch(m_scratch, access_location::device, access_mode::overwrite);
         ArrayHandle<Scalar> d_scratch_pressure_tensor(m_scratch_pressure_tensor,
                                                       access_location::device,
@@ -156,7 +126,7 @@ void ComputeThermoGPU::computeProperties()
                                                 access_location::device,
                                                 access_mode::read);
 
-        m_exec_conf->beginMultiGPU();
+        m_exec_conf->setDevice();
 
         // build up args list
         kernel::compute_thermo_args args;
@@ -191,14 +161,10 @@ void ComputeThermoGPU::computeProperties()
                                    box,
                                    args,
                                    flags[pdata_flag::pressure_tensor],
-                                   flags[pdata_flag::rotational_kinetic_energy],
-                                   m_group->getGPUPartition());
+                                   flags[pdata_flag::rotational_kinetic_energy]);
 
         if (m_exec_conf->isCUDAErrorCheckingEnabled())
             CHECK_CUDA_ERROR();
-
-        // converge GPUs
-        m_exec_conf->endMultiGPU();
 
         // perform the computation on GPU 0
         gpu_compute_thermo_final(d_properties.data,

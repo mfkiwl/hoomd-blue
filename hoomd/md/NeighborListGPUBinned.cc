@@ -23,9 +23,6 @@ NeighborListGPUBinned::NeighborListGPUBinned(std::shared_ptr<SystemDefinition> s
     // with multiple GPUs, use indirect access via particle data arrays
     m_use_index = m_exec_conf->allConcurrentManagedAccess();
 
-    // with multiple GPUs, request a cell list per device
-    m_cl->setPerDevice(m_exec_conf->allConcurrentManagedAccess());
-
     m_cl->setComputeXYZF(!m_use_index);
     m_cl->setComputeIdx(m_use_index);
 
@@ -116,26 +113,7 @@ void NeighborListGPUBinned::buildNlist(uint64_t timestep)
     ArrayHandle<Scalar> d_r_cut(m_r_cut, access_location::device, access_mode::read);
     ArrayHandle<Scalar> d_r_listsq(m_r_listsq, access_location::device, access_mode::read);
 
-#ifdef __HIP_PLATFORM_NVCC__
-    auto& gpu_map = m_exec_conf->getGPUIds();
-
-    // prefetch some cell list arrays
-    if (m_exec_conf->allConcurrentManagedAccess())
-        {
-        for (unsigned int idev = 0; idev < m_exec_conf->getNumActiveGPUs(); ++idev)
-            {
-            // prefetch cell adjacency
-            cudaMemPrefetchAsync(d_cell_adj.data,
-                                 m_cl->getCellAdjArray().getNumElements() * sizeof(unsigned int),
-                                 gpu_map[idev]);
-            }
-        }
-
-    if (m_exec_conf->isCUDAErrorCheckingEnabled())
-        CHECK_CUDA_ERROR();
-#endif
-
-    m_exec_conf->beginMultiGPU();
+    m_exec_conf->setDevice();
 
     m_tuner->begin();
     auto param = m_tuner->getParam();
@@ -168,15 +146,12 @@ void NeighborListGPUBinned::buildNlist(uint64_t timestep)
         block_size,
         m_filter_body,
         m_cl->getGhostWidth(),
-        m_pdata->getGPUPartition(),
         m_use_index,
         m_exec_conf->dev_prop);
 
     if (m_exec_conf->isCUDAErrorCheckingEnabled())
         CHECK_CUDA_ERROR();
     m_tuner->end();
-
-    m_exec_conf->endMultiGPU();
     }
 
 namespace detail

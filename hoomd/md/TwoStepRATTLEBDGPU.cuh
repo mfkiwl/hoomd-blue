@@ -17,8 +17,6 @@
 #include "hoomd/ParticleData.cuh"
 #include "hoomd/VectorMath.h"
 
-#include "hoomd/GPUPartition.cuh"
-
 #include "hoomd/RNGIdentifiers.h"
 #include "hoomd/RandomNumbers.h"
 
@@ -78,8 +76,7 @@ hipError_t gpu_rattle_brownian_step_one(Scalar4* d_pos,
                                         const Scalar deltaT,
                                         const unsigned int D,
                                         const bool d_noiseless_t,
-                                        const bool d_noiseless_r,
-                                        const GPUPartition& gpu_partition);
+                                        const bool d_noiseless_r);
 
 template<class Manifold>
 hipError_t gpu_include_rattle_force_bd(const Scalar4* d_pos,
@@ -92,8 +89,7 @@ hipError_t gpu_include_rattle_force_bd(const Scalar4* d_pos,
                                        Manifold manifold,
                                        size_t net_virial_pitch,
                                        const Scalar deltaT,
-                                       const bool d_noiseless_t,
-                                       const GPUPartition& gpu_partition);
+                                       const bool d_noiseless_t);
 
 #ifdef __HIPCC__
 
@@ -121,8 +117,7 @@ __global__ void gpu_rattle_brownian_step_one_kernel(Scalar4* d_pos,
                                                     const Scalar deltaT,
                                                     unsigned int D,
                                                     const bool d_noiseless_t,
-                                                    const bool d_noiseless_r,
-                                                    const unsigned int offset)
+                                                    const bool d_noiseless_r)
     {
     HIP_DYNAMIC_SHARED(char, s_data)
 
@@ -152,7 +147,7 @@ __global__ void gpu_rattle_brownian_step_one_kernel(Scalar4* d_pos,
 
     if (local_idx < nwork)
         {
-        const unsigned int group_idx = local_idx + offset;
+        const unsigned int group_idx = local_idx;
 
         // determine the particle to work on
         unsigned int idx = d_group_members[group_idx];
@@ -374,17 +369,11 @@ hipError_t gpu_rattle_brownian_step_one(Scalar4* d_pos,
                                         const Scalar deltaT,
                                         const unsigned int D,
                                         const bool d_noiseless_t,
-                                        const bool d_noiseless_r,
-                                        const GPUPartition& gpu_partition)
+                                        const bool d_noiseless_r)
     {
     unsigned int run_block_size = 256;
 
-    // iterate over active GPUs in reverse, to end up on first GPU when returning from this function
-    for (int idev = gpu_partition.getNumActiveGPUs() - 1; idev >= 0; --idev)
-        {
-        auto range = gpu_partition.getRangeAndSetGPU(idev);
-
-        unsigned int nwork = range.second - range.first;
+       unsigned int nwork = group_size;
 
         // setup the grid to run the kernel
         dim3 grid((nwork / run_block_size) + 1, 1, 1);
@@ -428,9 +417,7 @@ hipError_t gpu_rattle_brownian_step_one(Scalar4* d_pos,
                            deltaT,
                            D,
                            d_noiseless_t,
-                           d_noiseless_r,
-                           range.first);
-        }
+                           d_noiseless_r);
 
     return hipSuccess;
     }
@@ -451,8 +438,7 @@ __global__ void gpu_include_rattle_force_bd_kernel(const Scalar4* d_pos,
                                                    Manifold manifold,
                                                    size_t net_virial_pitch,
                                                    const Scalar deltaT,
-                                                   const bool d_noiseless_t,
-                                                   const unsigned int offset)
+                                                   const bool d_noiseless_t)
     {
     HIP_DYNAMIC_SHARED(char, s_data2)
 
@@ -473,7 +459,7 @@ __global__ void gpu_include_rattle_force_bd_kernel(const Scalar4* d_pos,
 
     if (local_idx < nwork)
         {
-        const unsigned int group_idx = local_idx + offset;
+        const unsigned int group_idx = local_idx;
 
         // determine the particle to work on
         unsigned int idx = d_group_members[group_idx];
@@ -619,17 +605,11 @@ hipError_t gpu_include_rattle_force_bd(const Scalar4* d_pos,
                                        Manifold manifold,
                                        size_t net_virial_pitch,
                                        const Scalar deltaT,
-                                       const bool d_noiseless_t,
-                                       const GPUPartition& gpu_partition)
+                                       const bool d_noiseless_t)
     {
     unsigned int run_block_size = 256;
 
-    // iterate over active GPUs in reverse, to end up on first GPU when returning from this function
-    for (int idev = gpu_partition.getNumActiveGPUs() - 1; idev >= 0; --idev)
-        {
-        auto range = gpu_partition.getRangeAndSetGPU(idev);
-
-        unsigned int nwork = range.second - range.first;
+       unsigned int nwork = group_size;
 
         // setup the grid to run the kernel
         dim3 grid((nwork / run_block_size) + 1, 1, 1);
@@ -665,9 +645,7 @@ hipError_t gpu_include_rattle_force_bd(const Scalar4* d_pos,
                            manifold,
                            net_virial_pitch,
                            deltaT,
-                           d_noiseless_t,
-                           range.first);
-        }
+                           d_noiseless_t);
 
     return hipSuccess;
     }

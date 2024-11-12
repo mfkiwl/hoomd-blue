@@ -19,7 +19,6 @@
 #include "hoomd/VectorMath.h"
 
 #include "TwoStepRATTLENVEGPU.cuh"
-#include "hoomd/GPUPartition.cuh"
 
 #include <assert.h>
 #include <type_traits>
@@ -38,7 +37,7 @@ hipError_t gpu_rattle_nve_step_one(Scalar4* d_pos,
                                    const Scalar3* d_accel,
                                    int3* d_image,
                                    unsigned int* d_group_members,
-                                   const GPUPartition& gpu_partition,
+                                   const unsigned int group_size,
                                    const BoxDim& box,
                                    Scalar deltaT,
                                    bool limit,
@@ -50,7 +49,7 @@ hipError_t gpu_rattle_nve_angular_step_one(Scalar4* d_orientation,
                                            const Scalar3* d_inertia,
                                            const Scalar4* d_net_torque,
                                            unsigned int* d_group_members,
-                                           const GPUPartition& gpu_partition,
+                                           const unsigned int group_size,
                                            Scalar deltaT,
                                            Scalar scale,
                                            const unsigned int block_size);
@@ -60,7 +59,7 @@ hipError_t gpu_rattle_nve_step_two(Scalar4* d_pos,
                                    Scalar4* d_vel,
                                    Scalar3* d_accel,
                                    unsigned int* d_group_members,
-                                   const GPUPartition& gpu_partition,
+                                           const unsigned int group_size,
                                    Scalar4* d_net_force,
                                    Manifold manifold,
                                    Scalar tolerance,
@@ -75,7 +74,7 @@ hipError_t gpu_rattle_nve_angular_step_two(const Scalar4* d_orientation,
                                            const Scalar3* d_inertia,
                                            const Scalar4* d_net_torque,
                                            unsigned int* d_group_members,
-                                           const GPUPartition& gpu_partition,
+                                           const unsigned int group_size,
                                            Scalar deltaT,
                                            Scalar scale,
                                            const unsigned int block_size);
@@ -87,7 +86,7 @@ hipError_t gpu_include_rattle_force_nve(const Scalar4* d_pos,
                                         Scalar4* d_net_force,
                                         Scalar* d_net_virial,
                                         unsigned int* d_group_members,
-                                        const GPUPartition& gpu_partition,
+                                           const unsigned int group_size,
                                         size_t net_virial_pitch,
                                         Manifold manifold,
                                         Scalar tolerance,
@@ -121,7 +120,6 @@ __global__ void gpu_rattle_nve_step_two_kernel(Scalar4* d_pos,
                                                Scalar3* d_accel,
                                                unsigned int* d_group_members,
                                                const unsigned int nwork,
-                                               const unsigned int offset,
                                                Scalar4* d_net_force,
                                                Manifold manifold,
                                                Scalar tolerance,
@@ -135,7 +133,7 @@ __global__ void gpu_rattle_nve_step_two_kernel(Scalar4* d_pos,
 
     if (work_idx < nwork)
         {
-        const unsigned int group_idx = work_idx + offset;
+        const unsigned int group_idx = work_idx;
         unsigned int idx = d_group_members[group_idx];
 
         Scalar3 pos = make_scalar3(d_pos[idx].x, d_pos[idx].y, d_pos[idx].z);
@@ -246,7 +244,7 @@ hipError_t gpu_rattle_nve_step_two(Scalar4* d_pos,
                                    Scalar4* d_vel,
                                    Scalar3* d_accel,
                                    unsigned int* d_group_members,
-                                   const GPUPartition& gpu_partition,
+                                   const unsigned int group_size,
                                    Scalar4* d_net_force,
                                    Manifold manifold,
                                    Scalar tolerance,
@@ -263,12 +261,7 @@ hipError_t gpu_rattle_nve_step_two(Scalar4* d_pos,
 
     unsigned int run_block_size = min(block_size, max_block_size);
 
-    // iterate over active GPUs in reverse, to end up on first GPU when returning from this function
-    for (int idev = gpu_partition.getNumActiveGPUs() - 1; idev >= 0; --idev)
-        {
-        auto range = gpu_partition.getRangeAndSetGPU(idev);
-
-        unsigned int nwork = range.second - range.first;
+        unsigned int nwork = group_size;
 
         // setup the grid to run the kernel
         dim3 grid((nwork / run_block_size) + 1, 1, 1);
@@ -285,7 +278,6 @@ hipError_t gpu_rattle_nve_step_two(Scalar4* d_pos,
                            d_accel,
                            d_group_members,
                            nwork,
-                           range.first,
                            d_net_force,
                            manifold,
                            tolerance,
@@ -293,7 +285,7 @@ hipError_t gpu_rattle_nve_step_two(Scalar4* d_pos,
                            limit,
                            limit_val,
                            zero_force);
-        }
+
     return hipSuccess;
     }
 
@@ -305,7 +297,6 @@ __global__ void gpu_include_rattle_force_nve_kernel(const Scalar4* d_pos,
                                                     Scalar* d_net_virial,
                                                     unsigned int* d_group_members,
                                                     const unsigned int nwork,
-                                                    const unsigned int offset,
                                                     size_t net_virial_pitch,
                                                     Manifold manifold,
                                                     Scalar tolerance,
@@ -317,7 +308,7 @@ __global__ void gpu_include_rattle_force_nve_kernel(const Scalar4* d_pos,
 
     if (work_idx < nwork)
         {
-        const unsigned int group_idx = work_idx + offset;
+        const unsigned int group_idx = work_idx;
         unsigned int idx = d_group_members[group_idx];
 
         // do velocity verlet update
@@ -415,7 +406,7 @@ hipError_t gpu_include_rattle_force_nve(const Scalar4* d_pos,
                                         Scalar4* d_net_force,
                                         Scalar* d_net_virial,
                                         unsigned int* d_group_members,
-                                        const GPUPartition& gpu_partition,
+                                        const unsigned int group_size,
                                         size_t net_virial_pitch,
                                         Manifold manifold,
                                         Scalar tolerance,
@@ -430,12 +421,7 @@ hipError_t gpu_include_rattle_force_nve(const Scalar4* d_pos,
 
     unsigned int run_block_size = min(block_size, max_block_size);
 
-    // iterate over active GPUs in reverse, to end up on first GPU when returning from this function
-    for (int idev = gpu_partition.getNumActiveGPUs() - 1; idev >= 0; --idev)
-        {
-        auto range = gpu_partition.getRangeAndSetGPU(idev);
-
-        unsigned int nwork = range.second - range.first;
+        unsigned int nwork = group_size;
 
         // setup the grid to run the kernel
         dim3 grid((nwork / run_block_size) + 1, 1, 1);
@@ -454,13 +440,11 @@ hipError_t gpu_include_rattle_force_nve(const Scalar4* d_pos,
                            d_net_virial,
                            d_group_members,
                            nwork,
-                           range.first,
                            net_virial_pitch,
                            manifold,
                            tolerance,
                            deltaT,
                            zero_force);
-        }
 
     return hipSuccess;
     }

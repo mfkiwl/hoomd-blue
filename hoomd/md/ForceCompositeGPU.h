@@ -68,7 +68,9 @@ class PYBIND11_EXPORT ForceCompositeGPU : public ForceComposite
 
     GlobalArray<uint2> m_flag; //!< Flag to read out error condition
 
-    GPUPartition m_gpu_partition; //!< Partition of the rigid bodies
+    /// Number of rigid bodies on the local rank.
+    unsigned int m_n_rigid;
+
     GlobalVector<unsigned int>
         m_rigid_center; //!< Contains particle indices of all central particles
     GlobalVector<unsigned int> m_lookup_center; //!< Lookup particle index -> central particle index

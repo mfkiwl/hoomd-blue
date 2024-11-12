@@ -562,14 +562,6 @@ class PYBIND11_EXPORT NeighborList : public Compute
         }
 #endif
 
-#ifdef ENABLE_HIP
-    //! Reset memory usage hints
-    void unsetMemoryMapping();
-
-    //! Update memory usage hints
-    void updateMemoryMapping();
-#endif
-
     private:
     Nano::Signal<void()> m_rcut_signal; //!< Signal that is triggered when the cutoff radius changes
 
@@ -652,10 +644,6 @@ class PYBIND11_EXPORT NeighborList : public Compute
 
     //! Add an exclusion for every 1,4 pair
     void addOneFourExclusionsFromTopology();
-
-#ifdef ENABLE_HIP
-    GPUPartition m_last_gpu_partition; //!< The partition at the time of the last memory hints
-#endif
     };
 
 /// Make the local particle data available to python via zero-copy access.

@@ -129,7 +129,7 @@ template<class evaluator> void PotentialPairGPU<evaluator>::computeForces(uint64
     // access flags
     PDataFlags flags = this->m_pdata->getFlags();
 
-    this->m_exec_conf->beginMultiGPU();
+    this->m_exec_conf->setDevice();
 
     m_tuner->begin();
     auto param = m_tuner->getParam();
@@ -156,7 +156,6 @@ template<class evaluator> void PotentialPairGPU<evaluator>::computeForces(uint64
                             this->m_shift_mode,
                             flags[pdata_flag::pressure_tensor],
                             threads_per_particle,
-                            this->m_pdata->getGPUPartition(),
                             this->m_exec_conf->dev_prop),
         this->m_params.data());
 
@@ -164,8 +163,6 @@ template<class evaluator> void PotentialPairGPU<evaluator>::computeForces(uint64
         CHECK_CUDA_ERROR();
 
     m_tuner->end();
-
-    this->m_exec_conf->endMultiGPU();
 
     // energy and pressure corrections
     this->computeTailCorrection();

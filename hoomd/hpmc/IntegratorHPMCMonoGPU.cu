@@ -2,7 +2,6 @@
 // Part of HOOMD-blue, released under the BSD 3-Clause License.
 
 #include "IntegratorHPMCMonoGPUTypes.cuh"
-#include "hoomd/GPUPartition.cuh"
 
 namespace hoomd
     {

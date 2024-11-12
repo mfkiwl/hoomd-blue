@@ -10,7 +10,6 @@
 
 #include <hip/hip_runtime.h>
 
-#include "hoomd/GPUPartition.cuh"
 #include "hoomd/HOOMDMath.h"
 #include "hoomd/Index1D.h"
 #include "hoomd/ParticleData.cuh"
@@ -32,8 +31,7 @@ hipError_t gpu_nlist_needs_update_check_new(unsigned int* d_result,
                                             const unsigned int ntypes,
                                             const Scalar lambda_min,
                                             const Scalar3 lambda,
-                                            const unsigned int checkn,
-                                            const GPUPartition& gpu_partition);
+                                            const unsigned int checkn);
 
 //! Kernel driver for gpu_nlist_filter_kernel()
 hipError_t gpu_nlist_filter(unsigned int* d_n_neigh,

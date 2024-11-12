@@ -204,39 +204,6 @@ void PPPMForceComputeGPU::initializeFFT()
         m_cufft_initialized = true;
         }
 
-    // allocate mesh and transformed mesh
-
-    unsigned int ngpu = m_exec_conf->getNumActiveGPUs();
-
-    if (ngpu > 1)
-        {
-        unsigned int mesh_elements = (m_n_cells + m_ghost_offset);
-        GlobalArray<hipfftComplex> mesh_scratch(mesh_elements * ngpu, m_exec_conf);
-        m_mesh_scratch.swap(mesh_scratch);
-
-#ifdef __HIP_PLATFORM_NVCC__
-        auto gpu_map = m_exec_conf->getGPUIds();
-        for (unsigned int idev = 0; idev < m_exec_conf->getNumActiveGPUs(); ++idev)
-            {
-            cudaMemAdvise(m_mesh_scratch.get() + idev * mesh_elements,
-                          mesh_elements * sizeof(hipfftComplex),
-                          cudaMemAdviseSetPreferredLocation,
-                          gpu_map[idev]);
-            cudaMemPrefetchAsync(m_mesh_scratch.get() + idev * mesh_elements,
-                                 mesh_elements * sizeof(hipfftComplex),
-                                 gpu_map[idev]);
-            CHECK_CUDA_ERROR();
-            }
-
-        // accessed by GPU 0
-        cudaMemAdvise(m_mesh_scratch.get(),
-                      mesh_elements * ngpu,
-                      cudaMemAdviseSetAccessedBy,
-                      gpu_map[0]);
-        CHECK_CUDA_ERROR();
-#endif
-        }
-
     // pad with offset
     GlobalArray<hipfftComplex> mesh(m_n_cells + m_ghost_offset, m_exec_conf);
     m_mesh.swap(mesh);
@@ -251,29 +218,6 @@ void PPPMForceComputeGPU::initializeFFT()
 
     GlobalArray<hipfftComplex> inv_fourier_mesh_z(inv_mesh_elements, m_exec_conf);
     m_inv_fourier_mesh_z.swap(inv_fourier_mesh_z);
-
-#ifdef __HIP_PLATFORM_NVCC__
-    if (m_exec_conf->allConcurrentManagedAccess())
-        {
-        auto gpu_map = m_exec_conf->getGPUIds();
-        for (unsigned int idev = 0; idev < m_exec_conf->getNumActiveGPUs(); ++idev)
-            {
-            cudaMemAdvise(m_inv_fourier_mesh_x.get(),
-                          inv_mesh_elements * sizeof(hipfftComplex),
-                          cudaMemAdviseSetAccessedBy,
-                          gpu_map[idev]);
-            cudaMemAdvise(m_inv_fourier_mesh_y.get(),
-                          inv_mesh_elements * sizeof(hipfftComplex),
-                          cudaMemAdviseSetAccessedBy,
-                          gpu_map[idev]);
-            cudaMemAdvise(m_inv_fourier_mesh_z.get(),
-                          inv_mesh_elements * sizeof(hipfftComplex),
-                          cudaMemAdviseSetAccessedBy,
-                          gpu_map[idev]);
-            CHECK_CUDA_ERROR();
-            }
-        }
-#endif
 
     unsigned int n_blocks
         = (m_mesh_points.x * m_mesh_points.y * m_mesh_points.z) / m_block_size + 1;
@@ -310,7 +254,7 @@ void PPPMForceComputeGPU::assignParticles()
     // access interpolation polynomial coefficients
     ArrayHandle<Scalar> d_rho_coeff(m_rho_coeff, access_location::device, access_mode::read);
 
-    this->m_exec_conf->beginMultiGPU();
+    this->m_exec_conf->setDevice();
 
     m_tuner_assign->begin();
     unsigned int block_size = m_tuner_assign->getParam()[0];
@@ -329,28 +273,11 @@ void PPPMForceComputeGPU::assignParticles()
                                  m_pdata->getBox(),
                                  block_size,
                                  d_rho_coeff.data,
-                                 m_exec_conf->dev_prop,
-                                 m_group->getGPUPartition());
+                                 m_exec_conf->dev_prop);
 
     if (m_exec_conf->isCUDAErrorCheckingEnabled())
         CHECK_CUDA_ERROR();
     m_tuner_assign->end();
-
-    this->m_exec_conf->endMultiGPU();
-
-    if (m_exec_conf->getNumActiveGPUs() > 1)
-        {
-        m_tuner_reduce_mesh->begin();
-        kernel::gpu_reduce_meshes((unsigned int)m_mesh.getNumElements(),
-                                  d_mesh_scratch.data,
-                                  d_mesh.data,
-                                  m_exec_conf->getNumActiveGPUs(),
-                                  m_tuner_reduce_mesh->getParam()[0]);
-        m_tuner_reduce_mesh->end();
-
-        if (m_exec_conf->isCUDAErrorCheckingEnabled())
-            CHECK_CUDA_ERROR();
-        }
     }
 
 void PPPMForceComputeGPU::updateMeshes()
@@ -445,7 +372,7 @@ void PPPMForceComputeGPU::updateMeshes()
 
         // do inverse FFT in-place
 
-        m_exec_conf->beginMultiGPU();
+        m_exec_conf->setDevice();
 
 #ifdef __HIP_PLATFORM_HCC__
         CHECK_HIPFFT_ERROR(hipfftExecC2C(m_hipfft_plan,
@@ -474,7 +401,6 @@ void PPPMForceComputeGPU::updateMeshes()
                                         d_inv_fourier_mesh_z.data,
                                         CUFFT_INVERSE));
 #endif
-        m_exec_conf->endMultiGPU();
         }
 #ifdef ENABLE_MPI
     else
@@ -574,11 +500,12 @@ void PPPMForceComputeGPU::interpolateForces()
     // access polynomial interpolation coefficients
     ArrayHandle<Scalar> d_rho_coeff(m_rho_coeff, access_location::device, access_mode::read);
 
-    m_exec_conf->beginMultiGPU();
+    m_exec_conf->setDevice();
 
     unsigned int block_size = m_tuner_force->getParam()[0];
     m_tuner_force->begin();
     kernel::gpu_compute_forces(m_pdata->getN(),
+                               m_group->getNumMembers(),
                                d_postype.data,
                                d_force.data,
                                d_inv_fourier_mesh_x.data,
@@ -590,8 +517,6 @@ void PPPMForceComputeGPU::interpolateForces()
                                m_pdata->getBox(),
                                m_order,
                                d_index_array.data,
-                               m_group->getGPUPartition(),
-                               m_pdata->getGPUPartition(),
                                d_rho_coeff.data,
                                block_size,
                                m_local_fft,
@@ -600,8 +525,6 @@ void PPPMForceComputeGPU::interpolateForces()
     if (m_exec_conf->isCUDAErrorCheckingEnabled())
         CHECK_CUDA_ERROR();
     m_tuner_force->end();
-
-    m_exec_conf->endMultiGPU();
     }
 
 void PPPMForceComputeGPU::computeVirial()

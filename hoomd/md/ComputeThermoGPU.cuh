@@ -5,7 +5,6 @@
 #define _COMPUTE_THERMO_GPU_CUH_
 
 #include "ComputeThermoTypes.h"
-#include "hoomd/GPUPartition.cuh"
 #include "hoomd/HOOMDMath.h"
 #include "hoomd/ParticleData.cuh"
 
@@ -55,8 +54,7 @@ hipError_t gpu_compute_thermo_partial(Scalar* d_properties,
                                       const BoxDim& box,
                                       const compute_thermo_args& args,
                                       bool compute_pressure_tensor,
-                                      bool compute_rotational_energy,
-                                      const GPUPartition& gpu_partition);
+                                      bool compute_rotational_energy);
 
 //! Computes the final sums of thermodynamic properties for ComputeThermo
 hipError_t gpu_compute_thermo_final(Scalar* d_properties,

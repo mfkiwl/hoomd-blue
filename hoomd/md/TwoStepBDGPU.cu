@@ -44,7 +44,6 @@ namespace kernel
     \param n_types Number of particle types in the simulation
     \param d_noiseless_t If set true, there will be no translational noise (random force)
     \param d_noiseless_r If set true, there will be no rotational noise (random torque)
-    \param offset Offset of this GPU into group indices
 
     This kernel is implemented in a very similar manner to gpu_nve_step_one_kernel(), see it for
    design details.
@@ -74,7 +73,6 @@ __global__ void gpu_brownian_step_one_kernel(Scalar4* d_pos,
                                              unsigned int D,
                                              const bool d_noiseless_t,
                                              const bool d_noiseless_r,
-                                             const unsigned int offset,
                                              bool enable_shared_cache)
     {
     HIP_DYNAMIC_SHARED(char, s_data)
@@ -108,7 +106,7 @@ __global__ void gpu_brownian_step_one_kernel(Scalar4* d_pos,
 
     if (local_idx < nwork)
         {
-        const unsigned int group_idx = local_idx + offset;
+        const unsigned int group_idx = local_idx;
 
         // determine the particle to work on
         unsigned int idx = d_group_members[group_idx];
@@ -336,17 +334,11 @@ hipError_t gpu_brownian_step_one(Scalar4* d_pos,
                                  const Scalar deltaT,
                                  const unsigned int D,
                                  const bool d_noiseless_t,
-                                 const bool d_noiseless_r,
-                                 const GPUPartition& gpu_partition)
+                                 const bool d_noiseless_r)
     {
     unsigned int run_block_size = 256;
 
-    // iterate over active GPUs in reverse, to end up on first GPU when returning from this function
-    for (int idev = gpu_partition.getNumActiveGPUs() - 1; idev >= 0; --idev)
-        {
-        auto range = gpu_partition.getRangeAndSetGPU(idev);
-
-        unsigned int nwork = range.second - range.first;
+       unsigned int nwork = group_size;
 
         // setup the grid to run the kernel
         dim3 grid((nwork / run_block_size) + 1, 1, 1);
@@ -392,9 +384,7 @@ hipError_t gpu_brownian_step_one(Scalar4* d_pos,
                            D,
                            d_noiseless_t,
                            d_noiseless_r,
-                           range.first,
                            enable_shared_cache);
-        }
 
     return hipSuccess;
     }

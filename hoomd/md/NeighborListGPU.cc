@@ -53,7 +53,7 @@ bool NeighborListGPU::distanceCheck(uint64_t timestep)
         {
         ArrayHandle<unsigned int> d_flags(m_flags, access_location::device, access_mode::readwrite);
 
-        m_exec_conf->beginMultiGPU();
+        m_exec_conf->setDevice();
 
         kernel::gpu_nlist_needs_update_check_new(d_flags.data,
                                                  d_last_pos.data,
@@ -65,13 +65,10 @@ bool NeighborListGPU::distanceCheck(uint64_t timestep)
                                                  m_pdata->getNTypes(),
                                                  lambda_min,
                                                  lambda,
-                                                 ++m_checkn,
-                                                 m_pdata->getGPUPartition());
+                                                 ++m_checkn);
 
         if (m_exec_conf->isCUDAErrorCheckingEnabled())
             CHECK_CUDA_ERROR();
-
-        m_exec_conf->endMultiGPU();
         }
 
     bool result;
@@ -214,10 +211,6 @@ void NeighborListGPU::buildHeadList()
         }
 
     resizeNlist(req_size_nlist);
-
-    // now that the head list is complete and the neighbor list has been allocated, update memory
-    // advice
-    updateMemoryMapping();
     }
 
 namespace detail

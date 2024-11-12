@@ -5,7 +5,6 @@
 
 #include "hoomd/BoxDim.h"
 #include "hoomd/CachedAllocator.h"
-#include "hoomd/GPUPartition.cuh"
 #include "hoomd/HOOMDMath.h"
 #include "hoomd/Index1D.h"
 #include "hoomd/RNGIdentifiers.h"

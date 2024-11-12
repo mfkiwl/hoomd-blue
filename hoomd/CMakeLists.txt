@@ -136,7 +136,6 @@ set(_hoomd_headers
     GlobalArray.h
     GPUArray.h
     GPUFlags.h
-    GPUPartition.cuh
     GPUVector.h
     GSD.h
     GSDDequeWriter.h

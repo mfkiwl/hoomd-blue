@@ -83,7 +83,6 @@ __global__ void gpu_rigid_force_sliding_kernel(Scalar4* d_force,
                                                unsigned int thread_mask,
                                                unsigned int n_bodies_per_block,
                                                bool zero_force,
-                                               unsigned int first_body,
                                                unsigned int nwork)
     {
     extern __shared__ char sum[];
@@ -116,7 +115,7 @@ __global__ void gpu_rigid_force_sliding_kernel(Scalar4* d_force,
         int group_idx = blockIdx.x * n_bodies_per_block + m;
         if (group_idx < nwork)
             {
-            central_idx[m] = d_rigid_center[group_idx + first_body];
+            central_idx[m] = d_rigid_center[group_idx];
             mol_idx[m] = d_molecule_idx[central_idx[m]];
 
             if (d_tag[central_idx[m]] != d_body[central_idx[m]])
@@ -274,7 +273,6 @@ __global__ void gpu_rigid_virial_sliding_kernel(Scalar* d_virial,
                                                 unsigned int window_size,
                                                 unsigned int thread_mask,
                                                 unsigned int n_bodies_per_block,
-                                                unsigned int first_body,
                                                 unsigned int nwork)
     {
     extern __shared__ char sum[];
@@ -317,7 +315,7 @@ __global__ void gpu_rigid_virial_sliding_kernel(Scalar* d_virial,
         int group_idx = blockIdx.x * n_bodies_per_block + m;
         if (group_idx < nwork)
             {
-            central_idx[m] = d_rigid_center[group_idx + first_body];
+            central_idx[m] = d_rigid_center[group_idx];
             mol_idx[m] = d_molecule_idx[central_idx[m]];
 
             if (d_tag[central_idx[m]] != d_body[central_idx[m]])
@@ -471,13 +469,9 @@ hipError_t gpu_rigid_force(Scalar4* d_force,
                            unsigned int block_size,
                            const hipDeviceProp_t& dev_prop,
                            bool zero_force,
-                           const GPUPartition& gpu_partition)
+                          unsigned int n_local_bodies)
     {
-    for (int idev = gpu_partition.getNumActiveGPUs() - 1; idev >= 0; --idev)
-        {
-        auto range = gpu_partition.getRangeAndSetGPU(idev);
-
-        unsigned int nwork = range.second - range.first;
+        unsigned int nwork = n_local_bodies;
 
         dim3 force_grid(nwork / n_bodies_per_block + 1, 1, 1);
 
@@ -543,9 +537,7 @@ hipError_t gpu_rigid_force(Scalar4* d_force,
                            thread_mask,
                            n_bodies_per_block,
                            zero_force,
-                           range.first,
                            nwork);
-        }
     return hipSuccess;
     }
 
@@ -571,13 +563,9 @@ hipError_t gpu_rigid_virial(Scalar* d_virial,
                             size_t virial_pitch,
                             unsigned int block_size,
                             const hipDeviceProp_t& dev_prop,
-                            const GPUPartition& gpu_partition)
+                            unsigned int n_local_bodies)
     {
-    for (int idev = gpu_partition.getNumActiveGPUs() - 1; idev >= 0; --idev)
-        {
-        auto range = gpu_partition.getRangeAndSetGPU(idev);
-
-        unsigned int nwork = range.second - range.first;
+        unsigned int nwork = n_local_bodies;
 
         dim3 force_grid(nwork / n_bodies_per_block + 1, 1, 1);
 
@@ -641,16 +629,13 @@ hipError_t gpu_rigid_virial(Scalar* d_virial,
                            window_size,
                            thread_mask,
                            n_bodies_per_block,
-                           range.first,
                            nwork);
-        }
 
     return hipSuccess;
     }
 
 __global__ void gpu_update_composite_kernel(unsigned int N,
                                             unsigned int nwork,
-                                            unsigned int offset,
                                             unsigned int n_ghost,
                                             const unsigned int* d_lookup_center,
                                             Scalar4* d_postype,
@@ -672,8 +657,6 @@ __global__ void gpu_update_composite_kernel(unsigned int N,
 
     if (idx >= nwork)
         return;
-
-    idx += offset;
 
     unsigned int central_idx = d_lookup_center[idx];
     if (central_idx >= MIN_FLOPPY)
@@ -764,8 +747,7 @@ void gpu_update_composite(unsigned int N,
                           const BoxDim box,
                           const BoxDim global_box,
                           unsigned int block_size,
-                          uint2* d_flag,
-                          const GPUPartition& gpu_partition)
+                          uint2* d_flag)
     {
     unsigned int run_block_size = block_size;
 
@@ -779,16 +761,7 @@ void gpu_update_composite(unsigned int N,
         run_block_size = max_block_size;
         }
 
-    // iterate over active GPUs in reverse, to end up on first GPU when returning from this function
-    for (int idev = gpu_partition.getNumActiveGPUs() - 1; idev >= 0; --idev)
-        {
-        auto range = gpu_partition.getRangeAndSetGPU(idev);
-
-        unsigned int nwork = range.second - range.first;
-
-        // process ghosts in final range
-        if (idev == (int)gpu_partition.getNumActiveGPUs() - 1)
-            nwork += n_ghost;
+        unsigned int nwork = N + n_ghost;
 
         unsigned int n_blocks = nwork / run_block_size + 1;
         hipLaunchKernelGGL((gpu_update_composite_kernel),
@@ -798,7 +771,6 @@ void gpu_update_composite(unsigned int N,
                            0,
                            N,
                            nwork,
-                           range.first,
                            n_ghost,
                            d_lookup_center,
                            d_postype,
@@ -815,7 +787,6 @@ void gpu_update_composite(unsigned int N,
                            box,
                            global_box,
                            d_flag);
-        }
     }
 
 struct is_center

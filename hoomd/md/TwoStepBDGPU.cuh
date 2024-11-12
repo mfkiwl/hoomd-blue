@@ -6,7 +6,6 @@
 */
 
 #include "TwoStepLangevinGPU.cuh"
-#include "hoomd/GPUPartition.cuh"
 #include "hoomd/HOOMDMath.h"
 #include "hoomd/ParticleData.cuh"
 
@@ -38,8 +37,7 @@ hipError_t gpu_brownian_step_one(Scalar4* d_pos,
                                  const Scalar deltaT,
                                  const unsigned int D,
                                  const bool d_noiseless_t,
-                                 const bool d_noiseless_r,
-                                 const GPUPartition& gpu_partition);
+                                 const bool d_noiseless_r);
 
     } // end namespace kernel
     } // end namespace md

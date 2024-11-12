@@ -10,8 +10,6 @@
 #include "hoomd/ParticleData.cuh"
 #include "hoomd/TextureTools.h"
 
-#include "hoomd/GPUPartition.cuh"
-
 #ifdef __HIPCC__
 #include "hoomd/WarpTools.cuh"
 #endif // __HIPCC__
@@ -63,14 +61,13 @@ struct pair_args_t
                 const unsigned int _shift_mode,
                 const unsigned int _compute_virial,
                 const unsigned int _threads_per_particle,
-                const GPUPartition& _gpu_partition,
                 const hipDeviceProp_t& _devprop)
         : d_force(_d_force), d_virial(_d_virial), virial_pitch(_virial_pitch), N(_N), n_max(_n_max),
           d_pos(_d_pos), d_charge(_d_charge), box(_box), d_n_neigh(_d_n_neigh), d_nlist(_d_nlist),
           d_head_list(_d_head_list), d_rcutsq(_d_rcutsq), d_ronsq(_d_ronsq),
           size_neigh_list(_size_neigh_list), ntypes(_ntypes), block_size(_block_size),
           shift_mode(_shift_mode), compute_virial(_compute_virial),
-          threads_per_particle(_threads_per_particle), gpu_partition(_gpu_partition),
+          threads_per_particle(_threads_per_particle),
           devprop(_devprop) { };
 
     Scalar4* d_force;          //!< Force to write out
@@ -93,7 +90,6 @@ struct pair_args_t
     const unsigned int shift_mode;           //!< The potential energy shift mode
     const unsigned int compute_virial;       //!< Flag to indicate if virials should be computed
     const unsigned int threads_per_particle; //!< Number of threads per particle (maximum: 1 warp)
-    const GPUPartition& gpu_partition; //!< The load balancing partition of particles between GPUs
     const hipDeviceProp_t& devprop;    //!< CUDA device properties
     };
 
@@ -117,7 +113,6 @@ struct pair_args_t
     \param d_rcutsq rcut squared, stored per type pair
     \param d_ronsq ron squared, stored per type pair
     \param ntypes Number of types in the simulation
-    \param offset Offset of first particle
 
     \a d_params, \a d_rcutsq, and \a d_ronsq must be indexed with an Index2DUpperTriangular(typei,
    typej) to access the unique value for that type pair. These values are all cached into shared
@@ -157,7 +152,6 @@ gpu_compute_pair_forces_shared_kernel(Scalar4* d_force,
                                       const Scalar* d_rcutsq,
                                       const Scalar* d_ronsq,
                                       const unsigned int ntypes,
-                                      const unsigned int offset,
                                       unsigned int max_extra_bytes)
     {
     Index2D typpair_idx(ntypes);
@@ -215,9 +209,6 @@ gpu_compute_pair_forces_shared_kernel(Scalar4* d_force,
         // need to mask this thread, but still participate in warp-level reduction
         active = false;
         }
-
-    // add offset to get actual particle index
-    idx += offset;
 
     // initialize the force to 0
     Scalar4 force = make_scalar4(Scalar(0.0), Scalar(0.0), Scalar(0.0), Scalar(0.0));
@@ -431,17 +422,14 @@ struct PairForceComputeKernel
     //! Launcher for the pair force kernel
     /*!
      * \param pair_args Other arguments to pass onto the kernel
-     * \param range Range of particle indices this GPU operates on
+     * \param N Number of particles
      * \param d_params Parameters for the potential, stored per type pair
      */
 
     static void launch(const pair_args_t& pair_args,
-                       std::pair<unsigned int, unsigned int> range,
+                       unsigned int N,
                        const typename evaluator::param_type* d_params)
         {
-        unsigned int N = range.second - range.first;
-        unsigned int offset = range.first;
-
         if (tpp == pair_args.threads_per_particle)
             {
             unsigned int block_size = pair_args.block_size;
@@ -516,7 +504,6 @@ struct PairForceComputeKernel
                                    pair_args.d_rcutsq,
                                    pair_args.d_ronsq,
                                    pair_args.ntypes,
-                                   offset,
                                    max_extra_bytes);
                 }
             else
@@ -544,7 +531,6 @@ struct PairForceComputeKernel
                                    pair_args.d_rcutsq,
                                    pair_args.d_ronsq,
                                    pair_args.ntypes,
-                                   offset,
                                    max_extra_bytes);
                 }
             }
@@ -552,7 +538,7 @@ struct PairForceComputeKernel
             {
             PairForceComputeKernel<evaluator, shift_mode, compute_virial, tpp / 2>::launch(
                 pair_args,
-                range,
+                N,
                 d_params);
             }
         }
@@ -563,7 +549,7 @@ template<class evaluator, unsigned int shift_mode, unsigned int compute_virial>
 struct PairForceComputeKernel<evaluator, shift_mode, compute_virial, 0>
     {
     static void launch(const pair_args_t& pair_args,
-                       std::pair<unsigned int, unsigned int> range,
+                       unsigned int N,
                        const typename evaluator::param_type* d_params)
         {
         // do nothing
@@ -586,11 +572,6 @@ gpu_compute_pair_forces(const pair_args_t& pair_args,
     assert(pair_args.d_ronsq);
     assert(pair_args.ntypes > 0);
 
-    // iterate over active GPUs in reverse, to end up on first GPU when returning from this function
-    for (int idev = pair_args.gpu_partition.getNumActiveGPUs() - 1; idev >= 0; --idev)
-        {
-        auto range = pair_args.gpu_partition.getRangeAndSetGPU(idev);
-
         // Launch kernel
         if (pair_args.compute_virial)
             {
@@ -599,21 +580,21 @@ gpu_compute_pair_forces(const pair_args_t& pair_args,
             case 0:
                 {
                 PairForceComputeKernel<evaluator, 0, 1, gpu_pair_force_max_tpp>::launch(pair_args,
-                                                                                        range,
+                                                                                        pair_args.N,
                                                                                         d_params);
                 break;
                 }
             case 1:
                 {
                 PairForceComputeKernel<evaluator, 1, 1, gpu_pair_force_max_tpp>::launch(pair_args,
-                                                                                        range,
+                                                                                        pair_args.N,
                                                                                         d_params);
                 break;
                 }
             case 2:
                 {
                 PairForceComputeKernel<evaluator, 2, 1, gpu_pair_force_max_tpp>::launch(pair_args,
-                                                                                        range,
+                                                                                        pair_args.N,
                                                                                         d_params);
                 break;
                 }
@@ -628,21 +609,21 @@ gpu_compute_pair_forces(const pair_args_t& pair_args,
             case 0:
                 {
                 PairForceComputeKernel<evaluator, 0, 0, gpu_pair_force_max_tpp>::launch(pair_args,
-                                                                                        range,
+                                                                                        pair_args.N,
                                                                                         d_params);
                 break;
                 }
             case 1:
                 {
                 PairForceComputeKernel<evaluator, 1, 0, gpu_pair_force_max_tpp>::launch(pair_args,
-                                                                                        range,
+                                                                                        pair_args.N,
                                                                                         d_params);
                 break;
                 }
             case 2:
                 {
                 PairForceComputeKernel<evaluator, 2, 0, gpu_pair_force_max_tpp>::launch(pair_args,
-                                                                                        range,
+                                                                                        pair_args.N,
                                                                                         d_params);
                 break;
                 }
@@ -650,7 +631,6 @@ gpu_compute_pair_forces(const pair_args_t& pair_args,
                 break;
                 }
             }
-        }
 
     return hipSuccess;
     }

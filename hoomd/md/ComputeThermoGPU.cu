@@ -29,8 +29,6 @@ namespace kernel
     \param d_tag Particle tag
     \param d_group_members List of group members for which to sum properties
     \param work_size Number of particles in the group this GPU processes
-    \param offset Offset of this GPU in list of group members
-    \param block_offset Offset of this GPU in the array of partial sums
 
     All partial sums are packaged up in a Scalar4 to keep pointer management down.
      - 2*Kinetic energy is summed in .x
@@ -51,9 +49,7 @@ __global__ void gpu_compute_thermo_partial_sums(Scalar4* d_scratch,
                                                 unsigned int* d_body,
                                                 unsigned int* d_tag,
                                                 unsigned int* d_group_members,
-                                                unsigned int work_size,
-                                                unsigned int offset,
-                                                unsigned int block_offset)
+                                                unsigned int work_size)
     {
     extern __shared__ Scalar3 compute_thermo_sdata[];
 
@@ -67,7 +63,7 @@ __global__ void gpu_compute_thermo_partial_sums(Scalar4* d_scratch,
 
     if (group_idx < work_size)
         {
-        unsigned int idx = d_group_members[group_idx + offset];
+        unsigned int idx = d_group_members[group_idx];
 
         // ignore rigid body constituent particles in the sum
         unsigned int body = d_body[idx];
@@ -113,7 +109,7 @@ __global__ void gpu_compute_thermo_partial_sums(Scalar4* d_scratch,
     if (threadIdx.x == 0)
         {
         Scalar3 res = compute_thermo_sdata[0];
-        d_scratch[block_offset + blockIdx.x] = make_scalar4(res.x, res.y, res.z, 0);
+        d_scratch[blockIdx.x] = make_scalar4(res.x, res.y, res.z, 0);
         }
     }
 
@@ -127,8 +123,6 @@ __global__ void gpu_compute_thermo_partial_sums(Scalar4* d_scratch,
     \param d_tag Particle tag
     \param d_group_members List of group members for which to sum properties
     \param work_size Number of particles in the group
-    \param offset Offset of this GPU in the list of group members
-    \param block_offset Offset of this GPU in the array of partial sums
     \param num_blocks Total number of partial sums by all GPUs
 
     One thread is executed per group member. That thread reads in the six values (components of the
@@ -147,8 +141,6 @@ __global__ void gpu_compute_pressure_tensor_partial_sums(Scalar* d_scratch,
                                                          unsigned int* d_tag,
                                                          unsigned int* d_group_members,
                                                          unsigned int work_size,
-                                                         unsigned int offset,
-                                                         unsigned int block_offset,
                                                          unsigned int num_blocks)
     {
     extern __shared__ Scalar compute_pressure_tensor_sdata[];
@@ -168,7 +160,7 @@ __global__ void gpu_compute_pressure_tensor_partial_sums(Scalar* d_scratch,
 
     if (group_idx < work_size)
         {
-        unsigned int idx = d_group_members[group_idx + offset];
+        unsigned int idx = d_group_members[group_idx];
 
         // ignore rigid body constituent particles in the sum
         unsigned int body = d_body[idx];
@@ -210,7 +202,7 @@ __global__ void gpu_compute_pressure_tensor_partial_sums(Scalar* d_scratch,
     if (threadIdx.x == 0)
         {
         for (unsigned int i = 0; i < 6; i++)
-            d_scratch[num_blocks * i + blockIdx.x + block_offset]
+            d_scratch[num_blocks * i + blockIdx.x]
                 = compute_pressure_tensor_sdata[i * blockDim.x];
         }
     }
@@ -225,7 +217,6 @@ __global__ void gpu_compute_pressure_tensor_partial_sums(Scalar* d_scratch,
     \param d_group_members List of group members for which to sum properties
     \param work_size Number of particles in the group processed by this GPU
     \param offset Offset of this GPU in the list of group members
-    \param block_offset Output offset of this GPU
 */
 
 __global__ void gpu_compute_rotational_ke_partial_sums(Scalar* d_scratch,
@@ -235,9 +226,7 @@ __global__ void gpu_compute_rotational_ke_partial_sums(Scalar* d_scratch,
                                                        unsigned int* d_body,
                                                        unsigned int* d_tag,
                                                        unsigned int* d_group_members,
-                                                       unsigned int work_size,
-                                                       unsigned int offset,
-                                                       unsigned int block_offset)
+                                                       unsigned int work_size)
     {
     extern __shared__ Scalar compute_ke_rot_sdata[];
 
@@ -250,7 +239,7 @@ __global__ void gpu_compute_rotational_ke_partial_sums(Scalar* d_scratch,
 
     if (group_idx < work_size)
         {
-        unsigned int idx = d_group_members[group_idx + offset];
+        unsigned int idx = d_group_members[group_idx];
 
         // ignore rigid body constituent particles in the sum
         unsigned int body = d_body[idx];
@@ -299,7 +288,7 @@ __global__ void gpu_compute_rotational_ke_partial_sums(Scalar* d_scratch,
     // write out our partial sum
     if (threadIdx.x == 0)
         {
-        d_scratch[blockIdx.x + block_offset] = compute_ke_rot_sdata[0];
+        d_scratch[blockIdx.x] = compute_ke_rot_sdata[0];
         }
     }
 
@@ -526,7 +515,6 @@ __global__ void gpu_compute_pressure_tensor_final_sums(Scalar* d_properties,
     \param args Additional arguments
     \param compute_pressure_tensor whether to compute the full pressure tensor
     \param compute_rotational_energy whether to compute the rotational kinetic energy
-    \param gpu_partition Load balancing info for multi-GPU reduction
 
     This function drives gpu_compute_thermo_partial_sums and gpu_compute_thermo_final_sums, see them
    for details.
@@ -541,8 +529,7 @@ hipError_t gpu_compute_thermo_partial(Scalar* d_properties,
                                       const BoxDim& box,
                                       const compute_thermo_args& args,
                                       bool compute_pressure_tensor,
-                                      bool compute_rotational_energy,
-                                      const GPUPartition& gpu_partition)
+                                      bool compute_rotational_energy)
     {
     assert(d_properties);
     assert(d_vel);
@@ -551,14 +538,7 @@ hipError_t gpu_compute_thermo_partial(Scalar* d_properties,
     assert(args.d_net_virial);
     assert(args.d_scratch);
 
-    unsigned int block_offset = 0;
-
-    // iterate over active GPUs in reverse, to end up on first GPU when returning from this function
-    for (int idev = gpu_partition.getNumActiveGPUs() - 1; idev >= 0; --idev)
-        {
-        auto range = gpu_partition.getRangeAndSetGPU(idev);
-
-        unsigned int nwork = range.second - range.first;
+    unsigned int nwork = group_size;
 
         dim3 grid(nwork / args.block_size + 1, 1, 1);
         dim3 threads(args.block_size, 1, 1);
@@ -578,9 +558,7 @@ hipError_t gpu_compute_thermo_partial(Scalar* d_properties,
                            d_body,
                            d_tag,
                            d_group_members,
-                           nwork,
-                           range.first,
-                           block_offset);
+                           nwork);
 
         if (compute_pressure_tensor)
             {
@@ -603,8 +581,6 @@ hipError_t gpu_compute_thermo_partial(Scalar* d_properties,
                                d_tag,
                                d_group_members,
                                nwork,
-                               range.first,
-                               block_offset,
                                args.n_blocks);
             }
 
@@ -627,15 +603,8 @@ hipError_t gpu_compute_thermo_partial(Scalar* d_properties,
                                d_body,
                                d_tag,
                                d_group_members,
-                               nwork,
-                               range.first,
-                               block_offset);
+                               nwork);
             }
-
-        block_offset += grid.x;
-        }
-
-    assert(block_offset <= args.n_blocks);
 
     return hipSuccess;
     }

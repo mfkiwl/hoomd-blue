@@ -260,11 +260,6 @@ NeighborList::NeighborList(std::shared_ptr<SystemDefinition> sysdef, Scalar r_bu
     for (unsigned int i = 0; i < m_update_periods.size(); i++)
         m_update_periods[i] = 0;
 
-#ifdef ENABLE_HIP
-    if (m_exec_conf->isCUDAEnabled())
-        m_last_gpu_partition = GPUPartition(m_exec_conf->getGPUIds());
-#endif
-
 #ifdef ENABLE_MPI
     if (m_sysdef->isDomainDecomposed())
         {
@@ -1649,82 +1644,6 @@ bool NeighborList::peekUpdate(uint64_t timestep)
     bool result = needsUpdating(timestep);
 
     return result;
-    }
-#endif
-
-#ifdef ENABLE_HIP
-//! Update GPU memory locality
-void NeighborList::updateMemoryMapping()
-    {
-#ifdef _HIP_PLATFORM_NVCC__
-    if (m_exec_conf->isCUDAEnabled() && m_exec_conf->allConcurrentManagedAccess())
-        {
-        auto gpu_map = m_exec_conf->getGPUIds();
-
-        const GPUPartition& gpu_partition = m_pdata->getGPUPartition();
-
-        // stash this partition for the future, so we can unset hints again
-        m_last_gpu_partition = gpu_partition;
-
-            // split preferred location of neighbor list across GPUs
-            {
-            ArrayHandle<size_t> h_head_list(m_head_list, access_location::host, access_mode::read);
-
-            for (unsigned int idev = 0; idev < m_exec_conf->getNumActiveGPUs(); ++idev)
-                {
-                auto range = gpu_partition.getRange(idev);
-
-                size_t start = h_head_list.data[range.first];
-                unsigned int end = (range.second == m_pdata->getN())
-                                       ? m_nlist.getNumElements()
-                                       : h_head_list.data[range.second];
-
-                if (end - start > 0)
-                    // set preferred location
-                    cudaMemAdvise(m_nlist.get() + h_head_list.data[range.first],
-                                  sizeof(unsigned int) * (end - start),
-                                  cudaMemAdviseSetPreferredLocation,
-                                  gpu_map[idev]);
-                }
-            }
-        CHECK_CUDA_ERROR();
-
-        for (unsigned int idev = 0; idev < m_exec_conf->getNumActiveGPUs(); ++idev)
-            {
-            // set preferred location
-            auto range = gpu_partition.getRange(idev);
-            unsigned int nelem = range.second - range.first;
-
-            if (nelem == 0)
-                continue;
-
-            cudaMemAdvise(m_head_list.get() + range.first,
-                          sizeof(size_t) * nelem,
-                          cudaMemAdviseSetPreferredLocation,
-                          gpu_map[idev]);
-            cudaMemAdvise(m_n_neigh.get() + range.first,
-                          sizeof(unsigned int) * nelem,
-                          cudaMemAdviseSetPreferredLocation,
-                          gpu_map[idev]);
-            cudaMemAdvise(m_last_pos.get() + range.first,
-                          sizeof(Scalar4) * nelem,
-                          cudaMemAdviseSetPreferredLocation,
-                          gpu_map[idev]);
-
-            // pin to that device by prefetching
-            cudaMemPrefetchAsync(m_head_list.get() + range.first,
-                                 sizeof(size_t) * nelem,
-                                 gpu_map[idev]);
-            cudaMemPrefetchAsync(m_n_neigh.get() + range.first,
-                                 sizeof(unsigned int) * nelem,
-                                 gpu_map[idev]);
-            cudaMemPrefetchAsync(m_last_pos.get() + range.first,
-                                 sizeof(Scalar4) * nelem,
-                                 gpu_map[idev]);
-            }
-        CHECK_CUDA_ERROR();
-        }
-#endif // __HIP_PLATFORM_NVCC__
     }
 #endif
 

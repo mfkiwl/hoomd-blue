@@ -542,7 +542,7 @@ void Integrator::computeNetForceGPU(uint64_t timestep)
             // access flags
             PDataFlags flags = this->m_pdata->getFlags();
 
-            m_exec_conf->beginMultiGPU();
+            m_exec_conf->setDevice();
 
             gpu_integrator_sum_net_force(d_net_force.data,
                                          d_net_virial.data,
@@ -551,13 +551,10 @@ void Integrator::computeNetForceGPU(uint64_t timestep)
                                          force_list,
                                          nparticles,
                                          clear,
-                                         flags[pdata_flag::pressure_tensor],
-                                         m_pdata->getGPUPartition());
+                                         flags[pdata_flag::pressure_tensor]);
 
             if (m_exec_conf->isCUDAErrorCheckingEnabled())
                 CHECK_CUDA_ERROR();
-
-            m_exec_conf->endMultiGPU();
             }
         }
 
@@ -756,7 +753,7 @@ void Integrator::computeNetForceGPU(uint64_t timestep)
             // access flags
             PDataFlags flags = this->m_pdata->getFlags();
 
-            m_exec_conf->beginMultiGPU();
+            m_exec_conf->setDevice();
 
             gpu_integrator_sum_net_force(d_net_force.data,
                                          d_net_virial.data,
@@ -765,13 +762,10 @@ void Integrator::computeNetForceGPU(uint64_t timestep)
                                          force_list,
                                          nparticles,
                                          clear,
-                                         flags[pdata_flag::pressure_tensor],
-                                         m_pdata->getGPUPartition());
+                                         flags[pdata_flag::pressure_tensor]);
 
             if (m_exec_conf->isCUDAErrorCheckingEnabled())
                 CHECK_CUDA_ERROR();
-
-            m_exec_conf->endMultiGPU();
             }
         }
 

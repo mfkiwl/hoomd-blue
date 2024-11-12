@@ -215,12 +215,6 @@ class PYBIND11_EXPORT CellList : public Compute
         m_params_changed = true;
         }
 
-    //! Request a multi-GPU cell list
-    virtual void setPerDevice(bool per_device)
-        {
-        // base class does nothing
-        }
-
     //! Return true if we maintain a cell list per device
     virtual bool getPerDevice() const
         {

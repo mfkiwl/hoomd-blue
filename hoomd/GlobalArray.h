@@ -273,13 +273,9 @@ template<class T> class GlobalArray : public GPUArrayBase<T, GlobalArray<T>>
 #ifdef ENABLE_HIP
             if (this->m_exec_conf && this->m_exec_conf->isCUDAEnabled())
                 {
-                // synchronize all active GPUs
-                auto gpu_map = this->m_exec_conf->getGPUIds();
-                for (int idev = this->m_exec_conf->getNumActiveGPUs() - 1; idev >= 0; --idev)
-                    {
-                    hipSetDevice(gpu_map[idev]);
+                // synchronize with the GPU
+                    this->m_exec_conf->setDevice();
                     hipDeviceSynchronize();
-                    }
                 }
 #endif
 
@@ -311,13 +307,9 @@ template<class T> class GlobalArray : public GPUArrayBase<T, GlobalArray<T>>
 #ifdef ENABLE_HIP
                 if (this->m_exec_conf && this->m_exec_conf->isCUDAEnabled())
                     {
-                    // synchronize all active GPUs
-                    auto gpu_map = this->m_exec_conf->getGPUIds();
-                    for (int idev = this->m_exec_conf->getNumActiveGPUs() - 1; idev >= 0; --idev)
-                        {
-                        hipSetDevice(gpu_map[idev]);
-                        hipDeviceSynchronize();
-                        }
+                // synchronize with the GPU
+                    this->m_exec_conf->setDevice();
+                    hipDeviceSynchronize();
                     }
 #endif
 
@@ -539,13 +531,9 @@ template<class T> class GlobalArray : public GPUArrayBase<T, GlobalArray<T>>
 #ifdef ENABLE_HIP
         if (this->m_exec_conf && this->m_exec_conf->isCUDAEnabled())
             {
-            // synchronize all active GPUs
-            auto gpu_map = this->m_exec_conf->getGPUIds();
-            for (int idev = this->m_exec_conf->getNumActiveGPUs() - 1; idev >= 0; --idev)
-                {
-                hipSetDevice(gpu_map[idev]);
-                hipDeviceSynchronize();
-                }
+                // synchronize with the GPU
+                    this->m_exec_conf->setDevice();
+                    hipDeviceSynchronize();
             }
 #endif
 
@@ -594,13 +582,9 @@ template<class T> class GlobalArray : public GPUArrayBase<T, GlobalArray<T>>
 #ifdef ENABLE_HIP
         if (this->m_exec_conf->isCUDAEnabled())
             {
-            // synchronize all active GPUs
-            auto gpu_map = this->m_exec_conf->getGPUIds();
-            for (int idev = this->m_exec_conf->getNumActiveGPUs() - 1; idev >= 0; --idev)
-                {
-                hipSetDevice(gpu_map[idev]);
-                hipDeviceSynchronize();
-                }
+                // synchronize with the GPU
+                    this->m_exec_conf->setDevice();
+                    hipDeviceSynchronize();
             }
 #endif
 
@@ -908,12 +892,6 @@ inline ArrayHandleDispatch<T> GlobalArray<T>::acquire(const access_location::Enu
     // make sure a null array can be acquired
     if (!this->m_exec_conf || isNull())
         return GlobalArrayDispatch<T>(nullptr, *this);
-
-    if (this->m_exec_conf && this->m_exec_conf->inMultiGPUBlock())
-        {
-        // we throw this error because we are not syncing all GPUs upon acquire
-        throw std::runtime_error("GlobalArray should not be acquired in a multi-GPU block.");
-        }
 
 #ifdef ENABLE_HIP
     bool use_device = this->m_exec_conf && this->m_exec_conf->isCUDAEnabled();
