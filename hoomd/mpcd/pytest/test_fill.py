@@ -48,8 +48,8 @@ def snap():
         }),
     ],
     ids=[
-        "ConcentricCylinders","CosineChannel", "CosineExpansionContraction", "ParallelPlates",
-        "PlanarPore", "Sphere"
+        "ConcentricCylinders", "CosineChannel", "CosineExpansionContraction",
+        "ParallelPlates", "PlanarPore", "Sphere"
     ],
 )
 class TestGeometryFiller:
