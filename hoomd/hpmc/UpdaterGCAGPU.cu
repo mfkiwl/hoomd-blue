@@ -88,24 +88,24 @@ void __attribute__((visibility("default"))) get_num_neighbors(const unsigned int
     nneigh_total = 0;
 
 #ifdef __HIP_PLATFORM_HCC__
-        thrust::exclusive_scan(thrust::hip::par(alloc),
+    thrust::exclusive_scan(thrust::hip::par(alloc),
 #else
-        thrust::exclusive_scan(thrust::cuda::par(alloc),
+    thrust::exclusive_scan(thrust::cuda::par(alloc),
 #endif
-                               nneigh,
-                               nneigh + N,
-                               nneigh_scan,
-                               nneigh_total);
+                           nneigh,
+                           nneigh + N,
+                           nneigh_scan,
+                           nneigh_total);
 
 #ifdef __HIP_PLATFORM_HCC__
-        nneigh_total += thrust::reduce(thrust::hip::par(alloc),
+    nneigh_total += thrust::reduce(thrust::hip::par(alloc),
 #else
-        nneigh_total += thrust::reduce(thrust::cuda::par(alloc),
+    nneigh_total += thrust::reduce(thrust::cuda::par(alloc),
 #endif
-                                       nneigh,
-                                       nneigh + N,
-                                       0,
-                                       thrust::plus<unsigned int>());
+                                   nneigh,
+                                   nneigh + N,
+                                   0,
+                                   thrust::plus<unsigned int>());
     }
 
 namespace kernel
@@ -206,21 +206,21 @@ concatenate_adjacency_list(const unsigned int* d_adjacency,
     unsigned int n_groups = run_block_size / cur_group_size;
     dim3 threads(cur_group_size, n_groups, 1);
 
-        unsigned int nwork = N;
-        const unsigned int num_blocks = nwork / n_groups + 1;
-        dim3 grid(num_blocks, 1, 1);
+    unsigned int nwork = N;
+    const unsigned int num_blocks = nwork / n_groups + 1;
+    dim3 grid(num_blocks, 1, 1);
 
-        hipLaunchKernelGGL(kernel::concatenate_adjacency_list,
-                           grid,
-                           threads,
-                           0,
-                           0,
-                           d_adjacency,
-                           d_nneigh,
-                           d_nneigh_scan,
-                           maxn,
-                           d_adjacency_out,
-                           nwork);
+    hipLaunchKernelGGL(kernel::concatenate_adjacency_list,
+                       grid,
+                       threads,
+                       0,
+                       0,
+                       d_adjacency,
+                       d_nneigh,
+                       d_nneigh_scan,
+                       maxn,
+                       d_adjacency_out,
+                       nwork);
     }
 
 void __attribute__((visibility("default"))) flip_clusters(Scalar4* d_postype,
@@ -247,26 +247,26 @@ void __attribute__((visibility("default"))) flip_clusters(Scalar4* d_postype,
 
     dim3 threads(run_block_size, 1);
 
-        unsigned int nwork = N;
-        const unsigned int num_blocks = nwork / run_block_size + 1;
-        dim3 grid(num_blocks, 1, 1);
+    unsigned int nwork = N;
+    const unsigned int num_blocks = nwork / run_block_size + 1;
+    dim3 grid(num_blocks, 1, 1);
 
-        hipLaunchKernelGGL(kernel::flip_clusters,
-                           grid,
-                           threads,
-                           0,
-                           0,
-                           d_postype,
-                           d_orientation,
-                           d_image,
-                           d_postype_backup,
-                           d_orientation_backup,
-                           d_image_backup,
-                           d_components,
-                           flip_probability,
-                           seed,
-                           timestep,
-                           nwork);
+    hipLaunchKernelGGL(kernel::flip_clusters,
+                       grid,
+                       threads,
+                       0,
+                       0,
+                       d_postype,
+                       d_orientation,
+                       d_image,
+                       d_postype_backup,
+                       d_orientation_backup,
+                       d_image_backup,
+                       d_components,
+                       flip_probability,
+                       seed,
+                       timestep,
+                       nwork);
     }
 
 void connected_components(uint2* d_adj,

@@ -200,9 +200,7 @@ void ForceCompositeGPU::computeForces(uint64_t timestep)
 
         if (nelem != 0)
             {
-            hipMemsetAsync(d_virial.data,
-                           0,
-                           sizeof(Scalar) * nelem * m_virial_pitch);
+            hipMemsetAsync(d_virial.data, 0, sizeof(Scalar) * nelem * m_virial_pitch);
             }
 
         if (m_exec_conf->isCUDAErrorCheckingEnabled())
@@ -236,7 +234,7 @@ void ForceCompositeGPU::computeForces(uint64_t timestep)
                                  m_virial_pitch,
                                  block_size,
                                  m_exec_conf->dev_prop,
-                                m_n_rigid);
+                                 m_n_rigid);
 
         if (m_exec_conf->isCUDAErrorCheckingEnabled())
             CHECK_CUDA_ERROR();

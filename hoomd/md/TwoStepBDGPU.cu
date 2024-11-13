@@ -338,53 +338,53 @@ hipError_t gpu_brownian_step_one(Scalar4* d_pos,
     {
     unsigned int run_block_size = 256;
 
-       unsigned int nwork = group_size;
+    unsigned int nwork = group_size;
 
-        // setup the grid to run the kernel
-        dim3 grid((nwork / run_block_size) + 1, 1, 1);
-        dim3 threads(run_block_size, 1, 1);
+    // setup the grid to run the kernel
+    dim3 grid((nwork / run_block_size) + 1, 1, 1);
+    dim3 threads(run_block_size, 1, 1);
 
-        auto shared_bytes
-            = (sizeof(Scalar) * langevin_args.n_types + sizeof(Scalar3) * langevin_args.n_types);
+    auto shared_bytes
+        = (sizeof(Scalar) * langevin_args.n_types + sizeof(Scalar3) * langevin_args.n_types);
 
-        bool enable_shared_cache = true;
+    bool enable_shared_cache = true;
 
-        if (shared_bytes > langevin_args.devprop.sharedMemPerBlock)
-            {
-            enable_shared_cache = false;
-            shared_bytes = 0;
-            }
+    if (shared_bytes > langevin_args.devprop.sharedMemPerBlock)
+        {
+        enable_shared_cache = false;
+        shared_bytes = 0;
+        }
 
-        // run the kernel
-        hipLaunchKernelGGL((gpu_brownian_step_one_kernel),
-                           dim3(grid),
-                           dim3(threads),
-                           shared_bytes,
-                           0,
-                           d_pos,
-                           d_vel,
-                           d_image,
-                           box,
-                           d_tag,
-                           d_group_members,
-                           nwork,
-                           d_net_force,
-                           d_gamma_r,
-                           d_orientation,
-                           d_torque,
-                           d_inertia,
-                           d_angmom,
-                           langevin_args.d_gamma,
-                           langevin_args.n_types,
-                           langevin_args.timestep,
-                           langevin_args.seed,
-                           langevin_args.T,
-                           aniso,
-                           deltaT,
-                           D,
-                           d_noiseless_t,
-                           d_noiseless_r,
-                           enable_shared_cache);
+    // run the kernel
+    hipLaunchKernelGGL((gpu_brownian_step_one_kernel),
+                       dim3(grid),
+                       dim3(threads),
+                       shared_bytes,
+                       0,
+                       d_pos,
+                       d_vel,
+                       d_image,
+                       box,
+                       d_tag,
+                       d_group_members,
+                       nwork,
+                       d_net_force,
+                       d_gamma_r,
+                       d_orientation,
+                       d_torque,
+                       d_inertia,
+                       d_angmom,
+                       langevin_args.d_gamma,
+                       langevin_args.n_types,
+                       langevin_args.timestep,
+                       langevin_args.seed,
+                       langevin_args.T,
+                       aniso,
+                       deltaT,
+                       D,
+                       d_noiseless_t,
+                       d_noiseless_r,
+                       enable_shared_cache);
 
     return hipSuccess;
     }

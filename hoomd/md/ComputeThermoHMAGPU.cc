@@ -43,9 +43,7 @@ ComputeThermoHMAGPU::ComputeThermoHMAGPU(std::shared_ptr<SystemDefinition> sysde
     }
 
 //! Destructor
-ComputeThermoHMAGPU::~ComputeThermoHMAGPU()
-    {
-    }
+ComputeThermoHMAGPU::~ComputeThermoHMAGPU() { }
 
 /*! Computes all thermodynamic properties of the system in one fell swoop, on the GPU.
  */
@@ -60,8 +58,7 @@ void ComputeThermoHMAGPU::computeProperties()
     assert(m_pdata);
 
     // number of blocks in reduction (round up)
-    unsigned int num_blocks
-        = m_group->getNumMembers() / m_block_size + 1;
+    unsigned int num_blocks = m_group->getNumMembers() / m_block_size + 1;
 
     // resize work space
     size_t old_size = m_scratch.size();

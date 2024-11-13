@@ -133,44 +133,44 @@ hipError_t gpu_npt_rescale_step_one(Scalar4* d_pos,
 
     unsigned int run_block_size = min(block_size, max_block_size);
 
-       unsigned int nwork = group_size;
+    unsigned int nwork = group_size;
 
-        // setup the grid to run the kernel
-        dim3 grid((nwork / run_block_size) + 1, 1, 1);
-        dim3 threads(run_block_size, 1, 1);
+    // setup the grid to run the kernel
+    dim3 grid((nwork / run_block_size) + 1, 1, 1);
+    dim3 threads(run_block_size, 1, 1);
 
-        // run the kernel
-        hipLaunchKernelGGL((gpu_npt_mtk_step_one_kernel),
-                           dim3(grid),
-                           dim3(threads),
-                           0,
-                           0,
-                           d_pos,
-                           d_vel,
-                           d_accel,
-                           d_group_members,
-                           nwork,
-                           thermo_rescale,
-                           mat_exp_v[0],
-                           mat_exp_v[1],
-                           mat_exp_v[2],
-                           mat_exp_v[3],
-                           mat_exp_v[4],
-                           mat_exp_v[5],
-                           mat_exp_r[0],
-                           mat_exp_r[1],
-                           mat_exp_r[2],
-                           mat_exp_r[3],
-                           mat_exp_r[4],
-                           mat_exp_r[5],
-                           mat_exp_r_int[0],
-                           mat_exp_r_int[1],
-                           mat_exp_r_int[2],
-                           mat_exp_r_int[3],
-                           mat_exp_r_int[4],
-                           mat_exp_r_int[5],
-                           deltaT,
-                           rescale_all);
+    // run the kernel
+    hipLaunchKernelGGL((gpu_npt_mtk_step_one_kernel),
+                       dim3(grid),
+                       dim3(threads),
+                       0,
+                       0,
+                       d_pos,
+                       d_vel,
+                       d_accel,
+                       d_group_members,
+                       nwork,
+                       thermo_rescale,
+                       mat_exp_v[0],
+                       mat_exp_v[1],
+                       mat_exp_v[2],
+                       mat_exp_v[3],
+                       mat_exp_v[4],
+                       mat_exp_v[5],
+                       mat_exp_r[0],
+                       mat_exp_r[1],
+                       mat_exp_r[2],
+                       mat_exp_r[3],
+                       mat_exp_r[4],
+                       mat_exp_r[5],
+                       mat_exp_r_int[0],
+                       mat_exp_r_int[1],
+                       mat_exp_r_int[2],
+                       mat_exp_r_int[3],
+                       mat_exp_r_int[4],
+                       mat_exp_r_int[5],
+                       deltaT,
+                       rescale_all);
 
     return hipSuccess;
     }
@@ -182,10 +182,8 @@ hipError_t gpu_npt_rescale_step_one(Scalar4* d_pos,
 
     Wrap particle positions for all particles in the box
 */
-__global__ void gpu_npt_mtk_wrap_kernel(const unsigned int nwork,
-                                        Scalar4* d_pos,
-                                        int3* d_image,
-                                        BoxDim box)
+__global__ void
+gpu_npt_mtk_wrap_kernel(const unsigned int nwork, Scalar4* d_pos, int3* d_image, BoxDim box)
     {
     // determine which particle this thread works on
     int idx = blockIdx.x * blockDim.x + threadIdx.x;
@@ -229,22 +227,22 @@ hipError_t gpu_npt_rescale_wrap(const unsigned int N,
 
     unsigned int run_block_size = min(block_size, max_block_size);
 
-       unsigned int nwork = N;
+    unsigned int nwork = N;
 
-        // setup the grid to run the kernel
-        dim3 grid((nwork / run_block_size) + 1, 1, 1);
-        dim3 threads(run_block_size, 1, 1);
+    // setup the grid to run the kernel
+    dim3 grid((nwork / run_block_size) + 1, 1, 1);
+    dim3 threads(run_block_size, 1, 1);
 
-        // run the kernel
-        hipLaunchKernelGGL((gpu_npt_mtk_wrap_kernel),
-                           dim3(grid),
-                           dim3(threads),
-                           0,
-                           0,
-                           nwork,
-                           d_pos,
-                           d_image,
-                           box);
+    // run the kernel
+    hipLaunchKernelGGL((gpu_npt_mtk_wrap_kernel),
+                       dim3(grid),
+                       dim3(threads),
+                       0,
+                       0,
+                       nwork,
+                       d_pos,
+                       d_image,
+                       box);
 
     return hipSuccess;
     }
@@ -330,31 +328,31 @@ hipError_t gpu_npt_rescale_step_two(Scalar4* d_vel,
 
     unsigned int run_block_size = min(block_size, max_block_size);
 
-        unsigned int nwork = group_size;
+    unsigned int nwork = group_size;
 
-        // setup the grid to run the kernel
-        dim3 grid((nwork / run_block_size) + 1, 1, 1);
-        dim3 threads(run_block_size, 1, 1);
+    // setup the grid to run the kernel
+    dim3 grid((nwork / run_block_size) + 1, 1, 1);
+    dim3 threads(run_block_size, 1, 1);
 
-        // run the kernel
-        hipLaunchKernelGGL((gpu_npt_mtk_step_two_kernel),
-                           dim3(grid),
-                           dim3(threads),
-                           0,
-                           0,
-                           d_vel,
-                           d_accel,
-                           d_net_force,
-                           d_group_members,
-                           nwork,
-                           mat_exp_v[0],
-                           mat_exp_v[1],
-                           mat_exp_v[2],
-                           mat_exp_v[3],
-                           mat_exp_v[4],
-                           mat_exp_v[5],
-                           deltaT,
-                           thermo_rescale);
+    // run the kernel
+    hipLaunchKernelGGL((gpu_npt_mtk_step_two_kernel),
+                       dim3(grid),
+                       dim3(threads),
+                       0,
+                       0,
+                       d_vel,
+                       d_accel,
+                       d_net_force,
+                       d_group_members,
+                       nwork,
+                       mat_exp_v[0],
+                       mat_exp_v[1],
+                       mat_exp_v[2],
+                       mat_exp_v[3],
+                       mat_exp_v[4],
+                       mat_exp_v[5],
+                       deltaT,
+                       thermo_rescale);
 
     return hipSuccess;
     }
@@ -401,25 +399,25 @@ void gpu_npt_rescale_rescale(const unsigned int N,
 
     unsigned int run_block_size = min(block_size, max_block_size);
 
-        unsigned int nwork = N;
+    unsigned int nwork = N;
 
-        // setup the grid to run the kernel
-        dim3 grid((nwork / run_block_size) + 1, 1, 1);
-        dim3 threads(run_block_size, 1, 1);
+    // setup the grid to run the kernel
+    dim3 grid((nwork / run_block_size) + 1, 1, 1);
+    dim3 threads(run_block_size, 1, 1);
 
-        hipLaunchKernelGGL((gpu_npt_mtk_rescale_kernel),
-                           dim3(grid),
-                           dim3(threads),
-                           0,
-                           0,
-                           nwork,
-                           d_postype,
-                           mat_exp_r_xx,
-                           mat_exp_r_xy,
-                           mat_exp_r_xz,
-                           mat_exp_r_yy,
-                           mat_exp_r_yz,
-                           mat_exp_r_zz);
+    hipLaunchKernelGGL((gpu_npt_mtk_rescale_kernel),
+                       dim3(grid),
+                       dim3(threads),
+                       0,
+                       0,
+                       nwork,
+                       d_postype,
+                       mat_exp_r_xx,
+                       mat_exp_r_xy,
+                       mat_exp_r_xz,
+                       mat_exp_r_yy,
+                       mat_exp_r_yz,
+                       mat_exp_r_zz);
     }
     } // end namespace kernel
     } // end namespace md

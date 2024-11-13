@@ -59,7 +59,7 @@ hipError_t gpu_rattle_nve_step_two(Scalar4* d_pos,
                                    Scalar4* d_vel,
                                    Scalar3* d_accel,
                                    unsigned int* d_group_members,
-                                           const unsigned int group_size,
+                                   const unsigned int group_size,
                                    Scalar4* d_net_force,
                                    Manifold manifold,
                                    Scalar tolerance,
@@ -86,7 +86,7 @@ hipError_t gpu_include_rattle_force_nve(const Scalar4* d_pos,
                                         Scalar4* d_net_force,
                                         Scalar* d_net_virial,
                                         unsigned int* d_group_members,
-                                           const unsigned int group_size,
+                                        const unsigned int group_size,
                                         size_t net_virial_pitch,
                                         Manifold manifold,
                                         Scalar tolerance,
@@ -261,30 +261,30 @@ hipError_t gpu_rattle_nve_step_two(Scalar4* d_pos,
 
     unsigned int run_block_size = min(block_size, max_block_size);
 
-        unsigned int nwork = group_size;
+    unsigned int nwork = group_size;
 
-        // setup the grid to run the kernel
-        dim3 grid((nwork / run_block_size) + 1, 1, 1);
-        dim3 threads(run_block_size, 1, 1);
+    // setup the grid to run the kernel
+    dim3 grid((nwork / run_block_size) + 1, 1, 1);
+    dim3 threads(run_block_size, 1, 1);
 
-        // run the kernel
-        hipLaunchKernelGGL((gpu_rattle_nve_step_two_kernel<Manifold>),
-                           dim3(grid),
-                           dim3(threads),
-                           0,
-                           0,
-                           d_pos,
-                           d_vel,
-                           d_accel,
-                           d_group_members,
-                           nwork,
-                           d_net_force,
-                           manifold,
-                           tolerance,
-                           deltaT,
-                           limit,
-                           limit_val,
-                           zero_force);
+    // run the kernel
+    hipLaunchKernelGGL((gpu_rattle_nve_step_two_kernel<Manifold>),
+                       dim3(grid),
+                       dim3(threads),
+                       0,
+                       0,
+                       d_pos,
+                       d_vel,
+                       d_accel,
+                       d_group_members,
+                       nwork,
+                       d_net_force,
+                       manifold,
+                       tolerance,
+                       deltaT,
+                       limit,
+                       limit_val,
+                       zero_force);
 
     return hipSuccess;
     }
@@ -421,30 +421,30 @@ hipError_t gpu_include_rattle_force_nve(const Scalar4* d_pos,
 
     unsigned int run_block_size = min(block_size, max_block_size);
 
-        unsigned int nwork = group_size;
+    unsigned int nwork = group_size;
 
-        // setup the grid to run the kernel
-        dim3 grid((nwork / run_block_size) + 1, 1, 1);
-        dim3 threads(run_block_size, 1, 1);
+    // setup the grid to run the kernel
+    dim3 grid((nwork / run_block_size) + 1, 1, 1);
+    dim3 threads(run_block_size, 1, 1);
 
-        // run the kernel
-        hipLaunchKernelGGL((gpu_include_rattle_force_nve_kernel<Manifold>),
-                           dim3(grid),
-                           dim3(threads),
-                           0,
-                           0,
-                           d_pos,
-                           d_vel,
-                           d_accel,
-                           d_net_force,
-                           d_net_virial,
-                           d_group_members,
-                           nwork,
-                           net_virial_pitch,
-                           manifold,
-                           tolerance,
-                           deltaT,
-                           zero_force);
+    // run the kernel
+    hipLaunchKernelGGL((gpu_include_rattle_force_nve_kernel<Manifold>),
+                       dim3(grid),
+                       dim3(threads),
+                       0,
+                       0,
+                       d_pos,
+                       d_vel,
+                       d_accel,
+                       d_net_force,
+                       d_net_virial,
+                       d_group_members,
+                       nwork,
+                       net_virial_pitch,
+                       manifold,
+                       tolerance,
+                       deltaT,
+                       zero_force);
 
     return hipSuccess;
     }

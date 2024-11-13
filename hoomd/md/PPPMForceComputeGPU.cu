@@ -321,26 +321,26 @@ void gpu_assign_particles(const uint3 mesh_dim,
         run_block_size -= dev_prop.warpSize;
         }
 
-        unsigned int nwork = group_size;
-        unsigned int n_blocks = nwork / run_block_size + 1;
-        const size_t shared_bytes = order * (2 * order + 1) * sizeof(Scalar);
+    unsigned int nwork = group_size;
+    unsigned int n_blocks = nwork / run_block_size + 1;
+    const size_t shared_bytes = order * (2 * order + 1) * sizeof(Scalar);
 
-        hipLaunchKernelGGL((gpu_assign_particles_kernel),
-                           dim3(n_blocks),
-                           dim3(run_block_size),
-                           shared_bytes,
-                           0,
-                           mesh_dim,
-                           n_ghost_bins,
-                           nwork,
-                           d_index_array,
-                           d_postype,
-                           d_charge,
-                           d_mesh,
-                           V_cell,
-                           order,
-                           box,
-                           d_rho_coeff);
+    hipLaunchKernelGGL((gpu_assign_particles_kernel),
+                       dim3(n_blocks),
+                       dim3(run_block_size),
+                       shared_bytes,
+                       0,
+                       mesh_dim,
+                       n_ghost_bins,
+                       nwork,
+                       d_index_array,
+                       d_postype,
+                       d_charge,
+                       d_mesh,
+                       V_cell,
+                       order,
+                       box,
+                       d_rho_coeff);
     }
 
 __global__ void gpu_compute_mesh_virial_kernel(const unsigned int n_wave_vectors,
@@ -656,29 +656,28 @@ void gpu_compute_forces(const unsigned int N,
 
     hipMemsetAsync(d_force, 0, sizeof(Scalar4) * N);
 
-        unsigned int nwork = group_size;
-        unsigned int n_blocks = nwork / run_block_size + 1;
-        const size_t shared_bytes = order * (2 * order + 1) * sizeof(Scalar);
+    unsigned int nwork = group_size;
+    unsigned int n_blocks = nwork / run_block_size + 1;
+    const size_t shared_bytes = order * (2 * order + 1) * sizeof(Scalar);
 
-        hipLaunchKernelGGL(
-            (gpu_compute_forces_kernel),
-            dim3(n_blocks),
-            dim3(run_block_size),
-            shared_bytes,
-            0,
-            nwork,
-            d_postype,
-            d_force,
-            grid_dim,
-            n_ghost_cells,
-            d_charge,
-            box,
-            order,
-            d_index_array,
-            d_inv_fourier_mesh_x,
-            d_inv_fourier_mesh_y,
-            d_inv_fourier_mesh_z,
-            d_rho_coeff);
+    hipLaunchKernelGGL((gpu_compute_forces_kernel),
+                       dim3(n_blocks),
+                       dim3(run_block_size),
+                       shared_bytes,
+                       0,
+                       nwork,
+                       d_postype,
+                       d_force,
+                       grid_dim,
+                       n_ghost_cells,
+                       d_charge,
+                       box,
+                       order,
+                       d_index_array,
+                       d_inv_fourier_mesh_x,
+                       d_inv_fourier_mesh_y,
+                       d_inv_fourier_mesh_z,
+                       d_rho_coeff);
     }
 
 __global__ void kernel_calculate_pe_partial(int n_wave_vectors,

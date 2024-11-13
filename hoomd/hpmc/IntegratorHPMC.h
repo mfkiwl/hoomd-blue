@@ -106,7 +106,7 @@ struct hpmc_patch_args_t
     const Scalar* d_charge;                    //!< Particle charges
     const Scalar* d_diameter;                  //!< Particle diameters
     const unsigned int*
-        d_reject_out_of_cell;          //!< Flag if a particle move has been rejected a priori
+        d_reject_out_of_cell; //!< Flag if a particle move has been rejected a priori
     };
 #endif
 

@@ -93,26 +93,25 @@ hipError_t gpu_nlist_needs_update_check_new(unsigned int* d_result,
     {
     unsigned int block_size = 128;
 
+    unsigned int nwork = N;
 
-        unsigned int nwork = N;
-
-        int n_blocks = nwork / block_size + 1;
-        hipLaunchKernelGGL((gpu_nlist_needs_update_check_new_kernel),
-                           dim3(n_blocks),
-                           dim3(block_size),
-                           0,
-                           0,
-                           d_result,
-                           d_last_pos,
-                           d_pos,
-                           nwork,
-                           box,
-                           d_rcut_max,
-                           r_buff,
-                           ntypes,
-                           lambda_min,
-                           lambda,
-                           checkn);
+    int n_blocks = nwork / block_size + 1;
+    hipLaunchKernelGGL((gpu_nlist_needs_update_check_new_kernel),
+                       dim3(n_blocks),
+                       dim3(block_size),
+                       0,
+                       0,
+                       d_result,
+                       d_last_pos,
+                       d_pos,
+                       nwork,
+                       box,
+                       d_rcut_max,
+                       r_buff,
+                       ntypes,
+                       lambda_min,
+                       lambda,
+                       checkn);
 
     return hipSuccess;
     }

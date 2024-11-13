@@ -62,7 +62,7 @@ hipError_t gpu_rigid_virial(Scalar* d_virial,
                             size_t virial_pitch,
                             unsigned int block_size,
                             const hipDeviceProp_t& dev_prop,
-                           unsigned int n_local_bodies);
+                            unsigned int n_local_bodies);
 
 void gpu_update_composite(unsigned int N,
                           unsigned int n_ghost,
@@ -81,8 +81,7 @@ void gpu_update_composite(unsigned int N,
                           const BoxDim box,
                           const BoxDim global_box,
                           unsigned int block_size,
-                          uint2* d_flag
-                        );
+                          uint2* d_flag);
 
 hipError_t gpu_find_rigid_centers(const unsigned int* d_body,
                                   const unsigned int* d_tag,

@@ -134,7 +134,7 @@ ExecutionConfiguration::ExecutionConfiguration(executionMode mode,
 #endif
 
     setupStats();
-    
+
     ostringstream s;
     s << "Device is running on ";
     s << m_active_device_description << endl;
@@ -188,8 +188,7 @@ ExecutionConfiguration::~ExecutionConfiguration()
 
 #if defined(ENABLE_HIP)
 
-std::pair<unsigned int, unsigned int>
-ExecutionConfiguration::getComputeCapability() const
+std::pair<unsigned int, unsigned int> ExecutionConfiguration::getComputeCapability() const
     {
     auto result = std::make_pair(0, 0);
 
@@ -423,7 +422,7 @@ void ExecutionConfiguration::setupStats()
         hipSetDevice(m_gpu_id);
         hipGetDeviceProperties(&m_dev_prop, m_gpu_id);
 
-        m_active_device_description =  describeGPU(m_gpu_id, m_dev_prop);
+        m_active_device_description = describeGPU(m_gpu_id, m_dev_prop);
 
         // initialize dev_prop with device properties of first device for now
         dev_prop = m_dev_prop;

@@ -14,8 +14,7 @@ namespace hoomd
     {
 /*! \param sysdef system to compute the cell list of
  */
-CellListGPU::CellListGPU(std::shared_ptr<SystemDefinition> sysdef)
-    : CellList(sysdef)
+CellListGPU::CellListGPU(std::shared_ptr<SystemDefinition> sysdef) : CellList(sysdef)
     {
     if (!m_exec_conf->isCUDAEnabled())
         {
@@ -83,47 +82,46 @@ void CellListGPU::computeCellList()
         m_tuner->begin();
 
         // compute cell list, and write to temporary arrays with multi-GPU
-        gpu_compute_cell_list(
-            d_cell_size.data,
-            d_xyzf.data,
-            d_type_body.data,
-            d_cell_orientation.data,
-            d_cell_idx.data,
-            d_conditions.data,
-            d_pos.data,
-            d_orientation.data,
-            d_charge.data,
-            d_diameter.data,
-            d_body.data,
-            m_pdata->getN(),
-            m_pdata->getNGhosts(),
-            m_Nmax,
-            m_flag_charge,
-            m_flag_type,
-            box,
-            m_cell_indexer,
-            m_cell_list_indexer,
-            getGhostWidth(),
-            m_tuner->getParam()[0]);
+        gpu_compute_cell_list(d_cell_size.data,
+                              d_xyzf.data,
+                              d_type_body.data,
+                              d_cell_orientation.data,
+                              d_cell_idx.data,
+                              d_conditions.data,
+                              d_pos.data,
+                              d_orientation.data,
+                              d_charge.data,
+                              d_diameter.data,
+                              d_body.data,
+                              m_pdata->getN(),
+                              m_pdata->getNGhosts(),
+                              m_Nmax,
+                              m_flag_charge,
+                              m_flag_type,
+                              box,
+                              m_cell_indexer,
+                              m_cell_list_indexer,
+                              getGhostWidth(),
+                              m_tuner->getParam()[0]);
         if (m_exec_conf->isCUDAErrorCheckingEnabled())
             CHECK_CUDA_ERROR();
         m_tuner->end();
 
-    if (m_sort_cell_list)
-        {
-        ArrayHandle<unsigned int> d_cell_size(m_cell_size,
-                                              access_location::device,
-                                              access_mode::overwrite);
-        ArrayHandle<Scalar4> d_xyzf(m_xyzf, access_location::device, access_mode::overwrite);
-        ArrayHandle<uint2> d_type_body(m_type_body,
-                                       access_location::device,
-                                       access_mode::overwrite);
-        ArrayHandle<Scalar4> d_cell_orientation(m_orientation,
-                                                access_location::device,
-                                                access_mode::overwrite);
-        ArrayHandle<unsigned int> d_cell_idx(m_idx,
-                                             access_location::device,
-                                             access_mode::overwrite);
+        if (m_sort_cell_list)
+            {
+            ArrayHandle<unsigned int> d_cell_size(m_cell_size,
+                                                  access_location::device,
+                                                  access_mode::overwrite);
+            ArrayHandle<Scalar4> d_xyzf(m_xyzf, access_location::device, access_mode::overwrite);
+            ArrayHandle<uint2> d_type_body(m_type_body,
+                                           access_location::device,
+                                           access_mode::overwrite);
+            ArrayHandle<Scalar4> d_cell_orientation(m_orientation,
+                                                    access_location::device,
+                                                    access_mode::overwrite);
+            ArrayHandle<unsigned int> d_cell_idx(m_idx,
+                                                 access_location::device,
+                                                 access_mode::overwrite);
 
             ScopedAllocation<uint2> d_sort_idx(m_exec_conf->getCachedAllocator(),
                                                m_cell_list_indexer.getNumElements());
@@ -138,20 +136,19 @@ void CellListGPU::computeCellList()
             ScopedAllocation<uint2> d_type_body_new(m_exec_conf->getCachedAllocator(),
                                                     m_type_body.getNumElements());
 
-            gpu_sort_cell_list(
-                d_cell_size.data,
-                d_xyzf.data,
-                d_xyzf_new.data,
-                d_type_body.data,
-                d_type_body_new.data,
-                d_cell_orientation.data,
-                d_cell_orientation_new.data,
-                d_cell_idx.data,
-                d_cell_idx_new.data,
-                d_sort_idx.data,
-                d_sort_permutation.data,
-                m_cell_indexer,
-                m_cell_list_indexer);
+            gpu_sort_cell_list(d_cell_size.data,
+                               d_xyzf.data,
+                               d_xyzf_new.data,
+                               d_type_body.data,
+                               d_type_body_new.data,
+                               d_cell_orientation.data,
+                               d_cell_orientation_new.data,
+                               d_cell_idx.data,
+                               d_cell_idx_new.data,
+                               d_sort_idx.data,
+                               d_sort_permutation.data,
+                               m_cell_indexer,
+                               m_cell_list_indexer);
 
             if (m_exec_conf->isCUDAErrorCheckingEnabled())
                 CHECK_CUDA_ERROR();

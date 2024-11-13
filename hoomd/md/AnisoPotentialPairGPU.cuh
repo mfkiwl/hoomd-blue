@@ -67,8 +67,8 @@ struct a_pair_args_t
           d_tag(_d_tag), box(_box), d_n_neigh(_d_n_neigh), d_nlist(_d_nlist),
           d_head_list(_d_head_list), d_rcutsq(_d_rcutsq), ntypes(_ntypes), block_size(_block_size),
           shift_mode(_shift_mode), compute_virial(_compute_virial),
-          threads_per_particle(_threads_per_particle),
-          devprop(_devprop), update_shape_param(_update_shape_param) { };
+          threads_per_particle(_threads_per_particle), devprop(_devprop),
+          update_shape_param(_update_shape_param) { };
 
     Scalar4* d_force;             //!< Force to write out
     Scalar4* d_torque;            //!< Torque to write out
@@ -91,7 +91,7 @@ struct a_pair_args_t
     const unsigned int shift_mode;           //!< The potential energy shift mode
     const unsigned int compute_virial;       //!< Flag to indicate if virials should be computed
     const unsigned int threads_per_particle; //!< Number of threads to launch per particle
-    const hipDeviceProp_t& devprop;    //!< CUDA device properties
+    const hipDeviceProp_t& devprop;          //!< CUDA device properties
     bool update_shape_param; //!< If true, update size of shape param and synchronize GPU execution
                              //!< stream
     };
@@ -520,63 +520,63 @@ hipError_t gpu_compute_pair_aniso_forces(const a_pair_args_t& pair_args,
     assert(pair_args.d_rcutsq);
     assert(pair_args.ntypes > 0);
 
-        // run the kernel
-        if (pair_args.compute_virial)
+    // run the kernel
+    if (pair_args.compute_virial)
+        {
+        switch (pair_args.shift_mode)
             {
-            switch (pair_args.shift_mode)
-                {
-            case 0:
-                {
-                AnisoPairForceComputeKernel<evaluator, 0, 1, gpu_aniso_pair_force_max_tpp>::launch(
-                    pair_args,
-                    pair_args.N,
-                    d_params,
-                    d_shape_params);
-                break;
-                }
-            case 1:
-                {
-                AnisoPairForceComputeKernel<evaluator,
-                                            1 && evaluator::implementsEnergyShift(),
-                                            1,
-                                            gpu_aniso_pair_force_max_tpp>::launch(pair_args,
-                                                                                  pair_args.N,
-                                                                                  d_params,
-                                                                                  d_shape_params);
-                break;
-                }
-            default:
-                return hipErrorUnknown;
-                }
-            }
-        else
+        case 0:
             {
-            switch (pair_args.shift_mode)
-                {
-            case 0:
-                {
-                AnisoPairForceComputeKernel<evaluator, 0, 0, gpu_aniso_pair_force_max_tpp>::launch(
-                    pair_args,
-                    pair_args.N,
-                    d_params,
-                    d_shape_params);
-                break;
-                }
-            case 1:
-                {
-                AnisoPairForceComputeKernel<evaluator,
-                                            1 && evaluator::implementsEnergyShift(),
-                                            0,
-                                            gpu_aniso_pair_force_max_tpp>::launch(pair_args,
-                                                                                  pair_args.N,
-                                                                                  d_params,
-                                                                                  d_shape_params);
-                break;
-                }
-            default:
-                return hipErrorUnknown;
-                }
+            AnisoPairForceComputeKernel<evaluator, 0, 1, gpu_aniso_pair_force_max_tpp>::launch(
+                pair_args,
+                pair_args.N,
+                d_params,
+                d_shape_params);
+            break;
             }
+        case 1:
+            {
+            AnisoPairForceComputeKernel<evaluator,
+                                        1 && evaluator::implementsEnergyShift(),
+                                        1,
+                                        gpu_aniso_pair_force_max_tpp>::launch(pair_args,
+                                                                              pair_args.N,
+                                                                              d_params,
+                                                                              d_shape_params);
+            break;
+            }
+        default:
+            return hipErrorUnknown;
+            }
+        }
+    else
+        {
+        switch (pair_args.shift_mode)
+            {
+        case 0:
+            {
+            AnisoPairForceComputeKernel<evaluator, 0, 0, gpu_aniso_pair_force_max_tpp>::launch(
+                pair_args,
+                pair_args.N,
+                d_params,
+                d_shape_params);
+            break;
+            }
+        case 1:
+            {
+            AnisoPairForceComputeKernel<evaluator,
+                                        1 && evaluator::implementsEnergyShift(),
+                                        0,
+                                        gpu_aniso_pair_force_max_tpp>::launch(pair_args,
+                                                                              pair_args.N,
+                                                                              d_params,
+                                                                              d_shape_params);
+            break;
+            }
+        default:
+            return hipErrorUnknown;
+            }
+        }
     return hipSuccess;
     }
 #else

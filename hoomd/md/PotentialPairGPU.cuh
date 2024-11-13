@@ -67,8 +67,7 @@ struct pair_args_t
           d_head_list(_d_head_list), d_rcutsq(_d_rcutsq), d_ronsq(_d_ronsq),
           size_neigh_list(_size_neigh_list), ntypes(_ntypes), block_size(_block_size),
           shift_mode(_shift_mode), compute_virial(_compute_virial),
-          threads_per_particle(_threads_per_particle),
-          devprop(_devprop) { };
+          threads_per_particle(_threads_per_particle), devprop(_devprop) { };
 
     Scalar4* d_force;          //!< Force to write out
     Scalar* d_virial;          //!< Virial to write out
@@ -90,7 +89,7 @@ struct pair_args_t
     const unsigned int shift_mode;           //!< The potential energy shift mode
     const unsigned int compute_virial;       //!< Flag to indicate if virials should be computed
     const unsigned int threads_per_particle; //!< Number of threads per particle (maximum: 1 warp)
-    const hipDeviceProp_t& devprop;    //!< CUDA device properties
+    const hipDeviceProp_t& devprop;          //!< CUDA device properties
     };
 
 #ifdef __HIPCC__
@@ -572,65 +571,65 @@ gpu_compute_pair_forces(const pair_args_t& pair_args,
     assert(pair_args.d_ronsq);
     assert(pair_args.ntypes > 0);
 
-        // Launch kernel
-        if (pair_args.compute_virial)
+    // Launch kernel
+    if (pair_args.compute_virial)
+        {
+        switch (pair_args.shift_mode)
             {
-            switch (pair_args.shift_mode)
-                {
-            case 0:
-                {
-                PairForceComputeKernel<evaluator, 0, 1, gpu_pair_force_max_tpp>::launch(pair_args,
-                                                                                        pair_args.N,
-                                                                                        d_params);
-                break;
-                }
-            case 1:
-                {
-                PairForceComputeKernel<evaluator, 1, 1, gpu_pair_force_max_tpp>::launch(pair_args,
-                                                                                        pair_args.N,
-                                                                                        d_params);
-                break;
-                }
-            case 2:
-                {
-                PairForceComputeKernel<evaluator, 2, 1, gpu_pair_force_max_tpp>::launch(pair_args,
-                                                                                        pair_args.N,
-                                                                                        d_params);
-                break;
-                }
-            default:
-                break;
-                }
-            }
-        else
+        case 0:
             {
-            switch (pair_args.shift_mode)
-                {
-            case 0:
-                {
-                PairForceComputeKernel<evaluator, 0, 0, gpu_pair_force_max_tpp>::launch(pair_args,
-                                                                                        pair_args.N,
-                                                                                        d_params);
-                break;
-                }
-            case 1:
-                {
-                PairForceComputeKernel<evaluator, 1, 0, gpu_pair_force_max_tpp>::launch(pair_args,
-                                                                                        pair_args.N,
-                                                                                        d_params);
-                break;
-                }
-            case 2:
-                {
-                PairForceComputeKernel<evaluator, 2, 0, gpu_pair_force_max_tpp>::launch(pair_args,
-                                                                                        pair_args.N,
-                                                                                        d_params);
-                break;
-                }
-            default:
-                break;
-                }
+            PairForceComputeKernel<evaluator, 0, 1, gpu_pair_force_max_tpp>::launch(pair_args,
+                                                                                    pair_args.N,
+                                                                                    d_params);
+            break;
             }
+        case 1:
+            {
+            PairForceComputeKernel<evaluator, 1, 1, gpu_pair_force_max_tpp>::launch(pair_args,
+                                                                                    pair_args.N,
+                                                                                    d_params);
+            break;
+            }
+        case 2:
+            {
+            PairForceComputeKernel<evaluator, 2, 1, gpu_pair_force_max_tpp>::launch(pair_args,
+                                                                                    pair_args.N,
+                                                                                    d_params);
+            break;
+            }
+        default:
+            break;
+            }
+        }
+    else
+        {
+        switch (pair_args.shift_mode)
+            {
+        case 0:
+            {
+            PairForceComputeKernel<evaluator, 0, 0, gpu_pair_force_max_tpp>::launch(pair_args,
+                                                                                    pair_args.N,
+                                                                                    d_params);
+            break;
+            }
+        case 1:
+            {
+            PairForceComputeKernel<evaluator, 1, 0, gpu_pair_force_max_tpp>::launch(pair_args,
+                                                                                    pair_args.N,
+                                                                                    d_params);
+            break;
+            }
+        case 2:
+            {
+            PairForceComputeKernel<evaluator, 2, 0, gpu_pair_force_max_tpp>::launch(pair_args,
+                                                                                    pair_args.N,
+                                                                                    d_params);
+            break;
+            }
+        default:
+            break;
+            }
+        }
 
     return hipSuccess;
     }

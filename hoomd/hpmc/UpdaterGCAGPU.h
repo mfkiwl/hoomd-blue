@@ -228,7 +228,7 @@ template<class Shape> UpdaterGCAGPU<Shape>::~UpdaterGCAGPU()
     {
     this->m_exec_conf->msg->notice(5) << "Destroying UpdaterGCAGPU" << std::endl;
 
-    this->m_exec_conf->setDevice();    
+    this->m_exec_conf->setDevice();
     hipStreamDestroy(m_overlaps_stream);
     }
 
@@ -372,23 +372,23 @@ template<class Shape> void UpdaterGCAGPU<Shape>::backupState()
         // copy over data
         this->m_exec_conf->setDevice();
 
-            if (nptl != 0)
-                {
-                hipMemcpyAsync(d_postype_backup.data,
-                               d_postype.data,
-                               sizeof(Scalar4) * nptl,
-                               hipMemcpyDeviceToDevice);
-                hipMemcpyAsync(d_orientation_backup.data,
-                               d_orientation.data,
-                               sizeof(Scalar4) * nptl,
-                               hipMemcpyDeviceToDevice);
-                hipMemcpyAsync(d_image_backup.data,
-                               d_image.data,
-                               sizeof(int3) * nptl,
-                               hipMemcpyDeviceToDevice);
-                }
-            if (this->m_exec_conf->isCUDAErrorCheckingEnabled())
-                CHECK_CUDA_ERROR();
+        if (nptl != 0)
+            {
+            hipMemcpyAsync(d_postype_backup.data,
+                           d_postype.data,
+                           sizeof(Scalar4) * nptl,
+                           hipMemcpyDeviceToDevice);
+            hipMemcpyAsync(d_orientation_backup.data,
+                           d_orientation.data,
+                           sizeof(Scalar4) * nptl,
+                           hipMemcpyDeviceToDevice);
+            hipMemcpyAsync(d_image_backup.data,
+                           d_image.data,
+                           sizeof(int3) * nptl,
+                           hipMemcpyDeviceToDevice);
+            }
+        if (this->m_exec_conf->isCUDAErrorCheckingEnabled())
+            CHECK_CUDA_ERROR();
         }
     }
 
@@ -570,7 +570,7 @@ void UpdaterGCAGPU<Shape>::findInteractions(uint64_t timestep,
                                                access_mode::overwrite);
 
             // access backup particle data
-           ArrayHandle<Scalar4> d_postype_backup(this->m_postype_backup,
+            ArrayHandle<Scalar4> d_postype_backup(this->m_postype_backup,
                                                   access_location::device,
                                                   access_mode::read);
             ArrayHandle<Scalar4> d_orientation_backup(this->m_orientation_backup,
@@ -623,12 +623,10 @@ void UpdaterGCAGPU<Shape>::findInteractions(uint64_t timestep,
                                      m_overlaps_stream);
 
             // reset number of neighbors
-                if (this->m_pdata->getN() != 0)
-                    hipMemsetAsync(d_nneigh.data,
-                                   0,
-                                   sizeof(unsigned int) * this->m_pdata->getN());
-                if (this->m_exec_conf->isCUDAErrorCheckingEnabled())
-                    CHECK_CUDA_ERROR();
+            if (this->m_pdata->getN() != 0)
+                hipMemsetAsync(d_nneigh.data, 0, sizeof(unsigned int) * this->m_pdata->getN());
+            if (this->m_exec_conf->isCUDAErrorCheckingEnabled())
+                CHECK_CUDA_ERROR();
 
             /*
              *  check overlaps, new configuration simultaneously against old configuration

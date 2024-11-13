@@ -49,15 +49,15 @@ __global__ void hpmc_excell(unsigned int* d_excell_idx,
         {
         unsigned int neigh_cell = d_cell_adj[cadji(offset, my_cell)];
 
-            unsigned int neigh_cell_size = d_cell_size[neigh_cell];
+        unsigned int neigh_cell_size = d_cell_size[neigh_cell];
 
-            for (unsigned int k = 0; k < neigh_cell_size; k++)
-                {
-                // read in the index of the new particle to add to our cell
-                unsigned int new_idx = d_cell_idx[cli(k, neigh_cell)];
-                d_excell_idx[excli(my_cell_size, my_cell)] = new_idx;
-                my_cell_size++;
-                }
+        for (unsigned int k = 0; k < neigh_cell_size; k++)
+            {
+            // read in the index of the new particle to add to our cell
+            unsigned int new_idx = d_cell_idx[cli(k, neigh_cell)];
+            d_excell_idx[excli(my_cell_size, my_cell)] = new_idx;
+            my_cell_size++;
+            }
         }
 
     // write out the final size
@@ -235,21 +235,21 @@ hpmc_check_convergence(const unsigned int* d_trial_move_type,
 
     dim3 threads(run_block_size, 1, 1);
 
-        unsigned int nwork = N;
-        const unsigned int num_blocks = nwork / run_block_size + 1;
-        dim3 grid(num_blocks, 1, 1);
+    unsigned int nwork = N;
+    const unsigned int num_blocks = nwork / run_block_size + 1;
+    dim3 grid(num_blocks, 1, 1);
 
-        hipLaunchKernelGGL(kernel::hpmc_check_convergence,
-                           grid,
-                           threads,
-                           0,
-                           0,
-                           d_trial_move_type,
-                           d_reject_out_of_cell,
-                           d_reject_in,
-                           d_reject_out,
-                           d_condition,
-                           nwork);
+    hipLaunchKernelGGL(kernel::hpmc_check_convergence,
+                       grid,
+                       threads,
+                       0,
+                       0,
+                       d_trial_move_type,
+                       d_reject_out_of_cell,
+                       d_reject_in,
+                       d_reject_out,
+                       d_condition,
+                       nwork);
     }
 
     } // end namespace gpu

@@ -39,9 +39,7 @@ ComputeThermoGPU::ComputeThermoGPU(std::shared_ptr<SystemDefinition> sysdef,
     }
 
 //! Destructor
-ComputeThermoGPU::~ComputeThermoGPU()
-    {
-    }
+ComputeThermoGPU::~ComputeThermoGPU() { }
 
 /*! Computes all thermodynamic properties of the system in one fell swoop, on the GPU.
  */

@@ -165,8 +165,7 @@ struct clusters_transform_args_t
                               const unsigned int _num_types,
                               const unsigned int _block_size)
         : d_postype(_d_postype), d_orientation(_d_orientation), d_image(_d_image), pivot(_pivot),
-          q(_q), line(_line), N(_N), box(_box), num_types(_num_types),
-          block_size(_block_size)
+          q(_q), line(_line), N(_N), box(_box), num_types(_num_types), block_size(_block_size)
         {
         }
 
@@ -563,39 +562,38 @@ void cluster_overlaps_launcher(const cluster_args_t& args,
         shared_bytes += extra_bytes;
         dim3 thread(overlap_threads, n_groups, tpp);
 
-            unsigned int nwork = args.N;
-            const unsigned int num_blocks = nwork / n_groups + 1;
+        unsigned int nwork = args.N;
+        const unsigned int num_blocks = nwork / n_groups + 1;
 
-            dim3 grid(num_blocks, 1, 1);
+        dim3 grid(num_blocks, 1, 1);
 
-            hipLaunchKernelGGL(
-                (hpmc_cluster_overlaps<Shape, launch_bounds_nonzero * MIN_BLOCK_SIZE>),
-                grid,
-                thread,
-                shared_bytes,
-                args.stream,
-                args.d_postype,
-                args.d_orientation,
-                args.d_trial_postype,
-                args.d_trial_orientation,
-                args.d_excell_idx,
-                args.d_excell_size,
-                args.excli,
-                args.d_adjacency,
-                args.d_nneigh,
-                args.maxn,
-                args.d_overflow,
-                args.num_types,
-                args.box,
-                args.ghost_width,
-                args.cell_dim,
-                args.ci,
-                args.d_check_overlaps,
-                args.overlap_idx,
-                params,
-                max_extra_bytes,
-                max_queue_size,
-                nwork);
+        hipLaunchKernelGGL((hpmc_cluster_overlaps<Shape, launch_bounds_nonzero * MIN_BLOCK_SIZE>),
+                           grid,
+                           thread,
+                           shared_bytes,
+                           args.stream,
+                           args.d_postype,
+                           args.d_orientation,
+                           args.d_trial_postype,
+                           args.d_trial_orientation,
+                           args.d_excell_idx,
+                           args.d_excell_size,
+                           args.excli,
+                           args.d_adjacency,
+                           args.d_nneigh,
+                           args.maxn,
+                           args.d_overflow,
+                           args.num_types,
+                           args.box,
+                           args.ghost_width,
+                           args.cell_dim,
+                           args.ci,
+                           args.d_check_overlaps,
+                           args.overlap_idx,
+                           params,
+                           max_extra_bytes,
+                           max_queue_size,
+                           nwork);
         }
     else
         {
@@ -704,25 +702,25 @@ void transform_particles(const clusters_transform_args_t& args,
 
     dim3 threads(run_block_size, 1, 1);
 
-        unsigned int nwork = args.N;
-        const unsigned int num_blocks = nwork / run_block_size + 1;
-        dim3 grid(num_blocks, 1, 1);
+    unsigned int nwork = args.N;
+    const unsigned int num_blocks = nwork / run_block_size + 1;
+    dim3 grid(num_blocks, 1, 1);
 
-        hipLaunchKernelGGL((kernel::transform_particles<Shape>),
-                           grid,
-                           threads,
-                           shared_bytes,
-                           0,
-                           args.d_postype,
-                           args.d_orientation,
-                           args.d_image,
-                           args.pivot,
-                           args.q,
-                           args.line,
-                           args.num_types,
-                           args.box,
-                           nwork,
-                           d_params);
+    hipLaunchKernelGGL((kernel::transform_particles<Shape>),
+                       grid,
+                       threads,
+                       shared_bytes,
+                       0,
+                       args.d_postype,
+                       args.d_orientation,
+                       args.d_image,
+                       args.pivot,
+                       args.q,
+                       args.line,
+                       args.num_types,
+                       args.box,
+                       nwork,
+                       d_params);
     }
 #endif
 

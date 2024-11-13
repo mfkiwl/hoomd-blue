@@ -59,8 +59,7 @@ __global__ void gpu_compute_thermo_hma_partial_sums(Scalar3* d_scratch,
                                                     unsigned int* d_body,
                                                     unsigned int* d_tag,
                                                     unsigned int* d_group_members,
-                                                    unsigned int work_size
-                                                    )
+                                                    unsigned int work_size)
     {
     // determine which particle this thread works on
     int group_idx = blockIdx.x * blockDim.x + threadIdx.x;
@@ -271,26 +270,25 @@ hipError_t gpu_compute_thermo_hma_partial(Scalar4* d_pos,
     assert(args.d_net_virial);
     assert(args.d_scratch);
 
-        unsigned int nwork = group_size;
+    unsigned int nwork = group_size;
 
-        dim3 grid(nwork / args.block_size + 1, 1, 1);
-        dim3 threads(args.block_size, 1, 1);
+    dim3 grid(nwork / args.block_size + 1, 1, 1);
+    dim3 threads(args.block_size, 1, 1);
 
-        const size_t shared_bytes = sizeof(Scalar3) * args.block_size;
+    const size_t shared_bytes = sizeof(Scalar3) * args.block_size;
 
-        gpu_compute_thermo_hma_partial_sums<<<grid, threads, shared_bytes>>>(args.d_scratch,
-                                                                             box,
-                                                                             args.d_net_force,
-                                                                             args.d_net_virial,
-                                                                             args.virial_pitch,
-                                                                             d_pos,
-                                                                             d_lattice_site,
-                                                                             d_image,
-                                                                             d_body,
-                                                                             d_tag,
-                                                                             d_group_members,
-                                                                             nwork
-                                                                             );
+    gpu_compute_thermo_hma_partial_sums<<<grid, threads, shared_bytes>>>(args.d_scratch,
+                                                                         box,
+                                                                         args.d_net_force,
+                                                                         args.d_net_virial,
+                                                                         args.virial_pitch,
+                                                                         d_pos,
+                                                                         d_lattice_site,
+                                                                         d_image,
+                                                                         d_body,
+                                                                         d_tag,
+                                                                         d_group_members,
+                                                                         nwork);
     return hipSuccess;
     }
 

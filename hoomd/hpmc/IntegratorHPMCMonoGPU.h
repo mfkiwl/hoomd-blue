@@ -198,7 +198,7 @@ template<class Shape> class IntegratorHPMCMonoGPU : public IntegratorHPMCMono<Sh
     //! For energy evaluation
     GlobalArray<Scalar> m_additive_cutoff; //!< Per-type additive cutoffs from patch potential
 
-    hipStream_t m_narrow_phase_stream; //!< Stream for narrow phase kernel 
+    hipStream_t m_narrow_phase_stream; //!< Stream for narrow phase kernel
 
 #ifdef ENABLE_MPI
     std::shared_ptr<MPIConfiguration> m_ntrial_comm; //!< Communicator for MPI parallel ntrial
@@ -570,19 +570,17 @@ template<class Shape> void IntegratorHPMCMonoGPU<Shape>::update(uint64_t timeste
 
                 this->m_exec_conf->setDevice();
 
-                    const unsigned int N = this->m_pdata->getN();
-                    if (N != 0)
-                        {
-                        hipMemcpyAsync(d_reject.data,
-                                       d_reject_out_of_cell.data,
-                                       sizeof(unsigned int) * N,
-                                       hipMemcpyDeviceToDevice);
-                        hipMemsetAsync(d_reject_out.data,
-                                       0,
-                                       sizeof(unsigned int) * N);
-                        }
-                    if (this->m_exec_conf->isCUDAErrorCheckingEnabled())
-                        CHECK_CUDA_ERROR();
+                const unsigned int N = this->m_pdata->getN();
+                if (N != 0)
+                    {
+                    hipMemcpyAsync(d_reject.data,
+                                   d_reject_out_of_cell.data,
+                                   sizeof(unsigned int) * N,
+                                   hipMemcpyDeviceToDevice);
+                    hipMemsetAsync(d_reject_out.data, 0, sizeof(unsigned int) * N);
+                    }
+                if (this->m_exec_conf->isCUDAErrorCheckingEnabled())
+                    CHECK_CUDA_ERROR();
                 }
 
             while (!converged)
@@ -901,8 +899,7 @@ void export_IntegratorHPMCMonoGPU(pybind11::module& m, const std::string& name)
     pybind11::class_<IntegratorHPMCMonoGPU<Shape>,
                      IntegratorHPMCMono<Shape>,
                      std::shared_ptr<IntegratorHPMCMonoGPU<Shape>>>(m, name.c_str())
-        .def(pybind11::init<std::shared_ptr<SystemDefinition>, std::shared_ptr<CellList>>())
-        ;
+        .def(pybind11::init<std::shared_ptr<SystemDefinition>, std::shared_ptr<CellList>>());
     }
 
     } // end namespace detail

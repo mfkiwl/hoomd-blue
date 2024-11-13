@@ -117,29 +117,29 @@ hipError_t gpu_nvt_rescale_step_one(Scalar4* d_pos,
 
     unsigned int run_block_size = min(block_size, max_block_size);
 
-       unsigned int nwork = group_size;
+    unsigned int nwork = group_size;
 
-        // setup the grid to run the kernel
-        dim3 grid((nwork / run_block_size) + 1, 1, 1);
-        dim3 threads(run_block_size, 1, 1);
+    // setup the grid to run the kernel
+    dim3 grid((nwork / run_block_size) + 1, 1, 1);
+    dim3 threads(run_block_size, 1, 1);
 
-        // run the kernel
-        hipLaunchKernelGGL((gpu_nvt_rescale_step_one_kernel),
-                           dim3(grid),
-                           dim3(threads),
-                           0,
-                           0,
-                           d_pos,
-                           d_vel,
-                           d_accel,
-                           d_image,
-                           d_group_members,
-                           nwork,
-                           box,
-                           rescale_factor,
-                           deltaT,
-                           use_limit,
-                           maximum_displacement);
+    // run the kernel
+    hipLaunchKernelGGL((gpu_nvt_rescale_step_one_kernel),
+                       dim3(grid),
+                       dim3(threads),
+                       0,
+                       0,
+                       d_pos,
+                       d_vel,
+                       d_accel,
+                       d_image,
+                       d_group_members,
+                       nwork,
+                       box,
+                       rescale_factor,
+                       deltaT,
+                       use_limit,
+                       maximum_displacement);
 
     return hipSuccess;
     }
@@ -216,25 +216,25 @@ hipError_t gpu_nvt_rescale_step_two(Scalar4* d_vel,
 
     unsigned int run_block_size = min(block_size, max_block_size);
 
-        unsigned int nwork = group_size;
+    unsigned int nwork = group_size;
 
-        // setup the grid to run the kernel
-        dim3 grid((nwork / run_block_size) + 1, 1, 1);
-        dim3 threads(run_block_size, 1, 1);
+    // setup the grid to run the kernel
+    dim3 grid((nwork / run_block_size) + 1, 1, 1);
+    dim3 threads(run_block_size, 1, 1);
 
-        // run the kernel
-        hipLaunchKernelGGL((gpu_nvt_rescale_step_two_kernel),
-                           dim3(grid),
-                           dim3(threads),
-                           0,
-                           0,
-                           d_vel,
-                           d_accel,
-                           d_group_members,
-                           nwork,
-                           d_net_force,
-                           deltaT,
-                           rescale_factor);
+    // run the kernel
+    hipLaunchKernelGGL((gpu_nvt_rescale_step_two_kernel),
+                       dim3(grid),
+                       dim3(threads),
+                       0,
+                       0,
+                       d_vel,
+                       d_accel,
+                       d_group_members,
+                       nwork,
+                       d_net_force,
+                       deltaT,
+                       rescale_factor);
 
     return hipSuccess;
     }

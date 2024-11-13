@@ -274,8 +274,8 @@ template<class T> class GlobalArray : public GPUArrayBase<T, GlobalArray<T>>
             if (this->m_exec_conf && this->m_exec_conf->isCUDAEnabled())
                 {
                 // synchronize with the GPU
-                    this->m_exec_conf->setDevice();
-                    hipDeviceSynchronize();
+                this->m_exec_conf->setDevice();
+                hipDeviceSynchronize();
                 }
 #endif
 
@@ -307,7 +307,7 @@ template<class T> class GlobalArray : public GPUArrayBase<T, GlobalArray<T>>
 #ifdef ENABLE_HIP
                 if (this->m_exec_conf && this->m_exec_conf->isCUDAEnabled())
                     {
-                // synchronize with the GPU
+                    // synchronize with the GPU
                     this->m_exec_conf->setDevice();
                     hipDeviceSynchronize();
                     }
@@ -531,9 +531,9 @@ template<class T> class GlobalArray : public GPUArrayBase<T, GlobalArray<T>>
 #ifdef ENABLE_HIP
         if (this->m_exec_conf && this->m_exec_conf->isCUDAEnabled())
             {
-                // synchronize with the GPU
-                    this->m_exec_conf->setDevice();
-                    hipDeviceSynchronize();
+            // synchronize with the GPU
+            this->m_exec_conf->setDevice();
+            hipDeviceSynchronize();
             }
 #endif
 
@@ -582,9 +582,9 @@ template<class T> class GlobalArray : public GPUArrayBase<T, GlobalArray<T>>
 #ifdef ENABLE_HIP
         if (this->m_exec_conf->isCUDAEnabled())
             {
-                // synchronize with the GPU
-                    this->m_exec_conf->setDevice();
-                    hipDeviceSynchronize();
+            // synchronize with the GPU
+            this->m_exec_conf->setDevice();
+            hipDeviceSynchronize();
             }
 #endif
 

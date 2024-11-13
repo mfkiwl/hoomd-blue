@@ -469,75 +469,75 @@ hipError_t gpu_rigid_force(Scalar4* d_force,
                            unsigned int block_size,
                            const hipDeviceProp_t& dev_prop,
                            bool zero_force,
-                          unsigned int n_local_bodies)
+                           unsigned int n_local_bodies)
     {
-        unsigned int nwork = n_local_bodies;
+    unsigned int nwork = n_local_bodies;
 
-        dim3 force_grid(nwork / n_bodies_per_block + 1, 1, 1);
+    dim3 force_grid(nwork / n_bodies_per_block + 1, 1, 1);
 
-        unsigned int max_block_size;
-        hipFuncAttributes attr;
-        hipFuncGetAttributes(&attr, (const void*)gpu_rigid_force_sliding_kernel);
-        max_block_size = attr.maxThreadsPerBlock;
+    unsigned int max_block_size;
+    hipFuncAttributes attr;
+    hipFuncGetAttributes(&attr, (const void*)gpu_rigid_force_sliding_kernel);
+    max_block_size = attr.maxThreadsPerBlock;
 
-        unsigned int run_block_size = max_block_size < block_size ? max_block_size : block_size;
+    unsigned int run_block_size = max_block_size < block_size ? max_block_size : block_size;
 
-        // round down to nearest power of two
-        unsigned int b = 1;
-        while (b * 2 <= run_block_size)
-            {
-            b *= 2;
-            }
-        run_block_size = b;
+    // round down to nearest power of two
+    unsigned int b = 1;
+    while (b * 2 <= run_block_size)
+        {
+        b *= 2;
+        }
+    run_block_size = b;
 
-        unsigned int window_size = run_block_size / n_bodies_per_block;
-        unsigned int thread_mask = window_size - 1;
+    unsigned int window_size = run_block_size / n_bodies_per_block;
+    unsigned int thread_mask = window_size - 1;
 
-        size_t shared_bytes = run_block_size * (sizeof(Scalar4) + sizeof(Scalar3))
-                              + n_bodies_per_block * (sizeof(Scalar4) + 3 * sizeof(unsigned int));
+    size_t shared_bytes = run_block_size * (sizeof(Scalar4) + sizeof(Scalar3))
+                          + n_bodies_per_block * (sizeof(Scalar4) + 3 * sizeof(unsigned int));
 
-        while (shared_bytes + attr.sharedSizeBytes >= dev_prop.sharedMemPerBlock)
-            {
-            // block size is power of two
-            run_block_size /= 2;
+    while (shared_bytes + attr.sharedSizeBytes >= dev_prop.sharedMemPerBlock)
+        {
+        // block size is power of two
+        run_block_size /= 2;
 
-            shared_bytes = run_block_size * (sizeof(Scalar4) + sizeof(Scalar3))
-                           + n_bodies_per_block * (sizeof(Scalar4) + 3 * sizeof(unsigned int));
+        shared_bytes = run_block_size * (sizeof(Scalar4) + sizeof(Scalar3))
+                       + n_bodies_per_block * (sizeof(Scalar4) + 3 * sizeof(unsigned int));
 
-            window_size = run_block_size / n_bodies_per_block;
-            thread_mask = window_size - 1;
-            }
+        window_size = run_block_size / n_bodies_per_block;
+        thread_mask = window_size - 1;
+        }
 
-        hipLaunchKernelGGL((gpu_rigid_force_sliding_kernel),
-                           dim3(force_grid),
-                           dim3(run_block_size),
-                           shared_bytes,
-                           0,
-                           d_force,
-                           d_torque,
-                           d_molecule_len,
-                           d_molecule_list,
-                           d_molecule_idx,
-                           d_rigid_center,
-                           molecule_indexer,
-                           d_postype,
-                           d_orientation,
-                           body_indexer,
-                           d_body_pos,
-                           d_body_orientation,
-                           d_body_len,
-                           d_body,
-                           d_tag,
-                           d_flag,
-                           d_net_force,
-                           d_net_torque,
-                           n_mol,
-                           N,
-                           window_size,
-                           thread_mask,
-                           n_bodies_per_block,
-                           zero_force,
-                           nwork);
+    hipLaunchKernelGGL((gpu_rigid_force_sliding_kernel),
+                       dim3(force_grid),
+                       dim3(run_block_size),
+                       shared_bytes,
+                       0,
+                       d_force,
+                       d_torque,
+                       d_molecule_len,
+                       d_molecule_list,
+                       d_molecule_idx,
+                       d_rigid_center,
+                       molecule_indexer,
+                       d_postype,
+                       d_orientation,
+                       body_indexer,
+                       d_body_pos,
+                       d_body_orientation,
+                       d_body_len,
+                       d_body,
+                       d_tag,
+                       d_flag,
+                       d_net_force,
+                       d_net_torque,
+                       n_mol,
+                       N,
+                       window_size,
+                       thread_mask,
+                       n_bodies_per_block,
+                       zero_force,
+                       nwork);
     return hipSuccess;
     }
 
@@ -565,71 +565,71 @@ hipError_t gpu_rigid_virial(Scalar* d_virial,
                             const hipDeviceProp_t& dev_prop,
                             unsigned int n_local_bodies)
     {
-        unsigned int nwork = n_local_bodies;
+    unsigned int nwork = n_local_bodies;
 
-        dim3 force_grid(nwork / n_bodies_per_block + 1, 1, 1);
+    dim3 force_grid(nwork / n_bodies_per_block + 1, 1, 1);
 
-        unsigned int max_block_size;
-        hipFuncAttributes attr;
-        hipFuncGetAttributes(&attr, (const void*)gpu_rigid_virial_sliding_kernel);
-        max_block_size = attr.maxThreadsPerBlock;
+    unsigned int max_block_size;
+    hipFuncAttributes attr;
+    hipFuncGetAttributes(&attr, (const void*)gpu_rigid_virial_sliding_kernel);
+    max_block_size = attr.maxThreadsPerBlock;
 
-        unsigned int run_block_size = max_block_size < block_size ? max_block_size : block_size;
+    unsigned int run_block_size = max_block_size < block_size ? max_block_size : block_size;
 
-        // round down to nearest power of two
-        unsigned int b = 1;
-        while (b * 2 <= run_block_size)
-            {
-            b *= 2;
-            }
-        run_block_size = b;
+    // round down to nearest power of two
+    unsigned int b = 1;
+    while (b * 2 <= run_block_size)
+        {
+        b *= 2;
+        }
+    run_block_size = b;
 
-        unsigned int window_size = run_block_size / n_bodies_per_block;
-        unsigned int thread_mask = window_size - 1;
+    unsigned int window_size = run_block_size / n_bodies_per_block;
+    unsigned int thread_mask = window_size - 1;
 
-        size_t shared_bytes = 6 * run_block_size * sizeof(Scalar)
-                              + n_bodies_per_block * (sizeof(Scalar4) + 3 * sizeof(unsigned int));
+    size_t shared_bytes = 6 * run_block_size * sizeof(Scalar)
+                          + n_bodies_per_block * (sizeof(Scalar4) + 3 * sizeof(unsigned int));
 
-        while (shared_bytes + attr.sharedSizeBytes >= dev_prop.sharedMemPerBlock)
-            {
-            // block size is power of two
-            run_block_size /= 2;
+    while (shared_bytes + attr.sharedSizeBytes >= dev_prop.sharedMemPerBlock)
+        {
+        // block size is power of two
+        run_block_size /= 2;
 
-            shared_bytes = 6 * run_block_size * sizeof(Scalar)
-                           + n_bodies_per_block * (sizeof(Scalar4) + 3 * sizeof(unsigned int));
+        shared_bytes = 6 * run_block_size * sizeof(Scalar)
+                       + n_bodies_per_block * (sizeof(Scalar4) + 3 * sizeof(unsigned int));
 
-            window_size = run_block_size / n_bodies_per_block;
-            thread_mask = window_size - 1;
-            }
+        window_size = run_block_size / n_bodies_per_block;
+        thread_mask = window_size - 1;
+        }
 
-        hipLaunchKernelGGL((gpu_rigid_virial_sliding_kernel),
-                           dim3(force_grid),
-                           dim3(run_block_size),
-                           shared_bytes,
-                           0,
-                           d_virial,
-                           d_molecule_len,
-                           d_molecule_list,
-                           d_molecule_idx,
-                           d_rigid_center,
-                           molecule_indexer,
-                           d_postype,
-                           d_orientation,
-                           body_indexer,
-                           d_body_pos,
-                           d_body_orientation,
-                           d_net_force,
-                           d_net_virial,
-                           d_body,
-                           d_tag,
-                           n_mol,
-                           N,
-                           net_virial_pitch,
-                           virial_pitch,
-                           window_size,
-                           thread_mask,
-                           n_bodies_per_block,
-                           nwork);
+    hipLaunchKernelGGL((gpu_rigid_virial_sliding_kernel),
+                       dim3(force_grid),
+                       dim3(run_block_size),
+                       shared_bytes,
+                       0,
+                       d_virial,
+                       d_molecule_len,
+                       d_molecule_list,
+                       d_molecule_idx,
+                       d_rigid_center,
+                       molecule_indexer,
+                       d_postype,
+                       d_orientation,
+                       body_indexer,
+                       d_body_pos,
+                       d_body_orientation,
+                       d_net_force,
+                       d_net_virial,
+                       d_body,
+                       d_tag,
+                       n_mol,
+                       N,
+                       net_virial_pitch,
+                       virial_pitch,
+                       window_size,
+                       thread_mask,
+                       n_bodies_per_block,
+                       nwork);
 
     return hipSuccess;
     }
@@ -761,32 +761,32 @@ void gpu_update_composite(unsigned int N,
         run_block_size = max_block_size;
         }
 
-        unsigned int nwork = N + n_ghost;
+    unsigned int nwork = N + n_ghost;
 
-        unsigned int n_blocks = nwork / run_block_size + 1;
-        hipLaunchKernelGGL((gpu_update_composite_kernel),
-                           dim3(n_blocks),
-                           dim3(run_block_size),
-                           0,
-                           0,
-                           N,
-                           nwork,
-                           n_ghost,
-                           d_lookup_center,
-                           d_postype,
-                           d_orientation,
-                           body_indexer,
-                           d_body_pos,
-                           d_body_orientation,
-                           d_body_types,
-                           d_body_len,
-                           d_molecule_order,
-                           d_molecule_len,
-                           d_molecule_idx,
-                           d_image,
-                           box,
-                           global_box,
-                           d_flag);
+    unsigned int n_blocks = nwork / run_block_size + 1;
+    hipLaunchKernelGGL((gpu_update_composite_kernel),
+                       dim3(n_blocks),
+                       dim3(run_block_size),
+                       0,
+                       0,
+                       N,
+                       nwork,
+                       n_ghost,
+                       d_lookup_center,
+                       d_postype,
+                       d_orientation,
+                       body_indexer,
+                       d_body_pos,
+                       d_body_orientation,
+                       d_body_types,
+                       d_body_len,
+                       d_molecule_order,
+                       d_molecule_len,
+                       d_molecule_idx,
+                       d_image,
+                       box,
+                       global_box,
+                       d_flag);
     }
 
 struct is_center

@@ -202,8 +202,7 @@ __global__ void gpu_compute_pressure_tensor_partial_sums(Scalar* d_scratch,
     if (threadIdx.x == 0)
         {
         for (unsigned int i = 0; i < 6; i++)
-            d_scratch[num_blocks * i + blockIdx.x]
-                = compute_pressure_tensor_sdata[i * blockDim.x];
+            d_scratch[num_blocks * i + blockIdx.x] = compute_pressure_tensor_sdata[i * blockDim.x];
         }
     }
 
@@ -540,17 +539,39 @@ hipError_t gpu_compute_thermo_partial(Scalar* d_properties,
 
     unsigned int nwork = group_size;
 
-        dim3 grid(nwork / args.block_size + 1, 1, 1);
-        dim3 threads(args.block_size, 1, 1);
+    dim3 grid(nwork / args.block_size + 1, 1, 1);
+    dim3 threads(args.block_size, 1, 1);
 
-        size_t shared_bytes = sizeof(Scalar3) * args.block_size;
+    size_t shared_bytes = sizeof(Scalar3) * args.block_size;
 
-        hipLaunchKernelGGL(gpu_compute_thermo_partial_sums,
+    hipLaunchKernelGGL(gpu_compute_thermo_partial_sums,
+                       dim3(grid),
+                       dim3(threads),
+                       shared_bytes,
+                       0,
+                       args.d_scratch,
+                       args.d_net_force,
+                       args.d_net_virial,
+                       args.virial_pitch,
+                       d_vel,
+                       d_body,
+                       d_tag,
+                       d_group_members,
+                       nwork);
+
+    if (compute_pressure_tensor)
+        {
+        assert(args.d_scratch_pressure_tensor);
+
+        shared_bytes = 6 * sizeof(Scalar) * args.block_size;
+
+        // run the kernel
+        hipLaunchKernelGGL(gpu_compute_pressure_tensor_partial_sums,
                            dim3(grid),
                            dim3(threads),
                            shared_bytes,
                            0,
-                           args.d_scratch,
+                           args.d_scratch_pressure_tensor,
                            args.d_net_force,
                            args.d_net_virial,
                            args.virial_pitch,
@@ -558,53 +579,31 @@ hipError_t gpu_compute_thermo_partial(Scalar* d_properties,
                            d_body,
                            d_tag,
                            d_group_members,
+                           nwork,
+                           args.n_blocks);
+        }
+
+    if (compute_rotational_energy)
+        {
+        assert(args.d_scratch_pressure_tensor);
+
+        shared_bytes = sizeof(Scalar) * args.block_size;
+
+        // run the kernel
+        hipLaunchKernelGGL(gpu_compute_rotational_ke_partial_sums,
+                           dim3(grid),
+                           dim3(threads),
+                           shared_bytes,
+                           0,
+                           args.d_scratch_rot,
+                           args.d_orientation,
+                           args.d_angmom,
+                           args.d_inertia,
+                           d_body,
+                           d_tag,
+                           d_group_members,
                            nwork);
-
-        if (compute_pressure_tensor)
-            {
-            assert(args.d_scratch_pressure_tensor);
-
-            shared_bytes = 6 * sizeof(Scalar) * args.block_size;
-
-            // run the kernel
-            hipLaunchKernelGGL(gpu_compute_pressure_tensor_partial_sums,
-                               dim3(grid),
-                               dim3(threads),
-                               shared_bytes,
-                               0,
-                               args.d_scratch_pressure_tensor,
-                               args.d_net_force,
-                               args.d_net_virial,
-                               args.virial_pitch,
-                               d_vel,
-                               d_body,
-                               d_tag,
-                               d_group_members,
-                               nwork,
-                               args.n_blocks);
-            }
-
-        if (compute_rotational_energy)
-            {
-            assert(args.d_scratch_pressure_tensor);
-
-            shared_bytes = sizeof(Scalar) * args.block_size;
-
-            // run the kernel
-            hipLaunchKernelGGL(gpu_compute_rotational_ke_partial_sums,
-                               dim3(grid),
-                               dim3(threads),
-                               shared_bytes,
-                               0,
-                               args.d_scratch_rot,
-                               args.d_orientation,
-                               args.d_angmom,
-                               args.d_inertia,
-                               d_body,
-                               d_tag,
-                               d_group_members,
-                               nwork);
-            }
+        }
 
     return hipSuccess;
     }

@@ -453,53 +453,53 @@ void narrow_phase_launcher(const hpmc_args_t& args,
 
         dim3 thread(overlap_threads, n_groups, tpp);
 
-            unsigned int nwork = args.N;
-            const unsigned int num_blocks = nwork / n_groups + 1;
+        unsigned int nwork = args.N;
+        const unsigned int num_blocks = nwork / n_groups + 1;
 
-            dim3 grid(num_blocks, 1, 1);
+        dim3 grid(num_blocks, 1, 1);
 
-            assert(args.d_postype);
-            assert(args.d_orientation);
-            assert(args.d_trial_postype);
-            assert(args.d_trial_orientation);
-            assert(args.d_excell_idx);
-            assert(args.d_excell_size);
-            assert(args.d_counters);
-            assert(args.d_check_overlaps);
-            assert(args.d_reject_in);
-            assert(args.d_reject_out);
-            assert(args.d_reject_out_of_cell);
+        assert(args.d_postype);
+        assert(args.d_orientation);
+        assert(args.d_trial_postype);
+        assert(args.d_trial_orientation);
+        assert(args.d_excell_idx);
+        assert(args.d_excell_size);
+        assert(args.d_counters);
+        assert(args.d_check_overlaps);
+        assert(args.d_reject_in);
+        assert(args.d_reject_out);
+        assert(args.d_reject_out_of_cell);
 
-            hipLaunchKernelGGL((hpmc_narrow_phase<Shape, launch_bounds_nonzero * MIN_BLOCK_SIZE>),
-                               grid,
-                               thread,
-                               shared_bytes,
-                               args.stream,
-                               args.d_postype,
-                               args.d_orientation,
-                               args.d_trial_postype,
-                               args.d_trial_orientation,
-                               args.d_trial_move_type,
-                               args.d_excell_idx,
-                               args.d_excell_size,
-                               args.excli,
-                               args.d_counters,
-                               args.num_types,
-                               args.box,
-                               args.ghost_width,
-                               args.cell_dim,
-                               args.ci,
-                               args.N,
-                               args.d_check_overlaps,
-                               args.overlap_idx,
-                               params,
-                               args.d_update_order_by_ptl,
-                               args.d_reject_in,
-                               args.d_reject_out,
-                               args.d_reject_out_of_cell,
-                               max_extra_bytes,
-                               max_queue_size,
-                               nwork);
+        hipLaunchKernelGGL((hpmc_narrow_phase<Shape, launch_bounds_nonzero * MIN_BLOCK_SIZE>),
+                           grid,
+                           thread,
+                           shared_bytes,
+                           args.stream,
+                           args.d_postype,
+                           args.d_orientation,
+                           args.d_trial_postype,
+                           args.d_trial_orientation,
+                           args.d_trial_move_type,
+                           args.d_excell_idx,
+                           args.d_excell_size,
+                           args.excli,
+                           args.d_counters,
+                           args.num_types,
+                           args.box,
+                           args.ghost_width,
+                           args.cell_dim,
+                           args.ci,
+                           args.N,
+                           args.d_check_overlaps,
+                           args.overlap_idx,
+                           params,
+                           args.d_update_order_by_ptl,
+                           args.d_reject_in,
+                           args.d_reject_out,
+                           args.d_reject_out_of_cell,
+                           max_extra_bytes,
+                           max_queue_size,
+                           nwork);
         }
     else
         {

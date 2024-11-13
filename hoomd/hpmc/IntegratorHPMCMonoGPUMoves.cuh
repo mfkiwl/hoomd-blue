@@ -380,25 +380,25 @@ void hpmc_update_pdata(const hpmc_update_args_t& args, const typename Shape::par
 
     unsigned int block_size = min(args.block_size, (unsigned int)max_block_size);
 
-        unsigned int nwork = args.N;
-        const unsigned int num_blocks = nwork / block_size + 1;
+    unsigned int nwork = args.N;
+    const unsigned int num_blocks = nwork / block_size + 1;
 
-        hipLaunchKernelGGL((kernel::hpmc_update_pdata<Shape>),
-                           dim3(num_blocks),
-                           dim3(block_size),
-                           0,
-                           0,
-                           args.d_postype,
-                           args.d_orientation,
-                           args.d_vel,
-                           args.d_counters,
-                           nwork,
-                           args.d_trial_postype,
-                           args.d_trial_orientation,
-                           args.d_trial_vel,
-                           args.d_trial_move_type,
-                           args.d_reject,
-                           params);
+    hipLaunchKernelGGL((kernel::hpmc_update_pdata<Shape>),
+                       dim3(num_blocks),
+                       dim3(block_size),
+                       0,
+                       0,
+                       args.d_postype,
+                       args.d_orientation,
+                       args.d_vel,
+                       args.d_counters,
+                       nwork,
+                       args.d_trial_postype,
+                       args.d_trial_orientation,
+                       args.d_trial_vel,
+                       args.d_trial_move_type,
+                       args.d_reject,
+                       params);
     }
 #endif
 

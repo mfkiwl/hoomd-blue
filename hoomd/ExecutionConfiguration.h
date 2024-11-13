@@ -158,8 +158,7 @@ class PYBIND11_EXPORT ExecutionConfiguration
 #ifdef ENABLE_ROCTRACER
         roctracer_start();
 #else
-        msg->warning() << "ROCtracer not enabled, profile start/stop not available"
-                       << std::endl;
+        msg->warning() << "ROCtracer not enabled, profile start/stop not available" << std::endl;
 #endif
 #endif
         }
@@ -174,8 +173,7 @@ class PYBIND11_EXPORT ExecutionConfiguration
 #ifdef ENABLE_ROCTRACER
         roctracer_stop();
 #else
-        msg->warning() << "ROCtracer not enabled, profile start/stop not available"
-                       << std::endl;
+        msg->warning() << "ROCtracer not enabled, profile start/stop not available" << std::endl;
 #endif
 #endif
         }
@@ -352,13 +350,13 @@ class PYBIND11_EXPORT ExecutionConfiguration
     };
 
 #if defined(ENABLE_HIP)
-#define CHECK_CUDA_ERROR()                                                            \
-        {                                                                             \
-        hipError_t err_sync = hipPeekAtLastError();                                   \
-        this->m_exec_conf->handleHIPError(err_sync, __FILE__, __LINE__);              \
-        this->m_exec_conf->setDevice();                                               \
-        hipError_t err_async = hipDeviceSynchronize();                                \
-        this->m_exec_conf->handleHIPError(err_async, __FILE__, __LINE__);             \
+#define CHECK_CUDA_ERROR()                                                \
+        {                                                                 \
+        hipError_t err_sync = hipPeekAtLastError();                       \
+        this->m_exec_conf->handleHIPError(err_sync, __FILE__, __LINE__);  \
+        this->m_exec_conf->setDevice();                                   \
+        hipError_t err_async = hipDeviceSynchronize();                    \
+        this->m_exec_conf->handleHIPError(err_async, __FILE__, __LINE__); \
         }
 #else
 #define CHECK_CUDA_ERROR()
