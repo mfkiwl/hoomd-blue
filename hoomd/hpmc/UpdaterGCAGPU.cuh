@@ -70,8 +70,7 @@ struct cluster_args_t
                    const quat<Scalar> _q,
                    const bool _update_shape_param,
                    const hipDeviceProp_t& _devprop,
-                   const GPUPartition& _gpu_partition,
-                   const hipStream_t* _streams)
+                   const hipStream_t& _stream)
         : d_postype(_d_postype), d_orientation(_d_orientation), ci(_ci), cell_dim(_cell_dim),
           ghost_width(_ghost_width), N(_N), num_types(_num_types), seed(_seed),
           d_check_overlaps(_check_overlaps), overlap_idx(_overlap_idx), timestep(_timestep),
@@ -80,7 +79,7 @@ struct cluster_args_t
           d_excell_idx(_d_excell_idx), d_excell_size(_d_excell_size), excli(_excli),
           d_adjacency(_d_adjacency), d_nneigh(_d_nneigh), maxn(_maxn), d_overflow(_d_overflow),
           dim(_dim), line(_line), pivot(_pivot), q(_q), update_shape_param(_update_shape_param),
-          devprop(_devprop), gpu_partition(_gpu_partition), streams(_streams) { };
+          devprop(_devprop), stream(_stream) { };
 
     const Scalar4* d_postype;             //!< postype array
     const Scalar4* d_orientation;         //!< orientation array
@@ -112,8 +111,7 @@ struct cluster_args_t
     const quat<Scalar> q;                 //!< Rotation
     const bool update_shape_param;        //!< True if shape parameters have changed
     const hipDeviceProp_t& devprop;       //!< CUDA device properties
-    const GPUPartition& gpu_partition;    //!< Multi-GPU partition
-    const hipStream_t* streams;           //!< kernel streams
+    const hipStream_t& stream;            //!< kernel stream
     };
 
 void __attribute__((visibility("default"))) connected_components(uint2* d_adj,
@@ -127,7 +125,7 @@ void __attribute__((visibility("default"))) connected_components(uint2* d_adj,
 void get_num_neighbors(const unsigned int* d_nneigh,
                        unsigned int* d_nneigh_scan,
                        unsigned int& nneigh_total,
-                       const GPUPartition& gpu_partition,
+                       const unsigned int N,
                        CachedAllocator& alloc);
 
 void concatenate_adjacency_list(const unsigned int* d_adjacency,
@@ -135,7 +133,7 @@ void concatenate_adjacency_list(const unsigned int* d_adjacency,
                                 const unsigned int* d_nneigh_scan,
                                 const unsigned int maxn,
                                 uint2* d_adjacency_out,
-                                const GPUPartition& gpu_partition,
+                                const unsigned int N,
                                 const unsigned int block_size,
                                 const unsigned int group_size);
 
@@ -149,7 +147,7 @@ void flip_clusters(Scalar4* d_postype,
                    float flip_probability,
                    uint16_t seed,
                    uint64_t timestep,
-                   const GPUPartition& gpu_partition,
+                   const unsigned int N,
                    const unsigned int block_size);
 
 //! Arguments to gpu::transform_particles
@@ -162,12 +160,12 @@ struct clusters_transform_args_t
                               const vec3<Scalar>& _pivot,
                               const quat<Scalar>& _q,
                               const bool _line,
-                              const GPUPartition& _gpu_partition,
+                              const unsigned int _N,
                               const BoxDim& _box,
                               const unsigned int _num_types,
                               const unsigned int _block_size)
         : d_postype(_d_postype), d_orientation(_d_orientation), d_image(_d_image), pivot(_pivot),
-          q(_q), line(_line), gpu_partition(_gpu_partition), box(_box), num_types(_num_types),
+          q(_q), line(_line), N(_N), box(_box), num_types(_num_types),
           block_size(_block_size)
         {
         }
@@ -178,7 +176,7 @@ struct clusters_transform_args_t
     const vec3<Scalar> pivot;
     const quat<Scalar> q;
     const bool line;
-    const GPUPartition& gpu_partition;
+    const unsigned int N;
     const BoxDim box;
     const unsigned int num_types;
     const unsigned int block_size;
@@ -221,7 +219,6 @@ __launch_bounds__(max_threads)
                                           const typename Shape::param_type* d_params,
                                           const unsigned int max_extra_bytes,
                                           const unsigned int max_queue_size,
-                                          const unsigned int work_offset,
                                           const unsigned int nwork)
     {
     __shared__ unsigned int s_queue_size;
@@ -292,7 +289,6 @@ __launch_bounds__(max_threads)
     unsigned int idx = blockIdx.x * n_groups + group;
     if (idx >= nwork)
         active = false;
-    idx += work_offset;
 
     unsigned int my_cell;
 
@@ -567,11 +563,7 @@ void cluster_overlaps_launcher(const cluster_args_t& args,
         shared_bytes += extra_bytes;
         dim3 thread(overlap_threads, n_groups, tpp);
 
-        for (int idev = args.gpu_partition.getNumActiveGPUs() - 1; idev >= 0; --idev)
-            {
-            auto range = args.gpu_partition.getRangeAndSetGPU(idev);
-
-            unsigned int nwork = range.second - range.first;
+            unsigned int nwork = args.N;
             const unsigned int num_blocks = nwork / n_groups + 1;
 
             dim3 grid(num_blocks, 1, 1);
@@ -581,7 +573,7 @@ void cluster_overlaps_launcher(const cluster_args_t& args,
                 grid,
                 thread,
                 shared_bytes,
-                args.streams[idev],
+                args.stream,
                 args.d_postype,
                 args.d_orientation,
                 args.d_trial_postype,
@@ -603,9 +595,7 @@ void cluster_overlaps_launcher(const cluster_args_t& args,
                 params,
                 max_extra_bytes,
                 max_queue_size,
-                range.first,
                 nwork);
-            }
         }
     else
         {
@@ -626,7 +616,6 @@ __global__ void transform_particles(Scalar4* d_postype,
                                     const unsigned int num_types,
                                     const BoxDim box,
                                     const unsigned int nwork,
-                                    const unsigned int work_offset,
                                     const typename Shape::param_type* d_params)
     {
     unsigned int work_idx = threadIdx.x + blockDim.x * blockIdx.x;
@@ -653,7 +642,7 @@ __global__ void transform_particles(Scalar4* d_postype,
 
     if (work_idx >= nwork)
         return;
-    unsigned int i = work_idx + work_offset;
+    unsigned int i = work_idx;
 
     vec3<Scalar> new_pos(d_postype[i]);
 
@@ -715,11 +704,7 @@ void transform_particles(const clusters_transform_args_t& args,
 
     dim3 threads(run_block_size, 1, 1);
 
-    for (int idev = args.gpu_partition.getNumActiveGPUs() - 1; idev >= 0; --idev)
-        {
-        auto range = args.gpu_partition.getRangeAndSetGPU(idev);
-
-        unsigned int nwork = range.second - range.first;
+        unsigned int nwork = args.N;
         const unsigned int num_blocks = nwork / run_block_size + 1;
         dim3 grid(num_blocks, 1, 1);
 
@@ -737,9 +722,7 @@ void transform_particles(const clusters_transform_args_t& args,
                            args.num_types,
                            args.box,
                            nwork,
-                           range.first,
                            d_params);
-        }
     }
 #endif
 

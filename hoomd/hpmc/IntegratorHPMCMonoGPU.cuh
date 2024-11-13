@@ -69,7 +69,6 @@ __launch_bounds__(max_threads)
                                       const unsigned int* d_reject_out_of_cell,
                                       const unsigned int max_extra_bytes,
                                       const unsigned int max_queue_size,
-                                      const unsigned int work_offset,
                                       const unsigned int nwork)
     {
     __shared__ unsigned int s_overlap_checks;
@@ -143,7 +142,6 @@ __launch_bounds__(max_threads)
     unsigned int idx = blockIdx.x * n_groups + group;
     if (idx >= nwork)
         active = false;
-    idx += work_offset;
 
     unsigned int my_cell;
 
@@ -455,11 +453,7 @@ void narrow_phase_launcher(const hpmc_args_t& args,
 
         dim3 thread(overlap_threads, n_groups, tpp);
 
-        for (int idev = args.gpu_partition.getNumActiveGPUs() - 1; idev >= 0; --idev)
-            {
-            auto range = args.gpu_partition.getRangeAndSetGPU(idev);
-
-            unsigned int nwork = range.second - range.first;
+            unsigned int nwork = args.N;
             const unsigned int num_blocks = nwork / n_groups + 1;
 
             dim3 grid(num_blocks, 1, 1);
@@ -480,7 +474,7 @@ void narrow_phase_launcher(const hpmc_args_t& args,
                                grid,
                                thread,
                                shared_bytes,
-                               args.streams[idev],
+                               args.stream,
                                args.d_postype,
                                args.d_orientation,
                                args.d_trial_postype,
@@ -489,7 +483,7 @@ void narrow_phase_launcher(const hpmc_args_t& args,
                                args.d_excell_idx,
                                args.d_excell_size,
                                args.excli,
-                               args.d_counters + idev * args.counters_pitch,
+                               args.d_counters,
                                args.num_types,
                                args.box,
                                args.ghost_width,
@@ -505,9 +499,7 @@ void narrow_phase_launcher(const hpmc_args_t& args,
                                args.d_reject_out_of_cell,
                                max_extra_bytes,
                                max_queue_size,
-                               range.first,
                                nwork);
-            }
         }
     else
         {

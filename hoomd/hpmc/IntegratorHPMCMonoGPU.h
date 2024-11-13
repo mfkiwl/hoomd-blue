@@ -158,20 +158,6 @@ template<class Shape> class IntegratorHPMCMonoGPU : public IntegratorHPMCMono<Sh
     //! Take one timestep forward
     virtual void update(uint64_t timestep);
 
-#ifdef ENABLE_MPI
-    void setNtrialCommunicator(std::shared_ptr<MPIConfiguration> mpi_conf)
-        {
-        m_ntrial_comm = mpi_conf;
-        }
-#endif
-
-#ifdef ENABLE_MPI
-    void setParticleCommunicator(std::shared_ptr<MPIConfiguration> mpi_conf)
-        {
-        m_particle_comm = mpi_conf;
-        }
-#endif
-
     protected:
     std::shared_ptr<CellList> m_cl; //!< Cell list
     uint3 m_last_dim;               //!< Dimensions of the cell list on the last call to update
@@ -212,20 +198,12 @@ template<class Shape> class IntegratorHPMCMonoGPU : public IntegratorHPMCMono<Sh
     //! For energy evaluation
     GlobalArray<Scalar> m_additive_cutoff; //!< Per-type additive cutoffs from patch potential
 
-    GlobalArray<hpmc_counters_t> m_counters; //!< Per-device counters
-
-    std::vector<hipStream_t> m_narrow_phase_streams; //!< Stream for narrow phase kernel, per device
-
-    // the phase1 and phase2 kernels are for ntrial > 0
-    std::vector<std::vector<hipEvent_t>>
-        m_sync; //!< Synchronization event for every stream and device
-    std::vector<std::vector<hipEvent_t>> m_sync_phase1; //!< Synchronization event for phase1 stream
-    std::vector<std::vector<hipEvent_t>> m_sync_phase2; //!< Synchronization event for phase2 stream
+    hipStream_t m_narrow_phase_stream; //!< Stream for narrow phase kernel 
 
 #ifdef ENABLE_MPI
     std::shared_ptr<MPIConfiguration> m_ntrial_comm; //!< Communicator for MPI parallel ntrial
     std::shared_ptr<MPIConfiguration>
-        m_particle_comm; //!< Communicator for MPI particle decomposition
+        m_particl_totalomm; //!< Communicator for MPI particle decomposition
 #endif
 
     //! Set up excell_list
@@ -233,9 +211,6 @@ template<class Shape> class IntegratorHPMCMonoGPU : public IntegratorHPMCMono<Sh
 
     //! Set the nominal width appropriate for looped moves
     virtual void updateCellWidth();
-
-    //! Update GPU memory hints
-    virtual void updateGPUAdvice();
     };
 
 template<class Shape>
@@ -247,9 +222,6 @@ IntegratorHPMCMonoGPU<Shape>::IntegratorHPMCMonoGPU(std::shared_ptr<SystemDefini
     this->m_cl->setComputeTypeBody(false);
     this->m_cl->setFlagType();
     this->m_cl->setComputeIdx(true);
-
-    // with multiple GPUs, request a cell list per device
-    m_cl->setPerDevice(this->m_exec_conf->allConcurrentManagedAccess());
 
     // set last dim to a bogus value so that it will re-init on the first call
     m_last_dim = make_uint3(0xffffffff, 0xffffffff, 0xffffffff);
@@ -335,28 +307,6 @@ IntegratorHPMCMonoGPU<Shape>::IntegratorHPMCMonoGPU(std::shared_ptr<SystemDefini
     GlobalArray<unsigned int>(1, this->m_exec_conf).swap(m_condition);
     TAG_ALLOCATION(m_condition);
 
-#if defined(__HIP_PLATFORM_NVCC__)
-    if (this->m_exec_conf->allConcurrentManagedAccess())
-        {
-        // set memory hints
-        auto gpu_map = this->m_exec_conf->getGPUIds();
-        cudaMemAdvise(m_condition.get(),
-                      sizeof(unsigned int),
-                      cudaMemAdviseSetPreferredLocation,
-                      cudaCpuDeviceId);
-        cudaMemPrefetchAsync(m_condition.get(), sizeof(unsigned int), cudaCpuDeviceId);
-
-        for (unsigned int idev = 0; idev < this->m_exec_conf->getNumActiveGPUs(); ++idev)
-            {
-            cudaMemAdvise(m_condition.get(),
-                          sizeof(unsigned int),
-                          cudaMemAdviseSetAccessedBy,
-                          gpu_map[idev]);
-            }
-        CHECK_CUDA_ERROR();
-        }
-#endif
-
     GlobalArray<unsigned int> excell_size(0, this->m_exec_conf);
     m_excell_size.swap(excell_size);
     TAG_ALLOCATION(m_excell_size);
@@ -365,69 +315,8 @@ IntegratorHPMCMonoGPU<Shape>::IntegratorHPMCMonoGPU(std::shared_ptr<SystemDefini
     m_excell_idx.swap(excell_idx);
     TAG_ALLOCATION(m_excell_idx);
 
-    //! One counter per GPU, separated by an entire memory page
-    unsigned int pitch
-        = (unsigned int)((getpagesize() + sizeof(hpmc_counters_t) - 1) / sizeof(hpmc_counters_t));
-    GlobalArray<hpmc_counters_t>(pitch, this->m_exec_conf->getNumActiveGPUs(), this->m_exec_conf)
-        .swap(m_counters);
-    TAG_ALLOCATION(m_counters);
-
-#ifdef __HIP_PLATFORM_NVCC__
-    if (this->m_exec_conf->allConcurrentManagedAccess())
-        {
-        // set memory hints
-        auto gpu_map = this->m_exec_conf->getGPUIds();
-        for (unsigned int idev = 0; idev < this->m_exec_conf->getNumActiveGPUs(); ++idev)
-            {
-            cudaMemAdvise(m_counters.get() + idev * m_counters.getPitch(),
-                          sizeof(hpmc_counters_t) * m_counters.getPitch(),
-                          cudaMemAdviseSetPreferredLocation,
-                          gpu_map[idev]);
-            cudaMemPrefetchAsync(m_counters.get() + idev * m_counters.getPitch(),
-                                 sizeof(hpmc_counters_t) * m_counters.getPitch(),
-                                 gpu_map[idev]);
-            }
-        CHECK_CUDA_ERROR();
-        }
-#endif
-
-    m_narrow_phase_streams.resize(this->m_exec_conf->getNumActiveGPUs());
-    for (int idev = this->m_exec_conf->getNumActiveGPUs() - 1; idev >= 0; --idev)
-        {
-        hipSetDevice(this->m_exec_conf->getGPUIds()[idev]);
-        hipStreamCreate(&m_narrow_phase_streams[idev]);
-        }
-
-    // synchronization events
-    unsigned int ntypes = this->m_pdata->getNTypes();
-    m_sync.resize(ntypes);
-    m_sync_phase1.resize(ntypes);
-    m_sync_phase2.resize(ntypes);
-    for (unsigned int itype = 0; itype < this->m_pdata->getNTypes(); ++itype)
-        {
-        m_sync[itype].resize(this->m_exec_conf->getNumActiveGPUs());
-        m_sync_phase1[itype].resize(this->m_exec_conf->getNumActiveGPUs());
-        m_sync_phase2[itype].resize(this->m_exec_conf->getNumActiveGPUs());
-        for (int idev = this->m_exec_conf->getNumActiveGPUs() - 1; idev >= 0; --idev)
-            {
-            hipSetDevice(this->m_exec_conf->getGPUIds()[idev]);
-            hipEventCreateWithFlags(&m_sync[itype][idev], hipEventDisableTiming);
-            hipEventCreateWithFlags(&m_sync_phase1[itype][idev], hipEventDisableTiming);
-            hipEventCreateWithFlags(&m_sync_phase2[itype][idev], hipEventDisableTiming);
-            }
-        }
-
-#ifdef __HIP_PLATFORM_NVCC__
-    // memory hint for overlap matrix
-    if (this->m_exec_conf->allConcurrentManagedAccess())
-        {
-        cudaMemAdvise(this->m_overlaps.get(),
-                      sizeof(unsigned int) * this->m_overlaps.getNumElements(),
-                      cudaMemAdviseSetReadMostly,
-                      0);
-        CHECK_CUDA_ERROR();
-        }
-#endif
+    this->m_exec_conf->setDevice();
+    hipStreamCreate(&m_narrow_phase_stream);
 
     // patch
     GlobalArray<Scalar>(this->m_pdata->getNTypes(), this->m_exec_conf).swap(m_additive_cutoff);
@@ -436,114 +325,8 @@ IntegratorHPMCMonoGPU<Shape>::IntegratorHPMCMonoGPU(std::shared_ptr<SystemDefini
 
 template<class Shape> IntegratorHPMCMonoGPU<Shape>::~IntegratorHPMCMonoGPU()
     {
-    for (auto s : m_sync)
-        {
-        for (int idev = this->m_exec_conf->getNumActiveGPUs() - 1; idev >= 0; --idev)
-            {
-            hipSetDevice(this->m_exec_conf->getGPUIds()[idev]);
-            hipEventDestroy(s[idev]);
-            }
-        }
-
-    for (auto s : m_sync_phase1)
-        {
-        for (int idev = this->m_exec_conf->getNumActiveGPUs() - 1; idev >= 0; --idev)
-            {
-            hipSetDevice(this->m_exec_conf->getGPUIds()[idev]);
-            hipEventDestroy(s[idev]);
-            }
-        }
-
-    for (auto s : m_sync_phase2)
-        {
-        for (int idev = this->m_exec_conf->getNumActiveGPUs() - 1; idev >= 0; --idev)
-            {
-            hipSetDevice(this->m_exec_conf->getGPUIds()[idev]);
-            hipEventDestroy(s[idev]);
-            }
-        }
-
-    for (int idev = this->m_exec_conf->getNumActiveGPUs() - 1; idev >= 0; --idev)
-        {
-        hipSetDevice(this->m_exec_conf->getGPUIds()[idev]);
-        hipStreamDestroy(m_narrow_phase_streams[idev]);
-        }
-    }
-
-template<class Shape> void IntegratorHPMCMonoGPU<Shape>::updateGPUAdvice()
-    {
-#ifdef __HIP_PLATFORM_NVCC__
-    // update memory hints
-    if (this->m_exec_conf->allConcurrentManagedAccess())
-        {
-        // set memory hints
-        auto gpu_map = this->m_exec_conf->getGPUIds();
-        for (unsigned int idev = 0; idev < this->m_exec_conf->getNumActiveGPUs(); ++idev)
-            {
-            auto range = this->m_pdata->getGPUPartition().getRange(idev);
-
-            unsigned int nelem = range.second - range.first;
-            if (nelem == 0)
-                continue;
-
-            cudaMemAdvise(m_trial_postype.get() + range.first,
-                          sizeof(Scalar4) * nelem,
-                          cudaMemAdviseSetPreferredLocation,
-                          gpu_map[idev]);
-            cudaMemPrefetchAsync(m_trial_postype.get() + range.first,
-                                 sizeof(Scalar4) * nelem,
-                                 gpu_map[idev]);
-
-            cudaMemAdvise(m_trial_move_type.get() + range.first,
-                          sizeof(unsigned int) * nelem,
-                          cudaMemAdviseSetPreferredLocation,
-                          gpu_map[idev]);
-            cudaMemPrefetchAsync(m_trial_move_type.get() + range.first,
-                                 sizeof(unsigned int) * nelem,
-                                 gpu_map[idev]);
-
-            cudaMemAdvise(m_reject.get() + range.first,
-                          sizeof(unsigned int) * nelem,
-                          cudaMemAdviseSetPreferredLocation,
-                          gpu_map[idev]);
-            cudaMemPrefetchAsync(m_reject.get() + range.first,
-                                 sizeof(unsigned int) * nelem,
-                                 gpu_map[idev]);
-
-            cudaMemAdvise(m_trial_orientation.get() + range.first,
-                          sizeof(Scalar4) * nelem,
-                          cudaMemAdviseSetPreferredLocation,
-                          gpu_map[idev]);
-            cudaMemPrefetchAsync(m_trial_orientation.get() + range.first,
-                                 sizeof(Scalar4) * nelem,
-                                 gpu_map[idev]);
-
-            cudaMemAdvise(m_trial_vel.get() + range.first,
-                          sizeof(Scalar4) * nelem,
-                          cudaMemAdviseSetPreferredLocation,
-                          gpu_map[idev]);
-            cudaMemPrefetchAsync(m_trial_vel.get() + range.first,
-                                 sizeof(Scalar4) * nelem,
-                                 gpu_map[idev]);
-
-            cudaMemAdvise(m_reject_out.get() + range.first,
-                          sizeof(unsigned int) * nelem,
-                          cudaMemAdviseSetPreferredLocation,
-                          gpu_map[idev]);
-            cudaMemPrefetchAsync(m_reject_out.get() + range.first,
-                                 sizeof(unsigned int) * nelem,
-                                 gpu_map[idev]);
-
-            cudaMemAdvise(m_reject_out_of_cell.get() + range.first,
-                          sizeof(unsigned int) * nelem,
-                          cudaMemAdviseSetPreferredLocation,
-                          gpu_map[idev]);
-            cudaMemPrefetchAsync(m_reject_out_of_cell.get() + range.first,
-                                 sizeof(unsigned int) * nelem,
-                                 gpu_map[idev]);
-            }
-        }
-#endif
+    this->m_exec_conf->setDevice();
+    hipStreamDestroy(m_narrow_phase_stream);
     }
 
 template<class Shape> void IntegratorHPMCMonoGPU<Shape>::update(uint64_t timestep)
@@ -611,8 +394,6 @@ template<class Shape> void IntegratorHPMCMonoGPU<Shape>::update(uint64_t timeste
         // resize some arrays
         bool resized = m_reject.getNumElements() < this->m_pdata->getMaxN();
 
-        bool update_gpu_advice = false;
-
         if (resized)
             {
             m_reject.resize(this->m_pdata->getMaxN());
@@ -622,12 +403,7 @@ template<class Shape> void IntegratorHPMCMonoGPU<Shape>::update(uint64_t timeste
             m_trial_orientation.resize(this->m_pdata->getMaxN());
             m_trial_vel.resize(this->m_pdata->getMaxN());
             m_trial_move_type.resize(this->m_pdata->getMaxN());
-
-            update_gpu_advice = true;
             }
-
-        if (update_gpu_advice)
-            updateGPUAdvice();
 
         m_update_order.resize(this->m_pdata->getN());
 
@@ -641,36 +417,6 @@ template<class Shape> void IntegratorHPMCMonoGPU<Shape>::update(uint64_t timeste
         ArrayHandle<unsigned int> d_cell_adj(this->m_cl->getCellAdjArray(),
                                              access_location::device,
                                              access_mode::read);
-
-        // per-device cell list data
-        const ArrayHandle<unsigned int>& d_cell_size_per_device
-            = m_cl->getPerDevice() ? ArrayHandle<unsigned int>(m_cl->getCellSizeArrayPerDevice(),
-                                                               access_location::device,
-                                                               access_mode::read)
-                                   : ArrayHandle<unsigned int>(GlobalArray<unsigned int>(),
-                                                               access_location::device,
-                                                               access_mode::read);
-        const ArrayHandle<unsigned int>& d_cell_idx_per_device
-            = m_cl->getPerDevice() ? ArrayHandle<unsigned int>(m_cl->getIndexArrayPerDevice(),
-                                                               access_location::device,
-                                                               access_mode::read)
-                                   : ArrayHandle<unsigned int>(GlobalArray<unsigned int>(),
-                                                               access_location::device,
-                                                               access_mode::read);
-
-        unsigned int ngpu = this->m_exec_conf->getNumActiveGPUs();
-        if (ngpu > 1)
-            {
-            // reset per-device counters
-            ArrayHandle<hpmc_counters_t> d_counters_per_device(this->m_counters,
-                                                               access_location::device,
-                                                               access_mode::overwrite);
-            hipMemset(d_counters_per_device.data,
-                      0,
-                      sizeof(hpmc_counters_t) * this->m_counters.getNumElements());
-            if (this->m_exec_conf->isCUDAErrorCheckingEnabled())
-                CHECK_CUDA_ERROR();
-            }
 
         // access the parameters and interaction matrix
         auto& params = this->getParams();
@@ -705,13 +451,12 @@ template<class Shape> void IntegratorHPMCMonoGPU<Shape>::update(uint64_t timeste
         gpu::hpmc_excell(d_excell_idx.data,
                          d_excell_size.data,
                          m_excell_list_indexer,
-                         m_cl->getPerDevice() ? d_cell_idx_per_device.data : d_cell_idx.data,
-                         m_cl->getPerDevice() ? d_cell_size_per_device.data : d_cell_size.data,
+                         d_cell_idx.data,
+                         d_cell_size.data,
                          d_cell_adj.data,
                          this->m_cl->getCellIndexer(),
                          this->m_cl->getCellListIndexer(),
                          this->m_cl->getCellAdjIndexer(),
-                         this->m_exec_conf->getNumActiveGPUs(),
                          this->m_tuner_excell_block_size->getParam()[0]);
         if (this->m_exec_conf->isCUDAErrorCheckingEnabled())
             CHECK_CUDA_ERROR();
@@ -756,16 +501,13 @@ template<class Shape> void IntegratorHPMCMonoGPU<Shape>::update(uint64_t timeste
                 ArrayHandle<hpmc_counters_t> d_counters(this->m_count_total,
                                                         access_location::device,
                                                         access_mode::read);
-                ArrayHandle<hpmc_counters_t> d_counters_per_device(this->m_counters,
-                                                                   access_location::device,
-                                                                   access_mode::read);
 
                 // fill the parameter structure for the GPU kernels
                 gpu::hpmc_args_t args(d_postype.data,
                                       d_orientation.data,
                                       d_vel.data,
-                                      ngpu > 1 ? d_counters_per_device.data : d_counters.data,
-                                      (unsigned int)this->m_counters.getPitch(),
+                                      d_counters.data,
+                                      (unsigned int)this->m_count_total.getPitch(),
                                       this->m_cl->getCellIndexer(),
                                       this->m_cl->getDim(),
                                       ghost_width,
@@ -799,7 +541,6 @@ template<class Shape> void IntegratorHPMCMonoGPU<Shape>::update(uint64_t timeste
                                       0, // d_reject_in
                                       0, // d_reject_out
                                       this->m_exec_conf->dev_prop,
-                                      this->m_pdata->getGPUPartition(),
                                       0);
 
                 // propose trial moves, \sa gpu::kernel::hpmc_moves
@@ -827,26 +568,21 @@ template<class Shape> void IntegratorHPMCMonoGPU<Shape>::update(uint64_t timeste
                                                        access_location::device,
                                                        access_mode::overwrite);
 
-                this->m_exec_conf->beginMultiGPU();
-                for (int idev = this->m_exec_conf->getNumActiveGPUs() - 1; idev >= 0; --idev)
-                    {
-                    hipSetDevice(this->m_exec_conf->getGPUIds()[idev]);
+                this->m_exec_conf->setDevice();
 
-                    auto range = this->m_pdata->getGPUPartition().getRange(idev);
-                    if (range.second - range.first != 0)
+                    const unsigned int N = this->m_pdata->getN();
+                    if (N != 0)
                         {
-                        hipMemcpyAsync(d_reject.data + range.first,
-                                       d_reject_out_of_cell.data + range.first,
-                                       sizeof(unsigned int) * (range.second - range.first),
+                        hipMemcpyAsync(d_reject.data,
+                                       d_reject_out_of_cell.data,
+                                       sizeof(unsigned int) * N,
                                        hipMemcpyDeviceToDevice);
-                        hipMemsetAsync(d_reject_out.data + range.first,
+                        hipMemsetAsync(d_reject_out.data,
                                        0,
-                                       sizeof(unsigned int) * (range.second - range.first));
+                                       sizeof(unsigned int) * N);
                         }
                     if (this->m_exec_conf->isCUDAErrorCheckingEnabled())
                         CHECK_CUDA_ERROR();
-                    }
-                this->m_exec_conf->endMultiGPU();
                 }
 
             while (!converged)
@@ -907,16 +643,13 @@ template<class Shape> void IntegratorHPMCMonoGPU<Shape>::update(uint64_t timeste
                 ArrayHandle<hpmc_counters_t> d_counters(this->m_count_total,
                                                         access_location::device,
                                                         access_mode::readwrite);
-                ArrayHandle<hpmc_counters_t> d_counters_per_device(this->m_counters,
-                                                                   access_location::device,
-                                                                   access_mode::readwrite);
 
                 // fill the parameter structure for the GPU kernels
                 gpu::hpmc_args_t args(d_postype.data,
                                       d_orientation.data,
                                       d_vel.data,
-                                      ngpu > 1 ? d_counters_per_device.data : d_counters.data,
-                                      (unsigned int)this->m_counters.getPitch(),
+                                      d_counters.data,
+                                      (unsigned int)this->m_count_total.getPitch(),
                                       this->m_cl->getCellIndexer(),
                                       this->m_cl->getDim(),
                                       ghost_width,
@@ -950,15 +683,12 @@ template<class Shape> void IntegratorHPMCMonoGPU<Shape>::update(uint64_t timeste
                                       d_reject.data,
                                       d_reject_out.data,
                                       this->m_exec_conf->dev_prop,
-                                      this->m_pdata->getGPUPartition(),
-                                      &m_narrow_phase_streams.front());
+                                      m_narrow_phase_stream);
 
                 /*
                  *  check overlaps, new configuration simultaneously against the old and the new
                  * configuration
                  */
-
-                this->m_exec_conf->beginMultiGPU();
 
                 m_tuner_narrow->begin();
                 auto param = m_tuner_narrow->getParam();
@@ -987,19 +717,17 @@ template<class Shape> void IntegratorHPMCMonoGPU<Shape>::update(uint64_t timeste
                                                                 access_location::device,
                                                                 access_mode::read);
 
-                    this->m_exec_conf->beginMultiGPU();
                     m_tuner_convergence->begin();
                     gpu::hpmc_check_convergence(d_trial_move_type.data,
                                                 d_reject_out_of_cell.data,
                                                 d_reject.data,
                                                 d_reject_out.data,
                                                 d_condition.data,
-                                                this->m_pdata->getGPUPartition(),
+                                                this->m_pdata->getN(),
                                                 m_tuner_convergence->getParam()[0]);
                     if (this->m_exec_conf->isCUDAErrorCheckingEnabled())
                         CHECK_CUDA_ERROR();
                     m_tuner_convergence->end();
-                    this->m_exec_conf->endMultiGPU();
                     }
 
                 // flip reject flags
@@ -1044,9 +772,6 @@ template<class Shape> void IntegratorHPMCMonoGPU<Shape>::update(uint64_t timeste
                 ArrayHandle<hpmc_counters_t> d_counters(this->m_count_total,
                                                         access_location::device,
                                                         access_mode::readwrite);
-                ArrayHandle<hpmc_counters_t> d_counters_per_device(this->m_counters,
-                                                                   access_location::device,
-                                                                   access_mode::readwrite);
 
                 // flags
                 ArrayHandle<unsigned int> d_reject(m_reject,
@@ -1054,15 +779,13 @@ template<class Shape> void IntegratorHPMCMonoGPU<Shape>::update(uint64_t timeste
                                                    access_mode::read);
 
                 // Update the particle data and statistics
-                this->m_exec_conf->beginMultiGPU();
                 m_tuner_update_pdata->begin();
                 gpu::hpmc_update_args_t args(d_postype.data,
                                              d_orientation.data,
                                              d_vel.data,
-                                             ngpu > 1 ? d_counters_per_device.data
-                                                      : d_counters.data,
-                                             (unsigned int)this->m_counters.getPitch(),
-                                             this->m_pdata->getGPUPartition(),
+                                             d_counters.data,
+                                             (unsigned int)this->m_count_total.getPitch(),
+                                             this->m_pdata->getN(),
                                              d_trial_postype.data,
                                              d_trial_orientation.data,
                                              d_trial_vel.data,
@@ -1073,7 +796,6 @@ template<class Shape> void IntegratorHPMCMonoGPU<Shape>::update(uint64_t timeste
                 if (this->m_exec_conf->isCUDAErrorCheckingEnabled())
                     CHECK_CUDA_ERROR();
                 m_tuner_update_pdata->end();
-                this->m_exec_conf->endMultiGPU();
                 }
             } // end loop over nselect
         }
@@ -1129,9 +851,7 @@ template<class Shape> void IntegratorHPMCMonoGPU<Shape>::initializeExcellMem()
     // get the current cell dimensions
     unsigned int num_cells = this->m_cl->getCellIndexer().getNumElements();
     unsigned int num_adj = this->m_cl->getCellAdjIndexer().getW();
-    unsigned int n_cell_list
-        = this->m_cl->getPerDevice() ? this->m_exec_conf->getNumActiveGPUs() : 1;
-    unsigned int num_max = this->m_cl->getNmax() * n_cell_list;
+    unsigned int num_max = this->m_cl->getNmax();
 
     // make the excell dimensions the same, but with room for Nmax*Nadj in each cell
     m_excell_list_indexer = Index2D(num_max * num_adj, num_cells);
@@ -1139,27 +859,6 @@ template<class Shape> void IntegratorHPMCMonoGPU<Shape>::initializeExcellMem()
     // reallocate memory
     m_excell_idx.resize(m_excell_list_indexer.getNumElements());
     m_excell_size.resize(num_cells);
-
-#if defined(__HIP_PLATFORM_NVCC__) \
-    && 0 // excell is currently not multi-GPU optimized, let the CUDA driver figure this out
-    if (this->m_exec_conf->allConcurrentManagedAccess())
-        {
-        // set memory hints
-        auto gpu_map = this->m_exec_conf->getGPUIds();
-        for (unsigned int idev = 0; idev < this->m_exec_conf->getNumActiveGPUs(); ++idev)
-            {
-            cudaMemAdvise(m_excell_idx.get(),
-                          sizeof(unsigned int) * m_excell_idx.getNumElements(),
-                          cudaMemAdviseSetAccessedBy,
-                          gpu_map[idev]);
-            cudaMemAdvise(m_excell_size.get(),
-                          sizeof(unsigned int) * m_excell_size.getNumElements(),
-                          cudaMemAdviseSetAccessedBy,
-                          gpu_map[idev]);
-            CHECK_CUDA_ERROR();
-            }
-        }
-#endif
     }
 
 template<class Shape> void IntegratorHPMCMonoGPU<Shape>::updateCellWidth()
@@ -1203,9 +902,6 @@ void export_IntegratorHPMCMonoGPU(pybind11::module& m, const std::string& name)
                      IntegratorHPMCMono<Shape>,
                      std::shared_ptr<IntegratorHPMCMonoGPU<Shape>>>(m, name.c_str())
         .def(pybind11::init<std::shared_ptr<SystemDefinition>, std::shared_ptr<CellList>>())
-#ifdef ENABLE_MPI
-        .def("setParticleCommunicator", &IntegratorHPMCMonoGPU<Shape>::setParticleCommunicator)
-#endif
         ;
     }
 
