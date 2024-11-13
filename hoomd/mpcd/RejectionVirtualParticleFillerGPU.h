@@ -54,7 +54,7 @@ class PYBIND11_EXPORT RejectionVirtualParticleFillerGPU
 
     protected:
     //! Fill the volume outside the confinement
-    virtual void fill(unsigned int timestep);
+    virtual void fill(uint64_t timestep);
 
     private:
     GPUArray<bool> m_keep_particles; // Track whether particles are in/out of bounds for geometry
@@ -64,8 +64,7 @@ class PYBIND11_EXPORT RejectionVirtualParticleFillerGPU
     std::shared_ptr<Autotuner<1>> m_tuner2; //!< Autotuner for particle tagging
     };
 
-template<class Geometry>
-void RejectionVirtualParticleFillerGPU<Geometry>::fill(unsigned int timestep)
+template<class Geometry> void RejectionVirtualParticleFillerGPU<Geometry>::fill(uint64_t timestep)
     {
     // Number of particles that we need to draw (constant)
     const BoxDim& box = this->m_pdata->getBox();
@@ -182,10 +181,8 @@ template<class Geometry> void export_RejectionVirtualParticleFillerGPU(pybind11:
     namespace py = pybind11;
     const std::string name = Geometry::getName() + "GeometryFillerGPU";
     py::class_<mpcd::RejectionVirtualParticleFillerGPU<Geometry>,
-               std::shared_ptr<mpcd::RejectionVirtualParticleFillerGPU<Geometry>>>(
-        m,
-        name.c_str(),
-        py::base<mpcd::RejectionVirtualParticleFiller<Geometry>>())
+               mpcd::RejectionVirtualParticleFiller<Geometry>,
+               std::shared_ptr<mpcd::RejectionVirtualParticleFillerGPU<Geometry>>>(m, name.c_str())
         .def(pybind11::init<std::shared_ptr<SystemDefinition>,
                             const std::string&,
                             Scalar,

@@ -22,6 +22,10 @@ def snap():
 @pytest.mark.parametrize(
     "cls, init_args",
     [
+        (hoomd.mpcd.geometry.ConcentricCylinders, {
+            "inner_radius": 4.0,
+            "outer_radius": 8.0
+        }),
         (hoomd.mpcd.geometry.CosineChannel, {
             "amplitude": 4.0,
             "repeat_length": 20.0,
@@ -44,8 +48,8 @@ def snap():
         }),
     ],
     ids=[
-        "CosineChannel", "CosineExpansionContraction", "ParallelPlates",
-        "PlanarPore", "Sphere"
+        "ConcentricCylinders", "CosineChannel", "CosineExpansionContraction",
+        "ParallelPlates", "PlanarPore", "Sphere"
     ],
 )
 class TestGeometryFiller:
