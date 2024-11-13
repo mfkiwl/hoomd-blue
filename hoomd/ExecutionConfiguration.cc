@@ -131,7 +131,6 @@ ExecutionConfiguration::ExecutionConfiguration(executionMode mode,
         }
 
     exec_mode = CPU;
-    m_concurrent = false;
 #endif
 
     setupStats();

@@ -139,7 +139,11 @@ class PYBIND11_EXPORT ExecutionConfiguration
     /// get the device id
     const unsigned int getGPUId() const
         {
+#if defined(ENABLE_HIP)
         return m_gpu_id;
+#else
+        return 0;
+#endif
         }
 
 #if defined(ENABLE_HIP)
