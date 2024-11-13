@@ -44,17 +44,6 @@ class PYBIND11_EXPORT NeighborListGPU : public NeighborList
         std::swap(m_flags, flags);
         TAG_ALLOCATION(m_flags);
 
-#if defined(ENABLE_HIP) && defined(__HIP_PLATFORM_NVCC__)
-        if (m_exec_conf->allConcurrentManagedAccess())
-            {
-            cudaMemAdvise(m_flags.get(),
-                          m_flags.getNumElements() * sizeof(unsigned int),
-                          cudaMemAdviseSetPreferredLocation,
-                          cudaCpuDeviceId);
-            CHECK_CUDA_ERROR();
-            }
-#endif
-
             {
             ArrayHandle<unsigned int> h_flags(m_flags,
                                               access_location::host,
@@ -70,17 +59,6 @@ class PYBIND11_EXPORT NeighborListGPU : public NeighborList
         GlobalArray<size_t> req_size_nlist(1, m_exec_conf);
         std::swap(m_req_size_nlist, req_size_nlist);
         TAG_ALLOCATION(m_req_size_nlist);
-
-#if defined(ENABLE_HIP) && defined(__HIP_PLATFORM_NVCC__)
-        if (m_exec_conf->allConcurrentManagedAccess())
-            {
-            cudaMemAdvise(m_req_size_nlist.get(),
-                          m_req_size_nlist.getNumElements() * sizeof(size_t),
-                          cudaMemAdviseSetPreferredLocation,
-                          cudaCpuDeviceId);
-            CHECK_CUDA_ERROR();
-            }
-#endif
 
         // Initialize autotuners.
         m_tuner_filter.reset(new Autotuner<1>({AutotunerBase::makeBlockSizeRange(m_exec_conf)},

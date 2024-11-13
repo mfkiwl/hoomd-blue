@@ -382,20 +382,6 @@ void ForceCompositeGPU::findRigidCenters()
 
     m_lookup_center.resize(m_pdata->getN() + m_pdata->getNGhosts());
 
-#ifdef __HIP_PLATFORM_NVCC__
-    size_t old_size = m_lookup_center.getNumElements();
-
-    if (m_exec_conf->allConcurrentManagedAccess() && m_lookup_center.getNumElements() != old_size)
-        {
-        // set memory hints
-        cudaMemAdvise(m_lookup_center.get(),
-                      sizeof(unsigned int) * m_lookup_center.getNumElements(),
-                      cudaMemAdviseSetReadMostly,
-                      0);
-        CHECK_CUDA_ERROR();
-        }
-#endif
-
     ArrayHandle<unsigned int> d_rigid_center(m_rigid_center,
                                              access_location::device,
                                              access_mode::overwrite);

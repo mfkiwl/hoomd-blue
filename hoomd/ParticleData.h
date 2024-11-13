@@ -1355,9 +1355,6 @@ class PYBIND11_EXPORT ParticleData
      * \param Snapshot to check
      */
     template<class Real> bool inBox(const SnapshotParticleData<Real>& snap);
-
-    //! Update the CUDA memory hints
-    void setGPUAdvice();
     };
 
 /// Allow the usage of Particle Data arrays in Python.

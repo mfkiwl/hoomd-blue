@@ -45,21 +45,6 @@ HelfrichMeshForceCompute::HelfrichMeshForceCompute(std::shared_ptr<SystemDefinit
 
     m_sigma.swap(tmp_sigma);
     TAG_ALLOCATION(m_sigma);
-
-#if defined(ENABLE_HIP) && defined(__HIP_PLATFORM_NVCC__)
-    if (m_exec_conf->isCUDAEnabled() && m_exec_conf->allConcurrentManagedAccess())
-        {
-        cudaMemAdvise(m_sigma_dash.get(),
-                      sizeof(Scalar3) * m_sigma_dash.getNumElements(),
-                      cudaMemAdviseSetReadMostly,
-                      0);
-
-        cudaMemAdvise(m_sigma.get(),
-                      sizeof(Scalar) * m_sigma.getNumElements(),
-                      cudaMemAdviseSetReadMostly,
-                      0);
-        }
-#endif
     }
 
 HelfrichMeshForceCompute::~HelfrichMeshForceCompute()

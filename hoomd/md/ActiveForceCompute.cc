@@ -45,21 +45,6 @@ ActiveForceCompute::ActiveForceCompute(std::shared_ptr<SystemDefinition> sysdef,
                                        access_mode::overwrite);
     for (unsigned int i = 0; i < m_t_activeVec.size(); i++)
         h_t_activeVec.data[i] = make_scalar4(1.0, 0.0, 0.0, 0.0);
-
-#if defined(ENABLE_HIP) && defined(__HIP_PLATFORM_NVCC__)
-    if (m_exec_conf->isCUDAEnabled() && m_exec_conf->allConcurrentManagedAccess())
-        {
-        cudaMemAdvise(m_f_activeVec.get(),
-                      sizeof(Scalar4) * m_f_activeVec.getNumElements(),
-                      cudaMemAdviseSetReadMostly,
-                      0);
-
-        cudaMemAdvise(m_t_activeVec.get(),
-                      sizeof(Scalar4) * m_t_activeVec.getNumElements(),
-                      cudaMemAdviseSetReadMostly,
-                      0);
-        }
-#endif
     }
 
 ActiveForceCompute::~ActiveForceCompute()

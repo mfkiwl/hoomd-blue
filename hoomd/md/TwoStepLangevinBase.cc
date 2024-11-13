@@ -38,20 +38,6 @@ TwoStepLangevinBase::TwoStepLangevinBase(std::shared_ptr<SystemDefinition> sysde
     m_gamma_r.swap(gamma_r);
     TAG_ALLOCATION(m_gamma_r);
 
-#if defined(ENABLE_HIP) && defined(__HIP_PLATFORM_NVCC__)
-    if (m_exec_conf->isCUDAEnabled() && m_exec_conf->allConcurrentManagedAccess())
-        {
-        cudaMemAdvise(m_gamma.get(),
-                      sizeof(Scalar) * m_gamma.getNumElements(),
-                      cudaMemAdviseSetReadMostly,
-                      0);
-        cudaMemAdvise(m_gamma_r.get(),
-                      sizeof(Scalar3) * m_gamma_r.getNumElements(),
-                      cudaMemAdviseSetReadMostly,
-                      0);
-        }
-#endif
-
     ArrayHandle<Scalar3> h_gamma_r(m_gamma_r, access_location::host, access_mode::overwrite);
     for (unsigned int i = 0; i < m_gamma_r.size(); i++)
         h_gamma_r.data[i] = make_scalar3(1.0, 1.0, 1.0);

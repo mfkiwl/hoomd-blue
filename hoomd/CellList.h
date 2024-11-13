@@ -215,13 +215,6 @@ class PYBIND11_EXPORT CellList : public Compute
         m_params_changed = true;
         }
 
-    //! Return true if we maintain a cell list per device
-    virtual bool getPerDevice() const
-        {
-        // base class doesn't support GPU
-        return false;
-        }
-
     // @}
     //! \name Get properties
     // @{
@@ -284,12 +277,6 @@ class PYBIND11_EXPORT CellList : public Compute
         return m_cell_size;
         }
 
-    //! Get the array of cell sizes (per device)
-    virtual const GlobalArray<unsigned int>& getCellSizeArrayPerDevice() const
-        {
-        throw std::runtime_error("Per-device cell size array not available in base class.\n");
-        }
-
     //! Get the adjacency list
     const GlobalArray<unsigned int>& getCellAdjArray() const
         {
@@ -322,13 +309,6 @@ class PYBIND11_EXPORT CellList : public Compute
     const GlobalArray<unsigned int>& getIndexArray() const
         {
         return m_idx;
-        }
-
-    //! Get the cell list containing index (per device)
-    virtual const GlobalArray<unsigned int>& getIndexArrayPerDevice() const
-        {
-        // base class returns an empty array
-        throw std::runtime_error("Per-device cell index array not available in base class.\n");
         }
 
     //! Compute the cell list given the current particle positions

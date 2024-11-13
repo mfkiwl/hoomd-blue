@@ -20,8 +20,7 @@ NeighborListGPUBinned::NeighborListGPUBinned(std::shared_ptr<SystemDefinition> s
                                              Scalar r_buff)
     : NeighborListGPU(sysdef, r_buff), m_cl(std::make_shared<CellListGPU>(sysdef))
     {
-    // with multiple GPUs, use indirect access via particle data arrays
-    m_use_index = m_exec_conf->allConcurrentManagedAccess();
+    m_use_index = false;
 
     m_cl->setComputeXYZF(!m_use_index);
     m_cl->setComputeIdx(m_use_index);
@@ -86,21 +85,6 @@ void NeighborListGPUBinned::buildNlist(uint64_t timestep)
                                          access_location::device,
                                          access_mode::read);
 
-    const ArrayHandle<unsigned int>& d_cell_size_per_device
-        = m_cl->getPerDevice() ? ArrayHandle<unsigned int>(m_cl->getCellSizeArrayPerDevice(),
-                                                           access_location::device,
-                                                           access_mode::read)
-                               : ArrayHandle<unsigned int>(GlobalArray<unsigned int>(),
-                                                           access_location::device,
-                                                           access_mode::read);
-    const ArrayHandle<unsigned int>& d_cell_idx_per_device
-        = m_cl->getPerDevice() ? ArrayHandle<unsigned int>(m_cl->getIndexArrayPerDevice(),
-                                                           access_location::device,
-                                                           access_mode::read)
-                               : ArrayHandle<unsigned int>(GlobalArray<unsigned int>(),
-                                                           access_location::device,
-                                                           access_mode::read);
-
     ArrayHandle<size_t> d_head_list(m_head_list, access_location::device, access_mode::read);
     ArrayHandle<unsigned int> d_Nmax(m_Nmax, access_location::device, access_mode::read);
     ArrayHandle<unsigned int> d_conditions(m_conditions,
@@ -130,9 +114,9 @@ void NeighborListGPUBinned::buildNlist(uint64_t timestep)
         d_pos.data,
         d_body.data,
         m_pdata->getN(),
-        m_cl->getPerDevice() ? d_cell_size_per_device.data : d_cell_size.data,
+        d_cell_size.data,
         d_cell_xyzf.data,
-        m_cl->getPerDevice() ? d_cell_idx_per_device.data : d_cell_idx.data,
+        d_cell_idx.data,
         d_cell_type_body.data,
         d_cell_adj.data,
         m_cl->getCellIndexer(),
