@@ -121,9 +121,7 @@ Array data:
 
 When using `GlobalArray` or `std::vector<T, hoomd::detail::managed_allocator<T>>`, call
 `cudaMemadvise` to set the appropriate memory hints for the array. Small parameter arrays should be
-set to `cudaMemAdviseSetReadMostly`. Larger arrays accessed in portions in single-process multi-GPU
-execution should be set to `cudaMemAdviseSetPreferredLocation` appropriately for the different
-portions of the array.
+set to `cudaMemAdviseSetReadMostly`.
 
 System data:
 
