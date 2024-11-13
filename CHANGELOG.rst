@@ -16,6 +16,9 @@ Change Log
   (`#1925 <https://github.com/glotzerlab/hoomd-blue/pull/1925>`__)
 * Mesh potentials return only one volume or area when ``ignore_type == True``
   (`#1928 <https://github.com/glotzerlab/hoomd-blue/pull/1928>`__)
+* Ensure correct methods are used by ``hoomd.mpcd.fill.VirtualParticleFiller`` for certain
+  geometries, improving performance on the GPU in these cases
+  (`#1934 <https://github.com/glotzerlab/hoomd-blue/pull/1934>`__).
 
 *Added*
 
