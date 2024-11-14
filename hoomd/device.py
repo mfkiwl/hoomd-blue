@@ -269,13 +269,6 @@ class GPU(Device):
     """Select a GPU or GPU(s) to execute simulations.
 
     Args:
-        gpu_ids (list[int]): List of GPU ids to use. Set to `None` to let the
-            driver auto-select a GPU.
-
-            .. deprecated:: 4.5.0
-
-                Use ``gpu_id``.
-
         communicator (hoomd.communicator.Communicator): MPI communicator object.
             When `None`, create a default communicator that uses all MPI ranks.
 
@@ -310,15 +303,6 @@ class GPU(Device):
     process. Override this auto-selection by providing appropriate device ids on
     each rank.
 
-    .. rubric:: Multiple GPUs
-
-    Specify a list of GPUs to ``gpu_ids`` to activate a single-process multi-GPU
-    code path.
-
-    .. deprecated:: 4.5.0
-
-        Use MPI.
-
     Note:
         Not all features are optimized to use this code path, and it requires
         that all GPUs support concurrent managed memory access and have high
@@ -336,7 +320,6 @@ class GPU(Device):
 
     def __init__(
         self,
-        gpu_ids=None,
         communicator=None,
         message_filename=None,
         notice_level=2,
@@ -345,22 +328,12 @@ class GPU(Device):
 
         super().__init__(communicator, notice_level, message_filename)
 
-        if gpu_ids is not None:
-            warnings.warn("gpu_ids is deprecated, use gpu_id.",
-                          FutureWarning,
-                          stacklevel=2)
-
-        if gpu_ids is not None and gpu_id is not None:
-            raise ValueError("Set either gpu_id or gpu_ids, not both.")
-
         if gpu_id is None:
-            gpu_ids = []
-        else:
-            gpu_ids = [gpu_id]
+            gpu_id = -1
 
         # convert None options to defaults
         self._cpp_exec_conf = _hoomd.ExecutionConfiguration(
-            _hoomd.ExecutionConfiguration.executionMode.GPU, gpu_ids,
+            _hoomd.ExecutionConfiguration.executionMode.GPU, gpu_id,
             self.communicator.cpp_mpi_conf, self._cpp_msg)
 
     @property
@@ -392,7 +365,7 @@ class GPU(Device):
         The tuple includes the major and minor versions of the CUDA compute
         capability: ``(major, minor)``.
         """
-        return self._cpp_exec_conf.getComputeCapability(0)
+        return self._cpp_exec_conf.getComputeCapability()
 
     @staticmethod
     def is_available():
@@ -483,7 +456,7 @@ class CPU(Device):
         super().__init__(communicator, notice_level, message_filename)
 
         self._cpp_exec_conf = _hoomd.ExecutionConfiguration(
-            _hoomd.ExecutionConfiguration.executionMode.CPU, [],
+            _hoomd.ExecutionConfiguration.executionMode.CPU, -1,
             self.communicator.cpp_mpi_conf, self._cpp_msg)
 
 
@@ -516,6 +489,6 @@ def auto_select(
     """
     # Set class according to C++ object
     if len(GPU.get_available_devices()) > 0:
-        return GPU(None, communicator, message_filename, notice_level)
+        return GPU(communicator, message_filename, notice_level)
     else:
         return CPU(communicator, message_filename, notice_level)

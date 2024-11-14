@@ -138,26 +138,7 @@ template<class Manifold> void TwoStepRATTLEBDGPU<Manifold>::integrateStepOne(uin
                                          this->m_exec_conf->dev_prop);
     bool aniso = this->m_aniso;
 
-#if defined(__HIP_PLATFORM_NVCC__)
-    if (this->m_exec_conf->allConcurrentManagedAccess())
-        {
-        // prefetch gammas
-        auto& gpu_map = this->m_exec_conf->getGPUIds();
-        for (unsigned int idev = 0; idev < this->m_exec_conf->getNumActiveGPUs(); ++idev)
-            {
-            cudaMemPrefetchAsync(this->m_gamma.get(),
-                                 sizeof(Scalar) * this->m_gamma.getNumElements(),
-                                 gpu_map[idev]);
-            cudaMemPrefetchAsync(this->m_gamma_r.get(),
-                                 sizeof(Scalar) * this->m_gamma_r.getNumElements(),
-                                 gpu_map[idev]);
-            }
-        if (this->m_exec_conf->isCUDAErrorCheckingEnabled())
-            CHECK_CUDA_ERROR();
-        }
-#endif
-
-    this->m_exec_conf->beginMultiGPU();
+    this->m_exec_conf->setDevice();
 
     // perform the update on the GPU
     kernel::gpu_rattle_brownian_step_one(d_pos.data,
@@ -179,13 +160,10 @@ template<class Manifold> void TwoStepRATTLEBDGPU<Manifold>::integrateStepOne(uin
                                          this->m_deltaT,
                                          D,
                                          this->m_noiseless_t,
-                                         this->m_noiseless_r,
-                                         this->m_group->getGPUPartition());
+                                         this->m_noiseless_r);
 
     if (this->m_exec_conf->isCUDAErrorCheckingEnabled())
         CHECK_CUDA_ERROR();
-
-    this->m_exec_conf->endMultiGPU();
     }
 
 /*! \param timestep Current time step
@@ -221,23 +199,7 @@ template<class Manifold> void TwoStepRATTLEBDGPU<Manifold>::includeRATTLEForce(u
                                          this->m_sysdef->getSeed(),
                                          this->m_exec_conf->dev_prop);
 
-#if defined(__HIP_PLATFORM_NVCC__)
-    if (this->m_exec_conf->allConcurrentManagedAccess())
-        {
-        // prefetch gammas
-        auto& gpu_map = this->m_exec_conf->getGPUIds();
-        for (unsigned int idev = 0; idev < this->m_exec_conf->getNumActiveGPUs(); ++idev)
-            {
-            cudaMemPrefetchAsync(this->m_gamma.get(),
-                                 sizeof(Scalar) * this->m_gamma.getNumElements(),
-                                 gpu_map[idev]);
-            }
-        if (this->m_exec_conf->isCUDAErrorCheckingEnabled())
-            CHECK_CUDA_ERROR();
-        }
-#endif
-
-    this->m_exec_conf->beginMultiGPU();
+    this->m_exec_conf->setDevice();
 
     // perform the update on the GPU
     kernel::gpu_include_rattle_force_bd<Manifold>(d_pos.data,
@@ -250,13 +212,10 @@ template<class Manifold> void TwoStepRATTLEBDGPU<Manifold>::includeRATTLEForce(u
                                                   this->m_manifold,
                                                   net_virial_pitch,
                                                   this->m_deltaT,
-                                                  this->m_noiseless_t,
-                                                  this->m_group->getGPUPartition());
+                                                  this->m_noiseless_t);
 
     if (this->m_exec_conf->isCUDAErrorCheckingEnabled())
         CHECK_CUDA_ERROR();
-
-    this->m_exec_conf->endMultiGPU();
     }
 
 namespace detail

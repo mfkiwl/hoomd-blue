@@ -78,7 +78,7 @@ struct pair_less : public thrust::binary_function<uint2, uint2, bool>
 void __attribute__((visibility("default"))) get_num_neighbors(const unsigned int* d_nneigh,
                                                               unsigned int* d_nneigh_scan,
                                                               unsigned int& nneigh_total,
-                                                              const GPUPartition& gpu_partition,
+                                                              const unsigned int N,
                                                               CachedAllocator& alloc)
     {
     assert(d_nneigh);
@@ -86,30 +86,26 @@ void __attribute__((visibility("default"))) get_num_neighbors(const unsigned int
     thrust::device_ptr<unsigned int> nneigh_scan(d_nneigh_scan);
 
     nneigh_total = 0;
-    for (int idev = gpu_partition.getNumActiveGPUs() - 1; idev >= 0; --idev)
-        {
-        auto range = gpu_partition.getRangeAndSetGPU(idev);
 
 #ifdef __HIP_PLATFORM_HCC__
-        thrust::exclusive_scan(thrust::hip::par(alloc),
+    thrust::exclusive_scan(thrust::hip::par(alloc),
 #else
-        thrust::exclusive_scan(thrust::cuda::par(alloc),
+    thrust::exclusive_scan(thrust::cuda::par(alloc),
 #endif
-                               nneigh + range.first,
-                               nneigh + range.second,
-                               nneigh_scan + range.first,
-                               nneigh_total);
+                           nneigh,
+                           nneigh + N,
+                           nneigh_scan,
+                           nneigh_total);
 
 #ifdef __HIP_PLATFORM_HCC__
-        nneigh_total += thrust::reduce(thrust::hip::par(alloc),
+    nneigh_total += thrust::reduce(thrust::hip::par(alloc),
 #else
-        nneigh_total += thrust::reduce(thrust::cuda::par(alloc),
+    nneigh_total += thrust::reduce(thrust::cuda::par(alloc),
 #endif
-                                       nneigh + range.first,
-                                       nneigh + range.second,
-                                       0,
-                                       thrust::plus<unsigned int>());
-        }
+                                   nneigh,
+                                   nneigh + N,
+                                   0,
+                                   thrust::plus<unsigned int>());
     }
 
 namespace kernel
@@ -119,8 +115,7 @@ __global__ void concatenate_adjacency_list(const unsigned int* d_adjacency,
                                            const unsigned int* d_nneigh_scan,
                                            const unsigned int maxn,
                                            uint2* d_adjacency_out,
-                                           const unsigned int nwork,
-                                           const unsigned int work_offset)
+                                           const unsigned int nwork)
     {
     // one group per particle to copy over neighbors
     unsigned int group = threadIdx.y;
@@ -131,7 +126,6 @@ __global__ void concatenate_adjacency_list(const unsigned int* d_adjacency,
     unsigned int i = blockIdx.x * n_groups + group;
     if (i >= nwork)
         return;
-    i += work_offset;
 
     unsigned int nneigh = d_nneigh[i];
     unsigned int start = d_nneigh_scan[i];
@@ -159,15 +153,14 @@ __global__ void flip_clusters(Scalar4* d_postype,
                               float flip_probability,
                               uint16_t seed,
                               uint64_t timestep,
-                              unsigned int nwork,
-                              unsigned int work_offset)
+                              unsigned int nwork)
     {
     unsigned int work_idx = threadIdx.x + blockIdx.x * blockDim.x;
 
     if (work_idx >= nwork)
         return;
 
-    unsigned int i = work_idx + work_offset;
+    unsigned int i = work_idx;
 
     // seed by cluster id
     int component = d_components[i];
@@ -192,7 +185,7 @@ concatenate_adjacency_list(const unsigned int* d_adjacency,
                            const unsigned int* d_nneigh_scan,
                            const unsigned int maxn,
                            uint2* d_adjacency_out,
-                           const GPUPartition& gpu_partition,
+                           const unsigned int N,
                            const unsigned int block_size,
                            const unsigned int group_size)
     {
@@ -213,27 +206,21 @@ concatenate_adjacency_list(const unsigned int* d_adjacency,
     unsigned int n_groups = run_block_size / cur_group_size;
     dim3 threads(cur_group_size, n_groups, 1);
 
-    for (int idev = gpu_partition.getNumActiveGPUs() - 1; idev >= 0; --idev)
-        {
-        auto range = gpu_partition.getRangeAndSetGPU(idev);
+    unsigned int nwork = N;
+    const unsigned int num_blocks = nwork / n_groups + 1;
+    dim3 grid(num_blocks, 1, 1);
 
-        unsigned int nwork = range.second - range.first;
-        const unsigned int num_blocks = nwork / n_groups + 1;
-        dim3 grid(num_blocks, 1, 1);
-
-        hipLaunchKernelGGL(kernel::concatenate_adjacency_list,
-                           grid,
-                           threads,
-                           0,
-                           0,
-                           d_adjacency,
-                           d_nneigh,
-                           d_nneigh_scan,
-                           maxn,
-                           d_adjacency_out,
-                           nwork,
-                           range.first);
-        }
+    hipLaunchKernelGGL(kernel::concatenate_adjacency_list,
+                       grid,
+                       threads,
+                       0,
+                       0,
+                       d_adjacency,
+                       d_nneigh,
+                       d_nneigh_scan,
+                       maxn,
+                       d_adjacency_out,
+                       nwork);
     }
 
 void __attribute__((visibility("default"))) flip_clusters(Scalar4* d_postype,
@@ -246,7 +233,7 @@ void __attribute__((visibility("default"))) flip_clusters(Scalar4* d_postype,
                                                           float flip_probability,
                                                           uint16_t seed,
                                                           uint64_t timestep,
-                                                          const GPUPartition& gpu_partition,
+                                                          const unsigned int N,
                                                           const unsigned int block_size)
     {
     // determine the maximum block size and clamp the input block size down
@@ -260,32 +247,26 @@ void __attribute__((visibility("default"))) flip_clusters(Scalar4* d_postype,
 
     dim3 threads(run_block_size, 1);
 
-    for (int idev = gpu_partition.getNumActiveGPUs() - 1; idev >= 0; --idev)
-        {
-        auto range = gpu_partition.getRangeAndSetGPU(idev);
+    unsigned int nwork = N;
+    const unsigned int num_blocks = nwork / run_block_size + 1;
+    dim3 grid(num_blocks, 1, 1);
 
-        unsigned int nwork = range.second - range.first;
-        const unsigned int num_blocks = nwork / run_block_size + 1;
-        dim3 grid(num_blocks, 1, 1);
-
-        hipLaunchKernelGGL(kernel::flip_clusters,
-                           grid,
-                           threads,
-                           0,
-                           0,
-                           d_postype,
-                           d_orientation,
-                           d_image,
-                           d_postype_backup,
-                           d_orientation_backup,
-                           d_image_backup,
-                           d_components,
-                           flip_probability,
-                           seed,
-                           timestep,
-                           nwork,
-                           range.first);
-        }
+    hipLaunchKernelGGL(kernel::flip_clusters,
+                       grid,
+                       threads,
+                       0,
+                       0,
+                       d_postype,
+                       d_orientation,
+                       d_image,
+                       d_postype_backup,
+                       d_orientation_backup,
+                       d_image_backup,
+                       d_components,
+                       flip_probability,
+                       seed,
+                       timestep,
+                       nwork);
     }
 
 void connected_components(uint2* d_adj,

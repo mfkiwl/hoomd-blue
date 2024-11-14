@@ -38,6 +38,10 @@ Breaking changes to existing functionalities
 
 * ``hoomd.hpmc.update.Clusters`` is renamed to ``hoomd.hpmc.update.GCA``.
 
+* ``Device.gpu_ids``.
+
+  * Use ``Device.gpu_id``.
+
 Removed functionalities
 ^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -52,6 +56,8 @@ Removed functionalities
 * Implicit depletants from HPMC.
 
 * ``Device.num_cpu_threads``.
+
+* Single-process multi-GPU code path.
 
 Migrating to HOOMD-blue 4
 -------------------------

@@ -7,6 +7,7 @@
 /*! \file NeighborListGPUTree.cuh
     \brief Declares GPU kernel code for neighbor list tree traversal on the GPU
 */
+#include <vector>
 
 #include <hip/hip_runtime.h>
 

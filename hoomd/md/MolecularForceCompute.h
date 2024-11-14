@@ -177,10 +177,6 @@ class PYBIND11_EXPORT MolecularForceCompute : public ForceConstraint
     //! construct a list of local molecules on the GPU
     virtual void initMoleculesGPU();
 #endif
-
-#ifdef ENABLE_HIP
-    GPUPartition m_gpu_partition; //!< Partition of the molecules on GPUs
-#endif
     };
 
     } // end namespace md

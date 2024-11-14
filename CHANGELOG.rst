@@ -61,7 +61,8 @@ Change Log
   (`#1931 <https://github.com/glotzerlab/hoomd-blue/pull/1931>`__).
 * ``Device.num_cpu_threads``.
   (`#1932 <https://github.com/glotzerlab/hoomd-blue/pull/1932>`__).
-
+* ``Device.gpu_ids`` and the single-process multi-GPU feature
+  (`#1936 <https://github.com/glotzerlab/hoomd-blue/pull/1936>`__).
 
 4.x
 ---

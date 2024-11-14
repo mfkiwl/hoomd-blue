@@ -39,7 +39,6 @@ class PYBIND11_EXPORT ComputeThermoGPU : public ComputeThermo
     GlobalVector<Scalar>
         m_scratch_rot;         //!< Scratch space for rotational kinetic energy partial sums
     unsigned int m_block_size; //!< Block size executed
-    hipEvent_t m_event;        //!< CUDA event for synchronization
 
     //! Does the actual computation
     virtual void computeProperties();

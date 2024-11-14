@@ -18,7 +18,6 @@
 #include "PythonLocalDataAccess.h"
 
 #ifdef ENABLE_HIP
-#include "GPUPartition.cuh"
 #include "ParticleData.cuh"
 #endif
 
@@ -1242,14 +1241,6 @@ class PYBIND11_EXPORT ParticleData
         m_o_image = make_int3(0, 0, 0);
         }
 
-#ifdef ENABLE_HIP
-    //! Return the load balancing GPU partition
-    const GPUPartition& getGPUPartition() const
-        {
-        return m_gpu_partition;
-        }
-#endif
-
     private:
     std::shared_ptr<const BoxDim> m_box;                 //!< The simulation box
     std::shared_ptr<const BoxDim> m_global_box;          //!< Global simulation box
@@ -1344,11 +1335,6 @@ class PYBIND11_EXPORT ParticleData
 
     bool m_arrays_allocated; //!< True if arrays have been initialized
 
-#ifdef ENABLE_HIP
-    GPUPartition m_gpu_partition; //!< The partition of the local number of particles across GPUs
-    unsigned int m_memory_advice_last_Nmax; //!< Nmax at which memory hints were last set
-#endif
-
     //! Helper function to allocate particle data
     void allocate(unsigned int N);
 
@@ -1369,9 +1355,6 @@ class PYBIND11_EXPORT ParticleData
      * \param Snapshot to check
      */
     template<class Real> bool inBox(const SnapshotParticleData<Real>& snap);
-
-    //! Update the CUDA memory hints
-    void setGPUAdvice();
     };
 
 /// Allow the usage of Particle Data arrays in Python.

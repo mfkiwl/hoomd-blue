@@ -52,31 +52,6 @@ ForceCompute::ForceCompute(std::shared_ptr<SystemDefinition> sysdef)
         memset(h_virial.data, 0, sizeof(Scalar) * m_virial.getNumElements());
         }
 
-#if defined(ENABLE_HIP) && defined(__HIP_PLATFORM_NVCC__)
-    if (m_exec_conf->isCUDAEnabled() && m_exec_conf->allConcurrentManagedAccess())
-        {
-        auto gpu_map = m_exec_conf->getGPUIds();
-
-        // set up GPU memory mappings
-        for (unsigned int idev = 0; idev < m_exec_conf->getNumActiveGPUs(); ++idev)
-            {
-            cudaMemAdvise(m_force.get(),
-                          sizeof(Scalar4) * m_force.getNumElements(),
-                          cudaMemAdviseSetAccessedBy,
-                          gpu_map[idev]);
-            cudaMemAdvise(m_virial.get(),
-                          sizeof(Scalar) * m_virial.getNumElements(),
-                          cudaMemAdviseSetAccessedBy,
-                          gpu_map[idev]);
-            cudaMemAdvise(m_torque.get(),
-                          sizeof(Scalar4) * m_torque.getNumElements(),
-                          cudaMemAdviseSetAccessedBy,
-                          gpu_map[idev]);
-            }
-        CHECK_CUDA_ERROR();
-        }
-#endif
-
     m_virial_pitch = m_virial.getPitch();
 
     // connect to the ParticleData to receive notifications when particles change order in memory
@@ -92,9 +67,6 @@ ForceCompute::ForceCompute(std::shared_ptr<SystemDefinition> sysdef)
         m_external_virial[i] = Scalar(0.0);
 
     m_external_energy = Scalar(0.0);
-
-    // initialize GPU memory hints
-    updateGPUAdvice();
 
     // start with no flags computed
     m_computed_flags.reset();
@@ -126,76 +98,6 @@ void ForceCompute::reallocate()
 
     // the pitch of the virial array may have changed
     m_virial_pitch = m_virial.getPitch();
-
-    // update memory hints
-    updateGPUAdvice();
-    }
-
-void ForceCompute::updateGPUAdvice()
-    {
-#if defined(ENABLE_HIP) && defined(__HIP_PLATFORM_NVCC__)
-    if (m_exec_conf->isCUDAEnabled() && m_exec_conf->allConcurrentManagedAccess())
-        {
-        auto gpu_map = m_exec_conf->getGPUIds();
-
-        // split preferred location of particle data across GPUs
-        const GPUPartition& gpu_partition = m_pdata->getGPUPartition();
-
-        for (unsigned int idev = 0; idev < m_exec_conf->getNumActiveGPUs(); ++idev)
-            {
-            // set preferred location
-            auto range = gpu_partition.getRange(idev);
-            unsigned int nelem = range.second - range.first;
-
-            if (!nelem)
-                continue;
-
-            cudaMemAdvise(m_force.get() + range.first,
-                          sizeof(Scalar4) * nelem,
-                          cudaMemAdviseSetPreferredLocation,
-                          gpu_map[idev]);
-            for (unsigned int i = 0; i < 6; ++i)
-                cudaMemAdvise(m_virial.get() + i * m_virial.getPitch() + range.first,
-                              sizeof(Scalar) * nelem,
-                              cudaMemAdviseSetPreferredLocation,
-                              gpu_map[idev]);
-            cudaMemAdvise(m_torque.get() + range.first,
-                          sizeof(Scalar4) * nelem,
-                          cudaMemAdviseSetPreferredLocation,
-                          gpu_map[idev]);
-
-            cudaMemPrefetchAsync(m_force.get() + range.first,
-                                 sizeof(Scalar4) * nelem,
-                                 gpu_map[idev]);
-            for (unsigned int i = 0; i < 6; ++i)
-                cudaMemPrefetchAsync(m_virial.get() + i * m_virial.getPitch() + range.first,
-                                     sizeof(Scalar) * nelem,
-                                     gpu_map[idev]);
-            cudaMemPrefetchAsync(m_torque.get() + range.first,
-                                 sizeof(Scalar4) * nelem,
-                                 gpu_map[idev]);
-            }
-        CHECK_CUDA_ERROR();
-
-        // set up GPU memory mappings
-        for (unsigned int idev = 0; idev < m_exec_conf->getNumActiveGPUs(); ++idev)
-            {
-            cudaMemAdvise(m_force.get(),
-                          sizeof(Scalar4) * m_force.getNumElements(),
-                          cudaMemAdviseSetAccessedBy,
-                          gpu_map[idev]);
-            cudaMemAdvise(m_virial.get(),
-                          sizeof(Scalar) * m_virial.getNumElements(),
-                          cudaMemAdviseSetAccessedBy,
-                          gpu_map[idev]);
-            cudaMemAdvise(m_torque.get(),
-                          sizeof(Scalar4) * m_torque.getNumElements(),
-                          cudaMemAdviseSetAccessedBy,
-                          gpu_map[idev]);
-            }
-        CHECK_CUDA_ERROR();
-        }
-#endif
     }
 
 /*! Frees allocated memory

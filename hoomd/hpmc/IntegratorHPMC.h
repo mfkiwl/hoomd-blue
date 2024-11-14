@@ -29,7 +29,6 @@
 
 #ifdef ENABLE_HIP
 #include "hoomd/Autotuner.h"
-#include "hoomd/GPUPartition.cuh"
 #endif
 
 namespace hoomd
@@ -68,8 +67,7 @@ struct hpmc_patch_args_t
                       unsigned int* _d_reject_out,
                       const Scalar* _d_charge,
                       const Scalar* _d_diameter,
-                      const unsigned int* _d_reject_out_of_cell,
-                      const GPUPartition& _gpu_partition)
+                      const unsigned int* _d_reject_out_of_cell)
         : d_postype(_d_postype), d_orientation(_d_orientation), d_trial_postype(_d_trial_postype),
           d_trial_orientation(_d_trial_orientation), d_trial_move_type(_d_trial_move_type), ci(_ci),
           cell_dim(_cell_dim), ghost_width(_ghost_width), N(_N), seed(_seed), rank(_rank),
@@ -78,7 +76,7 @@ struct hpmc_patch_args_t
           r_cut_patch(_r_cut_patch), d_additive_cutoff(_d_additive_cutoff),
           d_update_order_by_ptl(_d_update_order_by_ptl), d_reject_in(_d_reject_in),
           d_reject_out(_d_reject_out), d_charge(_d_charge), d_diameter(_d_diameter),
-          d_reject_out_of_cell(_d_reject_out_of_cell), gpu_partition(_gpu_partition)
+          d_reject_out_of_cell(_d_reject_out_of_cell)
         {
         }
 
@@ -108,8 +106,7 @@ struct hpmc_patch_args_t
     const Scalar* d_charge;                    //!< Particle charges
     const Scalar* d_diameter;                  //!< Particle diameters
     const unsigned int*
-        d_reject_out_of_cell;          //!< Flag if a particle move has been rejected a priori
-    const GPUPartition& gpu_partition; //!< split particles among GPUs
+        d_reject_out_of_cell; //!< Flag if a particle move has been rejected a priori
     };
 #endif
 

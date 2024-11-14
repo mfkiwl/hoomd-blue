@@ -4,7 +4,6 @@
 #pragma once
 
 #include "hoomd/BoxDim.h"
-#include "hoomd/GPUPartition.cuh"
 #include "hoomd/HOOMDMath.h"
 #include "hoomd/Index1D.h"
 #include "hoomd/VectorMath.h"
@@ -60,8 +59,7 @@ struct hpmc_args_t
                 const unsigned int* _d_reject_in,
                 unsigned int* _d_reject_out,
                 const hipDeviceProp_t& _devprop,
-                const GPUPartition& _gpu_partition,
-                const hipStream_t* _streams)
+                const hipStream_t& _stream)
         : d_postype(_d_postype), d_orientation(_d_orientation), d_vel(_d_vel),
           d_counters(_d_counters), counters_pitch(_counters_pitch), ci(_ci), cell_dim(_cell_dim),
           ghost_width(_ghost_width), N(_N), num_types(_num_types), seed(_seed), rank(_rank),
@@ -74,7 +72,7 @@ struct hpmc_args_t
           d_trial_move_type(_d_trial_move_type), d_update_order_by_ptl(_d_update_order_by_ptl),
           d_excell_idx(_d_excell_idx), d_excell_size(_d_excell_size), excli(_excli),
           d_reject_in(_d_reject_in), d_reject_out(_d_reject_out), devprop(_devprop),
-          gpu_partition(_gpu_partition), streams(_streams) { };
+          stream(_stream) { };
 
     const Scalar4* d_postype;             //!< postype array
     const Scalar4* d_orientation;         //!< orientation array
@@ -115,8 +113,7 @@ struct hpmc_args_t
     const unsigned int* d_reject_in;           //!< Reject flags per particle (in)
     unsigned int* d_reject_out;                //!< Reject flags per particle (out)
     const hipDeviceProp_t& devprop;            //!< CUDA device properties
-    const GPUPartition& gpu_partition;         //!< Multi-GPU partition
-    const hipStream_t* streams;                //!< kernel streams
+    const hipStream_t& stream;                 //!< kernel streams
     };
 
 //! Wraps arguments for hpmc_update_pdata
@@ -128,7 +125,7 @@ struct hpmc_update_args_t
                        Scalar4* _d_vel,
                        hpmc_counters_t* _d_counters,
                        unsigned int _counters_pitch,
-                       const GPUPartition& _gpu_partition,
+                       const unsigned int _N,
                        const Scalar4* _d_trial_postype,
                        const Scalar4* _d_trial_orientation,
                        const Scalar4* _d_trial_vel,
@@ -136,7 +133,7 @@ struct hpmc_update_args_t
                        const unsigned int* _d_reject,
                        const unsigned int _block_size)
         : d_postype(_d_postype), d_orientation(_d_orientation), d_vel(_d_vel),
-          d_counters(_d_counters), counters_pitch(_counters_pitch), gpu_partition(_gpu_partition),
+          d_counters(_d_counters), counters_pitch(_counters_pitch), N(_N),
           d_trial_postype(_d_trial_postype), d_trial_orientation(_d_trial_orientation),
           d_trial_vel(_d_trial_vel), d_trial_move_type(_d_trial_move_type), d_reject(_d_reject),
           block_size(_block_size)
@@ -149,7 +146,7 @@ struct hpmc_update_args_t
     Scalar4* d_vel;
     hpmc_counters_t* d_counters;
     unsigned int counters_pitch;
-    const GPUPartition& gpu_partition;
+    const unsigned int N;
     const Scalar4* d_trial_postype;
     const Scalar4* d_trial_orientation;
     const Scalar4* d_trial_vel;
@@ -180,7 +177,6 @@ void hpmc_excell(unsigned int* d_excell_idx,
                  const Index3D& ci,
                  const Index2D& cli,
                  const Index2D& cadji,
-                 const unsigned int ngpu,
                  const unsigned int block_size);
 
 //! Kernel driver for kernel::hpmc_shift()
@@ -197,7 +193,7 @@ void hpmc_check_convergence(const unsigned int* d_trial_move_type,
                             unsigned int* d_reject_in,
                             unsigned int* d_reject_out,
                             unsigned int* d_condition,
-                            const GPUPartition& gpu_partition,
+                            const unsigned int N,
                             unsigned int block_size);
 
     } // end namespace gpu

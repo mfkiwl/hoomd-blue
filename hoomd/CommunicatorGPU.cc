@@ -26,14 +26,6 @@ CommunicatorGPU::CommunicatorGPU(std::shared_ptr<SystemDefinition> sysdef,
       m_pair_comm(*this, m_sysdef->getPairData()), m_meshbond_comm(*this),
       m_meshtriangle_comm(*this)
     {
-    if (m_exec_conf->allConcurrentManagedAccess())
-        {
-        // inform the user to use a cuda-aware MPI
-        m_exec_conf->msg->notice(2)
-            << "Using unified memory with MPI. Make sure to enable CUDA-awareness in your MPI."
-            << std::endl;
-        }
-
     // allocate memory
     allocateBuffers();
 

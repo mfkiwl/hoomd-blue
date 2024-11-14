@@ -43,21 +43,6 @@ ConstantForceCompute::ConstantForceCompute(std::shared_ptr<SystemDefinition> sys
                                            access_mode::overwrite);
     for (unsigned int i = 0; i < m_constant_torque.size(); i++)
         h_constant_torque.data[i] = make_scalar3(0.0, 0.0, 0.0);
-
-#if defined(ENABLE_HIP) && defined(__HIP_PLATFORM_NVCC__)
-    if (m_exec_conf->isCUDAEnabled() && m_exec_conf->allConcurrentManagedAccess())
-        {
-        cudaMemAdvise(m_constant_force.get(),
-                      sizeof(Scalar3) * m_constant_force.getNumElements(),
-                      cudaMemAdviseSetReadMostly,
-                      0);
-
-        cudaMemAdvise(m_constant_torque.get(),
-                      sizeof(Scalar3) * m_constant_torque.getNumElements(),
-                      cudaMemAdviseSetReadMostly,
-                      0);
-        }
-#endif
     }
 
 ConstantForceCompute::~ConstantForceCompute()

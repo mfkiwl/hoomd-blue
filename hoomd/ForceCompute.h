@@ -196,9 +196,6 @@ class PYBIND11_EXPORT ForceCompute : public Compute
     //! Reallocate internal arrays
     void reallocate();
 
-    //! Update GPU memory hints
-    void updateGPUAdvice();
-
     //! Sort local tags
     void sortLocalTags()
         {

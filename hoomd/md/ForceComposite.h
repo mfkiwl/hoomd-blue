@@ -56,10 +56,6 @@
 #error This header cannot be compiled by nvcc
 #endif
 
-#ifdef ENABLE_HIP
-#include "hoomd/GPUPartition.cuh"
-#endif
-
 #include <pybind11/pybind11.h>
 
 #ifndef __ForceComposite_H__
