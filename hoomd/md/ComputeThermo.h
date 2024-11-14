@@ -3,7 +3,6 @@
 
 #include "ComputeThermoTypes.h"
 #include "hoomd/Compute.h"
-#include "hoomd/GlobalArray.h"
 #include "hoomd/ParticleGroup.h"
 
 #include <limits>

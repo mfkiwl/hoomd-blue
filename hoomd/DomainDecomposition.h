@@ -10,7 +10,6 @@
 
 #include "BoxDim.h"
 #include "ExecutionConfiguration.h"
-#include "GlobalArray.h"
 #include "HOOMDMath.h"
 #include "Index1D.h"
 

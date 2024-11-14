@@ -4,7 +4,6 @@
 #include "hoomd/Compute.h"
 #include "hoomd/GPUFlags.h"
 #include "hoomd/GPUVector.h"
-#include "hoomd/GlobalArray.h"
 #include "hoomd/Index1D.h"
 #include "hoomd/MeshDefinition.h"
 #include "hoomd/PythonLocalDataAccess.h"

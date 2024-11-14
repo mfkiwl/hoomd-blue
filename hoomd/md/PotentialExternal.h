@@ -3,7 +3,6 @@
 
 #include "hoomd/ForceCompute.h"
 #include "hoomd/GPUArray.h"
-#include "hoomd/GlobalArray.h"
 #include "hoomd/VectorMath.h"
 #include "hoomd/managed_allocator.h"
 #include "hoomd/md/EvaluatorExternalPeriodic.h"

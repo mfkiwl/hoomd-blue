@@ -13,7 +13,6 @@
 #include "BondedGroupData.h"
 #include "DomainDecomposition.h"
 #include "GPUVector.h"
-#include "GlobalArray.h"
 #include "HOOMDMath.h"
 #include "MeshDefinition.h"
 #include "MeshGroupData.h"

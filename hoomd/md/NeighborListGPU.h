@@ -4,7 +4,6 @@
 #include "NeighborList.h"
 #include "NeighborListGPU.cuh"
 #include "hoomd/Autotuner.h"
-#include "hoomd/GlobalArray.h"
 
 /*! \file NeighborListGPU.h
     \brief Declares the NeighborListGPU class

@@ -10,7 +10,6 @@
 
 #include "hoomd/Autotuner.h"
 #include "hoomd/GPUVector.h"
-#include "hoomd/GlobalArray.h"
 #include "hoomd/RNGIdentifiers.h"
 #include "hoomd/RandomNumbers.h"
 
@@ -44,9 +43,6 @@ namespace detail
    in the current shuffled sequence.
 
     NOTE: this should supersede UpdateOrder
-
-    \note we use GPUArrays instead of GlobalArrays currently to allow host access to the shuffled
-   order without an unnecessary hipDeviceSynchronize()
 
     \ingroup hpmc_data_structs
 */

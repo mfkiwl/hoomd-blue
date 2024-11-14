@@ -20,8 +20,6 @@
 #include <unordered_set>
 #include <vector>
 
-#include "GlobalArray.h"
-
 #ifndef __PARTICLE_GROUP_H__
 #define __PARTICLE_GROUP_H__
 

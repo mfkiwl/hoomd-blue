@@ -9,8 +9,6 @@
 #error This header cannot be compiled by nvcc
 #endif
 
-#include "hoomd/GlobalArray.h"
-
 #include "BondedGroupData.h"
 #include "MeshGroupData.h"
 #include "SystemDefinition.h"

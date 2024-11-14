@@ -4,7 +4,6 @@
 #ifndef __COMMUNICATOR_GRID_H__
 #define __COMMUNICATOR_GRID_H__
 
-#include "hoomd/GlobalArray.h"
 #include "hoomd/HOOMDMath.h"
 #include "hoomd/SystemDefinition.h"
 #include <memory>

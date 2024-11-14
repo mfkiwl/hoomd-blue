@@ -1,7 +1,6 @@
 // Copyright (c) 2009-2024 The Regents of the University of Michigan.
 // Part of HOOMD-blue, released under the BSD 3-Clause License.
 
-#include "GlobalArray.h"
 #include "HOOMDMath.h"
 
 #include "Compute.h"
@@ -41,8 +40,7 @@ namespace hoomd
 
     <b>Data storage:</b>
 
-    All data is stored in GlobalArrays for access on the host and device, and concurrent access
-   between GPUs.
+    All data is stored in GlobalArrays for access on the host and device.
 
      - The \c cell_size array lists the number of members in each cell.
      - The \c xyzf array contains Scalar4 elements each of which holds the x,y,z coordinates of the

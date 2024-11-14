@@ -2,7 +2,6 @@
 // Part of HOOMD-blue, released under the BSD 3-Clause License.
 
 #include "Compute.h"
-#include "GlobalArray.h"
 #include "HOOMDMath.h"
 #include "Index1D.h"
 #include "ParticleGroup.h"

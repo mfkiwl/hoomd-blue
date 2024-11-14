@@ -13,7 +13,6 @@
 #define __PARTICLE_DATA_H__
 
 #include "GPUVector.h"
-#include "GlobalArray.h"
 #include "HOOMDMath.h"
 #include "PythonLocalDataAccess.h"
 

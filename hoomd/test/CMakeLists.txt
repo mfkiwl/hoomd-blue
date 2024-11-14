@@ -4,7 +4,6 @@ set(TEST_LIST
     test_cell_list
     test_cell_list_stencil
     test_gpu_array
-    test_global_array
     test_gridshift_correct
     test_index1d
     test_messenger

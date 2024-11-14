@@ -4,7 +4,6 @@
 #ifndef __PYTHON_LOCAL_DATA_ACCESS_H__
 #define __PYTHON_LOCAL_DATA_ACCESS_H__
 
-#include "GlobalArray.h"
 #include <pybind11/numpy.h>
 #include <pybind11/pybind11.h>
 #include <string>
