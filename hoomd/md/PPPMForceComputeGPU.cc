@@ -205,29 +205,29 @@ void PPPMForceComputeGPU::initializeFFT()
         }
 
     // pad with offset
-    GlobalArray<hipfftComplex> mesh(m_n_cells + m_ghost_offset, m_exec_conf);
+    GPUArray<hipfftComplex> mesh(m_n_cells + m_ghost_offset, m_exec_conf);
     m_mesh.swap(mesh);
 
     // pad with offset
     unsigned int inv_mesh_elements = m_n_cells + m_ghost_offset;
-    GlobalArray<hipfftComplex> inv_fourier_mesh_x(inv_mesh_elements, m_exec_conf);
+    GPUArray<hipfftComplex> inv_fourier_mesh_x(inv_mesh_elements, m_exec_conf);
     m_inv_fourier_mesh_x.swap(inv_fourier_mesh_x);
 
-    GlobalArray<hipfftComplex> inv_fourier_mesh_y(inv_mesh_elements, m_exec_conf);
+    GPUArray<hipfftComplex> inv_fourier_mesh_y(inv_mesh_elements, m_exec_conf);
     m_inv_fourier_mesh_y.swap(inv_fourier_mesh_y);
 
-    GlobalArray<hipfftComplex> inv_fourier_mesh_z(inv_mesh_elements, m_exec_conf);
+    GPUArray<hipfftComplex> inv_fourier_mesh_z(inv_mesh_elements, m_exec_conf);
     m_inv_fourier_mesh_z.swap(inv_fourier_mesh_z);
 
     unsigned int n_blocks
         = (m_mesh_points.x * m_mesh_points.y * m_mesh_points.z) / m_block_size + 1;
-    GlobalArray<Scalar> sum_partial(n_blocks, m_exec_conf);
+    GPUArray<Scalar> sum_partial(n_blocks, m_exec_conf);
     m_sum_partial.swap(sum_partial);
 
-    GlobalArray<Scalar> sum_virial_partial(6 * n_blocks, m_exec_conf);
+    GPUArray<Scalar> sum_virial_partial(6 * n_blocks, m_exec_conf);
     m_sum_virial_partial.swap(sum_virial_partial);
 
-    GlobalArray<Scalar> sum_virial(6, m_exec_conf);
+    GPUArray<Scalar> sum_virial(6, m_exec_conf);
     m_sum_virial.swap(sum_virial);
     }
 

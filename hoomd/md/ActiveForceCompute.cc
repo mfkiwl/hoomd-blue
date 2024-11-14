@@ -23,11 +23,10 @@ ActiveForceCompute::ActiveForceCompute(std::shared_ptr<SystemDefinition> sysdef,
     : ForceCompute(sysdef), m_group(group)
     {
     // allocate memory for the per-type active_force storage and initialize them to (1.0,0,0)
-    GlobalVector<Scalar4> tmp_f_activeVec(m_pdata->getNTypes(), m_exec_conf);
+    GPUVector<Scalar4> tmp_f_activeVec(m_pdata->getNTypes(), m_exec_conf);
 
     m_f_activeVec.swap(tmp_f_activeVec);
-    TAG_ALLOCATION(m_f_activeVec);
-
+    
     ArrayHandle<Scalar4> h_f_activeVec(m_f_activeVec,
                                        access_location::host,
                                        access_mode::overwrite);
@@ -35,11 +34,10 @@ ActiveForceCompute::ActiveForceCompute(std::shared_ptr<SystemDefinition> sysdef,
         h_f_activeVec.data[i] = make_scalar4(1.0, 0.0, 0.0, 1.0);
 
     // allocate memory for the per-type active_force storage and initialize them to (0,0,0)
-    GlobalVector<Scalar4> tmp_t_activeVec(m_pdata->getNTypes(), m_exec_conf);
+    GPUVector<Scalar4> tmp_t_activeVec(m_pdata->getNTypes(), m_exec_conf);
 
     m_t_activeVec.swap(tmp_t_activeVec);
-    TAG_ALLOCATION(m_t_activeVec);
-
+    
     ArrayHandle<Scalar4> h_t_activeVec(m_t_activeVec,
                                        access_location::host,
                                        access_mode::overwrite);

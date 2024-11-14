@@ -270,13 +270,13 @@ class PYBIND11_EXPORT CellList : public Compute
     // @{
 
     //! Get the array of cell sizes
-    const GlobalArray<unsigned int>& getCellSizeArray() const
+    const GPUArray<unsigned int>& getCellSizeArray() const
         {
         return m_cell_size;
         }
 
     //! Get the adjacency list
-    const GlobalArray<unsigned int>& getCellAdjArray() const
+    const GPUArray<unsigned int>& getCellAdjArray() const
         {
         if (!m_compute_adj_list)
             {
@@ -286,25 +286,25 @@ class PYBIND11_EXPORT CellList : public Compute
         }
 
     //! Get the cell list containing x,y,z,flag
-    const GlobalArray<Scalar4>& getXYZFArray() const
+    const GPUArray<Scalar4>& getXYZFArray() const
         {
         return m_xyzf;
         }
 
     //! Get the cell list containing t,b
-    const GlobalArray<uint2>& getTypeBodyArray() const
+    const GPUArray<uint2>& getTypeBodyArray() const
         {
         return m_type_body;
         }
 
     //! Get the cell list containing orientation
-    const GlobalArray<Scalar4>& getOrientationArray() const
+    const GPUArray<Scalar4>& getOrientationArray() const
         {
         return m_orientation;
         }
 
     //! Get the cell list containing index
-    const GlobalArray<unsigned int>& getIndexArray() const
+    const GPUArray<unsigned int>& getIndexArray() const
         {
         return m_idx;
         }
@@ -352,13 +352,13 @@ class PYBIND11_EXPORT CellList : public Compute
     Scalar3 m_ghost_width;       //!< Width of ghost layer sized for (on one side only)
 
     // values computed by compute()
-    GlobalArray<unsigned int> m_cell_size; //!< Number of members in each cell
-    GlobalArray<unsigned int> m_cell_adj;  //!< Cell adjacency list
-    GlobalArray<Scalar4> m_xyzf;           //!< Cell list with position and flags
-    GlobalArray<uint2> m_type_body;        //!< Cell list with type,body
-    GlobalArray<Scalar4> m_orientation;    //!< Cell list with orientation
-    GlobalArray<unsigned int> m_idx;       //!< Cell list with index
-    GlobalArray<uint3> m_conditions; //!< Condition flags set during the computeCellList() call
+    GPUArray<unsigned int> m_cell_size; //!< Number of members in each cell
+    GPUArray<unsigned int> m_cell_adj;  //!< Cell adjacency list
+    GPUArray<Scalar4> m_xyzf;           //!< Cell list with position and flags
+    GPUArray<uint2> m_type_body;        //!< Cell list with type,body
+    GPUArray<Scalar4> m_orientation;    //!< Cell list with orientation
+    GPUArray<unsigned int> m_idx;       //!< Cell list with index
+    GPUArray<uint3> m_conditions; //!< Condition flags set during the computeCellList() call
 
     bool m_sort_cell_list;   //!< If true, sort cell list
     bool m_compute_adj_list; //!< If true, compute the cell adjacency lists

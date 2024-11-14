@@ -48,7 +48,7 @@ void TwoStepBDGPU::integrateStepOne(uint64_t timestep)
                                             access_mode::read);
     unsigned int group_size = m_group->getNumMembers();
     const unsigned int D = m_sysdef->getNDimensions();
-    const GlobalArray<Scalar4>& net_force = m_pdata->getNetForce();
+    const GPUArray<Scalar4>& net_force = m_pdata->getNetForce();
 
     ArrayHandle<Scalar4> d_pos(m_pdata->getPositions(),
                                access_location::device,

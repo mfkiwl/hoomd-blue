@@ -791,7 +791,7 @@ void Communicator::GroupCommunicator<group_data>::migrateGroups(bool incomplete,
 //! Mark ghost particles
 template<class group_data>
 void Communicator::GroupCommunicator<group_data>::markGhostParticles(
-    const GlobalVector<unsigned int>& plans,
+    const GPUVector<unsigned int>& plans,
     unsigned int mask)
     {
     if (m_gdata->getNGlobal())
@@ -911,7 +911,7 @@ void Communicator::GroupCommunicator<group_data>::markGhostParticles(
 
 template<class group_data>
 void Communicator::GroupCommunicator<group_data>::exchangeGhostGroups(
-    const GlobalArray<unsigned int>& plans,
+    const GPUArray<unsigned int>& plans,
     unsigned int mask)
     {
     if (m_gdata->getNGlobal())
@@ -1209,7 +1209,7 @@ Communicator::Communicator(std::shared_ptr<SystemDefinition> sysdef,
 
     for (unsigned int dir = 0; dir < 6; dir++)
         {
-        GlobalVector<unsigned int> copy_ghosts(m_exec_conf);
+        GPUVector<unsigned int> copy_ghosts(m_exec_conf);
         m_copy_ghosts[dir].swap(copy_ghosts);
         m_num_copy_ghosts[dir] = 0;
         m_num_recv_ghosts[dir] = 0;
@@ -1218,14 +1218,14 @@ Communicator::Communicator(std::shared_ptr<SystemDefinition> sysdef,
     // All buffers corresponding to sending ghosts in reverse
     for (unsigned int dir = 0; dir < 6; dir++)
         {
-        GlobalVector<unsigned int> copy_ghosts_reverse(m_exec_conf);
+        GPUVector<unsigned int> copy_ghosts_reverse(m_exec_conf);
         m_copy_ghosts_reverse[dir].swap(copy_ghosts_reverse);
-        GlobalVector<unsigned int> plan_reverse_copybuf(m_exec_conf);
+        GPUVector<unsigned int> plan_reverse_copybuf(m_exec_conf);
         m_plan_reverse_copybuf[dir].swap(plan_reverse_copybuf);
         m_num_copy_local_ghosts_reverse[dir] = 0;
         m_num_recv_local_ghosts_reverse[dir] = 0;
 
-        GlobalVector<unsigned int> forward_ghosts_reverse(m_exec_conf);
+        GPUVector<unsigned int> forward_ghosts_reverse(m_exec_conf);
         m_forward_ghosts_reverse[dir].swap(forward_ghosts_reverse);
         m_num_forward_ghosts_reverse[dir] = 0;
         m_num_recv_forward_ghosts_reverse[dir] = 0;
@@ -1239,10 +1239,10 @@ Communicator::Communicator(std::shared_ptr<SystemDefinition> sysdef,
         .connect<Communicator, &Communicator::slotGhostParticlesRemoved>(this);
 
     // allocate per type ghost width
-    GlobalArray<Scalar> r_ghost(m_pdata->getNTypes(), m_exec_conf);
+    GPUArray<Scalar> r_ghost(m_pdata->getNTypes(), m_exec_conf);
     m_r_ghost.swap(r_ghost);
 
-    GlobalArray<Scalar> r_ghost_body(m_pdata->getNTypes(), m_exec_conf);
+    GPUArray<Scalar> r_ghost_body(m_pdata->getNTypes(), m_exec_conf);
     m_r_ghost_body.swap(r_ghost_body);
 
     /*
@@ -1279,20 +1279,20 @@ Communicator::Communicator(std::shared_ptr<SystemDefinition> sysdef,
         .connect<Communicator, &Communicator::setPairsChanged>(this);
 
     // allocate memory
-    GlobalArray<unsigned int> neighbors(NEIGH_MAX, m_exec_conf);
+    GPUArray<unsigned int> neighbors(NEIGH_MAX, m_exec_conf);
     m_neighbors.swap(neighbors);
 
-    GlobalArray<unsigned int> unique_neighbors(NEIGH_MAX, m_exec_conf);
+    GPUArray<unsigned int> unique_neighbors(NEIGH_MAX, m_exec_conf);
     m_unique_neighbors.swap(unique_neighbors);
 
     // neighbor masks
-    GlobalArray<unsigned int> adj_mask(NEIGH_MAX, m_exec_conf);
+    GPUArray<unsigned int> adj_mask(NEIGH_MAX, m_exec_conf);
     m_adj_mask.swap(adj_mask);
 
-    GlobalArray<unsigned int> begin(NEIGH_MAX, m_exec_conf);
+    GPUArray<unsigned int> begin(NEIGH_MAX, m_exec_conf);
     m_begin.swap(begin);
 
-    GlobalArray<unsigned int> end(NEIGH_MAX, m_exec_conf);
+    GPUArray<unsigned int> end(NEIGH_MAX, m_exec_conf);
     m_end.swap(end);
 
     initializeNeighborArrays();

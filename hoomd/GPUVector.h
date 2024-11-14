@@ -57,7 +57,7 @@ template<class T> class GPUVector: public GPUArray<T>
                   bool mapped);
 #endif
     //! Frees memory
-    virtual ~GPUVector() = default;
+     ~GPUVector() = default;
 
     //! Copy constructor
     GPUVector(const GPUVector& from);
@@ -82,27 +82,27 @@ template<class T> class GPUVector: public GPUArray<T>
     //! Resize the GPUVector
     /*! \param new_size New number of elements
      */
-    virtual void resize(size_t new_size);
+    void resize(size_t new_size);
 
     //! Resize the GPUVector
     /*! \param new_size New number of elements
      *  \param const value to initialize newly added elements with
      */
-    virtual void resize(size_t new_size, const T& value);
+    void resize(size_t new_size, const T& value);
 
     //! Insert an element at the end of the vector
     /*! \param val The new element
      */
-    virtual void push_back(const T& val);
+    void push_back(const T& val);
 
     //! Remove an element from the end of the list
-    virtual void pop_back();
+    void pop_back();
 
     //! Remove an element by index
-    virtual void erase(size_t i);
+    void erase(size_t i);
 
     //! Clear the list
-    virtual void clear();
+    void clear();
 
     //! Proxy class to provide access to the data elements of the vector
     class data_proxy
@@ -125,7 +125,7 @@ template<class T> class GPUVector: public GPUArray<T>
             {
             T* data = vec.acquireHost(access_mode::readwrite);
             data[n] = rhs;
-            vec.release;
+            vec.release();
             return *this;
             }
 
@@ -198,10 +198,10 @@ GPUVector<T>::GPUVector(unsigned int size,
                                        std::shared_ptr<const ExecutionConfiguration> exec_conf)
     : GPUArray<T>(size, exec_conf), m_size(size)
     {
-    auto dispatch = acquireHost(access_mode::readwrite);
-    T* data = dispatch.get();
+    T* data = acquireHost(access_mode::readwrite);
     for (unsigned int i = 0; i < size; ++i)
         data[i] = value;
+    this->release();
     }
 
 template<class T>
@@ -297,10 +297,10 @@ template<class T> void GPUVector<T>::resize(size_t new_size, const T& value)
     {
     size_t old_size = m_size;
     resize(new_size);
-    auto dispatch = acquireHost(access_mode::readwrite);
-    T* data = dispatch.get();
+    T* data = acquireHost(access_mode::readwrite);
     for (size_t i = old_size; i < new_size; ++i)
         data[i] = value;
+    this->release();
     }
 
 //! Insert an element at the end of the vector
@@ -308,9 +308,9 @@ template<class T> void GPUVector<T>::push_back(const T& val)
     {
     reallocate(m_size + 1);
 
-    auto dispatch = acquireHost(access_mode::readwrite);
-    T* data = dispatch.get();
+    T* data = acquireHost(access_mode::readwrite);
     data[m_size++] = val;
+    this->release();
     }
 
 //! Remove an element from the end of the list
@@ -324,9 +324,8 @@ template<class T> void GPUVector<T>::pop_back()
 template<class T> void GPUVector<T>::erase(size_t i)
     {
     assert(i < m_size);
-    auto dispatch = acquireHost(access_mode::readwrite);
+    T* data = acquireHost(access_mode::readwrite);
 
-    T* data = dispatch.get();
     T* res = data;
     for (size_t n = 0; n < m_size; ++n)
         {
@@ -338,6 +337,7 @@ template<class T> void GPUVector<T>::erase(size_t i)
         data++;
         }
     m_size--;
+    this->release();
     }
 
 //! Clear the list

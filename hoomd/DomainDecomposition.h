@@ -12,6 +12,7 @@
 #include "ExecutionConfiguration.h"
 #include "HOOMDMath.h"
 #include "Index1D.h"
+#include "GPUArray.h"
 
 #include <set>
 #include <vector>
@@ -81,13 +82,13 @@ class PYBIND11_EXPORT DomainDecomposition
         }
 
     //! Get the cartesian ranks lookup table (linear cartesian index -> rank)
-    const GlobalArray<unsigned int>& getCartRanks() const
+    const GPUArray<unsigned int>& getCartRanks() const
         {
         return m_cart_ranks;
         }
 
     //! Get the inverse lookup table (rank -> linear cartesian index)
-    const GlobalArray<unsigned int>& getInverseCartRanks() const
+    const GPUArray<unsigned int>& getInverseCartRanks() const
         {
         return m_cart_ranks_inv;
         }
@@ -182,9 +183,9 @@ class PYBIND11_EXPORT DomainDecomposition
     unsigned int m_max_n_node;                           //!< Maximum number of ranks on a node
     bool m_twolevel; //!< Whether we use a two-level decomposition
 
-    GlobalArray<unsigned int>
+    GPUArray<unsigned int>
         m_cart_ranks; //!< A lookup-table to map the cartesian grid index onto ranks
-    GlobalArray<unsigned int> m_cart_ranks_inv; //!< Inverse permutation of grid index lookup table
+    GPUArray<unsigned int> m_cart_ranks_inv; //!< Inverse permutation of grid index lookup table
 
     //! Find a domain decomposition with given parameters
     bool findDecomposition(unsigned int nranks,

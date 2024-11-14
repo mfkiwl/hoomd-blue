@@ -32,14 +32,12 @@ SFCPackTunerGPU::SFCPackTunerGPU(std::shared_ptr<SystemDefinition> sysdef,
     // perform lots of sanity checks
     assert(m_pdata);
 
-    GlobalArray<unsigned int> gpu_sort_order(m_pdata->getMaxN(), m_exec_conf);
+    GPUArray<unsigned int> gpu_sort_order(m_pdata->getMaxN(), m_exec_conf);
     m_gpu_sort_order.swap(gpu_sort_order);
-    TAG_ALLOCATION(m_gpu_sort_order);
-
-    GlobalArray<unsigned int> gpu_particle_bins(m_pdata->getMaxN(), m_exec_conf);
+    
+    GPUArray<unsigned int> gpu_particle_bins(m_pdata->getMaxN(), m_exec_conf);
     m_gpu_particle_bins.swap(gpu_particle_bins);
-    TAG_ALLOCATION(m_gpu_particle_bins);
-    }
+        }
 
 /*! reallocate the internal arrays
  */

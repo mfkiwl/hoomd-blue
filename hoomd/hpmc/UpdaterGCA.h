@@ -202,9 +202,9 @@ template<class Shape> class UpdaterGCA : public Updater
 
     hoomd::detail::AABBTree m_aabb_tree_old; //!< Locality lookup for old configuration
 
-    GlobalVector<Scalar4> m_postype_backup;     //!< Old local positions
-    GlobalVector<Scalar4> m_orientation_backup; //!< Old local orientations
-    GlobalVector<int3> m_image_backup;          //!< Old local images
+    GPUVector<Scalar4> m_postype_backup;     //!< Old local positions
+    GPUVector<Scalar4> m_orientation_backup; //!< Old local orientations
+    GPUVector<int3> m_image_backup;          //!< Old local images
 
     std::set<std::pair<unsigned int, unsigned int>>
         m_overlap; //!< A local vector of particle pairs due to overlap
@@ -248,13 +248,10 @@ UpdaterGCA<Shape>::UpdaterGCA(std::shared_ptr<SystemDefinition> sysdef,
     resetStats();
 
     // initialize memory
-    GlobalVector<Scalar4>(1, this->m_exec_conf).swap(m_postype_backup);
-    TAG_ALLOCATION(m_postype_backup);
-    GlobalVector<Scalar4>(1, this->m_exec_conf).swap(m_orientation_backup);
-    TAG_ALLOCATION(m_orientation_backup);
-    GlobalVector<int3>(1, this->m_exec_conf).swap(m_image_backup);
-    TAG_ALLOCATION(m_image_backup);
-    }
+    GPUVector<Scalar4>(1, this->m_exec_conf).swap(m_postype_backup);
+        GPUVector<Scalar4>(1, this->m_exec_conf).swap(m_orientation_backup);
+        GPUVector<int3>(1, this->m_exec_conf).swap(m_image_backup);
+        }
 
 template<class Shape> UpdaterGCA<Shape>::~UpdaterGCA()
     {

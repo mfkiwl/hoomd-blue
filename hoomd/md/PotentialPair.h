@@ -225,8 +225,8 @@ template<class evaluator> class PotentialPair : public ForceCompute
     std::shared_ptr<NeighborList> m_nlist; //!< The neighborlist to use for the computation
     energyShiftMode m_shift_mode; //!< Store the mode with which to handle the energy shift at r_cut
     Index2D m_typpair_idx;        //!< Helper class for indexing per type pair arrays
-    GlobalArray<Scalar> m_rcutsq; //!< Cutoff radius squared per type pair
-    GlobalArray<Scalar> m_ronsq;  //!< ron squared per type pair
+    GPUArray<Scalar> m_rcutsq; //!< Cutoff radius squared per type pair
+    GPUArray<Scalar> m_ronsq;  //!< ron squared per type pair
 
     /// Per type pair potential parameters
     std::vector<param_type, hoomd::detail::managed_allocator<param_type>> m_params;
@@ -236,7 +236,7 @@ template<class evaluator> class PotentialPair : public ForceCompute
 
     bool m_tail_correction_enabled = false;
     /// r_cut (not squared) given to the neighbor list
-    std::shared_ptr<GlobalArray<Scalar>> m_r_cut_nlist;
+    std::shared_ptr<GPUArray<Scalar>> m_r_cut_nlist;
 
     /// Keep track of number of each type of particle
     std::vector<unsigned int> m_num_particles_by_type;
@@ -356,9 +356,9 @@ PotentialPair<evaluator>::PotentialPair(std::shared_ptr<SystemDefinition> sysdef
     assert(m_pdata);
     assert(m_nlist);
 
-    GlobalArray<Scalar> rcutsq(m_typpair_idx.getNumElements(), m_exec_conf);
+    GPUArray<Scalar> rcutsq(m_typpair_idx.getNumElements(), m_exec_conf);
     m_rcutsq.swap(rcutsq);
-    GlobalArray<Scalar> ronsq(m_typpair_idx.getNumElements(), m_exec_conf);
+    GPUArray<Scalar> ronsq(m_typpair_idx.getNumElements(), m_exec_conf);
     m_ronsq.swap(ronsq);
     m_params = std::vector<param_type, hoomd::detail::managed_allocator<param_type>>(
         m_typpair_idx.getNumElements(),
@@ -366,7 +366,7 @@ PotentialPair<evaluator>::PotentialPair(std::shared_ptr<SystemDefinition> sysdef
         hoomd::detail::managed_allocator<param_type>(m_exec_conf->isCUDAEnabled()));
 
     m_r_cut_nlist
-        = std::make_shared<GlobalArray<Scalar>>(m_typpair_idx.getNumElements(), m_exec_conf);
+        = std::make_shared<GPUArray<Scalar>>(m_typpair_idx.getNumElements(), m_exec_conf);
     nlist->addRCutMatrix(m_r_cut_nlist);
 
 #if defined(ENABLE_HIP) && defined(__HIP_PLATFORM_NVCC__)

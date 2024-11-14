@@ -42,7 +42,7 @@ EAMForceComputeGPU::EAMForceComputeGPU(std::shared_ptr<SystemDefinition> sysdef,
 
     // allocate the coefficients data on the GPU
     loadFile(filename, type_of_file);
-    GlobalArray<kernel::EAMTexInterData> eam_data(1, m_exec_conf);
+    GPUArray<kernel::EAMTexInterData> eam_data(1, m_exec_conf);
     std::swap(eam_data, m_eam_data);
 
     ArrayHandle<kernel::EAMTexInterData> h_eam_data(m_eam_data,

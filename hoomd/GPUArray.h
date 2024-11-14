@@ -201,7 +201,7 @@ template<class T> class ArrayHandle
                        const access_mode::Enum mode = access_mode::readwrite);
 
     //! Notifies the containing GPUArray that the handle has been released
-    virtual ~ArrayHandle()
+    ~ArrayHandle()
         {
         assert(gpu_array.isAcquired());
         gpu_array.release();
@@ -252,7 +252,7 @@ template<class T> class ArrayHandleAsync
 
 
     //! Notifies the containing GPUArray that the handle has been released
-    virtual ~ArrayHandleAsync()
+    ~ArrayHandleAsync()
         {
         assert(gpu_array.isAcquired());
         gpu_array.release();
@@ -327,7 +327,7 @@ template<class T> class GPUArray
     //! Constructs a 2-D GPUArray
     GPUArray(size_t width, size_t height, std::shared_ptr<const ExecutionConfiguration> exec_conf);
     //! Frees memory
-    virtual ~GPUArray() { }
+    ~GPUArray() { }
 
 #ifdef ENABLE_HIP
     //! Constructs a 1-D GPUArray
@@ -511,6 +511,9 @@ template<class T> class GPUArray
 
     //! Helper function to resize a 2D device array
     inline T* resize2DDeviceArray(size_t pitch, size_t new_pitch, size_t height, size_t new_height);
+
+    friend class ArrayHandle<T>;
+    friend class ArrayHandleAsync<T>;
     };
 
 //******************************************
@@ -525,7 +528,7 @@ template<class T>
 ArrayHandle<T>::ArrayHandle(const GPUArray<T>& array,
                             const access_location::Enum location,
                             const access_mode::Enum mode)
-    : data(array.acquire(location, mode))
+    : gpu_array(array), data(array.acquire(location, mode))
     {
     }
 
@@ -534,7 +537,7 @@ template<class T>
 ArrayHandleAsync<T>::ArrayHandleAsync(const GPUArray<T>& array,
                                       const access_location::Enum location,
                                       const access_mode::Enum mode)
-    : data(array.acquire(location, mode, true))
+    : gpu_array(array), data(array.acquire(location, mode, true))
     {
     }
 #endif
@@ -1032,7 +1035,7 @@ T* GPUArray<T>::acquire(const access_location::Enum location,
         if (m_data_location == data_location::host)
             {
             // the state stays on the host regardles of the access mode
-            return h_data;
+            return h_data.get();
             }
 #ifdef ENABLE_HIP
         else if (m_data_location == data_location::hostdevice)
@@ -1049,7 +1052,7 @@ T* GPUArray<T>::acquire(const access_location::Enum location,
                 throw std::runtime_error("Invalid access mode requested.");
                 }
 
-            return h_data;
+            return h_data.get();
             }
         else if (m_data_location == data_location::device)
             {

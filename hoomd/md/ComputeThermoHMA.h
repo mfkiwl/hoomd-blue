@@ -153,7 +153,7 @@ class PYBIND11_EXPORT ComputeThermoHMA : public Compute
 #endif
 
     Scalar m_temperature, m_harmonicPressure;
-    GlobalArray<Scalar3> m_lattice_site;
+    GPUArray<Scalar3> m_lattice_site;
     };
 
     } // end namespace md

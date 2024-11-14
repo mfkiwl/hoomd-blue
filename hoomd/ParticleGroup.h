@@ -176,7 +176,7 @@ class PYBIND11_EXPORT ParticleGroup
               Hence, the tag array may not be accessed in the same scope in which this method is
        called.
     */
-    const GlobalArray<unsigned int>& getIndexArray()
+    const GPUArray<unsigned int>& getIndexArray()
         {
         checkRebuild();
 
@@ -274,16 +274,16 @@ class PYBIND11_EXPORT ParticleGroup
 
     // NOTE a design with so many mutable members is broken, we should refactor const correctness
     // in ParticleGroup in the future by using resize methods on the arrays
-    mutable GlobalArray<unsigned int>
+    mutable GPUArray<unsigned int>
         m_is_member; //!< One byte per particle, == 1 if index is a local member of the group
-    mutable GlobalArray<unsigned int> m_member_idx;  //!< List of all particle indices in the group
-    mutable GlobalArray<unsigned int> m_member_tags; //!< Lists the tags of the particle members
+    mutable GPUArray<unsigned int> m_member_idx;  //!< List of all particle indices in the group
+    mutable GPUArray<unsigned int> m_member_tags; //!< Lists the tags of the particle members
     mutable unsigned int m_num_local_members;        //!< Number of members on the local processor
     mutable bool m_particles_sorted;      //!< True if particle have been sorted since last rebuild
     mutable bool m_reallocated;           //!< True if particle data arrays have been reallocated
     mutable bool m_global_ptl_num_change; //!< True if the global particle number changed
 
-    mutable GlobalArray<unsigned int>
+    mutable GPUArray<unsigned int>
         m_is_member_tag; //!< One byte per particle, == 1 if tag is a member of the group
     std::shared_ptr<ParticleFilter> m_selector; //!< The associated particle selector
 

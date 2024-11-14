@@ -68,10 +68,10 @@ class PYBIND11_EXPORT ConstantForceCompute : public ForceCompute
     virtual void setForces();
 
     std::shared_ptr<ParticleGroup> m_group; //!< Group of particles on which this force is applied
-    GlobalVector<Scalar3>
+    GPUVector<Scalar3>
         m_constant_force; //! constant force unit vectors and magnitudes for each particle type
 
-    GlobalVector<Scalar3>
+    GPUVector<Scalar3>
         m_constant_torque; //! constant torque unit vectors and magnitudes for each particle type
 
     bool m_parameters_updated; //!< True if forces need to be rearranged

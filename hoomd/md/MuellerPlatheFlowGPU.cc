@@ -78,7 +78,7 @@ void MuellerPlatheFlowGPU::searchMinMaxVelocity(void)
     const ArrayHandle<unsigned int> d_rtag(m_pdata->getRTags(),
                                            access_location::device,
                                            access_mode::read);
-    const GlobalArray<unsigned int>& group_members = m_group->getIndexArray();
+    const GPUArray<unsigned int>& group_members = m_group->getIndexArray();
     const ArrayHandle<unsigned int> d_group_members(group_members,
                                                     access_location::device,
                                                     access_mode::read);

@@ -40,10 +40,10 @@ template<class Shape> class UpdaterGCAGPU : public UpdaterGCA<Shape>
     virtual void update(uint64_t timestep);
 
     protected:
-    GlobalArray<unsigned int> m_adjacency; //!< List of overlaps between old and new configuration
-    GlobalVector<uint2>
+    GPUArray<unsigned int> m_adjacency; //!< List of overlaps between old and new configuration
+    GPUVector<uint2>
         m_adjacency_copy; //!< List of overlaps between old and new configuration, contiguous
-    GlobalVector<int> m_components; //!< The connected component labels per particle
+    GPUVector<int> m_components; //!< The connected component labels per particle
 
     std::shared_ptr<CellList> m_cl; //!< Cell list
     uint3 m_last_dim;               //!< Dimensions of the cell list on the last call to update
@@ -64,14 +64,14 @@ template<class Shape> class UpdaterGCAGPU : public UpdaterGCA<Shape>
     /// Autotuner for flipping clusters.
     std::shared_ptr<Autotuner<1>> m_tuner_flip;
 
-    GlobalArray<unsigned int> m_excell_idx;  //!< Particle indices in expanded cells
-    GlobalArray<unsigned int> m_excell_size; //!< Number of particles in each expanded cell
+    GPUArray<unsigned int> m_excell_idx;  //!< Particle indices in expanded cells
+    GPUArray<unsigned int> m_excell_size; //!< Number of particles in each expanded cell
     Index2D m_excell_list_indexer;           //!< Indexer to access elements of the excell_idx list
 
-    GlobalVector<unsigned int> m_nneigh;      //!< Number of neighbors
-    GlobalVector<unsigned int> m_nneigh_scan; //!< Exclusive prefix sum over number of neighbors
+    GPUVector<unsigned int> m_nneigh;      //!< Number of neighbors
+    GPUVector<unsigned int> m_nneigh_scan; //!< Exclusive prefix sum over number of neighbors
     unsigned int m_maxn;                      //!< Max number of neighbors
-    GlobalArray<unsigned int> m_overflow;     //!< Overflow condition for neighbor list
+    GPUArray<unsigned int> m_overflow;     //!< Overflow condition for neighbor list
 
     hipStream_t m_overlaps_stream; //!< Stream for overlaps kernel
 
@@ -186,36 +186,28 @@ UpdaterGCAGPU<Shape>::UpdaterGCAGPU(std::shared_ptr<SystemDefinition> sysdef,
                                m_tuner_overlaps,
                                m_tuner_concatenate});
 
-    GlobalArray<unsigned int> excell_size(0, this->m_exec_conf);
+    GPUArray<unsigned int> excell_size(0, this->m_exec_conf);
     m_excell_size.swap(excell_size);
-    TAG_ALLOCATION(m_excell_size);
-
-    GlobalArray<unsigned int> excell_idx(0, this->m_exec_conf);
+    
+    GPUArray<unsigned int> excell_idx(0, this->m_exec_conf);
     m_excell_idx.swap(excell_idx);
-    TAG_ALLOCATION(m_excell_idx);
-
+    
     // allocate memory for connected components
-    GlobalArray<unsigned int>(1, this->m_exec_conf).swap(m_adjacency);
-    TAG_ALLOCATION(m_adjacency);
-    GlobalVector<int>(this->m_exec_conf).swap(m_components);
-    TAG_ALLOCATION(m_components);
-
-    GlobalVector<uint2>(this->m_exec_conf).swap(m_adjacency_copy);
-    TAG_ALLOCATION(m_adjacency_copy);
-
+    GPUArray<unsigned int>(1, this->m_exec_conf).swap(m_adjacency);
+        GPUVector<int>(this->m_exec_conf).swap(m_components);
+    
+    GPUVector<uint2>(this->m_exec_conf).swap(m_adjacency_copy);
+    
     this->m_exec_conf->setDevice();
     hipStreamCreate(&m_overlaps_stream);
 
-    GlobalArray<unsigned int>(1, this->m_exec_conf).swap(m_nneigh);
-    TAG_ALLOCATION(m_nneigh);
-
-    GlobalArray<unsigned int>(1, this->m_exec_conf).swap(m_nneigh_scan);
-    TAG_ALLOCATION(m_nneigh_scan);
-
+    GPUArray<unsigned int>(1, this->m_exec_conf).swap(m_nneigh);
+    
+    GPUArray<unsigned int>(1, this->m_exec_conf).swap(m_nneigh_scan);
+    
     m_maxn = 0;
-    GlobalArray<unsigned int>(1, this->m_exec_conf).swap(m_overflow);
-    TAG_ALLOCATION(m_overflow);
-
+    GPUArray<unsigned int>(1, this->m_exec_conf).swap(m_overflow);
+    
         {
         ArrayHandle<unsigned int> h_overflow(m_overflow,
                                              access_location::host,
@@ -670,10 +662,9 @@ template<class Shape> bool UpdaterGCAGPU<Shape>::checkReallocate()
             << "hpmc clusters resizing neighbor list " << m_adjacency.getNumElements() << " -> "
             << req_size_nlist << std::endl;
 
-        GlobalArray<unsigned int> adjacency(req_size_nlist, this->m_exec_conf);
+        GPUArray<unsigned int> adjacency(req_size_nlist, this->m_exec_conf);
         m_adjacency.swap(adjacency);
-        TAG_ALLOCATION(m_adjacency);
-        }
+                }
     return reallocate || maxn_changed;
     }
 

@@ -44,8 +44,8 @@ HelfrichMeshForceComputeGPU::HelfrichMeshForceComputeGPU(std::shared_ptr<SystemD
 
     m_autotuners.insert(m_autotuners.end(), {m_tuner_force, m_tuner_sigma});
 
-    GlobalVector<Scalar3> tmp_sigma_dash(m_pdata->getN(), m_exec_conf);
-    GlobalVector<Scalar> tmp_sigma(m_pdata->getN(), m_exec_conf);
+    GPUVector<Scalar3> tmp_sigma_dash(m_pdata->getN(), m_exec_conf);
+    GPUVector<Scalar> tmp_sigma(m_pdata->getN(), m_exec_conf);
 
         {
         ArrayHandle<Scalar3> old_sigma_dash(m_sigma_dash, access_location::host);

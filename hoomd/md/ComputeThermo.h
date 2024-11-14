@@ -311,7 +311,7 @@ class PYBIND11_EXPORT ComputeThermo : public Compute
         }
 
     //! Get the gpu array of properties
-    const GlobalArray<Scalar>& getProperties()
+    const GPUArray<Scalar>& getProperties()
         {
 #ifdef ENABLE_MPI
         if (!m_properties_reduced)
@@ -330,7 +330,7 @@ class PYBIND11_EXPORT ComputeThermo : public Compute
 
     protected:
     std::shared_ptr<ParticleGroup> m_group; //!< Group to compute properties for
-    GlobalArray<Scalar> m_properties;       //!< Stores the computed properties
+    GPUArray<Scalar> m_properties;       //!< Stores the computed properties
 
     /// Store the particle data flags used during the last computation
     PDataFlags m_computed_flags;

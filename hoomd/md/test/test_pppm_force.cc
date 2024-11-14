@@ -58,7 +58,7 @@ void pppm_force_particle_test(pppmforce_creator pppm_creator,
 
     std::shared_ptr<NeighborListTree> nlist_2(new NeighborListTree(sysdef_2, Scalar(1.0)));
     auto r_cut
-        = std::make_shared<GlobalArray<Scalar>>(nlist_2->getTypePairIndexer().getNumElements(),
+        = std::make_shared<GPUArray<Scalar>>(nlist_2->getTypePairIndexer().getNumElements(),
                                                 exec_conf);
     ArrayHandle<Scalar> h_r_cut(*r_cut, access_location::host, access_mode::overwrite);
     h_r_cut.data[0] = 1.0;
@@ -145,7 +145,7 @@ void pppm_force_particle_test_triclinic(pppmforce_creator pppm_creator,
 
     std::shared_ptr<NeighborListTree> nlist_2(new NeighborListTree(sysdef_2, Scalar(1.0)));
     auto r_cut
-        = std::make_shared<GlobalArray<Scalar>>(nlist_2->getTypePairIndexer().getNumElements(),
+        = std::make_shared<GPUArray<Scalar>>(nlist_2->getTypePairIndexer().getNumElements(),
                                                 exec_conf);
     ArrayHandle<Scalar> h_r_cut(*r_cut, access_location::host, access_mode::overwrite);
     h_r_cut.data[0] = 1.0;

@@ -28,22 +28,18 @@ ForceComposite::ForceComposite(std::shared_ptr<SystemDefinition> sysdef)
 
     m_exec_conf->msg->notice(7) << "ForceComposite initialize memory" << std::endl;
 
-    GlobalArray<unsigned int> body_types(m_pdata->getNTypes(), 1, m_exec_conf);
+    GPUArray<unsigned int> body_types(m_pdata->getNTypes(), 1, m_exec_conf);
     m_body_types.swap(body_types);
-    TAG_ALLOCATION(m_body_types);
-
-    GlobalArray<Scalar3> body_pos(m_pdata->getNTypes(), 1, m_exec_conf);
+    
+    GPUArray<Scalar3> body_pos(m_pdata->getNTypes(), 1, m_exec_conf);
     m_body_pos.swap(body_pos);
-    TAG_ALLOCATION(m_body_pos);
-
-    GlobalArray<Scalar4> body_orientation(m_pdata->getNTypes(), 1, m_exec_conf);
+    
+    GPUArray<Scalar4> body_orientation(m_pdata->getNTypes(), 1, m_exec_conf);
     m_body_orientation.swap(body_orientation);
-    TAG_ALLOCATION(m_body_orientation);
-
-    GlobalArray<unsigned int> body_len(m_pdata->getNTypes(), m_exec_conf);
+    
+    GPUArray<unsigned int> body_len(m_pdata->getNTypes(), m_exec_conf);
     m_body_len.swap(body_len);
-    TAG_ALLOCATION(m_body_len);
-
+    
     // reset elements to zero
     ArrayHandle<unsigned int> h_body_len(m_body_len, access_location::host, access_mode::readwrite);
     for (unsigned int i = 0; i < this->m_pdata->getNTypes(); ++i)

@@ -32,12 +32,7 @@ MolecularForceCompute::MolecularForceCompute(std::shared_ptr<SystemDefinition> s
     m_pdata->getParticleSortSignal()
         .connect<MolecularForceCompute, &MolecularForceCompute::setRebuildMolecules>(this);
 
-    TAG_ALLOCATION(m_molecule_tag);
-    TAG_ALLOCATION(m_molecule_list);
-    TAG_ALLOCATION(m_molecule_length);
-    TAG_ALLOCATION(m_molecule_order);
-    TAG_ALLOCATION(m_molecule_idx);
-
+                    
 #ifdef ENABLE_HIP
     if (m_exec_conf->isCUDAEnabled())
         {

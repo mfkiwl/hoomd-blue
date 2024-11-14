@@ -269,7 +269,7 @@ void TwoStepConstantPressureGPU::integrateStepOne(uint64_t timestep)
 */
 void TwoStepConstantPressureGPU::integrateStepTwo(uint64_t timestep)
     {
-    const GlobalArray<Scalar4>& net_force = m_pdata->getNetForce();
+    const GPUArray<Scalar4>& net_force = m_pdata->getNetForce();
 
     // Martyna-Tobias-Klein correction
     Scalar mtk = exp(-Scalar(1.0 / 2.0) * m_deltaT

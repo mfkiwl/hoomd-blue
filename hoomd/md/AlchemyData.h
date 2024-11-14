@@ -64,7 +64,7 @@ struct AlchemicalMDParticle : AlchemicalParticle
 
     void resizeForces(unsigned int N)
         {
-        GlobalArray<Scalar> new_forces(N, m_exec_conf);
+        GPUArray<Scalar> new_forces(N, m_exec_conf);
         m_alchemical_derivatives.swap(new_forces);
         }
 
@@ -126,7 +126,7 @@ struct AlchemicalMDParticle : AlchemicalParticle
         = make_scalar2(1.0,
                        1.0); // mass (x) and it's inverse (y) (don't have to recompute constantly)
     Scalar mu = 0.;          //!< the alchemical potential of the particle
-    GlobalArray<Scalar> m_alchemical_derivatives; //!< Per particle alchemical forces
+    GPUArray<Scalar> m_alchemical_derivatives; //!< Per particle alchemical forces
     protected:
     // the timestep the net force was computed and the netforce
     std::pair<uint64_t, Scalar> m_timestep_net_force;

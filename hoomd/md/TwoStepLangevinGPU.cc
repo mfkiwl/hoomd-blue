@@ -140,7 +140,7 @@ void TwoStepLangevinGPU::integrateStepOne(uint64_t timestep)
 */
 void TwoStepLangevinGPU::integrateStepTwo(uint64_t timestep)
     {
-    const GlobalArray<Scalar4>& net_force = m_pdata->getNetForce();
+    const GPUArray<Scalar4>& net_force = m_pdata->getNetForce();
 
     // get the dimensionality of the system
     const unsigned int D = m_sysdef->getNDimensions();

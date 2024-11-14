@@ -75,10 +75,10 @@ class PYBIND11_EXPORT TwoStepLangevinBase : public IntegrationMethodTwoStep
     std::shared_ptr<Variant> m_T;
 
     /// List of per type gammas
-    GlobalVector<Scalar> m_gamma;
+    GPUVector<Scalar> m_gamma;
 
     /// List of per type gamma_r (for 2D-only rotational noise) to use
-    GlobalVector<Scalar3> m_gamma_r;
+    GPUVector<Scalar3> m_gamma_r;
     };
 
     } // end namespace md

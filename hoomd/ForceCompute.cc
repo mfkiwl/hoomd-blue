@@ -33,16 +33,13 @@ ForceCompute::ForceCompute(std::shared_ptr<SystemDefinition> sysdef)
 
     // allocate data on the host
     unsigned int max_num_particles = m_pdata->getMaxN();
-    GlobalArray<Scalar4> force(max_num_particles, m_exec_conf);
-    GlobalArray<Scalar> virial(max_num_particles, 6, m_exec_conf);
-    GlobalArray<Scalar4> torque(max_num_particles, m_exec_conf);
+    GPUArray<Scalar4> force(max_num_particles, m_exec_conf);
+    GPUArray<Scalar> virial(max_num_particles, 6, m_exec_conf);
+    GPUArray<Scalar4> torque(max_num_particles, m_exec_conf);
     m_force.swap(force);
-    TAG_ALLOCATION(m_force);
-    m_virial.swap(virial);
-    TAG_ALLOCATION(m_virial);
-    m_torque.swap(torque);
-    TAG_ALLOCATION(m_torque);
-
+        m_virial.swap(virial);
+        m_torque.swap(torque);
+    
         {
         ArrayHandle<Scalar4> h_force(m_force, access_location::host, access_mode::overwrite);
         ArrayHandle<Scalar4> h_torque(m_torque, access_location::host, access_mode::overwrite);

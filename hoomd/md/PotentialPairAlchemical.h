@@ -228,7 +228,7 @@ inline extra_pkg PotentialPairAlchemical<evaluator, extra_pkg, alpha_particle_ty
                 }
             else
                 {
-                pkg.force_handles.push_back(ArrayHandle<Scalar>(GlobalArray<Scalar>()));
+                pkg.force_handles.push_back(ArrayHandle<Scalar>(GPUArray<Scalar>()));
                 }
         }
     return pkg;

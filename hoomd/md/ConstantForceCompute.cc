@@ -21,11 +21,10 @@ ConstantForceCompute::ConstantForceCompute(std::shared_ptr<SystemDefinition> sys
     : ForceCompute(sysdef), m_group(group), m_parameters_updated(false)
     {
     // allocate memory for the per-type constant_force storage and initialize them to (1.0,0,0)
-    GlobalVector<Scalar3> tmp_f(m_pdata->getNTypes(), m_exec_conf);
+    GPUVector<Scalar3> tmp_f(m_pdata->getNTypes(), m_exec_conf);
 
     m_constant_force.swap(tmp_f);
-    TAG_ALLOCATION(m_constant_force);
-
+    
     ArrayHandle<Scalar3> h_constant_force(m_constant_force,
                                           access_location::host,
                                           access_mode::overwrite);
@@ -33,11 +32,10 @@ ConstantForceCompute::ConstantForceCompute(std::shared_ptr<SystemDefinition> sys
         h_constant_force.data[i] = make_scalar3(0.0, 0.0, 0.0);
 
     // allocate memory for the per-type constant_torque storage and initialize them to (0,0,0)
-    GlobalVector<Scalar3> tmp_t(m_pdata->getNTypes(), m_exec_conf);
+    GPUVector<Scalar3> tmp_t(m_pdata->getNTypes(), m_exec_conf);
 
     m_constant_torque.swap(tmp_t);
-    TAG_ALLOCATION(m_constant_torque);
-
+    
     ArrayHandle<Scalar3> h_constant_torque(m_constant_torque,
                                            access_location::host,
                                            access_mode::overwrite);

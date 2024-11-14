@@ -101,9 +101,8 @@ ParticleData::ParticleData(unsigned int N,
     setGlobalBox(global_box);
 
     // initialize rtag array
-    GlobalVector<unsigned int>(exec_conf).swap(m_rtag);
-    TAG_ALLOCATION(m_rtag);
-
+    GPUVector<unsigned int>(exec_conf).swap(m_rtag);
+    
     // initialize all processors
     initializeFromSnapshot(snap);
 
@@ -151,9 +150,8 @@ ParticleData::ParticleData(const SnapshotParticleData<Real>& snapshot,
         }
 
     // initialize rtag array
-    GlobalVector<unsigned int>(exec_conf).swap(m_rtag);
-    TAG_ALLOCATION(m_rtag);
-
+    GPUVector<unsigned int>(exec_conf).swap(m_rtag);
+    
     // initialize particle data with snapshot contents
     initializeFromSnapshot(snapshot);
 
@@ -340,55 +338,44 @@ void ParticleData::allocate(unsigned int N)
     m_max_nparticles = N;
 
     // positions
-    GlobalArray<Scalar4> pos(N, m_exec_conf);
+    GPUArray<Scalar4> pos(N, m_exec_conf);
     m_pos.swap(pos);
-    TAG_ALLOCATION(m_pos);
-
+    
     // velocities
-    GlobalArray<Scalar4> vel(N, m_exec_conf);
+    GPUArray<Scalar4> vel(N, m_exec_conf);
     m_vel.swap(vel);
-    TAG_ALLOCATION(m_vel);
-
+    
     // accelerations
-    GlobalArray<Scalar3> accel(N, m_exec_conf);
+    GPUArray<Scalar3> accel(N, m_exec_conf);
     m_accel.swap(accel);
-    TAG_ALLOCATION(m_accel);
-
+    
     // charge
-    GlobalArray<Scalar> charge(N, m_exec_conf);
+    GPUArray<Scalar> charge(N, m_exec_conf);
     m_charge.swap(charge);
-    TAG_ALLOCATION(m_charge);
-
+    
     // diameter
-    GlobalArray<Scalar> diameter(N, m_exec_conf);
+    GPUArray<Scalar> diameter(N, m_exec_conf);
     m_diameter.swap(diameter);
-    TAG_ALLOCATION(m_diameter);
-
+    
     // image
-    GlobalArray<int3> image(N, m_exec_conf);
+    GPUArray<int3> image(N, m_exec_conf);
     m_image.swap(image);
-    TAG_ALLOCATION(m_image);
-
+    
     // global tag
-    GlobalArray<unsigned int> tag(N, m_exec_conf);
+    GPUArray<unsigned int> tag(N, m_exec_conf);
     m_tag.swap(tag);
-    TAG_ALLOCATION(m_tag);
-
+    
     // body ID
-    GlobalArray<unsigned int> body(N, m_exec_conf);
+    GPUArray<unsigned int> body(N, m_exec_conf);
     m_body.swap(body);
-    TAG_ALLOCATION(m_body);
-
-    GlobalArray<Scalar4> net_force(N, m_exec_conf);
+    
+    GPUArray<Scalar4> net_force(N, m_exec_conf);
     m_net_force.swap(net_force);
-    TAG_ALLOCATION(m_net_force);
-    GlobalArray<Scalar> net_virial(N, 6, m_exec_conf);
+        GPUArray<Scalar> net_virial(N, 6, m_exec_conf);
     m_net_virial.swap(net_virial);
-    TAG_ALLOCATION(m_net_virial);
-    GlobalArray<Scalar4> net_torque(N, m_exec_conf);
+        GPUArray<Scalar4> net_torque(N, m_exec_conf);
     m_net_torque.swap(net_torque);
-    TAG_ALLOCATION(m_net_torque);
-
+    
         {
         ArrayHandle<Scalar4> h_net_force(m_net_force,
                                          access_location::host,
@@ -404,20 +391,16 @@ void ParticleData::allocate(unsigned int N)
         memset(h_net_virial.data, 0, sizeof(Scalar) * m_net_virial.getNumElements());
         }
 
-    GlobalArray<Scalar4> orientation(N, m_exec_conf);
+    GPUArray<Scalar4> orientation(N, m_exec_conf);
     m_orientation.swap(orientation);
-    TAG_ALLOCATION(m_orientation);
-    GlobalArray<Scalar4> angmom(N, m_exec_conf);
+        GPUArray<Scalar4> angmom(N, m_exec_conf);
     m_angmom.swap(angmom);
-    TAG_ALLOCATION(m_angmom);
-    GlobalArray<Scalar3> inertia(N, m_exec_conf);
+        GPUArray<Scalar3> inertia(N, m_exec_conf);
     m_inertia.swap(inertia);
-    TAG_ALLOCATION(m_inertia);
-
-    GlobalArray<unsigned int> comm_flags(N, m_exec_conf);
+    
+    GPUArray<unsigned int> comm_flags(N, m_exec_conf);
     m_comm_flags.swap(comm_flags);
-    TAG_ALLOCATION(m_comm_flags);
-
+    
     // allocate alternate particle data arrays (for swapping in-out)
     allocateAlternateArrays(N);
 
@@ -434,75 +417,61 @@ void ParticleData::allocate(unsigned int N)
 void ParticleData::allocateAlternateArrays(unsigned int N)
     {
     // positions
-    GlobalArray<Scalar4> pos_alt(N, m_exec_conf);
+    GPUArray<Scalar4> pos_alt(N, m_exec_conf);
     m_pos_alt.swap(pos_alt);
-    TAG_ALLOCATION(m_pos_alt);
-
+    
     // velocities
-    GlobalArray<Scalar4> vel_alt(N, m_exec_conf);
+    GPUArray<Scalar4> vel_alt(N, m_exec_conf);
     m_vel_alt.swap(vel_alt);
-    TAG_ALLOCATION(m_vel_alt);
-
+    
     // accelerations
-    GlobalArray<Scalar3> accel_alt(N, m_exec_conf);
+    GPUArray<Scalar3> accel_alt(N, m_exec_conf);
     m_accel_alt.swap(accel_alt);
-    TAG_ALLOCATION(m_accel_alt);
-
+    
     // charge
-    GlobalArray<Scalar> charge_alt(N, m_exec_conf);
+    GPUArray<Scalar> charge_alt(N, m_exec_conf);
     m_charge_alt.swap(charge_alt);
-    TAG_ALLOCATION(m_charge_alt);
-
+    
     // diameter
-    GlobalArray<Scalar> diameter_alt(N, m_exec_conf);
+    GPUArray<Scalar> diameter_alt(N, m_exec_conf);
     m_diameter_alt.swap(diameter_alt);
-    TAG_ALLOCATION(m_diameter_alt);
-
+    
     // image
-    GlobalArray<int3> image_alt(N, m_exec_conf);
+    GPUArray<int3> image_alt(N, m_exec_conf);
     m_image_alt.swap(image_alt);
-    TAG_ALLOCATION(m_image_alt);
-
+    
     // global tag
-    GlobalArray<unsigned int> tag_alt(N, m_exec_conf);
+    GPUArray<unsigned int> tag_alt(N, m_exec_conf);
     m_tag_alt.swap(tag_alt);
-    TAG_ALLOCATION(m_tag_alt);
-
+    
     // body ID
-    GlobalArray<unsigned int> body_alt(N, m_exec_conf);
+    GPUArray<unsigned int> body_alt(N, m_exec_conf);
     m_body_alt.swap(body_alt);
-    TAG_ALLOCATION(m_body_alt);
-
+    
     // orientation
-    GlobalArray<Scalar4> orientation_alt(N, m_exec_conf);
+    GPUArray<Scalar4> orientation_alt(N, m_exec_conf);
     m_orientation_alt.swap(orientation_alt);
-    TAG_ALLOCATION(m_orientation_alt);
-
+    
     // angular momentum
-    GlobalArray<Scalar4> angmom_alt(N, m_exec_conf);
+    GPUArray<Scalar4> angmom_alt(N, m_exec_conf);
     m_angmom_alt.swap(angmom_alt);
-    TAG_ALLOCATION(m_angmom_alt);
-
+    
     // moments of inertia
-    GlobalArray<Scalar3> inertia_alt(N, m_exec_conf);
+    GPUArray<Scalar3> inertia_alt(N, m_exec_conf);
     m_inertia_alt.swap(inertia_alt);
-    TAG_ALLOCATION(m_inertia_alt);
-
+    
     // Net force
-    GlobalArray<Scalar4> net_force_alt(N, m_exec_conf);
+    GPUArray<Scalar4> net_force_alt(N, m_exec_conf);
     m_net_force_alt.swap(net_force_alt);
-    TAG_ALLOCATION(m_net_force_alt);
-
+    
     // Net virial
-    GlobalArray<Scalar> net_virial_alt(N, 6, m_exec_conf);
+    GPUArray<Scalar> net_virial_alt(N, 6, m_exec_conf);
     m_net_virial_alt.swap(net_virial_alt);
-    TAG_ALLOCATION(m_net_virial_alt);
-
+    
     // Net torque
-    GlobalArray<Scalar4> net_torque_alt(N, m_exec_conf);
+    GPUArray<Scalar4> net_torque_alt(N, m_exec_conf);
     m_net_torque_alt.swap(net_torque_alt);
-    TAG_ALLOCATION(m_net_torque_alt);
-
+    
         {
         ArrayHandle<Scalar4> h_net_force_alt(m_net_force_alt,
                                              access_location::host,
@@ -2958,8 +2927,8 @@ void ParticleData::addParticles(const std::vector<detail::pdata_element>& in)
  *        no ghost particles are present, because ghost particle values
  *        are undefined after calling this method.
  */
-void ParticleData::removeParticlesGPU(GlobalVector<detail::pdata_element>& out,
-                                      GlobalVector<unsigned int>& comm_flags)
+void ParticleData::removeParticlesGPU(GPUVector<detail::pdata_element>& out,
+                                      GPUVector<unsigned int>& comm_flags)
     {
     // this is the maximum number of elements we can possibly write to out
     unsigned int max_n_out = (unsigned int)out.getNumElements();
@@ -3150,7 +3119,7 @@ void ParticleData::removeParticlesGPU(GlobalVector<detail::pdata_element>& out,
     }
 
 //! Add new particle data (GPU version)
-void ParticleData::addParticlesGPU(const GlobalVector<detail::pdata_element>& in)
+void ParticleData::addParticlesGPU(const GPUVector<detail::pdata_element>& in)
     {
     unsigned int old_nparticles = getN();
     unsigned int num_add_ptls = (unsigned int)in.size();

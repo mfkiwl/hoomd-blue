@@ -29,10 +29,9 @@ MeshDefinition::MeshDefinition(std::shared_ptr<SystemDefinition> sysdef, unsigne
 
     {
     // allocate the max number of neighbors per type allowed
-    GlobalArray<unsigned int> globalN(n_types, m_sysdef->getParticleData()->getExecConf());
+    GPUArray<unsigned int> globalN(n_types, m_sysdef->getParticleData()->getExecConf());
     m_globalN.swap(globalN);
-    TAG_ALLOCATION(m_globalN);
-    }
+        }
 
 void MeshDefinition::setTypes(pybind11::list types)
     {
