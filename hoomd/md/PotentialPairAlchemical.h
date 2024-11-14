@@ -29,7 +29,7 @@ template<class evaluator> struct AlchemyPackage
     {
     bool calculate_derivatives = false;
     std::vector<std::array<Scalar, evaluator::num_alchemical_parameters>> alphas = {};
-    std::vector<ArrayHandle<Scalar>> force_handles = {};
+    std::vector<Scalar*> force_handles = {};
     std::vector<std::bitset<evaluator::num_alchemical_parameters>> compute_mask = {};
 
     AlchemyPackage(std::nullptr_t) { };
@@ -224,11 +224,11 @@ inline extra_pkg PotentialPairAlchemical<evaluator, extra_pkg, alpha_particle_ty
                 // zero force array and set current timestep for tracking
                 particle->zeroNetForce(timestep);
                 pkg.force_handles.push_back(
-                    ArrayHandle<Scalar>(particle->m_alchemical_derivatives));
+                    std::move(ArrayHandle<Scalar>(particle->m_alchemical_derivatives).data));
                 }
             else
                 {
-                pkg.force_handles.push_back(ArrayHandle<Scalar>(GPUArray<Scalar>()));
+                pkg.force_handles.push_back(nullptr);
                 }
         }
     return pkg;
@@ -257,9 +257,9 @@ inline void PotentialPairAlchemical<evaluator, extra_pkg, alpha_particle_type>::
             {
             if (mask[k])
                 {
-                pkg.force_handles[alchemy_index].data[i]
+                pkg.force_handles[alchemy_index][i]
                     += alchemical_derivatives[k] * Scalar(-0.5);
-                pkg.force_handles[alchemy_index].data[j]
+                pkg.force_handles[alchemy_index][j]
                     += alchemical_derivatives[k] * Scalar(-0.5);
                 }
             alchemy_index += m_alchemy_index.getNumElements();
@@ -288,6 +288,9 @@ PotentialPairAlchemical<evaluator, extra_pkg, alpha_particle_type>::pkgFinalize(
 template<class evaluator, typename extra_pkg, typename alpha_particle_type>
 void PotentialPairAlchemical<evaluator, extra_pkg, alpha_particle_type>::computeForces(
     uint64_t timestep)
+    {
+    extra_pkg pkg = pkgInitialize(timestep);
+
     {
     // start by updating the neighborlist
     m_nlist->compute(timestep);
@@ -325,8 +328,6 @@ void PotentialPairAlchemical<evaluator, extra_pkg, alpha_particle_type>::compute
     // need to start from a zero force, energy and virial
     memset((void*)h_force.data, 0, sizeof(Scalar4) * m_force.getNumElements());
     memset((void*)h_virial.data, 0, sizeof(Scalar) * m_virial.getNumElements());
-
-    extra_pkg pkg = pkgInitialize(timestep);
 
     // for each particle
     for (int i = 0; i < (int)m_pdata->getN(); i++)
@@ -496,6 +497,7 @@ void PotentialPairAlchemical<evaluator, extra_pkg, alpha_particle_type>::compute
             h_virial.data[5 * m_virial_pitch + mem_idx] += virialzzi;
             }
         }
+    }
     pkgFinalize(pkg);
 
     computeTailCorrection();

@@ -39,7 +39,7 @@ struct AlchemicalParticle
         }
 
     Scalar value; //!< Alpha space dimensionless position of the particle
-    uint64_t m_nextTimestep;
+    uint64_t m_nextTimestep = 0;
 
     protected:
     bool m_attached;
