@@ -95,6 +95,8 @@ pybind11::dict AreaConservationMeshForceCompute::getParams(std::string type)
  */
 void AreaConservationMeshForceCompute::computeForces(uint64_t timestep)
     {
+    unsigned int triN = m_mesh_data->getSize();
+
     precomputeParameter(); // precompute area
 
     assert(m_pdata);
@@ -136,8 +138,6 @@ void AreaConservationMeshForceCompute::computeForces(uint64_t timestep)
     Scalar area_virial[6];
     for (unsigned int i = 0; i < 6; i++)
         area_virial[i] = Scalar(0.0);
-
-    unsigned int triN = m_mesh_data->getSize();
 
     // loop over mesh triangles
     const unsigned int size = (unsigned int)m_mesh_data->getMeshTriangleData()->getN();

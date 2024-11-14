@@ -135,6 +135,9 @@ void HelfrichMeshForceComputeGPU::computeForces(uint64_t timestep)
  */
 void HelfrichMeshForceComputeGPU::computeSigma()
     {
+    const GPUArray<typename MeshBond::members_t>& gpu_meshbond_list
+        = this->m_mesh_data->getMeshBondData()->getGPUTable();
+
     // access the particle data arrays
     ArrayHandle<Scalar4> d_pos(m_pdata->getPositions(), access_location::device, access_mode::read);
     ArrayHandle<unsigned int> d_rtag(m_pdata->getRTags(),
@@ -148,8 +151,6 @@ void HelfrichMeshForceComputeGPU::computeSigma()
 
     BoxDim box = this->m_pdata->getGlobalBox();
 
-    const GPUArray<typename MeshBond::members_t>& gpu_meshbond_list
-        = this->m_mesh_data->getMeshBondData()->getGPUTable();
     const Index2D& gpu_table_indexer = this->m_mesh_data->getMeshBondData()->getGPUTableIndexer();
 
     ArrayHandle<typename MeshBond::members_t> d_gpu_meshbondlist(gpu_meshbond_list,

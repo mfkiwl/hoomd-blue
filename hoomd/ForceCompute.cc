@@ -245,12 +245,12 @@ pybind11::object ForceCompute::getEnergiesPython()
     std::vector<double> global_energy(dims[0]);
 
     // sort energies by particle tag
+    sortLocalTags();
     std::vector<double> local_energy;
     local_energy.reserve(m_pdata->getN());
     ArrayHandle<unsigned int> h_tag(m_pdata->getTags(), access_location::host, access_mode::read);
     ArrayHandle<unsigned int> h_rtag(m_pdata->getRTags(), access_location::host, access_mode::read);
     ArrayHandle<Scalar4> h_force(m_force, access_location::host, access_mode::read);
-    sortLocalTags();
     for (unsigned int i = 0; i < m_pdata->getN(); i++)
         {
         local_energy.push_back(h_force.data[h_rtag.data[m_local_tag[i]]].w);
@@ -297,11 +297,11 @@ pybind11::object ForceCompute::getForcesPython()
     std::vector<vec3<double>> global_force(dims[0]);
 
     // sort forces by particle tag
+    sortLocalTags();
     std::vector<vec3<double>> local_force(m_pdata->getN());
     ArrayHandle<unsigned int> h_tag(m_pdata->getTags(), access_location::host, access_mode::read);
     ArrayHandle<unsigned int> h_rtag(m_pdata->getRTags(), access_location::host, access_mode::read);
     ArrayHandle<Scalar4> h_force(m_force, access_location::host, access_mode::read);
-    sortLocalTags();
     for (unsigned int i = 0; i < m_pdata->getN(); i++)
         {
         local_force[i].x = h_force.data[h_rtag.data[m_local_tag[i]]].x;
@@ -353,11 +353,11 @@ pybind11::object ForceCompute::getTorquesPython()
     std::vector<vec3<double>> global_torque(dims[0]);
 
     // sort torques by particle tag
+    sortLocalTags();
     std::vector<vec3<double>> local_torque(m_pdata->getN());
     ArrayHandle<unsigned int> h_tag(m_pdata->getTags(), access_location::host, access_mode::read);
     ArrayHandle<unsigned int> h_rtag(m_pdata->getRTags(), access_location::host, access_mode::read);
     ArrayHandle<Scalar4> h_torque(m_torque, access_location::host, access_mode::read);
-    sortLocalTags();
     for (unsigned int i = 0; i < m_pdata->getN(); i++)
         {
         local_torque[i].x = h_torque.data[h_rtag.data[m_local_tag[i]]].x;
@@ -414,11 +414,11 @@ pybind11::object ForceCompute::getVirialsPython()
     std::vector<hoomd::detail::vec6<double>> global_virial(dims[0]);
 
     // sort virials by particle tag
+    sortLocalTags();
     std::vector<hoomd::detail::vec6<double>> local_virial(m_pdata->getN());
     ArrayHandle<unsigned int> h_tag(m_pdata->getTags(), access_location::host, access_mode::read);
     ArrayHandle<unsigned int> h_rtag(m_pdata->getRTags(), access_location::host, access_mode::read);
     ArrayHandle<Scalar> h_virial(m_virial, access_location::host, access_mode::read);
-    sortLocalTags();
     for (unsigned int i = 0; i < m_pdata->getN(); i++)
         {
         local_virial[i].xx = h_virial.data[m_virial_pitch * 0 + h_rtag.data[m_local_tag[i]]];

@@ -684,21 +684,9 @@ template<class Shape> void IntegratorHPMCMonoGPU<Shape>::update(uint64_t timeste
                 m_tuner_narrow->end();
 
                     {
-                    ArrayHandle<unsigned int> d_reject_out_of_cell(m_reject_out_of_cell,
-                                                                   access_location::device,
-                                                                   access_mode::read);
-                    ArrayHandle<unsigned int> d_reject(m_reject,
-                                                       access_location::device,
-                                                       access_mode::readwrite);
-                    ArrayHandle<unsigned int> d_reject_out(m_reject_out,
-                                                           access_location::device,
-                                                           access_mode::readwrite);
                     ArrayHandle<unsigned int> d_condition(m_condition,
                                                           access_location::device,
                                                           access_mode::readwrite);
-                    ArrayHandle<unsigned int> d_trial_move_type(m_trial_move_type,
-                                                                access_location::device,
-                                                                access_mode::read);
 
                     m_tuner_convergence->begin();
                     gpu::hpmc_check_convergence(d_trial_move_type.data,

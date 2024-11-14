@@ -59,6 +59,8 @@ VolumeConservationMeshForceComputeGPU::VolumeConservationMeshForceComputeGPU(
  */
 void VolumeConservationMeshForceComputeGPU::computeForces(uint64_t timestep)
     {
+    unsigned int triN = m_mesh_data->getSize();
+
     computeVolume();
 
     // access the particle data arrays
@@ -102,7 +104,7 @@ void VolumeConservationMeshForceComputeGPU::computeForces(uint64_t timestep)
                                                 m_virial.getPitch(),
                                                 m_pdata->getN(),
                                                 d_pts.data,
-                                                this->m_mesh_data->getSize(),
+                                                triN,
                                                 d_pos.data,
                                                 d_image.data,
                                                 box,
@@ -150,15 +152,16 @@ void VolumeConservationMeshForceComputeGPU::computeVolume()
         access_location::device,
         access_mode::read);
 
-    ArrayHandle<Scalar> d_partial_sumVol(m_partial_sum,
-                                         access_location::device,
-                                         access_mode::overwrite);
-    ArrayHandle<Scalar> d_sumVol(m_sum, access_location::device, access_mode::overwrite);
-
     unsigned int NTypes = m_mesh_data->getMeshTriangleData()->getNTypes();
 
     if (this->m_ignore_type)
         NTypes = 1;
+
+    {
+    ArrayHandle<Scalar> d_partial_sumVol(m_partial_sum,
+                                         access_location::device,
+                                         access_mode::overwrite);
+    ArrayHandle<Scalar> d_sumVol(m_sum, access_location::device, access_mode::overwrite);
 
     kernel::gpu_compute_volume_constraint_volume(d_sumVol.data,
                                                  d_partial_sumVol.data,
@@ -179,6 +182,7 @@ void VolumeConservationMeshForceComputeGPU::computeVolume()
         {
         CHECK_CUDA_ERROR();
         }
+    }
 
     ArrayHandle<Scalar> h_sumVol(m_sum, access_location::host, access_mode::read);
     ArrayHandle<Scalar> h_volume(m_volume, access_location::host, access_mode::overwrite);

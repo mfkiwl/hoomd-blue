@@ -93,6 +93,8 @@ pybind11::dict VolumeConservationMeshForceCompute::getParams(std::string type)
  */
 void VolumeConservationMeshForceCompute::computeForces(uint64_t timestep)
     {
+    unsigned int triN = m_mesh_data->getSize();
+
     computeVolume(); // precompute volume
 
     assert(m_pdata);
@@ -135,8 +137,6 @@ void VolumeConservationMeshForceCompute::computeForces(uint64_t timestep)
     Scalar helfrich_virial[6];
     for (unsigned int i = 0; i < 6; i++)
         helfrich_virial[i] = Scalar(0.0);
-
-    unsigned int triN = m_mesh_data->getSize();
 
     const unsigned int size = (unsigned int)m_mesh_data->getMeshTriangleData()->getN();
     for (unsigned int i = 0; i < size; i++)

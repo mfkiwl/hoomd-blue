@@ -435,8 +435,10 @@ void ForceComposite::pyCreateRigidBodies(pybind11::dict charges)
         createRigidBodies(std::unordered_map<unsigned int, std::vector<Scalar>>());
         return;
         }
-    ArrayHandle<unsigned int> h_body_len(m_body_len, access_location::host, access_mode::read);
+
     std::unordered_map<unsigned int, std::vector<Scalar>> charges_map;
+    {
+    ArrayHandle<unsigned int> h_body_len(m_body_len, access_location::host, access_mode::read);
     for (const auto& item : charges)
         {
         const auto type = m_pdata->getTypeByName(item.first.cast<std::string>());
@@ -456,6 +458,8 @@ void ForceComposite::pyCreateRigidBodies(pybind11::dict charges)
             }
         charges_map.insert({type, charges_vector});
         }
+    }
+    
     createRigidBodies(charges_map);
     }
 

@@ -88,6 +88,7 @@ PotentialPairGPU<evaluator>::PotentialPairGPU(std::shared_ptr<SystemDefinition> 
 
 template<class evaluator> void PotentialPairGPU<evaluator>::computeForces(uint64_t timestep)
     {
+    {
     this->m_nlist->compute(timestep);
 
     // The GPU implementation CANNOT handle a half neighborlist, error out now
@@ -163,6 +164,7 @@ template<class evaluator> void PotentialPairGPU<evaluator>::computeForces(uint64
         CHECK_CUDA_ERROR();
 
     m_tuner->end();
+    }
 
     // energy and pressure corrections
     this->computeTailCorrection();

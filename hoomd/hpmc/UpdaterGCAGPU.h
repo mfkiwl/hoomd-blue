@@ -634,8 +634,8 @@ void UpdaterGCAGPU<Shape>::findInteractions(uint64_t timestep,
                 CHECK_CUDA_ERROR();
             m_tuner_overlaps->end();
 
-            reallocate = checkReallocate();
             }
+        reallocate = checkReallocate();
         } while (reallocate);
     }
 

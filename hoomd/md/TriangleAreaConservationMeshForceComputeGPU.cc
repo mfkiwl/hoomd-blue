@@ -128,12 +128,14 @@ void TriangleAreaConservationMeshForceComputeGPU::computeArea()
 
     m_num_blocks = m_pdata->getN() / m_block_size + 1;
 
+    unsigned int NTypes = m_mesh_data->getMeshTriangleData()->getNTypes();
+
+    {
+
     ArrayHandle<Scalar> d_partial_sumA(m_partial_sum,
                                        access_location::device,
                                        access_mode::overwrite);
     ArrayHandle<Scalar> d_sumA(m_sum, access_location::device, access_mode::overwrite);
-
-    unsigned int NTypes = m_mesh_data->getMeshTriangleData()->getNTypes();
 
     kernel::gpu_compute_area_constraint_area(d_sumA.data,
                                              d_partial_sumA.data,
@@ -153,6 +155,7 @@ void TriangleAreaConservationMeshForceComputeGPU::computeArea()
         {
         CHECK_CUDA_ERROR();
         }
+    }
 
     ArrayHandle<Scalar> h_sumA(m_sum, access_location::host, access_mode::read);
     ArrayHandle<Scalar> h_area(m_area, access_location::host, access_mode::overwrite);

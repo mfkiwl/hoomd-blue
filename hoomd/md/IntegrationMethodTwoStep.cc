@@ -108,14 +108,14 @@ Scalar IntegrationMethodTwoStep::getRotationalDOF(std::shared_ptr<ParticleGroup>
 */
 void IntegrationMethodTwoStep::validateGroup()
     {
+    ArrayHandle<unsigned int> h_group_index(m_group->getIndexArray(),
+                                            access_location::host,
+                                            access_mode::read);
     ArrayHandle<unsigned int> h_body(m_pdata->getBodies(),
                                      access_location::host,
                                      access_mode::read);
     ArrayHandle<unsigned int> h_rtag(m_pdata->getRTags(), access_location::host, access_mode::read);
     ArrayHandle<unsigned int> h_tag(m_pdata->getTags(), access_location::host, access_mode::read);
-    ArrayHandle<unsigned int> h_group_index(m_group->getIndexArray(),
-                                            access_location::host,
-                                            access_mode::read);
 
     unsigned int error = 0;
     for (unsigned int gidx = 0; gidx < m_group->getNumMembers(); gidx++)

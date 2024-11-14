@@ -558,6 +558,7 @@ void PotentialPair<evaluator>::setROnPython(pybind11::tuple types, Scalar r_on)
 */
 template<class evaluator> void PotentialPair<evaluator>::computeForces(uint64_t timestep)
     {
+    {
     // start by updating the neighborlist
     m_nlist->compute(timestep);
 
@@ -761,6 +762,7 @@ template<class evaluator> void PotentialPair<evaluator>::computeForces(uint64_t 
             h_virial.data[5 * m_virial_pitch + mem_idx] += virialzzi;
             }
         }
+    }
 
     computeTailCorrection();
     }
