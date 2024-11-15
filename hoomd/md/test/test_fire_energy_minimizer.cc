@@ -270,8 +270,10 @@ void fire_smallsystem_test(fire_creator fire_creator1,
     std::shared_ptr<NeighborListTree> nlist(new NeighborListTree(sysdef, Scalar(0.3)));
     auto r_cut = std::make_shared<GPUArray<Scalar>>(nlist->getTypePairIndexer().getNumElements(),
                                                     exec_conf);
-    ArrayHandle<Scalar> h_r_cut(*r_cut, access_location::host, access_mode::overwrite);
-    h_r_cut.data[0] = 2.5;
+        {
+        ArrayHandle<Scalar> h_r_cut(*r_cut, access_location::host, access_mode::overwrite);
+        h_r_cut.data[0] = 2.5;
+        }
     nlist->addRCutMatrix(r_cut);
     std::shared_ptr<PotentialPairLJ> fc(new PotentialPairLJ(sysdef, nlist));
     fc->setRcut(0, 0, Scalar(2.5));
@@ -357,8 +359,10 @@ void fire_twoparticle_test(fire_creator fire_creator1,
     std::shared_ptr<NeighborListTree> nlist(new NeighborListTree(sysdef, Scalar(0.3)));
     auto r_cut = std::make_shared<GPUArray<Scalar>>(nlist->getTypePairIndexer().getNumElements(),
                                                     exec_conf);
-    ArrayHandle<Scalar> h_r_cut(*r_cut, access_location::host, access_mode::overwrite);
-    h_r_cut.data[0] = 3.0;
+        {
+        ArrayHandle<Scalar> h_r_cut(*r_cut, access_location::host, access_mode::overwrite);
+        h_r_cut.data[0] = 3.0;
+        }
     nlist->addRCutMatrix(r_cut);
     std::shared_ptr<PotentialPairLJ> fc(new PotentialPairLJ(sysdef, nlist));
     fc->setRcut(0, 0, Scalar(3.0));
