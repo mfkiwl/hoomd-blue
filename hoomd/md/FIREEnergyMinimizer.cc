@@ -150,7 +150,7 @@ void FIREEnergyMinimizer::update(uint64_t timestep)
     unsigned int total_group_size = 0;
 
         {
-        const GlobalArray<Scalar4>& net_force = m_pdata->getNetForce();
+        const GPUArray<Scalar4>& net_force = m_pdata->getNetForce();
         ArrayHandle<Scalar4> h_net_force(net_force, access_location::host, access_mode::read);
 
         // total potential energy

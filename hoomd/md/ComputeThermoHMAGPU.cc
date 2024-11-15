@@ -85,8 +85,8 @@ void ComputeThermoHMAGPU::computeProperties()
 
         { // scope these array handles so they are released before the additional terms are added
         // access the net force, pe, and virial
-        const GlobalArray<Scalar4>& net_force = m_pdata->getNetForce();
-        const GlobalArray<Scalar>& net_virial = m_pdata->getNetVirial();
+        const GPUArray<Scalar4>& net_force = m_pdata->getNetForce();
+        const GPUArray<Scalar>& net_virial = m_pdata->getNetVirial();
         ArrayHandle<Scalar4> d_net_force(net_force, access_location::device, access_mode::read);
         ArrayHandle<Scalar> d_net_virial(net_virial, access_location::device, access_mode::read);
         ArrayHandle<Scalar3> d_scratch(m_scratch, access_location::device, access_mode::overwrite);

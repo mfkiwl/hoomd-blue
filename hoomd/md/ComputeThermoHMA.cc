@@ -59,9 +59,8 @@ ComputeThermoHMA::ComputeThermoHMA(std::shared_ptr<SystemDefinition> sysdef,
         }
 #endif
 
-    GlobalArray<Scalar3> lat(snapshot.size, m_exec_conf);
+    GPUArray<Scalar3> lat(snapshot.size, m_exec_conf);
     m_lattice_site.swap(lat);
-    TAG_ALLOCATION(m_lattice_site);
     ArrayHandle<Scalar3> h_lattice_site(m_lattice_site,
                                         access_location::host,
                                         access_mode::overwrite);
@@ -106,7 +105,7 @@ void ComputeThermoHMA::computeProperties()
     assert(m_pdata);
 
     // access the net force, pe, and virial
-    const GlobalArray<Scalar>& net_virial = m_pdata->getNetVirial();
+    const GPUArray<Scalar>& net_virial = m_pdata->getNetVirial();
     ArrayHandle<Scalar4> h_net_force(m_pdata->getNetForce(),
                                      access_location::host,
                                      access_mode::read);

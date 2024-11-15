@@ -57,44 +57,36 @@ NeighborList::NeighborList(std::shared_ptr<SystemDefinition> sysdef, Scalar r_bu
     m_last_L_local = m_pdata->getBox().getNearestPlaneDistance();
 
     // allocate r_cut pairwise storage
-    GlobalArray<Scalar> r_cut(m_typpair_idx.getNumElements(), m_exec_conf);
+    GPUArray<Scalar> r_cut(m_typpair_idx.getNumElements(), m_exec_conf);
     m_r_cut.swap(r_cut);
-    TAG_ALLOCATION(m_r_cut);
 
     // holds the maximum rcut on a per type basis
-    GlobalArray<Scalar> rcut_max(m_pdata->getNTypes(), m_exec_conf);
+    GPUArray<Scalar> rcut_max(m_pdata->getNTypes(), m_exec_conf);
     m_rcut_max.swap(rcut_max);
-    TAG_ALLOCATION(m_rcut_max);
 
     // holds the base rcut on a per type basis
-    GlobalArray<Scalar> rcut_base(m_typpair_idx.getNumElements(), m_exec_conf);
+    GPUArray<Scalar> rcut_base(m_typpair_idx.getNumElements(), m_exec_conf);
     m_rcut_base.swap(rcut_base);
-    TAG_ALLOCATION(m_rcut_base);
 
     // allocate the r_listsq array which accelerates CPU calculations
-    GlobalArray<Scalar> r_listsq(m_typpair_idx.getNumElements(), m_exec_conf);
+    GPUArray<Scalar> r_listsq(m_typpair_idx.getNumElements(), m_exec_conf);
     m_r_listsq.swap(r_listsq);
-    TAG_ALLOCATION(m_r_listsq);
 
     // allocate the number of neighbors (per particle)
-    GlobalArray<unsigned int> n_neigh(m_pdata->getMaxN(), m_exec_conf);
+    GPUArray<unsigned int> n_neigh(m_pdata->getMaxN(), m_exec_conf);
     m_n_neigh.swap(n_neigh);
-    TAG_ALLOCATION(m_n_neigh);
 
     // default allocation of 4 neighbors per particle for the neighborlist
-    GlobalArray<unsigned int> nlist(4 * m_pdata->getMaxN(), m_exec_conf);
+    GPUArray<unsigned int> nlist(4 * m_pdata->getMaxN(), m_exec_conf);
     m_nlist.swap(nlist);
-    TAG_ALLOCATION(m_nlist);
 
     // allocate head list indexer
-    GlobalArray<size_t> head_list(m_pdata->getMaxN(), m_exec_conf);
+    GPUArray<size_t> head_list(m_pdata->getMaxN(), m_exec_conf);
     m_head_list.swap(head_list);
-    TAG_ALLOCATION(m_head_list);
 
     // allocate the max number of neighbors per type allowed
-    GlobalArray<unsigned int> Nmax(m_pdata->getNTypes(), m_exec_conf);
+    GPUArray<unsigned int> Nmax(m_pdata->getNTypes(), m_exec_conf);
     m_Nmax.swap(Nmax);
-    TAG_ALLOCATION(m_Nmax);
 
         // flood Nmax with 4s initially
         {
@@ -106,9 +98,8 @@ NeighborList::NeighborList(std::shared_ptr<SystemDefinition> sysdef, Scalar r_bu
         }
 
     // allocate overflow flags for the number of neighbors per type
-    GlobalArray<unsigned int> conditions(m_pdata->getNTypes(), m_exec_conf);
+    GPUArray<unsigned int> conditions(m_pdata->getNTypes(), m_exec_conf);
     m_conditions.swap(conditions);
-    TAG_ALLOCATION(m_conditions);
 
         {
         // initially reset conditions
@@ -119,29 +110,24 @@ NeighborList::NeighborList(std::shared_ptr<SystemDefinition> sysdef, Scalar r_bu
         }
 
     // allocate m_last_pos
-    GlobalArray<Scalar4> last_pos(m_pdata->getMaxN(), m_exec_conf);
+    GPUArray<Scalar4> last_pos(m_pdata->getMaxN(), m_exec_conf);
     m_last_pos.swap(last_pos);
-    TAG_ALLOCATION(m_last_pos);
 
     // allocate initial memory allowing 4 exclusions per particle (will grow to match specified
     // exclusions)
 
     // note: this breaks O(N/P) memory scaling
-    GlobalVector<unsigned int> n_ex_tag(m_pdata->getRTags().size(), m_exec_conf);
+    GPUVector<unsigned int> n_ex_tag(m_pdata->getRTags().size(), m_exec_conf);
     m_n_ex_tag.swap(n_ex_tag);
-    TAG_ALLOCATION(m_n_ex_tag);
 
-    GlobalArray<unsigned int> ex_list_tag(m_pdata->getRTags().size(), 1, m_exec_conf);
+    GPUArray<unsigned int> ex_list_tag(m_pdata->getRTags().size(), 1, m_exec_conf);
     m_ex_list_tag.swap(ex_list_tag);
-    TAG_ALLOCATION(m_ex_list_tag);
 
-    GlobalArray<unsigned int> n_ex_idx(m_pdata->getMaxN(), m_exec_conf);
+    GPUArray<unsigned int> n_ex_idx(m_pdata->getMaxN(), m_exec_conf);
     m_n_ex_idx.swap(n_ex_idx);
-    TAG_ALLOCATION(m_n_ex_idx);
 
-    GlobalArray<unsigned int> ex_list_idx(m_pdata->getMaxN(), 1, m_exec_conf);
+    GPUArray<unsigned int> ex_list_idx(m_pdata->getMaxN(), 1, m_exec_conf);
     m_ex_list_idx.swap(ex_list_idx);
-    TAG_ALLOCATION(m_ex_list_idx);
 
     // reset exclusions
     resizeAndClearExclusions();

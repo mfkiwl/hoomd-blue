@@ -212,10 +212,10 @@ class PYBIND11_EXPORT ForceComposite : public MolecularForceCompute
     /// The number of free particles in the simulation box.
     unsigned int m_n_free_particles_global;
 
-    GlobalArray<unsigned int> m_body_types;  //!< Constituent particle types per type id (2D)
-    GlobalArray<Scalar3> m_body_pos;         //!< Constituent particle offsets per type id (2D)
-    GlobalArray<Scalar4> m_body_orientation; //!< Constituent particle orientations per type id (2D)
-    GlobalArray<unsigned int> m_body_len;    //!< Length of body per type id
+    GPUArray<unsigned int> m_body_types;  //!< Constituent particle types per type id (2D)
+    GPUArray<Scalar3> m_body_pos;         //!< Constituent particle offsets per type id (2D)
+    GPUArray<Scalar4> m_body_orientation; //!< Constituent particle orientations per type id (2D)
+    GPUArray<unsigned int> m_body_len;    //!< Length of body per type id
 
     Index2D m_body_idx; //!< Indexer for body parameters
 

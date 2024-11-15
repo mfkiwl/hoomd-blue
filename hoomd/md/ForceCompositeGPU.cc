@@ -35,20 +35,18 @@ ForceCompositeGPU::ForceCompositeGPU(std::shared_ptr<SystemDefinition> sysdef)
                                           "update_composite"));
     m_autotuners.insert(m_autotuners.end(), {m_tuner_force, m_tuner_virial, m_tuner_update});
 
-    GlobalArray<uint2> flag(1, m_exec_conf);
+    GPUArray<uint2> flag(1, m_exec_conf);
     std::swap(m_flag, flag);
 
         {
         ArrayHandle<uint2> h_flag(m_flag, access_location::host, access_mode::overwrite);
         *h_flag.data = make_uint2(0, 0);
         }
-    GlobalVector<unsigned int> rigid_center(m_exec_conf);
+    GPUVector<unsigned int> rigid_center(m_exec_conf);
     m_rigid_center.swap(rigid_center);
-    TAG_ALLOCATION(m_rigid_center);
 
-    GlobalVector<unsigned int> lookup_center(m_exec_conf);
+    GPUVector<unsigned int> lookup_center(m_exec_conf);
     m_lookup_center.swap(lookup_center);
-    TAG_ALLOCATION(m_lookup_center);
     }
 
 ForceCompositeGPU::~ForceCompositeGPU() { }
@@ -66,8 +64,8 @@ void ForceCompositeGPU::computeForces(uint64_t timestep)
     const Index2D& molecule_indexer = getMoleculeIndexer();
     unsigned int nmol = molecule_indexer.getH();
 
-    const GlobalVector<unsigned int>& molecule_list = getMoleculeList();
-    const GlobalVector<unsigned int>& molecule_length = getMoleculeLengths();
+    const GPUVector<unsigned int>& molecule_list = getMoleculeList();
+    const GPUVector<unsigned int>& molecule_length = getMoleculeLengths();
 
     ArrayHandle<unsigned int> d_molecule_length(molecule_length,
                                                 access_location::device,
@@ -253,7 +251,7 @@ void ForceCompositeGPU::updateCompositeParticles(uint64_t timestep)
         }
 
     // access molecule order
-    const GlobalArray<unsigned int>& molecule_length = getMoleculeLengths();
+    const GPUArray<unsigned int>& molecule_length = getMoleculeLengths();
 
     ArrayHandle<unsigned int> d_molecule_order(getMoleculeOrder(),
                                                access_location::device,

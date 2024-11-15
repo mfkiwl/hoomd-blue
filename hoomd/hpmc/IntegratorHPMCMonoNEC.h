@@ -34,7 +34,7 @@ template<class Shape> class IntegratorHPMCMonoNEC : public IntegratorHPMCMono<Sh
         m_chain_probability;  //!< how often we do a chain. Replaces translation_move_probability
     Scalar m_update_fraction; //!< if we perform chains we update several particles as one move
 
-    GlobalArray<hpmc_nec_counters_t> m_nec_count_total; //!< counters for chain statistics
+    GPUArray<hpmc_nec_counters_t> m_nec_count_total; //!< counters for chain statistics
 
     // statistics - pressure
     // We follow the equations of Isobe and Krauth, Journal of Chemical Physics 143, 084509 (2015)
@@ -237,7 +237,7 @@ IntegratorHPMCMonoNEC<Shape>::IntegratorHPMCMonoNEC(std::shared_ptr<SystemDefini
     m_chain_probability = static_cast<unsigned int>(0.01 * 65535);
     m_chain_time = 1.0;
 
-    GlobalArray<hpmc_nec_counters_t> nec_counters(1, this->m_exec_conf);
+    GPUArray<hpmc_nec_counters_t> nec_counters(1, this->m_exec_conf);
     m_nec_count_total.swap(nec_counters);
     }
 

@@ -35,16 +35,14 @@ HelfrichMeshForceCompute::HelfrichMeshForceCompute(std::shared_ptr<SystemDefinit
     m_params.swap(params);
 
     // allocate memory for the per-type normal verctors
-    GlobalArray<Scalar3> tmp_sigma_dash(m_pdata->getMaxN(), m_exec_conf);
+    GPUArray<Scalar3> tmp_sigma_dash(m_pdata->getMaxN(), m_exec_conf);
 
     m_sigma_dash.swap(tmp_sigma_dash);
-    TAG_ALLOCATION(m_sigma_dash);
 
     // allocate memory for the per-type normal verctors
-    GlobalArray<Scalar> tmp_sigma(m_pdata->getMaxN(), m_exec_conf);
+    GPUArray<Scalar> tmp_sigma(m_pdata->getMaxN(), m_exec_conf);
 
     m_sigma.swap(tmp_sigma);
-    TAG_ALLOCATION(m_sigma);
     }
 
 HelfrichMeshForceCompute::~HelfrichMeshForceCompute()

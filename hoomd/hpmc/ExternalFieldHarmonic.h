@@ -348,30 +348,27 @@ template<class Shape> class ExternalFieldHarmonic : public ExternalFieldMono<Sha
         return std::make_pair(energy_translational, energy_rotational);
         } // end getEnergies(uin64_t)
 
-    //! Calculate the change in energy from moving a single particle with tag = index
+    //! Calculate the change in energy from moving a single particle
     double energydiff(uint64_t timestep,
-                      const unsigned int& index,
+                      const unsigned int& tag,
                       const vec3<Scalar>& position_old,
                       const Shape& shape_old,
                       const vec3<Scalar>& position_new,
                       const Shape& shape_new) override
         {
-        double old_U = calcE(timestep, index, position_old, shape_old),
-               new_U = calcE(timestep, index, position_new, shape_new);
+        double old_U = calcE(timestep, tag, position_old, shape_old),
+               new_U = calcE(timestep, tag, position_new, shape_new);
         return new_U - old_U;
         }
 
     protected:
     //! Calculate the energy associated with the deviation of a single particle from its reference
     //! position
-    Scalar calcE_trans(uint64_t timestep, const unsigned int& index, const vec3<Scalar>& position)
+    Scalar calcE_trans(uint64_t timestep, const unsigned int& tag, const vec3<Scalar>& position)
         {
-        ArrayHandle<unsigned int> h_tags(m_pdata->getTags(),
-                                         access_location::host,
-                                         access_mode::read);
         vec3<Scalar> origin(m_pdata->getOrigin());
         const BoxDim box = this->m_pdata->getGlobalBox();
-        vec3<Scalar> r0 = m_reference_positions[h_tags.data[index]];
+        vec3<Scalar> r0 = m_reference_positions[tag];
         vec3<Scalar> dr = vec3<Scalar>(box.minImage(vec_to_scalar3(r0 - position + origin)));
         Scalar k = (*m_k_translational)(timestep);
         return Scalar(0.5) * k * dot(dr, dr);
@@ -379,13 +376,10 @@ template<class Shape> class ExternalFieldHarmonic : public ExternalFieldMono<Sha
 
     //! Calculate the energy associated with the deviation of a single particle from its reference
     //! orientation
-    Scalar calcE_rot(uint64_t timestep, const unsigned int& index, const quat<Scalar>& orientation)
+    Scalar calcE_rot(uint64_t timestep, const unsigned int& tag, const quat<Scalar>& orientation)
         {
         assert(m_symmetry.size());
-        ArrayHandle<unsigned int> h_tags(m_pdata->getTags(),
-                                         access_location::host,
-                                         access_mode::read);
-        quat<Scalar> q0 = m_reference_orientations[h_tags.data[index]];
+        quat<Scalar> q0 = m_reference_orientations[tag];
         Scalar dqmin = 0.0;
         for (size_t i = 0; i < m_symmetry.size(); i++)
             {
@@ -404,22 +398,22 @@ template<class Shape> class ExternalFieldHarmonic : public ExternalFieldMono<Sha
      * acceptance criteria, since it's the energy difference that matters for the latter.
      */
     Scalar calcE(uint64_t timestep,
-                 const unsigned int& index,
+                 const unsigned int& tag,
                  const vec3<Scalar>& position,
                  const quat<Scalar>& orientation)
         {
         Scalar energy = 0.0;
-        energy += calcE_trans(timestep, index, position);
-        energy += calcE_rot(timestep, index, orientation);
+        energy += calcE_trans(timestep, tag, position);
+        energy += calcE_rot(timestep, tag, orientation);
         return energy;
         }
 
     Scalar calcE(uint64_t timestep,
-                 const unsigned int& index,
+                 const unsigned int& tag,
                  const vec3<Scalar>& position,
                  const Shape& shape)
         {
-        return calcE(timestep, index, position, shape.orientation);
+        return calcE(timestep, tag, position, shape.orientation);
         }
 
     private:

@@ -592,7 +592,7 @@ template<class Shape> class ExternalFieldWall : public ExternalFieldMono<Shape>
     ~ExternalFieldWall() { }
 
     double energydiff(uint64_t timestep,
-                      const unsigned int& index,
+                      const unsigned int& tag,
                       const vec3<Scalar>& position_old,
                       const Shape& shape_old,
                       const vec3<Scalar>& position_new,
@@ -712,14 +712,13 @@ template<class Shape> class ExternalFieldWall : public ExternalFieldMono<Shape>
         }
 
     bool wall_overlap(uint64_t timestep,
-                      const unsigned int& index,
+                      const unsigned int& tag,
                       const vec3<Scalar>& position_old,
                       const Shape& shape_old,
                       const vec3<Scalar>& position_new,
                       const Shape& shape_new)
         {
-        double energy
-            = energydiff(timestep, index, position_old, shape_old, position_new, shape_new);
+        double energy = energydiff(timestep, tag, position_old, shape_old, position_new, shape_new);
         return (energy == INFINITY);
         }
 

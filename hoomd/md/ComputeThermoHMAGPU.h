@@ -35,8 +35,8 @@ class PYBIND11_EXPORT ComputeThermoHMAGPU : public ComputeThermoHMA
     virtual ~ComputeThermoHMAGPU();
 
     protected:
-    GlobalVector<Scalar3> m_scratch; //!< Scratch space for partial sums
-    unsigned int m_block_size;       //!< Block size executed
+    GPUVector<Scalar3> m_scratch; //!< Scratch space for partial sums
+    unsigned int m_block_size;    //!< Block size executed
 
     //! Does the actual computation
     virtual void computeProperties();

@@ -88,10 +88,9 @@ neighboring ranks.
 
 ## Data model
 
-If you think HOOMD-blue's data model is unnecessarily complex, you are correct. Understand that it
-is a product of continual development since the year 2007 and has grown along with improving CUDA
-functionality. No developer has the time or inclination to completely refactor the entire codebase
-to be consistent with the current features. New code should follow the guidelines documented here.
+HOOMD-blue's data model is a product of continual development since the year 2007 and has grown
+along with improving CUDA functionality, but has not been refactored to be entirely
+self-consistent.
 
 Base data types:
 
@@ -110,16 +109,14 @@ Array data:
 
 * `GPUArray<T>` - Template array data type that stores two copies of the data, one on the CPU and
   one on the GPU. Use `ArrayHandle` to request a pointer to the data, which will copy the most
-  recently written data to the requested device when needed. New code should use `ArrayHandle` to
-  access existing data structures that use `GPUArray`. New code **should not** define new `GPUArray`
-  arrays, use `GlobalArray` or `std::vector` with a managed allocator.
-* `GlobalArray<T>` - Template array data type that stores one copy of the data in CUDA's unified
-  memory in single process, multi-GPU execution. When using a single GPU per process, falls back on
-  `GPUArray`. Use `ArrayHandle` to access data in `GlobalArray`.
+  recently written data to the requested device when needed.
 * `std::vector<T, hoomd::detail::managed_allocator<T>>` - Store array data in a `std::vector` in
-  CUDA's unifed memory. This data type is useful for parameter arrays that are exposed to Python.
+  CUDA's unified memory. This data type is useful for parameter arrays that are exposed to Python.
 
-When using `GlobalArray` or `std::vector<T, hoomd::detail::managed_allocator<T>>`, call
+Use `GPUArray<T>` for most data types. When unified memory is required, use the managed
+allocator.
+
+When using `std::vector<T, hoomd::detail::managed_allocator<T>>`, call
 `cudaMemadvise` to set the appropriate memory hints for the array. Small parameter arrays should be
 set to `cudaMemAdviseSetReadMostly`.
 

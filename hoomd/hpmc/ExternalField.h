@@ -85,7 +85,7 @@ template<class Shape> class ExternalFieldMono : public ExternalField
 
     //! method to calculate the energy difference for the proposed move.
     virtual double energydiff(uint64_t timestep,
-                              const unsigned int& index,
+                              const unsigned int& tag,
                               const vec3<Scalar>& position_old,
                               const Shape& shape_old,
                               const vec3<Scalar>& position_new,

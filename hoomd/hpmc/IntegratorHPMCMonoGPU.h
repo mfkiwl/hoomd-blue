@@ -10,7 +10,6 @@
 
 #include "hoomd/Autotuner.h"
 #include "hoomd/GPUVector.h"
-#include "hoomd/GlobalArray.h"
 #include "hoomd/RNGIdentifiers.h"
 #include "hoomd/RandomNumbers.h"
 
@@ -44,9 +43,6 @@ namespace detail
    in the current shuffled sequence.
 
     NOTE: this should supersede UpdateOrder
-
-    \note we use GPUArrays instead of GlobalArrays currently to allow host access to the shuffled
-   order without an unnecessary hipDeviceSynchronize()
 
     \ingroup hpmc_data_structs
 */
@@ -109,7 +105,7 @@ class UpdateOrderGPU
     //! Access element of the shuffled order
     unsigned int operator[](unsigned int i)
         {
-        const GlobalVector<unsigned int>& update_order
+        const GPUVector<unsigned int>& update_order
             = m_is_reversed ? m_reverse_update_order : m_update_order;
         ArrayHandle<unsigned int> h_update_order(update_order,
                                                  access_location::host,
@@ -118,7 +114,7 @@ class UpdateOrderGPU
         }
 
     //! Access the underlying GlobalVector
-    const GlobalVector<unsigned int>& get() const
+    const GPUVector<unsigned int>& get() const
         {
         if (m_is_reversed)
             return m_reverse_update_order;
@@ -127,9 +123,9 @@ class UpdateOrderGPU
         }
 
     private:
-    bool m_is_reversed;                                //!< True if order is reversed
-    GlobalVector<unsigned int> m_update_order;         //!< Update order
-    GlobalVector<unsigned int> m_reverse_update_order; //!< Inverse permutation
+    bool m_is_reversed;                             //!< True if order is reversed
+    GPUVector<unsigned int> m_update_order;         //!< Update order
+    GPUVector<unsigned int> m_reverse_update_order; //!< Inverse permutation
     };
 
     } // end namespace detail
@@ -163,9 +159,9 @@ template<class Shape> class IntegratorHPMCMonoGPU : public IntegratorHPMCMono<Sh
     uint3 m_last_dim;               //!< Dimensions of the cell list on the last call to update
     unsigned int m_last_nmax;       //!< Last cell list NMax value allocated in excell
 
-    GlobalArray<unsigned int> m_excell_idx;  //!< Particle indices in expanded cells
-    GlobalArray<unsigned int> m_excell_size; //!< Number of particles in each expanded cell
-    Index2D m_excell_list_indexer;           //!< Indexer to access elements of the excell_idx list
+    GPUArray<unsigned int> m_excell_idx;  //!< Particle indices in expanded cells
+    GPUArray<unsigned int> m_excell_size; //!< Number of particles in each expanded cell
+    Index2D m_excell_list_indexer;        //!< Indexer to access elements of the excell_idx list
 
     /// Autotuner for proposing moves.
     std::shared_ptr<Autotuner<1>> m_tuner_moves;
@@ -182,21 +178,21 @@ template<class Shape> class IntegratorHPMCMonoGPU : public IntegratorHPMCMono<Sh
     /// Autotuner for convergence check.
     std::shared_ptr<Autotuner<1>> m_tuner_convergence;
 
-    GlobalArray<Scalar4> m_trial_postype;           //!< New positions (and type) of particles
-    GlobalArray<Scalar4> m_trial_orientation;       //!< New orientations
-    GlobalArray<Scalar4> m_trial_vel;               //!< New velocities (auxilliary variables)
-    GlobalArray<unsigned int> m_trial_move_type;    //!< Flags to indicate which type of move
-    GlobalArray<unsigned int> m_reject_out_of_cell; //!< Flags to reject particle moves if they are
-                                                    //!< out of the cell, per particle
-    GlobalArray<unsigned int> m_reject; //!< Flags to reject particle moves, per particle
-    GlobalArray<unsigned int>
+    GPUArray<Scalar4> m_trial_postype;           //!< New positions (and type) of particles
+    GPUArray<Scalar4> m_trial_orientation;       //!< New orientations
+    GPUArray<Scalar4> m_trial_vel;               //!< New velocities (auxilliary variables)
+    GPUArray<unsigned int> m_trial_move_type;    //!< Flags to indicate which type of move
+    GPUArray<unsigned int> m_reject_out_of_cell; //!< Flags to reject particle moves if they are
+                                                 //!< out of the cell, per particle
+    GPUArray<unsigned int> m_reject;             //!< Flags to reject particle moves, per particle
+    GPUArray<unsigned int>
         m_reject_out; //!< Flags to reject particle moves, per particle (temporary)
 
     detail::UpdateOrderGPU m_update_order; //!< Particle update order
-    GlobalArray<unsigned int> m_condition; //!< Condition of convergence check
+    GPUArray<unsigned int> m_condition;    //!< Condition of convergence check
 
     //! For energy evaluation
-    GlobalArray<Scalar> m_additive_cutoff; //!< Per-type additive cutoffs from patch potential
+    GPUArray<Scalar> m_additive_cutoff; //!< Per-type additive cutoffs from patch potential
 
     hipStream_t m_narrow_phase_stream; //!< Stream for narrow phase kernel
 
@@ -283,44 +279,33 @@ IntegratorHPMCMonoGPU<Shape>::IntegratorHPMCMonoGPU(std::shared_ptr<SystemDefini
                                m_tuner_narrow});
 
     // initialize memory
-    GlobalArray<Scalar4>(1, this->m_exec_conf).swap(m_trial_postype);
-    TAG_ALLOCATION(m_trial_postype);
+    GPUArray<Scalar4>(1, this->m_exec_conf).swap(m_trial_postype);
 
-    GlobalArray<Scalar4>(1, this->m_exec_conf).swap(m_trial_orientation);
-    TAG_ALLOCATION(m_trial_orientation);
+    GPUArray<Scalar4>(1, this->m_exec_conf).swap(m_trial_orientation);
 
-    GlobalArray<Scalar4>(1, this->m_exec_conf).swap(m_trial_vel);
-    TAG_ALLOCATION(m_trial_vel);
+    GPUArray<Scalar4>(1, this->m_exec_conf).swap(m_trial_vel);
 
-    GlobalArray<unsigned int>(1, this->m_exec_conf).swap(m_trial_move_type);
-    TAG_ALLOCATION(m_trial_move_type);
+    GPUArray<unsigned int>(1, this->m_exec_conf).swap(m_trial_move_type);
 
-    GlobalArray<unsigned int>(1, this->m_exec_conf).swap(m_reject_out_of_cell);
-    TAG_ALLOCATION(m_reject_out_of_cell);
+    GPUArray<unsigned int>(1, this->m_exec_conf).swap(m_reject_out_of_cell);
 
-    GlobalArray<unsigned int>(1, this->m_exec_conf).swap(m_reject);
-    TAG_ALLOCATION(m_reject);
+    GPUArray<unsigned int>(1, this->m_exec_conf).swap(m_reject);
 
-    GlobalArray<unsigned int>(1, this->m_exec_conf).swap(m_reject_out);
-    TAG_ALLOCATION(m_reject_out);
+    GPUArray<unsigned int>(1, this->m_exec_conf).swap(m_reject_out);
 
-    GlobalArray<unsigned int>(1, this->m_exec_conf).swap(m_condition);
-    TAG_ALLOCATION(m_condition);
+    GPUArray<unsigned int>(1, this->m_exec_conf).swap(m_condition);
 
-    GlobalArray<unsigned int> excell_size(0, this->m_exec_conf);
+    GPUArray<unsigned int> excell_size(0, this->m_exec_conf);
     m_excell_size.swap(excell_size);
-    TAG_ALLOCATION(m_excell_size);
 
-    GlobalArray<unsigned int> excell_idx(0, this->m_exec_conf);
+    GPUArray<unsigned int> excell_idx(0, this->m_exec_conf);
     m_excell_idx.swap(excell_idx);
-    TAG_ALLOCATION(m_excell_idx);
 
     this->m_exec_conf->setDevice();
     hipStreamCreate(&m_narrow_phase_stream);
 
     // patch
-    GlobalArray<Scalar>(this->m_pdata->getNTypes(), this->m_exec_conf).swap(m_additive_cutoff);
-    TAG_ALLOCATION(m_additive_cutoff);
+    GPUArray<Scalar>(this->m_pdata->getNTypes(), this->m_exec_conf).swap(m_additive_cutoff);
     }
 
 template<class Shape> IntegratorHPMCMonoGPU<Shape>::~IntegratorHPMCMonoGPU()
@@ -699,21 +684,9 @@ template<class Shape> void IntegratorHPMCMonoGPU<Shape>::update(uint64_t timeste
                 m_tuner_narrow->end();
 
                     {
-                    ArrayHandle<unsigned int> d_reject_out_of_cell(m_reject_out_of_cell,
-                                                                   access_location::device,
-                                                                   access_mode::read);
-                    ArrayHandle<unsigned int> d_reject(m_reject,
-                                                       access_location::device,
-                                                       access_mode::readwrite);
-                    ArrayHandle<unsigned int> d_reject_out(m_reject_out,
-                                                           access_location::device,
-                                                           access_mode::readwrite);
                     ArrayHandle<unsigned int> d_condition(m_condition,
                                                           access_location::device,
                                                           access_mode::readwrite);
-                    ArrayHandle<unsigned int> d_trial_move_type(m_trial_move_type,
-                                                                access_location::device,
-                                                                access_mode::read);
 
                     m_tuner_convergence->begin();
                     gpu::hpmc_check_convergence(d_trial_move_type.data,

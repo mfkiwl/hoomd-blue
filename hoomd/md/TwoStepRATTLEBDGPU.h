@@ -96,7 +96,7 @@ template<class Manifold> void TwoStepRATTLEBDGPU<Manifold>::integrateStepOne(uin
                                             access_mode::read);
     unsigned int group_size = this->m_group->getNumMembers();
     const unsigned int D = this->m_sysdef->getNDimensions();
-    const GlobalArray<Scalar4>& net_force = this->m_pdata->getNetForce();
+    const GPUArray<Scalar4>& net_force = this->m_pdata->getNetForce();
 
     ArrayHandle<Scalar4> d_pos(this->m_pdata->getPositions(),
                                access_location::device,
@@ -176,8 +176,8 @@ template<class Manifold> void TwoStepRATTLEBDGPU<Manifold>::includeRATTLEForce(u
                                             access_location::device,
                                             access_mode::read);
     unsigned int group_size = this->m_group->getNumMembers();
-    const GlobalArray<Scalar4>& net_force = this->m_pdata->getNetForce();
-    const GlobalArray<Scalar>& net_virial = this->m_pdata->getNetVirial();
+    const GPUArray<Scalar4>& net_force = this->m_pdata->getNetForce();
+    const GPUArray<Scalar>& net_virial = this->m_pdata->getNetVirial();
 
     ArrayHandle<Scalar4> d_pos(this->m_pdata->getPositions(),
                                access_location::device,

@@ -133,7 +133,6 @@ set(_hoomd_headers
     Filesystem.h
     ForceCompute.h
     ForceConstraint.h
-    GlobalArray.h
     GPUArray.h
     GPUFlags.h
     GPUVector.h

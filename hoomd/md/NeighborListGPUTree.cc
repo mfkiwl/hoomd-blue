@@ -600,7 +600,7 @@ void NeighborListGPUTree::updateImageVectors()
     // reallocate memory if necessary
     if (m_n_images > m_image_list.getNumElements())
         {
-        GlobalVector<Scalar3> image_list(m_n_images, m_exec_conf);
+        GPUVector<Scalar3> image_list(m_n_images, m_exec_conf);
         m_image_list.swap(image_list);
         }
 

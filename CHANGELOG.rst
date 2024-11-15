@@ -63,6 +63,8 @@ Change Log
   (`#1932 <https://github.com/glotzerlab/hoomd-blue/pull/1932>`__).
 * ``Device.gpu_ids`` and the single-process multi-GPU feature
   (`#1936 <https://github.com/glotzerlab/hoomd-blue/pull/1936>`__).
+* [c++] ``GlobalArray`` and ``GlobalVector``
+  (`#1938 <https://github.com/glotzerlab/hoomd-blue/pull/1938>`__).
 
 4.x
 ---

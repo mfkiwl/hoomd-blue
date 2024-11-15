@@ -37,8 +37,8 @@ class EAMForceComputeGPU : public EAMForceCompute
     virtual ~EAMForceComputeGPU();
 
     protected:
-    GlobalArray<kernel::EAMTexInterData> m_eam_data; //!< EAM parameters to be communicated
-    std::shared_ptr<Autotuner<1>> m_tuner;           //!< autotuner for block size
+    GPUArray<kernel::EAMTexInterData> m_eam_data; //!< EAM parameters to be communicated
+    std::shared_ptr<Autotuner<1>> m_tuner;        //!< autotuner for block size
     //! Actually compute the forces
     virtual void computeForces(uint64_t timestep);
     };

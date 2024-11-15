@@ -4,7 +4,6 @@
 #include "NeighborList.h"
 #include "NeighborListGPU.cuh"
 #include "hoomd/Autotuner.h"
-#include "hoomd/GlobalArray.h"
 
 /*! \file NeighborListGPU.h
     \brief Declares the NeighborListGPU class
@@ -40,9 +39,8 @@ class PYBIND11_EXPORT NeighborListGPU : public NeighborList
         {
         m_exec_conf->msg->notice(5) << "Constructing NeighborlistGPU" << std::endl;
 
-        GlobalArray<unsigned int> flags(1, m_exec_conf);
+        GPUArray<unsigned int> flags(1, m_exec_conf);
         std::swap(m_flags, flags);
-        TAG_ALLOCATION(m_flags);
 
             {
             ArrayHandle<unsigned int> h_flags(m_flags,
@@ -56,9 +54,8 @@ class PYBIND11_EXPORT NeighborListGPU : public NeighborList
         m_checkn = 1;
 
         // flag to say how big to resize
-        GlobalArray<size_t> req_size_nlist(1, m_exec_conf);
+        GPUArray<size_t> req_size_nlist(1, m_exec_conf);
         std::swap(m_req_size_nlist, req_size_nlist);
-        TAG_ALLOCATION(m_req_size_nlist);
 
         // Initialize autotuners.
         m_tuner_filter.reset(new Autotuner<1>({AutotunerBase::makeBlockSizeRange(m_exec_conf)},
@@ -76,9 +73,9 @@ class PYBIND11_EXPORT NeighborListGPU : public NeighborList
     virtual void updateExListIdx();
 
     protected:
-    GlobalArray<unsigned int> m_flags; //!< Storage for device flags on the GPU
+    GPUArray<unsigned int> m_flags; //!< Storage for device flags on the GPU
 
-    GlobalArray<size_t> m_req_size_nlist; //!< Flag to hold the required size of the neighborlist
+    GPUArray<size_t> m_req_size_nlist; //!< Flag to hold the required size of the neighborlist
 
     //! Builds the neighbor list
     virtual void buildNlist(uint64_t timestep);
@@ -109,7 +106,7 @@ class PYBIND11_EXPORT NeighborListGPU : public NeighborList
     private:
     std::shared_ptr<Autotuner<1>> m_tuner_filter; //!< Autotuner for filter block size
 
-    GlobalArray<unsigned int>
+    GPUArray<unsigned int>
         m_alt_head_list; //!< Alternate array to hold the head list from prefix sum
     };
 

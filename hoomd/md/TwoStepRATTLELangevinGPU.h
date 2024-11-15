@@ -207,7 +207,7 @@ void TwoStepRATTLELangevinGPU<Manifold>::integrateStepOne(uint64_t timestep)
 template<class Manifold>
 void TwoStepRATTLELangevinGPU<Manifold>::integrateStepTwo(uint64_t timestep)
     {
-    const GlobalArray<Scalar4>& net_force = this->m_pdata->getNetForce();
+    const GPUArray<Scalar4>& net_force = this->m_pdata->getNetForce();
 
     // get the dimensionality of the system
     const unsigned int D = this->m_sysdef->getNDimensions();
@@ -330,8 +330,8 @@ template<class Manifold>
 void TwoStepRATTLELangevinGPU<Manifold>::includeRATTLEForce(uint64_t timestep)
     {
     // access all the needed data
-    const GlobalArray<Scalar4>& net_force = this->m_pdata->getNetForce();
-    const GlobalArray<Scalar>& net_virial = this->m_pdata->getNetVirial();
+    const GPUArray<Scalar4>& net_force = this->m_pdata->getNetForce();
+    const GPUArray<Scalar>& net_virial = this->m_pdata->getNetVirial();
     ArrayHandle<Scalar4> d_pos(this->m_pdata->getPositions(),
                                access_location::device,
                                access_mode::read);
