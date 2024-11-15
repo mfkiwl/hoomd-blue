@@ -482,8 +482,8 @@ class PYBIND11_EXPORT Communicator
     GPUArray<unsigned int> m_neighbors;        //!< Neighbor ranks
     GPUArray<unsigned int> m_unique_neighbors; //!< Neighbor ranks w/duplicates removed
     GPUArray<unsigned int> m_adj_mask;         //!< Adjacency mask for every neighbor
-    unsigned int m_nneigh;                        //!< Number of neighbors
-    unsigned int m_n_unique_neigh;                //!< Number of unique neighbors
+    unsigned int m_nneigh;                     //!< Number of neighbors
+    unsigned int m_n_unique_neigh;             //!< Number of unique neighbors
     GPUArray<unsigned int> m_begin;            //!< Begin index for every neighbor in send buf
     GPUArray<unsigned int> m_end;              //!< End index for every neighbor in send buf
 
@@ -550,12 +550,12 @@ class PYBIND11_EXPORT Communicator
     // Variables for sending forces in reverse
     GPUVector<Scalar4> m_netforce_reverse_copybuf; //!< Buffer for reverse net force from ghosts
     GPUVector<Scalar4> m_netforce_reverse_recvbuf; //!< Buffer for the reverse net force. Receive
-                                                      //!< buffer for m_netforce_reverse_copybuf
+                                                   //!< buffer for m_netforce_reverse_copybuf
 
-    BoxDim m_global_box;                //!< Global simulation box
+    BoxDim m_global_box;             //!< Global simulation box
     GPUArray<Scalar> m_r_ghost;      //!< Width of ghost layer
     GPUArray<Scalar> m_r_ghost_body; //!< Extra ghost width for rigid bodies
-    Scalar m_r_ghost_max;               //!< Maximum ghost layer width
+    Scalar m_r_ghost_max;            //!< Maximum ghost layer width
 
     unsigned int m_ghosts_added; //!< Number of ghosts added
     bool m_has_ghost_particles;  //!< True if we have a current copy of ghost particles

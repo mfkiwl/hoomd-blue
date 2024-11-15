@@ -34,8 +34,7 @@ template<typename T> class CommunicatorGridGPU : public CommunicatorGrid<T>
     virtual void initGridCommGPU();
 
     private:
-    GPUArray<unsigned int>
-        m_cell_recv; //!< Array of per-cell receive elements (multiple possible)
+    GPUArray<unsigned int> m_cell_recv; //!< Array of per-cell receive elements (multiple possible)
     GPUArray<unsigned int> m_cell_recv_begin; //!< Begin of recv indices per cell
     GPUArray<unsigned int> m_cell_recv_end;   //!< End of recv indices per cell
     };

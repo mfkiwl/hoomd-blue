@@ -59,35 +59,35 @@ NeighborList::NeighborList(std::shared_ptr<SystemDefinition> sysdef, Scalar r_bu
     // allocate r_cut pairwise storage
     GPUArray<Scalar> r_cut(m_typpair_idx.getNumElements(), m_exec_conf);
     m_r_cut.swap(r_cut);
-    
+
     // holds the maximum rcut on a per type basis
     GPUArray<Scalar> rcut_max(m_pdata->getNTypes(), m_exec_conf);
     m_rcut_max.swap(rcut_max);
-    
+
     // holds the base rcut on a per type basis
     GPUArray<Scalar> rcut_base(m_typpair_idx.getNumElements(), m_exec_conf);
     m_rcut_base.swap(rcut_base);
-    
+
     // allocate the r_listsq array which accelerates CPU calculations
     GPUArray<Scalar> r_listsq(m_typpair_idx.getNumElements(), m_exec_conf);
     m_r_listsq.swap(r_listsq);
-    
+
     // allocate the number of neighbors (per particle)
     GPUArray<unsigned int> n_neigh(m_pdata->getMaxN(), m_exec_conf);
     m_n_neigh.swap(n_neigh);
-    
+
     // default allocation of 4 neighbors per particle for the neighborlist
     GPUArray<unsigned int> nlist(4 * m_pdata->getMaxN(), m_exec_conf);
     m_nlist.swap(nlist);
-    
+
     // allocate head list indexer
     GPUArray<size_t> head_list(m_pdata->getMaxN(), m_exec_conf);
     m_head_list.swap(head_list);
-    
+
     // allocate the max number of neighbors per type allowed
     GPUArray<unsigned int> Nmax(m_pdata->getNTypes(), m_exec_conf);
     m_Nmax.swap(Nmax);
-    
+
         // flood Nmax with 4s initially
         {
         ArrayHandle<unsigned int> h_Nmax(m_Nmax, access_location::host, access_mode::overwrite);
@@ -100,7 +100,7 @@ NeighborList::NeighborList(std::shared_ptr<SystemDefinition> sysdef, Scalar r_bu
     // allocate overflow flags for the number of neighbors per type
     GPUArray<unsigned int> conditions(m_pdata->getNTypes(), m_exec_conf);
     m_conditions.swap(conditions);
-    
+
         {
         // initially reset conditions
         ArrayHandle<unsigned int> h_conditions(m_conditions,
@@ -112,23 +112,23 @@ NeighborList::NeighborList(std::shared_ptr<SystemDefinition> sysdef, Scalar r_bu
     // allocate m_last_pos
     GPUArray<Scalar4> last_pos(m_pdata->getMaxN(), m_exec_conf);
     m_last_pos.swap(last_pos);
-    
+
     // allocate initial memory allowing 4 exclusions per particle (will grow to match specified
     // exclusions)
 
     // note: this breaks O(N/P) memory scaling
     GPUVector<unsigned int> n_ex_tag(m_pdata->getRTags().size(), m_exec_conf);
     m_n_ex_tag.swap(n_ex_tag);
-    
+
     GPUArray<unsigned int> ex_list_tag(m_pdata->getRTags().size(), 1, m_exec_conf);
     m_ex_list_tag.swap(ex_list_tag);
-    
+
     GPUArray<unsigned int> n_ex_idx(m_pdata->getMaxN(), m_exec_conf);
     m_n_ex_idx.swap(n_ex_idx);
-    
+
     GPUArray<unsigned int> ex_list_idx(m_pdata->getMaxN(), 1, m_exec_conf);
     m_ex_list_idx.swap(ex_list_idx);
-    
+
     // reset exclusions
     resizeAndClearExclusions();
 

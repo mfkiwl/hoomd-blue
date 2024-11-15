@@ -93,7 +93,7 @@ void ActiveForceConstraintCompute<Manifold>::rotationalDiffusion(Scalar rotation
     {
     // getNumMembers might allocate the tag array handle. Access it first, then aquire the handles.
     const unsigned int num_members = m_group->getNumMembers();
-    
+
     //  array handles
     ArrayHandle<Scalar4> h_pos(m_pdata->getPositions(), access_location::host, access_mode::read);
     ArrayHandle<Scalar4> h_orientation(m_pdata->getOrientationArray(),
@@ -136,7 +136,7 @@ template<class Manifold> void ActiveForceConstraintCompute<Manifold>::setConstra
     {
     // getNumMembers might allocate the tag array handle. Access it first, then aquire the handles.
     const unsigned int num_members = m_group->getNumMembers();
-    
+
     //  array handles
     ArrayHandle<Scalar4> h_f_actVec(m_f_activeVec, access_location::host, access_mode::read);
     ArrayHandle<Scalar4> h_orientation(m_pdata->getOrientationArray(),

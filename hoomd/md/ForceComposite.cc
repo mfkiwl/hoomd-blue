@@ -30,16 +30,16 @@ ForceComposite::ForceComposite(std::shared_ptr<SystemDefinition> sysdef)
 
     GPUArray<unsigned int> body_types(m_pdata->getNTypes(), 1, m_exec_conf);
     m_body_types.swap(body_types);
-    
+
     GPUArray<Scalar3> body_pos(m_pdata->getNTypes(), 1, m_exec_conf);
     m_body_pos.swap(body_pos);
-    
+
     GPUArray<Scalar4> body_orientation(m_pdata->getNTypes(), 1, m_exec_conf);
     m_body_orientation.swap(body_orientation);
-    
+
     GPUArray<unsigned int> body_len(m_pdata->getNTypes(), m_exec_conf);
     m_body_len.swap(body_len);
-    
+
     // reset elements to zero
     ArrayHandle<unsigned int> h_body_len(m_body_len, access_location::host, access_mode::readwrite);
     for (unsigned int i = 0; i < this->m_pdata->getNTypes(); ++i)
@@ -437,29 +437,29 @@ void ForceComposite::pyCreateRigidBodies(pybind11::dict charges)
         }
 
     std::unordered_map<unsigned int, std::vector<Scalar>> charges_map;
-    {
-    ArrayHandle<unsigned int> h_body_len(m_body_len, access_location::host, access_mode::read);
-    for (const auto& item : charges)
         {
-        const auto type = m_pdata->getTypeByName(item.first.cast<std::string>());
-        if (h_body_len.data[type] == 0)
+        ArrayHandle<unsigned int> h_body_len(m_body_len, access_location::host, access_mode::read);
+        for (const auto& item : charges)
             {
-            throw std::runtime_error("Charge provided for non-central particle type.");
+            const auto type = m_pdata->getTypeByName(item.first.cast<std::string>());
+            if (h_body_len.data[type] == 0)
+                {
+                throw std::runtime_error("Charge provided for non-central particle type.");
+                }
+            const auto charges_list = item.second.cast<pybind11::list>();
+            if (pybind11::len(charges_list) != h_body_len.data[type])
+                {
+                throw std::runtime_error("Charges provided not consistent with rigid body size.");
+                }
+            std::vector<Scalar> charges_vector;
+            for (auto& charge : charges_list)
+                {
+                charges_vector.emplace_back(charge.cast<Scalar>());
+                }
+            charges_map.insert({type, charges_vector});
             }
-        const auto charges_list = item.second.cast<pybind11::list>();
-        if (pybind11::len(charges_list) != h_body_len.data[type])
-            {
-            throw std::runtime_error("Charges provided not consistent with rigid body size.");
-            }
-        std::vector<Scalar> charges_vector;
-        for (auto& charge : charges_list)
-            {
-            charges_vector.emplace_back(charge.cast<Scalar>());
-            }
-        charges_map.insert({type, charges_vector});
         }
-    }
-    
+
     createRigidBodies(charges_map);
     }
 

@@ -37,9 +37,9 @@ ForceCompute::ForceCompute(std::shared_ptr<SystemDefinition> sysdef)
     GPUArray<Scalar> virial(max_num_particles, 6, m_exec_conf);
     GPUArray<Scalar4> torque(max_num_particles, m_exec_conf);
     m_force.swap(force);
-        m_virial.swap(virial);
-        m_torque.swap(torque);
-    
+    m_virial.swap(virial);
+    m_torque.swap(torque);
+
         {
         ArrayHandle<Scalar4> h_force(m_force, access_location::host, access_mode::overwrite);
         ArrayHandle<Scalar4> h_torque(m_torque, access_location::host, access_mode::overwrite);

@@ -128,11 +128,11 @@ class PYBIND11_EXPORT PPPMForceComputeGPU : public PPPMForceCompute
     GPUArray<hipfftComplex> m_inv_fourier_mesh_y; //!< The inverse-fourier transformed force mesh
     GPUArray<hipfftComplex> m_inv_fourier_mesh_z; //!< The inverse-fourier transformed force mesh
 
-    GPUFlags<Scalar> m_sum;                   //!< Sum over fourier mesh values
+    GPUFlags<Scalar> m_sum;                //!< Sum over fourier mesh values
     GPUArray<Scalar> m_sum_partial;        //!< Partial sums over fourier mesh values
     GPUArray<Scalar> m_sum_virial_partial; //!< Partial sums over virial mesh values
     GPUArray<Scalar> m_sum_virial;         //!< Final sum over virial mesh values
-    unsigned int m_block_size;                //!< Block size for fourier mesh reduction
+    unsigned int m_block_size;             //!< Block size for fourier mesh reduction
     };
 
     } // end namespace md

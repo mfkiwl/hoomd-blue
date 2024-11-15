@@ -249,9 +249,9 @@ UpdaterGCA<Shape>::UpdaterGCA(std::shared_ptr<SystemDefinition> sysdef,
 
     // initialize memory
     GPUVector<Scalar4>(1, this->m_exec_conf).swap(m_postype_backup);
-        GPUVector<Scalar4>(1, this->m_exec_conf).swap(m_orientation_backup);
-        GPUVector<int3>(1, this->m_exec_conf).swap(m_image_backup);
-        }
+    GPUVector<Scalar4>(1, this->m_exec_conf).swap(m_orientation_backup);
+    GPUVector<int3>(1, this->m_exec_conf).swap(m_image_backup);
+    }
 
 template<class Shape> UpdaterGCA<Shape>::~UpdaterGCA()
     {

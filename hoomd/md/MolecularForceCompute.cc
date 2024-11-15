@@ -32,7 +32,6 @@ MolecularForceCompute::MolecularForceCompute(std::shared_ptr<SystemDefinition> s
     m_pdata->getParticleSortSignal()
         .connect<MolecularForceCompute, &MolecularForceCompute::setRebuildMolecules>(this);
 
-                    
 #ifdef ENABLE_HIP
     if (m_exec_conf->isCUDAEnabled())
         {

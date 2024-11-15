@@ -250,7 +250,7 @@ void CellList::initializeMemory()
     // allocate memory
     GPUArray<unsigned int> cell_size(m_cell_indexer.getNumElements(), m_exec_conf);
     m_cell_size.swap(cell_size);
-    
+
     if (m_compute_adj_list)
         {
         // if we have less than radius*2+1 cells in a direction, restrict to unique neighbors
@@ -275,7 +275,7 @@ void CellList::initializeMemory()
 
         GPUArray<unsigned int> cell_adj(m_cell_adj_indexer.getNumElements(), m_exec_conf);
         m_cell_adj.swap(cell_adj);
-                }
+        }
     else
         {
         m_cell_adj_indexer = Index2D();
@@ -289,7 +289,7 @@ void CellList::initializeMemory()
         {
         GPUArray<Scalar4> xyzf(m_cell_list_indexer.getNumElements(), m_exec_conf);
         m_xyzf.swap(xyzf);
-                }
+        }
     else
         {
         GPUArray<Scalar4> xyzf;
@@ -300,7 +300,7 @@ void CellList::initializeMemory()
         {
         GPUArray<uint2> type_body(m_cell_list_indexer.getNumElements(), m_exec_conf);
         m_type_body.swap(type_body);
-                }
+        }
     else
         {
         // array is no longer needed, discard it
@@ -312,7 +312,7 @@ void CellList::initializeMemory()
         {
         GPUArray<Scalar4> orientation(m_cell_list_indexer.getNumElements(), m_exec_conf);
         m_orientation.swap(orientation);
-                }
+        }
     else
         {
         // array is no longer needed, discard it
@@ -324,7 +324,7 @@ void CellList::initializeMemory()
         {
         GPUArray<unsigned int> idx(m_cell_list_indexer.getNumElements(), m_exec_conf);
         m_idx.swap(idx);
-                }
+        }
     else
         {
         // array is no longer needed, discard it

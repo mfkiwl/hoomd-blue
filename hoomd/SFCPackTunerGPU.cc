@@ -34,10 +34,10 @@ SFCPackTunerGPU::SFCPackTunerGPU(std::shared_ptr<SystemDefinition> sysdef,
 
     GPUArray<unsigned int> gpu_sort_order(m_pdata->getMaxN(), m_exec_conf);
     m_gpu_sort_order.swap(gpu_sort_order);
-    
+
     GPUArray<unsigned int> gpu_particle_bins(m_pdata->getMaxN(), m_exec_conf);
     m_gpu_particle_bins.swap(gpu_particle_bins);
-        }
+    }
 
 /*! reallocate the internal arrays
  */

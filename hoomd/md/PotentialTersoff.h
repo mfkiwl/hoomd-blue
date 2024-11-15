@@ -161,8 +161,7 @@ PotentialTersoff<evaluator>::PotentialTersoff(std::shared_ptr<SystemDefinition> 
     GPUArray<param_type> params(m_typpair_idx.getNumElements(), m_exec_conf);
     m_params.swap(params);
 
-    m_r_cut_nlist
-        = std::make_shared<GPUArray<Scalar>>(m_typpair_idx.getNumElements(), m_exec_conf);
+    m_r_cut_nlist = std::make_shared<GPUArray<Scalar>>(m_typpair_idx.getNumElements(), m_exec_conf);
     nlist->addRCutMatrix(m_r_cut_nlist);
     }
 

@@ -129,8 +129,8 @@ class PYBIND11_EXPORT PPPMForceCompute : public ForceCompute
     unsigned int m_n_cells;       //!< Total number of inner cells
     unsigned int m_radius;        //!< Stencil radius (in units of mesh size)
     unsigned int m_n_inner_cells; //!< Number of inner mesh points (without ghost cells)
-    GPUArray<Scalar> m_inf_f;  //!< Fourier representation of the influence function (real part)
-    GPUArray<Scalar3> m_k;     //!< Mesh of k values
+    GPUArray<Scalar> m_inf_f;     //!< Fourier representation of the influence function (real part)
+    GPUArray<Scalar3> m_k;        //!< Mesh of k values
     Scalar m_qstarsq;             //!< Short wave length cut-off squared for density harmonics
     bool m_need_initialize;       //!< True if we have not yet computed the influence function
     bool m_params_set;            //!< True if parameters are set
@@ -221,11 +221,11 @@ class PYBIND11_EXPORT PPPMForceCompute : public ForceCompute
     GPUArray<kiss_fft_cpx>
         m_fourier_mesh_G_z; //!< Fourier transformed mesh times the influence function, z-component
     GPUArray<kiss_fft_cpx> m_inv_fourier_mesh_x; //!< Fourier transformed mesh times the
-                                                    //!< influence function, x-component
+                                                 //!< influence function, x-component
     GPUArray<kiss_fft_cpx> m_inv_fourier_mesh_y; //!< Fourier transformed mesh times the
-                                                    //!< influence function, y-component
+                                                 //!< influence function, y-component
     GPUArray<kiss_fft_cpx> m_inv_fourier_mesh_z; //!< Fourier transformed mesh times the
-                                                    //!< influence function, z-component
+                                                 //!< influence function, z-component
 
     bool m_dfft_initialized; //! True if host dfft has been initialized
 

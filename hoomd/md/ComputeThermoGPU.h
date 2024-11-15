@@ -33,12 +33,10 @@ class PYBIND11_EXPORT ComputeThermoGPU : public ComputeThermo
     virtual ~ComputeThermoGPU();
 
     protected:
-    GPUVector<Scalar4> m_scratch; //!< Scratch space for partial sums
-    GPUVector<Scalar>
-        m_scratch_pressure_tensor; //!< Scratch space for pressure tensor partial sums
-    GPUVector<Scalar>
-        m_scratch_rot;         //!< Scratch space for rotational kinetic energy partial sums
-    unsigned int m_block_size; //!< Block size executed
+    GPUVector<Scalar4> m_scratch;                //!< Scratch space for partial sums
+    GPUVector<Scalar> m_scratch_pressure_tensor; //!< Scratch space for pressure tensor partial sums
+    GPUVector<Scalar> m_scratch_rot; //!< Scratch space for rotational kinetic energy partial sums
+    unsigned int m_block_size;       //!< Block size executed
 
     //! Does the actual computation
     virtual void computeProperties();

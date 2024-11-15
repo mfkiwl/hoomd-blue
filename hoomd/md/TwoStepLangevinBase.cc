@@ -27,7 +27,7 @@ TwoStepLangevinBase::TwoStepLangevinBase(std::shared_ptr<SystemDefinition> sysde
     // allocate memory for the per-type gamma storage and initialize them to 1.0
     GPUVector<Scalar> gamma(m_pdata->getNTypes(), m_exec_conf);
     m_gamma.swap(gamma);
-    
+
     ArrayHandle<Scalar> h_gamma(m_gamma, access_location::host, access_mode::overwrite);
     for (unsigned int i = 0; i < m_gamma.size(); i++)
         h_gamma.data[i] = Scalar(1.0);
@@ -35,7 +35,7 @@ TwoStepLangevinBase::TwoStepLangevinBase(std::shared_ptr<SystemDefinition> sysde
     // allocate memory for the per-type gamma_r storage
     GPUVector<Scalar3> gamma_r(m_pdata->getNTypes(), m_exec_conf);
     m_gamma_r.swap(gamma_r);
-    
+
     ArrayHandle<Scalar3> h_gamma_r(m_gamma_r, access_location::host, access_mode::overwrite);
     for (unsigned int i = 0; i < m_gamma_r.size(); i++)
         h_gamma_r.data[i] = make_scalar3(1.0, 1.0, 1.0);

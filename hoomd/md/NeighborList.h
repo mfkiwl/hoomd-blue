@@ -469,7 +469,7 @@ class PYBIND11_EXPORT NeighborList : public Compute
     virtual void setRCutPython(pybind11::tuple types, Scalar r_cut);
 
     protected:
-    Index2D m_typpair_idx;           //!< Indexer for full type pair storage
+    Index2D m_typpair_idx;        //!< Indexer for full type pair storage
     GPUArray<Scalar> m_r_cut;     //!< The potential cutoffs stored by pair type
     GPUArray<Scalar> m_r_listsq;  //!< The neighborlist cutoff radius squared stored by pair type
     GPUArray<Scalar> m_rcut_max;  //!< The maximum value of rcut per particle type
@@ -487,12 +487,11 @@ class PYBIND11_EXPORT NeighborList : public Compute
     GPUArray<unsigned int> m_nlist;   //!< Neighbor list data
     GPUArray<unsigned int> m_n_neigh; //!< Number of neighbors for each particle
     GPUArray<Scalar4> m_last_pos;     //!< coordinates of last updated particle positions
-    Scalar3 m_last_L;                    //!< Box lengths at last update
-    Scalar3 m_last_L_local;              //!< Local Box lengths at last update
+    Scalar3 m_last_L;                 //!< Box lengths at last update
+    Scalar3 m_last_L_local;           //!< Local Box lengths at last update
 
-    GPUArray<size_t> m_head_list; //!< Indexes for particles to read from the neighbor list
-    GPUArray<unsigned int>
-        m_Nmax; //!< Holds the maximum number of neighbors for each particle type
+    GPUArray<size_t> m_head_list;  //!< Indexes for particles to read from the neighbor list
+    GPUArray<unsigned int> m_Nmax; //!< Holds the maximum number of neighbors for each particle type
     GPUArray<unsigned int>
         m_conditions; //!< Holds the max number of computed particles by type for resizing
 
@@ -500,9 +499,9 @@ class PYBIND11_EXPORT NeighborList : public Compute
     GPUArray<unsigned int> m_ex_list_idx; //!< List of excluded particles referenced by index
     GPUVector<unsigned int> m_n_ex_tag;   //!< Number of exclusions for a given particle tag
     GPUArray<unsigned int> m_n_ex_idx;    //!< Number of exclusions for a given particle index
-    Index2D m_ex_list_indexer;               //!< Indexer for accessing the exclusion list
-    Index2D m_ex_list_indexer_tag;           //!< Indexer for accessing the by-tag exclusion list
-    bool m_exclusions_set;                   //!< True if any exclusions have been set
+    Index2D m_ex_list_indexer;            //!< Indexer for accessing the exclusion list
+    Index2D m_ex_list_indexer_tag;        //!< Indexer for accessing the by-tag exclusion list
+    bool m_exclusions_set;                //!< True if any exclusions have been set
 
     std::shared_ptr<MeshBondData> m_meshbond_data;
 

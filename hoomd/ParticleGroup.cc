@@ -99,7 +99,7 @@ ParticleGroup::ParticleGroup(std::shared_ptr<SystemDefinition> sysdef,
     // store member tags
     GPUArray<unsigned int> member_tags_array(member_tags.size(), m_exec_conf);
     m_member_tags.swap(member_tags_array);
-    
+
         {
         ArrayHandle<unsigned int> h_member_tags(m_member_tags,
                                                 access_location::host,
@@ -111,16 +111,16 @@ ParticleGroup::ParticleGroup(std::shared_ptr<SystemDefinition> sysdef,
     // local particles
     GPUArray<unsigned int> is_member(m_pdata->getMaxN(), m_pdata->getExecConf());
     m_is_member.swap(is_member);
-    
+
     GPUArray<unsigned int> is_member_tag(m_pdata->getRTags().size(), m_pdata->getExecConf());
     m_is_member_tag.swap(is_member_tag);
-    
+
     // build the reverse lookup table for tags
     buildTagHash();
 
     GPUArray<unsigned int> member_idx(member_tags.size(), m_pdata->getExecConf());
     m_member_idx.swap(member_idx);
-    
+
     // now that the tag list is completely set up and all memory is allocated, rebuild the index
     // list
     rebuildIndexList();
@@ -201,7 +201,7 @@ void ParticleGroup::updateMemberTags(bool force_update)
         // store member tags in GlobalArray
         GPUArray<unsigned int> member_tags_array(member_tags.size(), m_pdata->getExecConf());
         m_member_tags.swap(member_tags_array);
-        
+
         // sort member tags
         std::sort(member_tags.begin(), member_tags.end());
 
@@ -214,16 +214,16 @@ void ParticleGroup::updateMemberTags(bool force_update)
 
         GPUArray<unsigned int> member_idx(member_tags.size(), m_pdata->getExecConf());
         m_member_idx.swap(member_idx);
-                }
+        }
 
     // one byte per particle to indicate membership in the group, initialize with current number of
     // local particles
     GPUArray<unsigned int> is_member(m_pdata->getMaxN(), m_pdata->getExecConf());
     m_is_member.swap(is_member);
-    
+
     GPUArray<unsigned int> is_member_tag(m_pdata->getRTags().size(), m_pdata->getExecConf());
     m_is_member_tag.swap(is_member_tag);
-    
+
     // build the reverse lookup table for tags
     buildTagHash();
 
@@ -275,7 +275,7 @@ void ParticleGroup::reallocate()
         // reallocate if necessary
         GPUArray<unsigned int> is_member_tag(m_pdata->getRTags().size(), m_exec_conf);
         m_is_member_tag.swap(is_member_tag);
-        
+
         buildTagHash();
         }
     }

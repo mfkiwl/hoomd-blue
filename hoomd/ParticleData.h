@@ -1312,15 +1312,14 @@ class PYBIND11_EXPORT ParticleData
     GPUArray<unsigned int> m_body_alt;   //!< rigid body ids (swap-in)
     GPUArray<Scalar4> m_orientation_alt; //!< orientations (swap-in)
     GPUArray<Scalar4> m_angmom_alt;      //!< angular momenta (swap-in)
-    GPUArray<Scalar3>
-        m_inertia_alt; //!< Principal moments of inertia for each particle (swap-in)
-    GPUArray<Scalar4> m_net_force_alt;  //!< Net force (swap-in)
-    GPUArray<Scalar> m_net_virial_alt;  //!< Net virial (swap-in)
+    GPUArray<Scalar3> m_inertia_alt;   //!< Principal moments of inertia for each particle (swap-in)
+    GPUArray<Scalar4> m_net_force_alt; //!< Net force (swap-in)
+    GPUArray<Scalar> m_net_virial_alt; //!< Net virial (swap-in)
     GPUArray<Scalar4> m_net_torque_alt; //!< Net torque (swap-in)
 
     GPUArray<Scalar4> m_net_force;  //!< Net force calculated for each particle
     GPUArray<Scalar> m_net_virial;  //!< Net virial calculated for each particle (2D GPU array of
-                                       //!< dimensions 6*number of particles)
+                                    //!< dimensions 6*number of particles)
     GPUArray<Scalar4> m_net_torque; //!< Net torque calculated for each particle
 
     Scalar m_external_virial[6]; //!< External potential contribution to the virial

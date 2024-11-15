@@ -71,8 +71,7 @@ class PYBIND11_EXPORT ForceCompositeGPU : public ForceComposite
     /// Number of rigid bodies on the local rank.
     unsigned int m_n_rigid;
 
-    GPUVector<unsigned int>
-        m_rigid_center; //!< Contains particle indices of all central particles
+    GPUVector<unsigned int> m_rigid_center;  //!< Contains particle indices of all central particles
     GPUVector<unsigned int> m_lookup_center; //!< Lookup particle index -> central particle index
     };
 

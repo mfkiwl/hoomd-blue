@@ -122,7 +122,7 @@ class PYBIND11_EXPORT MolecularForceCompute : public ForceConstraint
 
     protected:
     GPUVector<unsigned int> m_molecule_tag; //!< Molecule tag per particle tag
-    unsigned int m_n_molecules_global;         //!< Global number of molecules
+    unsigned int m_n_molecules_global;      //!< Global number of molecules
 
     bool m_rebuild_molecules; //!< True if we need to rebuild indices
 

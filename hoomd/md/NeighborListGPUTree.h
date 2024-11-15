@@ -73,7 +73,7 @@ class PYBIND11_EXPORT NeighborListGPUTree : public NeighborListGPU
         m_traversers;                   //!< Array of LBVH traverers per-type
     std::vector<hipStream_t> m_streams; //!< Array of CUDA streams per-type
 
-    GPUVector<Scalar3> m_image_list;      //!< List of translation vectors for traversal
+    GPUVector<Scalar3> m_image_list;         //!< List of translation vectors for traversal
     unsigned int m_n_images;                 //!< Number of translation vectors for traversal
     GPUArray<unsigned int> m_traverse_order; //!< Order to traverse primitives
 

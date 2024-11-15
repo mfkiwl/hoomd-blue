@@ -30,7 +30,7 @@ template<class T> class GPUVector;
 
     \ingroup data_structs
 */
-template<class T> class GPUVector: public GPUArray<T>
+template<class T> class GPUVector : public GPUArray<T>
     {
     public:
     //! Default constructor
@@ -44,20 +44,18 @@ template<class T> class GPUVector: public GPUArray<T>
 
     //! Constructs a GPUVector of given size, initialized with a constant value
     GPUVector(unsigned int size,
-                  const T& value,
-                  std::shared_ptr<const ExecutionConfiguration> exec_conf);
+              const T& value,
+              std::shared_ptr<const ExecutionConfiguration> exec_conf);
 
 #ifdef ENABLE_HIP
     //! Constructs an empty GPUVector
     GPUVector(std::shared_ptr<const ExecutionConfiguration> exec_conf, bool mapped);
 
     //! Constructs a GPUVector
-    GPUVector(size_t size,
-                  std::shared_ptr<const ExecutionConfiguration> exec_conf,
-                  bool mapped);
+    GPUVector(size_t size, std::shared_ptr<const ExecutionConfiguration> exec_conf, bool mapped);
 #endif
     //! Frees memory
-     ~GPUVector() = default;
+    ~GPUVector() = default;
 
     //! Copy constructor
     GPUVector(const GPUVector& from);
@@ -131,7 +129,7 @@ template<class T> class GPUVector: public GPUArray<T>
 
         private:
         const GPUVector<T>& vec; //!< The vector that is accessed
-        size_t n;                           //!< The index of the element to access
+        size_t n;                //!< The index of the element to access
         };
 
     //! Get a proxy-reference to a list element
@@ -182,8 +180,7 @@ GPUVector<T>::GPUVector(std::shared_ptr<const ExecutionConfiguration> exec_conf)
     \param exec_conf Shared pointer to the execution configuration
 */
 template<class T>
-GPUVector<T>::GPUVector(size_t size,
-                                       std::shared_ptr<const ExecutionConfiguration> exec_conf)
+GPUVector<T>::GPUVector(size_t size, std::shared_ptr<const ExecutionConfiguration> exec_conf)
     : GPUArray<T>(size, exec_conf), m_size(size)
     {
     }
@@ -194,8 +191,8 @@ GPUVector<T>::GPUVector(size_t size,
 */
 template<class T>
 GPUVector<T>::GPUVector(unsigned int size,
-                                       const T& value,
-                                       std::shared_ptr<const ExecutionConfiguration> exec_conf)
+                        const T& value,
+                        std::shared_ptr<const ExecutionConfiguration> exec_conf)
     : GPUArray<T>(size, exec_conf), m_size(size)
     {
     T* data = acquireHost(access_mode::readwrite);
@@ -215,8 +212,7 @@ GPUVector<T>::GPUVector(GPUVector&& other)
     {
     }
 
-template<class T>
-GPUVector<T>& GPUVector<T>::operator=(const GPUVector& rhs)
+template<class T> GPUVector<T>& GPUVector<T>::operator=(const GPUVector& rhs)
     {
     if (this != &rhs) // protect against invalid self-assignment
         {
@@ -228,8 +224,7 @@ GPUVector<T>& GPUVector<T>::operator=(const GPUVector& rhs)
     return *this;
     }
 
-template<class T>
-GPUVector<T>& GPUVector<T>::operator=(GPUVector&& other)
+template<class T> GPUVector<T>& GPUVector<T>::operator=(GPUVector&& other)
     {
     if (this != &other)
         {
@@ -260,7 +255,8 @@ template<class T> void GPUVector<T>::reallocate(size_t size)
     if (size > GPUArray<T>::getNumElements())
         {
         // reallocate
-        size_t new_allocated_size = GPUArray<T>::getNumElements() ? GPUArray<T>::getNumElements() : 1;
+        size_t new_allocated_size
+            = GPUArray<T>::getNumElements() ? GPUArray<T>::getNumElements() : 1;
 
         // double the size as often as necessary
         while (size > new_allocated_size)
@@ -348,8 +344,7 @@ template<class T> void GPUVector<T>::clear()
 
 /*! \param mode Access mode for the GPUArray
  */
-template<class T>
-T* GPUVector<T>::acquireHost(const access_mode::Enum mode) const
+template<class T> T* GPUVector<T>::acquireHost(const access_mode::Enum mode) const
     {
     return GPUArray<T>::acquire(access_location::host, access_mode::readwrite, false);
     }

@@ -278,7 +278,7 @@ class PYBIND11_EXPORT ParticleGroup
         m_is_member; //!< One byte per particle, == 1 if index is a local member of the group
     mutable GPUArray<unsigned int> m_member_idx;  //!< List of all particle indices in the group
     mutable GPUArray<unsigned int> m_member_tags; //!< Lists the tags of the particle members
-    mutable unsigned int m_num_local_members;        //!< Number of members on the local processor
+    mutable unsigned int m_num_local_members;     //!< Number of members on the local processor
     mutable bool m_particles_sorted;      //!< True if particle have been sorted since last rebuild
     mutable bool m_reallocated;           //!< True if particle data arrays have been reallocated
     mutable bool m_global_ptl_num_change; //!< True if the global particle number changed

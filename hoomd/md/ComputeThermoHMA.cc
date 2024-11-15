@@ -61,7 +61,7 @@ ComputeThermoHMA::ComputeThermoHMA(std::shared_ptr<SystemDefinition> sysdef,
 
     GPUArray<Scalar3> lat(snapshot.size, m_exec_conf);
     m_lattice_site.swap(lat);
-        ArrayHandle<Scalar3> h_lattice_site(m_lattice_site,
+    ArrayHandle<Scalar3> h_lattice_site(m_lattice_site,
                                         access_location::host,
                                         access_mode::overwrite);
 

@@ -44,10 +44,10 @@ ForceCompositeGPU::ForceCompositeGPU(std::shared_ptr<SystemDefinition> sysdef)
         }
     GPUVector<unsigned int> rigid_center(m_exec_conf);
     m_rigid_center.swap(rigid_center);
-    
+
     GPUVector<unsigned int> lookup_center(m_exec_conf);
     m_lookup_center.swap(lookup_center);
-        }
+    }
 
 ForceCompositeGPU::~ForceCompositeGPU() { }
 

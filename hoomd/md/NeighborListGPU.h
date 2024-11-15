@@ -41,7 +41,7 @@ class PYBIND11_EXPORT NeighborListGPU : public NeighborList
 
         GPUArray<unsigned int> flags(1, m_exec_conf);
         std::swap(m_flags, flags);
-        
+
             {
             ArrayHandle<unsigned int> h_flags(m_flags,
                                               access_location::host,
@@ -56,7 +56,7 @@ class PYBIND11_EXPORT NeighborListGPU : public NeighborList
         // flag to say how big to resize
         GPUArray<size_t> req_size_nlist(1, m_exec_conf);
         std::swap(m_req_size_nlist, req_size_nlist);
-        
+
         // Initialize autotuners.
         m_tuner_filter.reset(new Autotuner<1>({AutotunerBase::makeBlockSizeRange(m_exec_conf)},
                                               m_exec_conf,

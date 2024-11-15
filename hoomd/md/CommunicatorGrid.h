@@ -42,10 +42,10 @@ template<typename T> class CommunicatorGrid
     bool m_add_outer; //!< True if outer ghost layer is added to inner cells
 
     std::set<unsigned int> m_neighbors; //!< List of unique neighbor ranks
-    GPUArray<T> m_send_buf;          //!< Send buffer
+    GPUArray<T> m_send_buf;             //!< Send buffer
     GPUArray<T> m_recv_buf;
-    GPUArray<unsigned int> m_send_idx;         //!< Indices of grid cells in send buf
-    GPUArray<unsigned int> m_recv_idx;         //!< Indices of grid cells in recv buf
+    GPUArray<unsigned int> m_send_idx;            //!< Indices of grid cells in send buf
+    GPUArray<unsigned int> m_recv_idx;            //!< Indices of grid cells in recv buf
     std::map<unsigned int, unsigned int> m_begin; //!< Begin offset of every rank in send/recv buf
     std::map<unsigned int, unsigned int> m_end;   //!< End offset of every rank in send/recv buf
 

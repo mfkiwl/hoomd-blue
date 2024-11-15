@@ -718,8 +718,7 @@ template<class Shape> class ExternalFieldWall : public ExternalFieldMono<Shape>
                       const vec3<Scalar>& position_new,
                       const Shape& shape_new)
         {
-        double energy
-            = energydiff(timestep, tag, position_old, shape_old, position_new, shape_new);
+        double energy = energydiff(timestep, tag, position_old, shape_old, position_new, shape_new);
         return (energy == INFINITY);
         }
 

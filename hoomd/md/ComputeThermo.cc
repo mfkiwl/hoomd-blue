@@ -32,7 +32,7 @@ ComputeThermo::ComputeThermo(std::shared_ptr<SystemDefinition> sysdef,
     assert(m_pdata);
     GPUArray<Scalar> properties(thermo_index::num_quantities, m_exec_conf);
     m_properties.swap(properties);
-    
+
     m_computed_flags.reset();
 
 #ifdef ENABLE_MPI

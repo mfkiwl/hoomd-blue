@@ -358,7 +358,7 @@ class PYBIND11_EXPORT CellList : public Compute
     GPUArray<uint2> m_type_body;        //!< Cell list with type,body
     GPUArray<Scalar4> m_orientation;    //!< Cell list with orientation
     GPUArray<unsigned int> m_idx;       //!< Cell list with index
-    GPUArray<uint3> m_conditions; //!< Condition flags set during the computeCellList() call
+    GPUArray<uint3> m_conditions;       //!< Condition flags set during the computeCellList() call
 
     bool m_sort_cell_list;   //!< If true, sort cell list
     bool m_compute_adj_list; //!< If true, compute the cell adjacency lists

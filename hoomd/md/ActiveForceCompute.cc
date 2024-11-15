@@ -26,7 +26,7 @@ ActiveForceCompute::ActiveForceCompute(std::shared_ptr<SystemDefinition> sysdef,
     GPUVector<Scalar4> tmp_f_activeVec(m_pdata->getNTypes(), m_exec_conf);
 
     m_f_activeVec.swap(tmp_f_activeVec);
-    
+
     ArrayHandle<Scalar4> h_f_activeVec(m_f_activeVec,
                                        access_location::host,
                                        access_mode::overwrite);
@@ -37,7 +37,7 @@ ActiveForceCompute::ActiveForceCompute(std::shared_ptr<SystemDefinition> sysdef,
     GPUVector<Scalar4> tmp_t_activeVec(m_pdata->getNTypes(), m_exec_conf);
 
     m_t_activeVec.swap(tmp_t_activeVec);
-    
+
     ArrayHandle<Scalar4> h_t_activeVec(m_t_activeVec,
                                        access_location::host,
                                        access_mode::overwrite);
@@ -218,7 +218,7 @@ void ActiveForceCompute::rotationalDiffusion(Scalar rotational_diffusion, uint64
     {
     // getNumMembers might allocate the tag array handle. Access it first, then aquire the handles.
     const unsigned int num_members = m_group->getNumMembers();
-    
+
     //  array handles
     ArrayHandle<Scalar4> h_f_actVec(m_f_activeVec, access_location::host, access_mode::read);
     ArrayHandle<Scalar4> h_pos(m_pdata->getPositions(), access_location::host, access_mode::read);

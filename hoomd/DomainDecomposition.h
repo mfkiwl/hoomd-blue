@@ -10,9 +10,9 @@
 
 #include "BoxDim.h"
 #include "ExecutionConfiguration.h"
+#include "GPUArray.h"
 #include "HOOMDMath.h"
 #include "Index1D.h"
-#include "GPUArray.h"
 
 #include <set>
 #include <vector>

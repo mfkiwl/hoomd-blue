@@ -123,7 +123,7 @@ class UpdateOrderGPU
         }
 
     private:
-    bool m_is_reversed;                                //!< True if order is reversed
+    bool m_is_reversed;                             //!< True if order is reversed
     GPUVector<unsigned int> m_update_order;         //!< Update order
     GPUVector<unsigned int> m_reverse_update_order; //!< Inverse permutation
     };
@@ -161,7 +161,7 @@ template<class Shape> class IntegratorHPMCMonoGPU : public IntegratorHPMCMono<Sh
 
     GPUArray<unsigned int> m_excell_idx;  //!< Particle indices in expanded cells
     GPUArray<unsigned int> m_excell_size; //!< Number of particles in each expanded cell
-    Index2D m_excell_list_indexer;           //!< Indexer to access elements of the excell_idx list
+    Index2D m_excell_list_indexer;        //!< Indexer to access elements of the excell_idx list
 
     /// Autotuner for proposing moves.
     std::shared_ptr<Autotuner<1>> m_tuner_moves;
@@ -183,13 +183,13 @@ template<class Shape> class IntegratorHPMCMonoGPU : public IntegratorHPMCMono<Sh
     GPUArray<Scalar4> m_trial_vel;               //!< New velocities (auxilliary variables)
     GPUArray<unsigned int> m_trial_move_type;    //!< Flags to indicate which type of move
     GPUArray<unsigned int> m_reject_out_of_cell; //!< Flags to reject particle moves if they are
-                                                    //!< out of the cell, per particle
-    GPUArray<unsigned int> m_reject; //!< Flags to reject particle moves, per particle
+                                                 //!< out of the cell, per particle
+    GPUArray<unsigned int> m_reject;             //!< Flags to reject particle moves, per particle
     GPUArray<unsigned int>
         m_reject_out; //!< Flags to reject particle moves, per particle (temporary)
 
     detail::UpdateOrderGPU m_update_order; //!< Particle update order
-    GPUArray<unsigned int> m_condition; //!< Condition of convergence check
+    GPUArray<unsigned int> m_condition;    //!< Condition of convergence check
 
     //! For energy evaluation
     GPUArray<Scalar> m_additive_cutoff; //!< Per-type additive cutoffs from patch potential
@@ -280,33 +280,33 @@ IntegratorHPMCMonoGPU<Shape>::IntegratorHPMCMonoGPU(std::shared_ptr<SystemDefini
 
     // initialize memory
     GPUArray<Scalar4>(1, this->m_exec_conf).swap(m_trial_postype);
-    
+
     GPUArray<Scalar4>(1, this->m_exec_conf).swap(m_trial_orientation);
-    
+
     GPUArray<Scalar4>(1, this->m_exec_conf).swap(m_trial_vel);
-    
+
     GPUArray<unsigned int>(1, this->m_exec_conf).swap(m_trial_move_type);
-    
+
     GPUArray<unsigned int>(1, this->m_exec_conf).swap(m_reject_out_of_cell);
-    
+
     GPUArray<unsigned int>(1, this->m_exec_conf).swap(m_reject);
-    
+
     GPUArray<unsigned int>(1, this->m_exec_conf).swap(m_reject_out);
-    
+
     GPUArray<unsigned int>(1, this->m_exec_conf).swap(m_condition);
-    
+
     GPUArray<unsigned int> excell_size(0, this->m_exec_conf);
     m_excell_size.swap(excell_size);
-    
+
     GPUArray<unsigned int> excell_idx(0, this->m_exec_conf);
     m_excell_idx.swap(excell_idx);
-    
+
     this->m_exec_conf->setDevice();
     hipStreamCreate(&m_narrow_phase_stream);
 
     // patch
     GPUArray<Scalar>(this->m_pdata->getNTypes(), this->m_exec_conf).swap(m_additive_cutoff);
-        }
+    }
 
 template<class Shape> IntegratorHPMCMonoGPU<Shape>::~IntegratorHPMCMonoGPU()
     {

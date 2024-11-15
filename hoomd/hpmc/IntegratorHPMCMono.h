@@ -338,10 +338,10 @@ template<class Shape> class IntegratorHPMCMono : public IntegratorHPMC
 
     protected:
     std::vector<param_type, hoomd::detail::managed_allocator<param_type>>
-        m_params;                         //!< Parameters for each particle type on GPU
-    GPUArray<unsigned int> m_overlaps; //!< Interaction matrix (0/1) for overlap checks
-    detail::UpdateOrder m_update_order;   //!< Update order
-    bool m_image_list_is_initialized;     //!< true if image list has been used
+        m_params;                       //!< Parameters for each particle type on GPU
+    GPUArray<unsigned int> m_overlaps;  //!< Interaction matrix (0/1) for overlap checks
+    detail::UpdateOrder m_update_order; //!< Update order
+    bool m_image_list_is_initialized;   //!< true if image list has been used
     bool m_image_list_valid; //!< image list is invalid if the box dimensions or particle parameters
                              //!< have changed.
     std::vector<vec3<Scalar>>
@@ -407,7 +407,7 @@ IntegratorHPMCMono<Shape>::IntegratorHPMCMono(std::shared_ptr<SystemDefinition> 
     m_overlap_idx = Index2D(m_pdata->getNTypes());
     GPUArray<unsigned int> overlaps(m_overlap_idx.getNumElements(), m_exec_conf);
     m_overlaps.swap(overlaps);
-        ArrayHandle<unsigned int> h_overlaps(m_overlaps, access_location::host, access_mode::readwrite);
+    ArrayHandle<unsigned int> h_overlaps(m_overlaps, access_location::host, access_mode::readwrite);
     for (unsigned int i = 0; i < m_overlap_idx.getNumElements(); i++)
         {
         h_overlaps.data[i] = 1; // Assume we want to check overlaps.
@@ -485,7 +485,7 @@ template<class Shape> void IntegratorHPMCMono<Shape>::update(uint64_t timestep)
                                                 access_location::host,
                                                 access_mode::readwrite);
         hpmc_counters_t& counters = h_counters.data[0];
-        
+
         // access particle data and system box
         ArrayHandle<Scalar4> h_postype(m_pdata->getPositions(),
                                        access_location::host,
@@ -787,8 +787,12 @@ template<class Shape> void IntegratorHPMCMono<Shape>::update(uint64_t timestep)
                 // Legacy external field energy difference
                 if (m_external)
                     {
-                    patch_field_energy_diff
-                        -= m_external->energydiff(timestep, h_tag.data[i], pos_old, shape_old, pos_i, shape_i);
+                    patch_field_energy_diff -= m_external->energydiff(timestep,
+                                                                      h_tag.data[i],
+                                                                      pos_old,
+                                                                      shape_old,
+                                                                      pos_i,
+                                                                      shape_i);
                     }
 
                 // U_old - U_new

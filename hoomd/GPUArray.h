@@ -250,7 +250,6 @@ template<class T> class ArrayHandleAsync
                             const access_location::Enum location = access_location::host,
                             const access_mode::Enum mode = access_mode::readwrite);
 
-
     //! Notifies the containing GPUArray that the handle has been released
     ~ArrayHandleAsync()
         {
@@ -446,10 +445,10 @@ template<class T> class GPUArray
 
     //! Acquires the data pointer for use
     inline T* acquire(const access_location::Enum location,
-                                          const access_mode::Enum mode
+                      const access_mode::Enum mode
 #ifdef ENABLE_HIP
-                                          ,
-                                          bool async = false
+                      ,
+                      bool async = false
 #endif
     ) const;
 
@@ -1010,10 +1009,10 @@ template<class T> void GPUArray<T>::memcpyHostToDevice(bool async) const
 */
 template<class T>
 T* GPUArray<T>::acquire(const access_location::Enum location,
-                                            const access_mode::Enum mode
+                        const access_mode::Enum mode
 #ifdef ENABLE_HIP
-                                            ,
-                                            bool async
+                        ,
+                        bool async
 #endif
 ) const
     {

@@ -24,7 +24,7 @@ ConstantForceCompute::ConstantForceCompute(std::shared_ptr<SystemDefinition> sys
     GPUVector<Scalar3> tmp_f(m_pdata->getNTypes(), m_exec_conf);
 
     m_constant_force.swap(tmp_f);
-    
+
     ArrayHandle<Scalar3> h_constant_force(m_constant_force,
                                           access_location::host,
                                           access_mode::overwrite);
@@ -35,7 +35,7 @@ ConstantForceCompute::ConstantForceCompute(std::shared_ptr<SystemDefinition> sys
     GPUVector<Scalar3> tmp_t(m_pdata->getNTypes(), m_exec_conf);
 
     m_constant_torque.swap(tmp_t);
-    
+
     ArrayHandle<Scalar3> h_constant_torque(m_constant_torque,
                                            access_location::host,
                                            access_mode::overwrite);
