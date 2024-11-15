@@ -155,7 +155,9 @@ void VolumeConservationMeshForceComputeGPU::computeVolume()
     unsigned int NTypes = m_mesh_data->getMeshTriangleData()->getNTypes();
 
     if (this->m_ignore_type)
+        {
         NTypes = 1;
+        }
 
         {
         ArrayHandle<Scalar> d_partial_sumVol(m_partial_sum,

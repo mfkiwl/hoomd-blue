@@ -152,7 +152,9 @@ void AreaConservationMeshForceComputeGPU::precomputeParameter()
     unsigned int NTypes = m_mesh_data->getMeshTriangleData()->getNTypes();
 
     if (this->m_ignore_type)
+        {
         NTypes = 1;
+        }
 
         {
         ArrayHandle<Scalar> d_partial_sumArea(m_partial_sum,
