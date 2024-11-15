@@ -188,13 +188,13 @@ template<class Geometry> void BounceBackNVE<Geometry>::integrateStepTwo(uint64_t
  */
 template<class Geometry> bool BounceBackNVE<Geometry>::checkParticles()
     {
-    ArrayHandle<Scalar4> h_pos(m_pdata->getPositions(), access_location::host, access_mode::read);
-    ArrayHandle<unsigned int> h_tag(m_pdata->getTags(), access_location::host, access_mode::read);
-
     ArrayHandle<unsigned int> h_group(m_group->getIndexArray(),
                                       access_location::host,
                                       access_mode::read);
     const unsigned int group_size = m_group->getNumMembers();
+
+    ArrayHandle<Scalar4> h_pos(m_pdata->getPositions(), access_location::host, access_mode::read);
+    ArrayHandle<unsigned int> h_tag(m_pdata->getTags(), access_location::host, access_mode::read);
 
     bool out_of_bounds = false;
     for (unsigned int idx = 0; idx < group_size; ++idx)

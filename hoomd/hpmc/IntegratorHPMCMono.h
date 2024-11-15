@@ -788,7 +788,7 @@ template<class Shape> void IntegratorHPMCMono<Shape>::update(uint64_t timestep)
                 if (m_external)
                     {
                     patch_field_energy_diff
-                        -= m_external->energydiff(timestep, i, pos_old, shape_old, pos_i, shape_i);
+                        -= m_external->energydiff(timestep, h_tag.data[i], pos_old, shape_old, pos_i, shape_i);
                     }
 
                 // U_old - U_new
