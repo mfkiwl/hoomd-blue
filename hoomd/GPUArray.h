@@ -512,7 +512,10 @@ template<class T> class GPUArray
     inline T* resize2DDeviceArray(size_t pitch, size_t new_pitch, size_t height, size_t new_height);
 
     friend class ArrayHandle<T>;
+
+#ifdef ENABLE_HIP
     friend class ArrayHandleAsync<T>;
+#endif
     };
 
 //******************************************
