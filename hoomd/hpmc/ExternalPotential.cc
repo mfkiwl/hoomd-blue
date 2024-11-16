@@ -11,6 +11,7 @@ void exportExternalPotential(pybind11::module& m)
     {
     pybind11::class_<ExternalPotential, std::shared_ptr<ExternalPotential>>(m, "ExternalPotential")
         .def(pybind11::init<std::shared_ptr<SystemDefinition>>())
-        .def("totalEnergy", &ExternalPotential::totalEnergy);
+        .def("totalEnergy",
+             [](std::shared_ptr<ExternalPotential> self) { return self->totalEnergy(); });
     }
     } // namespace hoomd::hpmc::detail

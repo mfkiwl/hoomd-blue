@@ -249,7 +249,7 @@ inline bool UpdaterBoxMC::box_resize_trial(Scalar Lx,
 
     // energy of old configuration
     delta_U_pair -= m_mc->computeTotalPairEnergy(timestep);
-    delta_U_external -= m_mc->computeTotalExternalEnergy(false);
+    delta_U_external -= m_mc->computeTotalExternalEnergy(ExternalPotential::Trial::Old);
 
     // Attempt box resize and check for overlaps
     BoxDim newBox = m_pdata->getGlobalBox();
@@ -265,7 +265,7 @@ inline bool UpdaterBoxMC::box_resize_trial(Scalar Lx,
     if (allowed)
         {
         delta_U_pair += m_mc->computeTotalPairEnergy(timestep);
-        delta_U_external += m_mc->computeTotalExternalEnergy(true);
+        delta_U_external += m_mc->computeTotalExternalEnergy(ExternalPotential::Trial::New);
         }
 
     if (allowed && m_mc->getExternalField())

@@ -1322,7 +1322,11 @@ bool UpdaterMuVT<Shape>::tryRemoveParticle(uint64_t timestep, unsigned int tag, 
                                              float(charge)    // charge i
                     );
                     }
-                delta_u += m_mc->computeOneExternalEnergy(type, pos, orientation, charge, false);
+                delta_u += m_mc->computeOneExternalEnergy(type,
+                                                          pos,
+                                                          orientation,
+                                                          charge,
+                                                          ExternalPotential::Trial::Old);
                 }
             }
 
@@ -1517,7 +1521,11 @@ bool UpdaterMuVT<Shape>::tryInsertParticle(uint64_t timestep,
 
         if (has_field && (!m_gibbs || p == 0))
             {
-            delta_u += m_mc->computeOneExternalEnergy(type, pos, orientation, 0.0, true);
+            delta_u += m_mc->computeOneExternalEnergy(type,
+                                                      pos,
+                                                      orientation,
+                                                      0.0,
+                                                      ExternalPotential::Trial::New);
 
             const BoxDim& box = this->m_pdata->getGlobalBox();
             if (field)
@@ -1530,8 +1538,6 @@ bool UpdaterMuVT<Shape>::tryInsertParticle(uint64_t timestep,
                                          0.0  // charge i
                 );
                 }
-
-            delta_u += m_mc->computeOneExternalEnergy(type, pos, orientation, 0.0, true);
             }
 
         if (m_mc->hasPairInteractions())

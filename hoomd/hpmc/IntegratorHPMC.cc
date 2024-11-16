@@ -266,7 +266,9 @@ void export_IntegratorHPMC(pybind11::module& m)
         .def_property_readonly("pair_potentials", &IntegratorHPMC::getPairPotentials)
         .def("computeTotalPairEnergy", &IntegratorHPMC::computeTotalPairEnergy)
         .def_property_readonly("external_potentials", &IntegratorHPMC::getExternalPotentials)
-        .def("computeTotalExternalEnergy", &IntegratorHPMC::computeTotalExternalEnergy);
+        .def("computeTotalExternalEnergy",
+             [](std::shared_ptr<IntegratorHPMC> self)
+             { return self->computeTotalExternalEnergy(); });
 
     pybind11::class_<hpmc_counters_t>(m, "hpmc_counters_t")
         .def_readonly("overlap_checks", &hpmc_counters_t::overlap_checks)

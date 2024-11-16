@@ -796,16 +796,17 @@ template<class Shape> void IntegratorHPMCMono<Shape>::update(uint64_t timestep)
                     }
 
                 // U_old - U_new
-                patch_field_energy_diff += this->computeOneExternalEnergy(typ_i,
-                                                                          pos_old,
-                                                                          shape_old.orientation,
-                                                                          h_charge.data[i],
-                                                                          false)
-                                           - this->computeOneExternalEnergy(typ_i,
-                                                                            pos_i,
-                                                                            shape_i.orientation,
-                                                                            h_charge.data[i],
-                                                                            true);
+                patch_field_energy_diff
+                    += this->computeOneExternalEnergy(typ_i,
+                                                      pos_old,
+                                                      shape_old.orientation,
+                                                      h_charge.data[i],
+                                                      ExternalPotential::Trial::Old)
+                       - this->computeOneExternalEnergy(typ_i,
+                                                        pos_i,
+                                                        shape_i.orientation,
+                                                        h_charge.data[i],
+                                                        ExternalPotential::Trial::New);
                 }
 
             bool accept = !overlap

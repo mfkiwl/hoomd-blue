@@ -24,7 +24,7 @@ LongReal ExternalPotentialLinear::particleEnergyImplementation(unsigned int type
                                                                const vec3<LongReal>& r_i,
                                                                const quat<LongReal>& q_i,
                                                                LongReal charge_i,
-                                                               bool trial)
+                                                               Trial trial)
     {
     return m_alpha[type_i] * dot(m_plane_normal, r_i - m_plane_origin);
     }

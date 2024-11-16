@@ -77,4 +77,4 @@ class External(hoomd.operation._HOOMDBaseObject):
 
             logger.add(obj=external, quantities=['energy'])
         """
-        return self._cpp_obj.totalEnergy(False)
+        return self._cpp_obj.totalEnergy()

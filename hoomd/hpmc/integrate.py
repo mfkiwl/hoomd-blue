@@ -602,7 +602,7 @@ class HPMCIntegrator(Integrator):
     def external_energy(self):
         """float: Total external energy contributed by all external potentials \
         :math:`[\\mathrm{energy}]`."""
-        return self._cpp_obj.computeTotalExternalEnergy(False)
+        return self._cpp_obj.computeTotalExternalEnergy()
 
 
 class Sphere(HPMCIntegrator):
