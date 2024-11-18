@@ -35,7 +35,7 @@ valid_constructor_args = [
 @pytest.mark.parametrize("constructor_args", valid_constructor_args)
 def test_valid_construction_harmonicfield(device, constructor_args):
     """Test that HarmonicField can be constructed with valid arguments."""
-    field = hoomd.hpmc.external.field.Harmonic(**constructor_args)
+    field = hoomd.hpmc.external.Harmonic(**constructor_args)
 
     # validate the params were set properly
     for attr, value in constructor_args.items():
@@ -56,13 +56,13 @@ def add_default_integrator():
             else:
                 reference_positions = [[0, 0, 0], [0, 0, 0]]
                 reference_orientations = [[1, 0, 0, 0], [1, 0, 0, 0]]
-            field = hoomd.hpmc.external.field.Harmonic(
+            field = hoomd.hpmc.external.Harmonic(
                 reference_positions=reference_positions,
                 reference_orientations=reference_orientations,
                 k_translational=1.0,
                 k_rotational=1.0,
                 symmetries=[[1, 0, 0, 0]])
-            mc.external_potential = field
+            mc.external_potentials = [field]
         elif field_type == 'linear':
             field = hoomd.hpmc.external.Linear(default_alpha=3.0)
             mc.external_potentials = [field]
@@ -122,22 +122,9 @@ class TestExternalPotentialHarmonic:
             lattice.energy,
             0.5 * dx**2 * k_translational * sim.state.N_particles)
 
-        # make some moves and make sure the different energies are not zero
+        # make some moves and make sure the energy is not zero
         sim.run(10)
-        assert lattice.energy_rotational != 0.0
-        assert lattice.energy_translational != 0.0
-        assert np.allclose(
-            lattice.energy,
-            lattice.energy_translational + lattice.energy_rotational)
-
-        # set k_rotational to zero and ensure the rotational energy is zero
-        lattice.k_rotational = 0
-        assert lattice.energy_rotational == 0.0
-
-        # set k_translational to zero and ensure the translational energy is
-        # zero
-        lattice.k_translational = 0
-        assert lattice.energy_translational == 0.0
+        assert lattice.energy != 0.0
 
     def test_harmonic_displacement(self, simulation_factory,
                                    two_particle_snapshot_factory,
@@ -150,6 +137,7 @@ class TestExternalPotentialHarmonic:
         mc.shape['A'] = dict(diameter=particle_diameter)
         k_trans = 100.0
         lattice.k_translational = k_trans
+        lattice.k_rotational = 0
 
         # run and check that particles haven't moved farther than half a
         # diameter

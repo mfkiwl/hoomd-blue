@@ -5,6 +5,7 @@
 #include "IntegratorHPMC.h"
 #include "IntegratorHPMCMonoNEC.h"
 
+#include "ExternalFieldHarmonic.h"
 #include "ExternalFieldWall.h"
 #include "ShapeConvexPolygon.h"
 #include "ShapeConvexPolyhedron.h"
@@ -161,6 +162,8 @@ PYBIND11_MODULE(_hpmc, m)
     exportPairPotentialAngularStep(m);
     exportPairPotentialStep(m);
     exportPairPotentialUnion(m);
+
+    export_ExternalHarmonicField(m);
     }
 
 /*! \defgroup hpmc_integrators HPMC integrators

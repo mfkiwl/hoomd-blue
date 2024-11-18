@@ -20,7 +20,9 @@ LongReal ExternalPotentialLinear::getAlpha(const std::string& particle_type)
     return m_alpha[particle_type_id];
     }
 
-LongReal ExternalPotentialLinear::particleEnergyImplementation(unsigned int type_i,
+LongReal ExternalPotentialLinear::particleEnergyImplementation(uint64_t timestep,
+                                                               unsigned int tag_i,
+                                                               unsigned int type_i,
                                                                const vec3<LongReal>& r_i,
                                                                const quat<LongReal>& q_i,
                                                                LongReal charge_i,

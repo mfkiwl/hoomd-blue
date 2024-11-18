@@ -26,3 +26,4 @@ from . import field
 from . import wall
 from .external import External
 from .linear import Linear
+from .harmonic import Harmonic

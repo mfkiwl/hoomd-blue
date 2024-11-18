@@ -4,14 +4,12 @@
 // Include the defined classes that are to be exported to python
 #include "ComputeFreeVolume.h"
 #include "ComputeSDF.h"
-#include "IntegratorHPMC.h"
 #include "IntegratorHPMCMono.h"
 
 #include "ShapeSpheropolyhedron.h"
 #include "ShapeUnion.h"
 
 #include "ExternalField.h"
-#include "ExternalFieldHarmonic.h"
 #include "ExternalFieldWall.h"
 
 #include "UpdaterGCA.h"
@@ -48,9 +46,6 @@ void export_union_convex_polyhedron(pybind11::module& m)
     export_ExternalFieldInterface<ShapeUnion<ShapeSpheropolyhedron>>(
         m,
         "ExternalFieldConvexPolyhedronUnion");
-    export_HarmonicField<ShapeUnion<ShapeSpheropolyhedron>>(
-        m,
-        "ExternalFieldHarmonicConvexPolyhedronUnion");
     export_ExternalFieldWall<ShapeUnion<ShapeSpheropolyhedron>>(m,
                                                                 "WallConvexSpheropolyhedronUnion");
 

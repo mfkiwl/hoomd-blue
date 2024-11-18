@@ -3,15 +3,12 @@
 
 // Include the defined classes that are to be exported to python
 #include "ComputeFreeVolume.h"
-#include "IntegratorHPMC.h"
 #include "IntegratorHPMCMono.h"
 
 #include "ComputeSDF.h"
 #include "ShapeSpheropolygon.h"
-#include "ShapeUnion.h"
 
 #include "ExternalField.h"
-#include "ExternalFieldHarmonic.h"
 #include "ExternalFieldWall.h"
 
 #include "UpdaterGCA.h"
@@ -39,7 +36,6 @@ void export_spheropolygon(pybind11::module& m)
     export_UpdaterGCA<ShapeSpheropolygon>(m, "UpdaterGCAConvexSpheropolygon");
 
     export_ExternalFieldInterface<ShapeSpheropolygon>(m, "ExternalFieldSpheropolygon");
-    export_HarmonicField<ShapeSpheropolygon>(m, "ExternalFieldHarmonicSpheropolygon");
     export_ExternalFieldWall<ShapeSpheropolygon>(m, "WallConvexSpheropolygon");
 
 #ifdef ENABLE_HIP

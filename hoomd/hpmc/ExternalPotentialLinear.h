@@ -68,6 +68,8 @@ class ExternalPotentialLinear : public ExternalPotential
 
     /** Implement the evaluation the energy of the external field interacting with one particle.
 
+        @param timestep The current timestep in the simulation
+        @param tag_i Tag of the particle
         @param type_i Type index of the particle.
         @param r_i Posiion of the particle in the box.
         @param q_i Orientation of the particle
@@ -79,7 +81,9 @@ class ExternalPotentialLinear : public ExternalPotential
 
         Evaluate the linear potential energy.
     */
-    virtual LongReal particleEnergyImplementation(unsigned int type_i,
+    virtual LongReal particleEnergyImplementation(uint64_t timestep,
+                                                  unsigned int tag_i,
+                                                  unsigned int type_i,
                                                   const vec3<LongReal>& r_i,
                                                   const quat<LongReal>& q_i,
                                                   LongReal charge_i,

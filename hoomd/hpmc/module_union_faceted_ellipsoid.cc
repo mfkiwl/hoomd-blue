@@ -4,14 +4,12 @@
 // Include the defined classes that are to be exported to python
 #include "ComputeFreeVolume.h"
 #include "ComputeSDF.h"
-#include "IntegratorHPMC.h"
 #include "IntegratorHPMCMono.h"
 
 #include "ShapeFacetedEllipsoid.h"
 #include "ShapeUnion.h"
 
 #include "ExternalField.h"
-#include "ExternalFieldHarmonic.h"
 #include "ExternalFieldWall.h"
 
 #include "UpdaterGCA.h"
@@ -45,9 +43,6 @@ void export_union_faceted_ellipsoid(pybind11::module& m)
     export_ExternalFieldInterface<ShapeUnion<ShapeFacetedEllipsoid>>(
         m,
         "ExternalFieldFacetedEllipsoidUnion");
-    export_HarmonicField<ShapeUnion<ShapeFacetedEllipsoid>>(
-        m,
-        "ExternalFieldHarmonicFacetedEllipsoidUnion");
     export_ExternalFieldWall<ShapeUnion<ShapeFacetedEllipsoid>>(m, "WallFacetedEllipsoidUnion");
 
 #ifdef ENABLE_HIP

@@ -40,7 +40,6 @@ PYBIND11_MODULE(_shape_plugin, m)
     export_UpdaterGCA<ShapeMySphere>(m, "UpdaterGCAMySphere");
 
     export_ExternalFieldInterface<ShapeMySphere>(m, "ExternalFieldMySphere");
-    export_HarmonicField<ShapeMySphere>(m, "ExternalFieldHarmonicMySphere");
     export_ExternalFieldWall<ShapeMySphere>(m, "WallMySphere");
 
     pybind11::class_<MySphereParams, std::shared_ptr<MySphereParams>>(m, "MySphereParams")

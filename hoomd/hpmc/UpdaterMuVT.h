@@ -1322,7 +1322,9 @@ bool UpdaterMuVT<Shape>::tryRemoveParticle(uint64_t timestep, unsigned int tag, 
                                              float(charge)    // charge i
                     );
                     }
-                delta_u += m_mc->computeOneExternalEnergy(type,
+                delta_u += m_mc->computeOneExternalEnergy(timestep,
+                                                          tag,
+                                                          type,
                                                           pos,
                                                           orientation,
                                                           charge,
@@ -1521,7 +1523,9 @@ bool UpdaterMuVT<Shape>::tryInsertParticle(uint64_t timestep,
 
         if (has_field && (!m_gibbs || p == 0))
             {
-            delta_u += m_mc->computeOneExternalEnergy(type,
+            delta_u += m_mc->computeOneExternalEnergy(timestep,
+                                                      0, // particle has no tag yet
+                                                      type,
                                                       pos,
                                                       orientation,
                                                       0.0,
