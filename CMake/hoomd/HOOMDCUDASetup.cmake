@@ -15,6 +15,9 @@ if (ENABLE_HIP)
             set(CUDA_ARCH_LIST 60 CACHE STRING "List of target sm_ architectures to compile CUDA code for. Separate with semicolons.")
         endif()
 
+        # ignore warnings about unused results
+        set(CMAKE_CUDA_FLAGS "${CMAKE_CUDA_FLAGS} -Wno-unused-result -diag-suppress 2810")
+
         if (CMAKE_CUDA_COMPILER_VERSION VERSION_GREATER_EQUAL 11.2)
           set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DCUSPARSE_NEW_API")
           set(CMAKE_CUDA_FLAGS "${CMAKE_CUDA_FLAGS} -DCUSPARSE_NEW_API")
