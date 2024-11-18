@@ -3,15 +3,11 @@
 
 // Include the defined classes that are to be exported to python
 #include "ComputeFreeVolume.h"
-#include "IntegratorHPMC.h"
 #include "IntegratorHPMCMono.h"
 
 #include "ComputeSDF.h"
 #include "ShapePolyhedron.h"
-#include "ShapeUnion.h"
 
-#include "ExternalField.h"
-#include "ExternalFieldHarmonic.h"
 #include "ExternalFieldWall.h"
 
 #include "UpdaterGCA.h"
@@ -38,8 +34,6 @@ void export_polyhedron(pybind11::module& m)
     export_UpdaterMuVT<ShapePolyhedron>(m, "UpdaterMuVTPolyhedron");
     export_UpdaterGCA<ShapePolyhedron>(m, "UpdaterGCAPolyhedron");
 
-    export_ExternalFieldInterface<ShapePolyhedron>(m, "ExternalFieldPolyhedron");
-    export_HarmonicField<ShapePolyhedron>(m, "ExternalFieldHarmonicPolyhedron");
     export_ExternalFieldWall<ShapePolyhedron>(m, "WallPolyhedron");
 
 #ifdef ENABLE_HIP

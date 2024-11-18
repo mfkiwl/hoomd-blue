@@ -12,7 +12,9 @@ hoomd.hpmc.external
     :nosignatures:
 
     External
+    Harmonic
     Linear
+    WallPotential
 
 
 .. rubric:: Details
@@ -21,12 +23,6 @@ hoomd.hpmc.external
     :synopsis: External potentials for HPMC.
     :show-inheritance:
     :members: External,
-              Linear
-
-.. rubric:: Modules
-
-.. toctree::
-   :maxdepth: 1
-
-   module-hpmc-external-field
-   module-hpmc-external-wall
+              Harmonic,
+              Linear,
+              WallPotential

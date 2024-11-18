@@ -249,7 +249,7 @@ inline bool UpdaterBoxMC::box_resize_trial(Scalar Lx,
 
     // energy of old configuration
     delta_U_pair -= m_mc->computeTotalPairEnergy(timestep);
-    delta_U_external -= m_mc->computeTotalExternalEnergy(false);
+    delta_U_external -= m_mc->computeTotalExternalEnergy(timestep, ExternalPotential::Trial::Old);
 
     // Attempt box resize and check for overlaps
     BoxDim newBox = m_pdata->getGlobalBox();
@@ -265,20 +265,8 @@ inline bool UpdaterBoxMC::box_resize_trial(Scalar Lx,
     if (allowed)
         {
         delta_U_pair += m_mc->computeTotalPairEnergy(timestep);
-        delta_U_external += m_mc->computeTotalExternalEnergy(true);
-        }
-
-    if (allowed && m_mc->getExternalField())
-        {
-        ArrayHandle<Scalar4> h_pos_backup(m_pos_backup,
-                                          access_location::host,
-                                          access_mode::readwrite);
-        Scalar ext_energy = m_mc->getExternalField()->calculateDeltaE(timestep,
-                                                                      h_pos_backup.data,
-                                                                      NULL,
-                                                                      curBox,
-                                                                      old_origin);
-        delta_U_external += ext_energy;
+        delta_U_external
+            += m_mc->computeTotalExternalEnergy(timestep, ExternalPotential::Trial::New);
         }
 
     double p = hoomd::detail::generate_canonical<double>(rng);

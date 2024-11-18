@@ -40,7 +40,6 @@ See Also:
 import contextlib
 import hoomd
 from hoomd import _hoomd
-import warnings
 
 
 class NoticeFile:
@@ -203,23 +202,9 @@ class Device:
             self._cpp_msg.openStd()
 
     @property
-    def devices(self):
-        """list[str]: Descriptions of the active hardware devices.
-
-        .. deprecated:: 4.5.0
-
-            Use `device`.
-        """
-        warnings.warn("devices is deprecated, use device.",
-                      FutureWarning,
-                      stacklevel=2)
-
-        return self._cpp_exec_conf.getActiveDevices()
-
-    @property
     def device(self):
         """str: Descriptions of the active hardware device."""
-        return self._cpp_exec_conf.getActiveDevices()[0]
+        return self._cpp_exec_conf.getActiveDevice()
 
     def notice(self, message, level=1):
         """Write a notice message.

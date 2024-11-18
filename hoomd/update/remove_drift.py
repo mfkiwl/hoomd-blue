@@ -42,7 +42,7 @@ class RemoveDrift(Updater):
         \vec{r}_i \leftarrow \mathrm{minimum\_image}(\vec{r}_i - \vec{D})
 
     Tip:
-        Use `RemoveDrift` with `hoomd.hpmc.external.field.Harmonic` to
+        Use `RemoveDrift` with `hoomd.hpmc.external.Harmonic` to
         improve the accuracy of Frenkel-Ladd calculations.
 
     .. rubric:: Example:

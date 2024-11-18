@@ -3,15 +3,11 @@
 
 // Include the defined classes that are to be exported to python
 #include "ComputeFreeVolume.h"
-#include "IntegratorHPMC.h"
 #include "IntegratorHPMCMono.h"
 
 #include "ComputeSDF.h"
 #include "ShapeEllipsoid.h"
-#include "ShapeUnion.h"
 
-#include "ExternalField.h"
-#include "ExternalFieldHarmonic.h"
 #include "ExternalFieldWall.h"
 
 #include "UpdaterGCA.h"
@@ -48,8 +44,6 @@ void export_ellipsoid(pybind11::module& m)
     export_PythonShapeMove<ShapeEllipsoid>(m, "ShapeSpaceEllipsoid");
     export_ElasticShapeMove<ShapeEllipsoid>(m, "ElasticEllipsoid");
 
-    export_ExternalFieldInterface<ShapeEllipsoid>(m, "ExternalFieldEllipsoid");
-    export_HarmonicField<ShapeEllipsoid>(m, "ExternalFieldHarmonicEllipsoid");
     export_ExternalFieldWall<ShapeEllipsoid>(m, "WallEllipsoid");
 
 #ifdef ENABLE_HIP

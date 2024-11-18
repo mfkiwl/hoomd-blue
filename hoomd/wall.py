@@ -13,7 +13,7 @@ these `WallGeometry` objects to describe more complex geometries. Use walls to
 confine particles to specific regions of space in HPMC and MD simulations.
 
 See Also:
-    `hoomd.hpmc.external.wall`
+    `hoomd.hpmc.external.WallPotential`
 
     `hoomd.md.external.wall`
 """

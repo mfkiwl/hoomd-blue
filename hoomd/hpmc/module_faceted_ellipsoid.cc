@@ -3,14 +3,11 @@
 
 // Include the defined classes that are to be exported to python
 #include "ComputeFreeVolume.h"
-#include "IntegratorHPMC.h"
 #include "IntegratorHPMCMono.h"
 
 #include "ComputeSDF.h"
 #include "ShapeFacetedEllipsoid.h"
 
-#include "ExternalField.h"
-#include "ExternalFieldHarmonic.h"
 #include "ExternalFieldWall.h"
 
 #include "UpdaterGCA.h"
@@ -37,8 +34,6 @@ void export_faceted_ellipsoid(pybind11::module& m)
     export_UpdaterMuVT<ShapeFacetedEllipsoid>(m, "UpdaterMuVTFacetedEllipsoid");
     export_UpdaterGCA<ShapeFacetedEllipsoid>(m, "UpdaterGCAFacetedEllipsoid");
 
-    export_ExternalFieldInterface<ShapeFacetedEllipsoid>(m, "ExternalFieldFacetedEllipsoid");
-    export_HarmonicField<ShapeFacetedEllipsoid>(m, "ExternalFieldHarmonicFacetedEllipsoid");
     export_ExternalFieldWall<ShapeFacetedEllipsoid>(m, "WallFacetedEllipsoid");
 
 #ifdef ENABLE_HIP

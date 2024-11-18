@@ -19,6 +19,8 @@ Change Log
 * Ensure correct methods are used by ``hoomd.mpcd.fill.VirtualParticleFiller`` for certain
   geometries, improving performance on the GPU in these cases
   (`#1934 <https://github.com/glotzerlab/hoomd-blue/pull/1934>`__).
+* Correctly apply ``HPMCIntegrator.external_potentials`` in ``hoomd.hpmc.update.MuVT``
+  (`#1941 <https://github.com/glotzerlab/hoomd-blue/pull/1941>`__).
 
 *Added*
 
@@ -35,6 +37,12 @@ Change Log
   (`#1869 <https://github.com/glotzerlab/hoomd-blue/pull/1869>`__)
 * ``hoomd.update.Clusters`` is now ``hoomd.update.GCA``
   (`#1926 <https://github.com/glotzerlab/hoomd-blue/pull/1926>`__)
+* ``hoomd.hpmc.external.wall.WallPotential`` is now ``hoomd.hpmc.external.WallPotential`` and works
+  with ``IntegratorHPMC.external_potentials``
+  (`#1941 <https://github.com/glotzerlab/hoomd-blue/pull/1941>`__)
+* ``hoomd.hpmc.external.field.Harmonic`` is now ``hoomd.hpmc.external.Harmonic`` and works
+  with ``IntegratorHPMC.external_potentials``
+  (`#1941 <https://github.com/glotzerlab/hoomd-blue/pull/1941>`__).
 
 *Removed*
 
@@ -65,6 +73,8 @@ Change Log
   (`#1936 <https://github.com/glotzerlab/hoomd-blue/pull/1936>`__).
 * [c++] ``GlobalArray`` and ``GlobalVector``
   (`#1938 <https://github.com/glotzerlab/hoomd-blue/pull/1938>`__).
+* ``IntegratorHPMC.external_potential``
+  (`#1941 <https://github.com/glotzerlab/hoomd-blue/pull/1941>`__).
 
 4.x
 ---

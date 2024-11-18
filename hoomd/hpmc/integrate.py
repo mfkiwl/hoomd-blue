@@ -166,8 +166,7 @@ potentials in `pair_potentials <HPMCIntegrator.pair_potentials>` during
 integration.
 
 Similarly, potential classes in :doc:`module-hpmc-external` evaluate
-:math:`U_{\mathrm{external},i}`. Assign a class instance to
-`external_potential <HPMCIntegrator.external_potential>` or add instances to
+:math:`U_{\mathrm{external},i}`. Add instances of these classes to
 `external_potentials <HPMCIntegrator.external_potentials>` to apply during
 integration.
 
@@ -268,7 +267,6 @@ from hoomd.operation import Integrator
 from hoomd.logging import log
 import hoomd
 import json
-import warnings
 
 
 class HPMCIntegrator(Integrator):
@@ -352,8 +350,6 @@ class HPMCIntegrator(Integrator):
         self._param_dict.update(param_dict)
         self.kT = kT
 
-        self._external_potential = None
-
         # Set standard typeparameters for hpmc integrators
         typeparam_d = TypeParameter('d',
                                     type_kind='particle_types',
@@ -400,10 +396,6 @@ class HPMCIntegrator(Integrator):
             self._cpp_obj = getattr(self._ext_module, self._cpp_cls)(sys_def)
             self._cpp_cell = None
 
-        if self._external_potential is not None:
-            self._external_potential._attach(self._simulation)
-            self._cpp_obj.setExternalField(self._external_potential._cpp_obj)
-
         self._pair_potentials._sync(self._simulation,
                                     self._cpp_obj.pair_potentials)
 
@@ -413,8 +405,6 @@ class HPMCIntegrator(Integrator):
         super()._attach_hook()
 
     def _detach_hook(self):
-        if self._external_potential is not None:
-            self._external_potential._detach()
         self._pair_potentials._unsync()
         self._external_potentials._unsync()
 
@@ -554,43 +544,6 @@ class HPMCIntegrator(Integrator):
         else:
             raise DataAccessError("counters")
 
-    @property
-    def external_potential(self):
-        r"""The user-defined potential energy field integrator.
-
-        Defines the external energy :math:`U_{\mathrm{external},i}`. Defaults to
-        `None`. May be set to an object from :doc:`module-hpmc-external`.
-
-        .. deprecated:: 4.8.0
-
-            Use `external_potentials`.
-        """
-        warnings.warn(
-            "external_potential is deprecated since 4.8.0. "
-            "Use external_potentials (when possible).",
-            FutureWarning,
-            stacklevel=2)
-        return self._external_potential
-
-    @external_potential.setter
-    def external_potential(self, new_external_potential):
-        warnings.warn(
-            "external_potential is deprecated since 4.8.0. "
-            "Use external_potentials (when possible).",
-            FutureWarning,
-            stacklevel=4)
-        if not isinstance(new_external_potential,
-                          hoomd.hpmc.external.field.ExternalField):
-            msg = 'External potentials should be an instance of '
-            msg += 'hoomd.hpmc.field.external.ExternalField.'
-            raise TypeError(msg)
-        if self._attached:
-            new_external_potential._attach(self._simulation)
-            self._cpp_obj.setExternalField(new_external_potential._cpp_obj)
-            if self._external_potential is not None:
-                self._external_potential._detach()
-        self._external_potential = new_external_potential
-
     @log(requires_run=True)
     def pair_energy(self):
         """float: Total potential energy contributed by all pair potentials \
@@ -602,7 +555,8 @@ class HPMCIntegrator(Integrator):
     def external_energy(self):
         """float: Total external energy contributed by all external potentials \
         :math:`[\\mathrm{energy}]`."""
-        return self._cpp_obj.computeTotalExternalEnergy(False)
+        return self._cpp_obj.computeTotalExternalEnergy(
+            self._simulation.timestep)
 
 
 class Sphere(HPMCIntegrator):

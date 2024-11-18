@@ -1292,9 +1292,8 @@ bool UpdaterMuVT<Shape>::tryRemoveParticle(uint64_t timestep, unsigned int tag, 
         bool is_local = this->m_pdata->isParticleLocal(tag);
 
         // do we have to compute a wall contribution?
-        auto field = m_mc->getExternalField();
         unsigned int p = m_exec_conf->getPartition() % m_npartition;
-        bool has_field = field || (!m_mc->getExternalPotentials().empty());
+        bool has_field = !m_mc->getExternalPotentials().empty();
 
         if (has_field && (!m_gibbs || p == 0))
             {
@@ -1305,24 +1304,18 @@ bool UpdaterMuVT<Shape>::tryRemoveParticle(uint64_t timestep, unsigned int tag, 
             m_pdata->getGlobalBox().wrap(p, tmp);
             vec3<Scalar> pos(p);
 
-            const BoxDim box = this->m_pdata->getGlobalBox();
             unsigned int type = this->m_pdata->getType(tag);
             quat<Scalar> orientation(m_pdata->getOrientation(tag));
-            Scalar diameter = m_pdata->getDiameter(tag);
             Scalar charge = m_pdata->getCharge(tag);
             if (is_local)
                 {
-                if (field)
-                    {
-                    delta_u += field->energy(box,
-                                             type,
-                                             pos,
-                                             quat<float>(orientation),
-                                             float(diameter), // diameter i
-                                             float(charge)    // charge i
-                    );
-                    }
-                delta_u += m_mc->computeOneExternalEnergy(type, pos, orientation, charge, false);
+                delta_u += m_mc->computeOneExternalEnergy(timestep,
+                                                          tag,
+                                                          type,
+                                                          pos,
+                                                          orientation,
+                                                          charge,
+                                                          ExternalPotential::Trial::Old);
                 }
             }
 
@@ -1477,8 +1470,7 @@ bool UpdaterMuVT<Shape>::tryInsertParticle(uint64_t timestep,
                                            Scalar& delta_u)
     {
     // do we have to compute a wall contribution?
-    auto field = m_mc->getExternalField();
-    bool has_field = field || (!m_mc->getExternalPotentials().empty());
+    bool has_field = !m_mc->getExternalPotentials().empty();
 
     delta_u = Scalar(0.0);
 
@@ -1517,21 +1509,13 @@ bool UpdaterMuVT<Shape>::tryInsertParticle(uint64_t timestep,
 
         if (has_field && (!m_gibbs || p == 0))
             {
-            delta_u += m_mc->computeOneExternalEnergy(type, pos, orientation, 0.0, true);
-
-            const BoxDim& box = this->m_pdata->getGlobalBox();
-            if (field)
-                {
-                delta_u -= field->energy(box,
-                                         type,
-                                         pos,
-                                         quat<float>(orientation),
-                                         1.0, // diameter i
-                                         0.0  // charge i
-                );
-                }
-
-            delta_u += m_mc->computeOneExternalEnergy(type, pos, orientation, 0.0, true);
+            delta_u -= m_mc->computeOneExternalEnergy(timestep,
+                                                      0, // particle has no tag yet
+                                                      type,
+                                                      pos,
+                                                      orientation,
+                                                      0.0,
+                                                      ExternalPotential::Trial::New);
             }
 
         if (m_mc->hasPairInteractions())

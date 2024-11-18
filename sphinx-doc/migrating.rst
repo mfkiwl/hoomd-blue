@@ -42,6 +42,14 @@ Breaking changes to existing functionalities
 
   * Use ``Device.gpu_id``.
 
+* ``HPMCIntegrator.external_potential``.
+
+  * Use ``HPMCIntegrator.external_potentials``
+
+* ``hoomd.hpmc.external.wall.WallPotential`` is now ``hoomd.hpmc.external.WallPotential``.
+
+* ``hoomd.hpmc.external.field.Harmonic`` is now ``hoomd.hpmc.external.Harmonic``.
+
 Removed functionalities
 ^^^^^^^^^^^^^^^^^^^^^^^
 

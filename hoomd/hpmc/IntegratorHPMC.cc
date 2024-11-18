@@ -22,7 +22,7 @@ namespace hpmc
     {
 IntegratorHPMC::IntegratorHPMC(std::shared_ptr<SystemDefinition> sysdef)
     : Integrator(sysdef, 0.005), m_translation_move_probability(32768), m_nselect(4),
-      m_nominal_width(1.0), m_extra_ghost_width(0), m_external_base(NULL), m_past_first_run(false)
+      m_nominal_width(1.0), m_extra_ghost_width(0), m_past_first_run(false)
     {
     m_exec_conf->msg->notice(5) << "Constructing IntegratorHPMC" << endl;
 
@@ -266,7 +266,9 @@ void export_IntegratorHPMC(pybind11::module& m)
         .def_property_readonly("pair_potentials", &IntegratorHPMC::getPairPotentials)
         .def("computeTotalPairEnergy", &IntegratorHPMC::computeTotalPairEnergy)
         .def_property_readonly("external_potentials", &IntegratorHPMC::getExternalPotentials)
-        .def("computeTotalExternalEnergy", &IntegratorHPMC::computeTotalExternalEnergy);
+        .def("computeTotalExternalEnergy",
+             [](std::shared_ptr<IntegratorHPMC> self, uint64_t timestep)
+             { return self->computeTotalExternalEnergy(timestep); });
 
     pybind11::class_<hpmc_counters_t>(m, "hpmc_counters_t")
         .def_readonly("overlap_checks", &hpmc_counters_t::overlap_checks)

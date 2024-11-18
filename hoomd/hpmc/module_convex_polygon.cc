@@ -3,15 +3,11 @@
 
 // Include the defined classes that are to be exported to python
 #include "ComputeFreeVolume.h"
-#include "IntegratorHPMC.h"
 #include "IntegratorHPMCMono.h"
 
 #include "ComputeSDF.h"
 #include "ShapeConvexPolygon.h"
-#include "ShapeUnion.h"
 
-#include "ExternalField.h"
-#include "ExternalFieldHarmonic.h"
 #include "ExternalFieldWall.h"
 
 #include "UpdaterGCA.h"
@@ -38,8 +34,6 @@ void export_convex_polygon(pybind11::module& m)
     export_UpdaterMuVT<ShapeConvexPolygon>(m, "UpdaterMuVTConvexPolygon");
     export_UpdaterGCA<ShapeConvexPolygon>(m, "UpdaterGCAConvexPolygon");
 
-    export_ExternalFieldInterface<ShapeConvexPolygon>(m, "ExternalFieldConvexPolygon");
-    export_HarmonicField<ShapeConvexPolygon>(m, "ExternalFieldHarmonicConvexPolygon");
     export_ExternalFieldWall<ShapeConvexPolygon>(m, "WallConvexPolygon");
 
 #ifdef ENABLE_HIP

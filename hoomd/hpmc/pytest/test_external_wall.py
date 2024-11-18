@@ -1,7 +1,7 @@
 # Copyright (c) 2009-2024 The Regents of the University of Michigan.
 # Part of HOOMD-blue, released under the BSD 3-Clause License.
 
-"""Test hoomd.hpmc.external.wall."""
+"""Test hoomd.hpmc.external.WallPotential."""
 
 from collections import defaultdict
 
@@ -26,7 +26,7 @@ for r in 1, 2, 3:
 @pytest.mark.parametrize("wall_list", valid_wall_lists)
 def test_valid_construction(device, wall_list):
     """Test that WallPotential can be constructed with valid arguments."""
-    walls = hoomd.hpmc.external.wall.WallPotential(wall_list)
+    walls = hoomd.hpmc.external.WallPotential(wall_list)
 
     # validate the params were set properly
     for wall_input, wall_in_object in itertools.zip_longest(
@@ -54,8 +54,8 @@ def add_default_integrator():
             wall_list = [wt(*default_wall_args[wt]) for wt in wall_types]
         else:
             wall_list = wall_types
-        walls = hoomd.hpmc.external.wall.WallPotential(wall_list)
-        mc.external_potential = walls
+        walls = hoomd.hpmc.external.WallPotential(wall_list)
+        mc.external_potentials = [walls]
         simulation.operations.integrator = mc
         return mc, walls
 
@@ -178,7 +178,9 @@ def test_replace_with_invalid(simulation_factory, two_particle_snapshot_factory,
     mc, walls = add_default_integrator(sim, integrator_class, wall_types)
     sim.run(0)
     with pytest.raises(NotImplementedError):
-        mc.external_potential.walls = [hoomd.wall.Cylinder(1.2345, (0, 0, 0))]
+        mc.external_potentials[0].walls = [
+            hoomd.wall.Cylinder(1.2345, (0, 0, 0))
+        ]
 
 
 @pytest.mark.cpu
@@ -192,7 +194,7 @@ def test_replace_with_invalid_by_append(simulation_factory,
     sim.run(0)
     with pytest.raises(NotImplementedError):
         new_wall = hoomd.wall.Cylinder(1.2345, (0, 0, 0))
-        mc.external_potential.walls.append(new_wall)
+        mc.external_potentials[0].walls.append(new_wall)
 
 
 @pytest.mark.cpu
@@ -206,7 +208,7 @@ def test_replace_with_invalid_by_extend(simulation_factory,
     sim.run(0)
     with pytest.raises(NotImplementedError):
         new_walls = [hoomd.wall.Cylinder(1.2345, (0, 0, 0))]
-        mc.external_potential.walls.extend(new_walls)
+        mc.external_potentials[0].walls.extend(new_walls)
 
 
 @pytest.mark.cpu
@@ -217,7 +219,7 @@ def test_replace_with_valid(simulation_factory, two_particle_snapshot_factory,
     wall_types = [hoomd.wall.Plane]
     mc, walls = add_default_integrator(sim, integrator_class, wall_types)
     sim.run(0)
-    mc.external_potential.walls = [hoomd.wall.Sphere(1.0)]
+    mc.external_potentials[0].walls = [hoomd.wall.Sphere(1.0)]
 
 
 @pytest.mark.cpu
@@ -229,7 +231,7 @@ def test_replace_with_valid_by_append(simulation_factory,
     wall_types = [hoomd.wall.Plane]
     mc, walls = add_default_integrator(sim, integrator_class, wall_types)
     sim.run(0)
-    mc.external_potential.walls.append(hoomd.wall.Sphere(1.0))
+    mc.external_potentials[0].walls.append(hoomd.wall.Sphere(1.0))
 
 
 @pytest.mark.cpu
@@ -241,7 +243,7 @@ def test_replace_with_valid_by_extend(simulation_factory,
     wall_types = [hoomd.wall.Plane]
     mc, walls = add_default_integrator(sim, integrator_class, wall_types)
     sim.run(0)
-    mc.external_potential.walls.extend([hoomd.wall.Sphere(1.0)])
+    mc.external_potentials[0].walls.extend([hoomd.wall.Sphere(1.0)])
 
 
 L_cube = 1.0
@@ -577,4 +579,4 @@ def test_overlaps(simulation_factory, one_particle_snapshot_factory,
                                        use_default_wall_args=False)
     mc.shape['A'] = shapedef
     sim.run(0)
-    assert (mc.external_potential.overlaps > 0) == expecting_overlap
+    assert (mc.external_potentials[0].overlaps > 0) == expecting_overlap

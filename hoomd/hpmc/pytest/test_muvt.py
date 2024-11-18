@@ -214,7 +214,7 @@ def test_pair_remove_insert(device, simulation_factory,
         # ensure that more particles are inserted on the left than the right
         n_left = numpy.sum(pos[:, 0] < 0)
         n_right = numpy.sum(pos[:, 0] >= 0)
-        assert n_left < n_right
+        assert n_left > n_right
 
     # We should have inserted particles successfully
     assert muvt.insert_moves[0] > 0
@@ -240,8 +240,8 @@ def test_plane_wall_insertion(device, simulation_factory,
     mc = hoomd.hpmc.integrate.Sphere(default_d=0.0, default_a=0.0)
     mc.shape["A"] = dict(diameter=2 * sphere_radius)
     walls = [hoomd.wall.Plane(origin=(0, 0, 0), normal=(0, 0, 1))]
-    wall_potential = hoomd.hpmc.external.wall.WallPotential(walls)
-    mc.external_potential = wall_potential
+    wall_potential = hoomd.hpmc.external.WallPotential(walls)
+    mc.external_potentials = [wall_potential]
     sim.operations.integrator = mc
 
     muvt = hoomd.hpmc.update.MuVT(trigger=hoomd.trigger.Periodic(1),
@@ -281,8 +281,8 @@ def test_spherical_wall_insertion(device, simulation_factory,
     sphere_radius = 0.6
     mc.shape["A"] = dict(diameter=2 * sphere_radius)
     walls = [hoomd.wall.Sphere(radius=5)]
-    wall_potential = hoomd.hpmc.external.wall.WallPotential(walls)
-    mc.external_potential = wall_potential
+    wall_potential = hoomd.hpmc.external.WallPotential(walls)
+    mc.external_potentials = [wall_potential]
     sim.operations.integrator = mc
 
     muvt = hoomd.hpmc.update.MuVT(trigger=hoomd.trigger.Periodic(1),
@@ -321,8 +321,8 @@ def test_cylindrical_wall_insertion(device, simulation_factory,
     mc = hoomd.hpmc.integrate.Sphere(default_d=0.0, default_a=0.0)
     mc.shape["A"] = dict(diameter=2 * sphere_radius)
     walls = [hoomd.wall.Cylinder(radius=5, axis=(0, 0, 1))]
-    wall_potential = hoomd.hpmc.external.wall.WallPotential(walls)
-    mc.external_potential = wall_potential
+    wall_potential = hoomd.hpmc.external.WallPotential(walls)
+    mc.external_potentials = [wall_potential]
     sim.operations.integrator = mc
 
     muvt = hoomd.hpmc.update.MuVT(trigger=hoomd.trigger.Periodic(1),

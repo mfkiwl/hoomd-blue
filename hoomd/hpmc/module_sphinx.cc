@@ -3,15 +3,11 @@
 
 // Include the defined classes that are to be exported to python
 #include "ComputeFreeVolume.h"
-#include "IntegratorHPMC.h"
 #include "IntegratorHPMCMono.h"
 
 #include "ComputeSDF.h"
 #include "ShapeSphinx.h"
-#include "ShapeUnion.h"
 
-#include "ExternalField.h"
-#include "ExternalFieldHarmonic.h"
 #include "ExternalFieldWall.h"
 
 #include "UpdaterGCA.h"
@@ -38,8 +34,6 @@ void export_sphinx(pybind11::module& m)
     export_UpdaterMuVT<ShapeSphinx>(m, "UpdaterMuVTSphinx");
     export_UpdaterGCA<ShapeSphinx>(m, "UpdaterGCASphinx");
 
-    export_ExternalFieldInterface<ShapeSphinx>(m, "ExternalFieldSphinx");
-    export_HarmonicField<ShapeSphinx>(m, "ExternalFieldHarmonicSphinx");
     export_ExternalFieldWall<ShapeSphinx>(m, "WallSphinx");
 
 #ifdef ENABLE_HIP

@@ -17,7 +17,6 @@
 #include "hoomd/Integrator.h"
 #include <hoomd/Variant.h>
 
-#include "ExternalField.h"
 #include "ExternalPotential.h"
 #include "HPMCCounters.h"
 #include "PairPotential.h"
@@ -346,21 +345,16 @@ class PYBIND11_EXPORT IntegratorHPMC : public Integrator
     //! Method to scale the box
     virtual bool attemptBoxResize(uint64_t timestep, const BoxDim& new_box);
 
-    ExternalField* getExternalField()
-        {
-        return m_external_base;
-        }
-
     /// Compute the total energy due to potentials in m_external_potentials
-    /** Does NOT include external energies in the soon to be removed m_external_base.
-     */
-    double computeTotalExternalEnergy(bool trial = false)
+    double computeTotalExternalEnergy(uint64_t timestep,
+                                      ExternalPotential::Trial trial
+                                      = ExternalPotential::Trial::None)
         {
         double total_energy = 0.0;
 
         for (const auto& external : m_external_potentials)
             {
-            total_energy += external->totalEnergy(trial);
+            total_energy += external->totalEnergy(timestep, trial);
             }
 
         return total_energy;
@@ -439,27 +433,33 @@ class PYBIND11_EXPORT IntegratorHPMC : public Integrator
 
     /*** Evaluate the total energy of all external fields interacting with one particle.
 
+        @param timestep The current timestep in the simulation
+        @param tag_i Tag of the particle
         @param type_i Type index of the particle.
         @param r_i Posiion of the particle in the box.
         @param q_i Orientation of the particle.
         @param charge_i Charge of the particle.
-        @param trial Set to false when evaluating the energy of a current configuration. Set to
-               true when evaluating a trial move.
+        @param trial A value of None indicates that the energy should be evaluated directly.
+          Pass Old or New when evaluating the old or new configuration in a trial move.
+          Hard potentials always return 0 in old configurations to avoid infinity - infinity.
         @returns Energy of the external interaction (possibly INFINITY).
 
         Note: Potentials that may return INFINITY should assume valid old configurations and return
         0 when trial is false. This avoids computing INFINITY - INFINITY -> NaN.
     */
-    inline LongReal computeOneExternalEnergy(unsigned int type_i,
+    inline LongReal computeOneExternalEnergy(uint64_t timestep,
+                                             unsigned int tag_i,
+                                             unsigned int type_i,
                                              const vec3<LongReal>& r_i,
                                              const quat<LongReal>& q_i,
                                              LongReal charge_i,
-                                             bool trial = true)
+                                             ExternalPotential::Trial trial
+                                             = ExternalPotential::Trial::None)
         {
         LongReal energy = 0;
         for (const auto& external : m_external_potentials)
             {
-            energy += external->particleEnergy(type_i, r_i, q_i, charge_i, trial);
+            energy += external->particleEnergy(timestep, tag_i, type_i, r_i, q_i, charge_i, trial);
             }
 
         return energy;
@@ -509,9 +509,6 @@ class PYBIND11_EXPORT IntegratorHPMC : public Integrator
 
     /// Moves-per-second value last recorded
     double m_mps = 0;
-
-    ExternalField* m_external_base; //! This is a cast of the derived class's m_external that can be
-                                    //! used in a more general setting.
 
     bool m_past_first_run; //!< Flag to test if the first run() has started
 

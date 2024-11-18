@@ -5,6 +5,7 @@
 #include "IntegratorHPMC.h"
 #include "IntegratorHPMCMonoNEC.h"
 
+#include "ExternalFieldHarmonic.h"
 #include "ExternalFieldWall.h"
 #include "ShapeConvexPolygon.h"
 #include "ShapeConvexPolyhedron.h"
@@ -69,6 +70,9 @@ using namespace std;
 //! Define the _hpmc python module exports
 PYBIND11_MODULE(_hpmc, m)
     {
+    exportPairPotential(m);
+    exportExternalPotential(m);
+
     export_IntegratorHPMC(m);
 
     export_UpdaterBoxMC(m);
@@ -150,10 +154,8 @@ PYBIND11_MODULE(_hpmc, m)
 
     export_hpmc_nec_counters(m);
 
-    exportExternalPotential(m);
     exportExternalPotentialLinear(m);
 
-    exportPairPotential(m);
     exportPairPotentialLennardJones(m);
     exportPairPotentialExpandedGaussian(m);
     exportPairPotentialLJGauss(m);
@@ -161,41 +163,6 @@ PYBIND11_MODULE(_hpmc, m)
     exportPairPotentialAngularStep(m);
     exportPairPotentialStep(m);
     exportPairPotentialUnion(m);
+
+    export_ExternalHarmonicField(m);
     }
-
-/*! \defgroup hpmc_integrators HPMC integrators
- */
-
-/*! \defgroup hpmc_analyzers HPMC analyzers
- */
-
-/*! \defgroup shape Shapes
-    Shape classes define the geometry of shapes and associated overlap checks
-*/
-
-/*! \defgroup vecmath Vector Math
-    Vector, matrix, and quaternion math routines
-*/
-
-/*! \defgroup hpmc_detail Details
-    HPMC implementation details
-    @{
-*/
-
-/*! \defgroup hpmc_data_structs Data structures
-    HPMC internal data structures
-*/
-
-/*! \defgroup hpmc_kernels HPMC kernels
-    HPMC GPU kernels
-*/
-
-/*! \defgroup minkowski Minkowski methods
-    Classes and functions related to Minkowski overlap detection methods
-*/
-
-/*! \defgroup overlap Other overlap methods
-    Classes and functions related to other (brute force) overlap methods
-*/
-
-/*! @} */
