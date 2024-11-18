@@ -285,12 +285,12 @@ UP_TEST(gamma_float_test)
     check_moments(gen, 5000000, mean, var, skew, exkurtosis, 0.01);
     }
 
-UP_TEST(r123_u01_range_test_float)
+UP_TEST(util_u01_range_test_float)
     {
     // equality tests on floats intentional, they validate the exact range of the RNG output
-    float smallest = r123::u01<float>(uint64_t(0x0000000000000000));
+    float smallest = util::u01<float>(uint64_t(0x0000000000000000));
     UP_ASSERT_EQUAL(smallest, (float)2.710505431213761e-20);
-    float largest = r123::u01<float>(uint64_t(0xffffffffffffffff));
+    float largest = util::u01<float>(uint64_t(0xffffffffffffffff));
     UP_ASSERT_EQUAL(largest, 1.0f);
     }
 
@@ -313,12 +313,12 @@ UP_TEST(canonical_float_moment)
     check_range(canonical, 5000000, a, b);
     }
 
-UP_TEST(r123_u01_range_test_double)
+UP_TEST(util_u01_range_test_double)
     {
     // equality tests on floats intentional, they validate the exact range of the RNG output
-    double smallest = r123::u01<double>(uint64_t(0x0000000000000000));
+    double smallest = util::u01<double>(uint64_t(0x0000000000000000));
     UP_ASSERT_EQUAL(smallest, 2.710505431213761e-20);
-    double largest = r123::u01<double>(uint64_t(0xffffffffffffffff));
+    double largest = util::u01<double>(uint64_t(0xffffffffffffffff));
     UP_ASSERT_EQUAL(largest, 1.0);
     }
 

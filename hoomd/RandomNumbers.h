@@ -25,7 +25,7 @@
 #define DEVICE
 #endif // __HIPCC__
 
-namespace r123
+namespace util
     {
 using std::make_signed;
 using std::make_unsigned;
@@ -73,12 +73,7 @@ template<typename Ftype, typename Itype> static inline DEVICE Ftype u01(Itype in
     typedef typename make_unsigned<Itype>::type Utype;
     constexpr Ftype factor = Ftype(1.) / (Ftype(maxTvalue<Utype>()) + Ftype(1.));
     constexpr Ftype halffactor = Ftype(0.5) * factor;
-#if R123_UNIFORM_FLOAT_STORE
-    volatile Ftype x = Utype(in) * factor;
-    return x + halffactor;
-#else
     return Ftype(Utype(in)) * factor + halffactor;
-#endif
     }
 
 // uneg11: Input is a W-bit integer (signed or unsigned).  It is cast
@@ -100,16 +95,11 @@ template<typename Ftype, typename Itype> static inline DEVICE Ftype uneg11(Itype
     typedef typename make_signed<Itype>::type Stype;
     constexpr Ftype factor = Ftype(1.) / (Ftype(maxTvalue<Stype>()) + Ftype(1.));
     constexpr Ftype halffactor = Ftype(0.5) * factor;
-#if R123_UNIFORM_FLOAT_STORE
-    volatile Ftype x = Stype(in) * factor;
-    return x + halffactor;
-#else
     return Ftype(Stype(in)) * factor + halffactor;
-#endif
     }
 
 // end code copied from random123 examples
-    } // namespace r123
+    } // namespace util
 
 namespace hoomd
     {
@@ -181,7 +171,7 @@ class Counter
 //! Philox random number generator
 /*! Philix is a counter based random number generator. Given an input seed vector,
      it produces a random output. Outputs from one seed to the next are not correlated.
-     This class implements a convenience API around random123 that allows short streams
+     This class implements a convenience API around OpenRAND that allows short streams
      (less than 2**32-1) of random numbers starting from a given Seed and Counter.
 
      Internally, we use the philox 4x32 RNG from OpenRAND, The first two seeds map to the
@@ -237,7 +227,7 @@ class RandomGenerator
 
     template<class Real> DEVICE inline Real generate_canonical()
         {
-        return r123::u01<Real>(generate_u64());
+        return util::u01<Real>(generate_u64());
         }
 
     private:
@@ -322,9 +312,9 @@ template<typename Real> class NormalDistribution
 
         // from random123/examples/boxmuller.hpp
         Real x, y;
-        fast::sincospi(r123::uneg11<Real>(u0), x, y);
+        fast::sincospi(util::uneg11<Real>(u0), x, y);
         Real r = fast::sqrt(Real(-2.0)
-                            * fast::log(r123::u01<Real>(u1))); // u01 is guaranteed to avoid 0.
+                            * fast::log(util::u01<Real>(u1))); // u01 is guaranteed to avoid 0.
         x *= r;
         return x * sigma + mu;
         }
@@ -342,9 +332,9 @@ template<typename Real> class NormalDistribution
 
         // from random123/examples/boxmuller.hpp
         Real x, y;
-        fast::sincospi(r123::uneg11<Real>(u0), x, y);
+        fast::sincospi(util::uneg11<Real>(u0), x, y);
         Real r = fast::sqrt(Real(-2.0)
-                            * fast::log(r123::u01<Real>(u1))); // u01 is guaranteed to avoid 0.
+                            * fast::log(util::u01<Real>(u1))); // u01 is guaranteed to avoid 0.
         r = r * sigma;
         x *= r;
         y *= r;

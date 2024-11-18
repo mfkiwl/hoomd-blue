@@ -32,14 +32,13 @@ namespace hpmc
     {
 //! Translation move
 /*! \param v Vector to translate (in/out)
-    \param rng random123 RNG to utilize in the move
+    \param rng RNG to utilize in the move
     \param d Maximum move distance
     \param dim Dimension
 
     When \a dim == 2, only x and y components are moved.
 */
-template<class RNG>
-DEVICE inline void move_translate(vec3<Scalar>& v, RNG& rng, Scalar d, unsigned int dim)
+DEVICE inline void move_translate(vec3<Scalar>& v, RandomGenerator& rng, Scalar d, unsigned int dim)
     {
     hoomd::UniformDistribution<Scalar> uniform(-d, d);
 
@@ -59,15 +58,15 @@ DEVICE inline void move_translate(vec3<Scalar>& v, RNG& rng, Scalar d, unsigned 
 
 //! Rotation move
 /*! \param orientation Quaternion to rotate (in/out)
-    \param rng random123 RNG to utilize in the move
+    \param rng RNG to utilize in the move
     \param a Rotation magnitude
     \param dim Dimension
 
     When \a dim == 2, a random rotation about (0,0,1) is generated. When \a dim == 3 a random 3D
    rotation is generated.
 */
-template<unsigned int dim, class RNG>
-DEVICE void move_rotate(quat<Scalar>& orientation, RNG& rng, Scalar a)
+template<unsigned int dim>
+DEVICE void move_rotate(quat<Scalar>& orientation, RandomGenerator& rng, Scalar a)
     {
     if (dim == 2)
         {

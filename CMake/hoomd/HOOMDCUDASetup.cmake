@@ -6,9 +6,6 @@ MARK_AS_ADVANCED(ALWAYS_USE_MANAGED_MEMORY)
 # setup CUDA compile options
 if (ENABLE_HIP)
     if (HIP_PLATFORM STREQUAL "nvcc")
-        # supress warnings in random123
-        set(CMAKE_CUDA_FLAGS "${CMAKE_CUDA_FLAGS} -Xcudafe --diag_suppress=code_is_unreachable -Xcompiler=-Wall -Xcompiler=-Wconversion -Xcompiler=-Wno-attributes")
-
         # setup nvcc to build for all CUDA architectures. Allow user to modify the list if desired
         if (CMAKE_CUDA_COMPILER_VERSION VERSION_GREATER_EQUAL 11.0)
             set(CUDA_ARCH_LIST 60 70 80 CACHE STRING "List of target sm_ architectures to compile CUDA code for. Separate with semicolons.")
