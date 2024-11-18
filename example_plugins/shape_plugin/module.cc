@@ -9,7 +9,6 @@
 #include "hoomd/hpmc/ComputeSDF.h"
 #include "hoomd/hpmc/ShapeUnion.h"
 
-#include "hoomd/hpmc/ExternalField.h"
 #include "hoomd/hpmc/ExternalFieldHarmonic.h"
 #include "hoomd/hpmc/ExternalFieldWall.h"
 
@@ -39,7 +38,6 @@ PYBIND11_MODULE(_shape_plugin, m)
     export_UpdaterMuVT<ShapeMySphere>(m, "UpdaterMuVTMySphere");
     export_UpdaterGCA<ShapeMySphere>(m, "UpdaterGCAMySphere");
 
-    export_ExternalFieldInterface<ShapeMySphere>(m, "ExternalFieldMySphere");
     export_ExternalFieldWall<ShapeMySphere>(m, "WallMySphere");
 
     pybind11::class_<MySphereParams, std::shared_ptr<MySphereParams>>(m, "MySphereParams")

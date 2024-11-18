@@ -8,7 +8,6 @@
 #include "ComputeSDF.h"
 #include "ShapeSphinx.h"
 
-#include "ExternalField.h"
 #include "ExternalFieldWall.h"
 
 #include "UpdaterGCA.h"
@@ -35,7 +34,6 @@ void export_sphinx(pybind11::module& m)
     export_UpdaterMuVT<ShapeSphinx>(m, "UpdaterMuVTSphinx");
     export_UpdaterGCA<ShapeSphinx>(m, "UpdaterGCASphinx");
 
-    export_ExternalFieldInterface<ShapeSphinx>(m, "ExternalFieldSphinx");
     export_ExternalFieldWall<ShapeSphinx>(m, "WallSphinx");
 
 #ifdef ENABLE_HIP

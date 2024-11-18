@@ -8,7 +8,6 @@
 #include "ComputeSDF.h"
 #include "ShapeSpheropolygon.h"
 
-#include "ExternalField.h"
 #include "ExternalFieldWall.h"
 
 #include "UpdaterGCA.h"
@@ -35,7 +34,6 @@ void export_spheropolygon(pybind11::module& m)
     export_UpdaterMuVT<ShapeSpheropolygon>(m, "UpdaterMuVTConvexSpheropolygon");
     export_UpdaterGCA<ShapeSpheropolygon>(m, "UpdaterGCAConvexSpheropolygon");
 
-    export_ExternalFieldInterface<ShapeSpheropolygon>(m, "ExternalFieldSpheropolygon");
     export_ExternalFieldWall<ShapeSpheropolygon>(m, "WallConvexSpheropolygon");
 
 #ifdef ENABLE_HIP

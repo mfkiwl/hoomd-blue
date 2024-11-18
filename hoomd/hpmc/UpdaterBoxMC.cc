@@ -269,19 +269,6 @@ inline bool UpdaterBoxMC::box_resize_trial(Scalar Lx,
             += m_mc->computeTotalExternalEnergy(timestep, ExternalPotential::Trial::New);
         }
 
-    if (allowed && m_mc->getExternalField())
-        {
-        ArrayHandle<Scalar4> h_pos_backup(m_pos_backup,
-                                          access_location::host,
-                                          access_mode::readwrite);
-        Scalar ext_energy = m_mc->getExternalField()->calculateDeltaE(timestep,
-                                                                      h_pos_backup.data,
-                                                                      NULL,
-                                                                      curBox,
-                                                                      old_origin);
-        delta_U_external += ext_energy;
-        }
-
     double p = hoomd::detail::generate_canonical<double>(rng);
 
     if (allowed

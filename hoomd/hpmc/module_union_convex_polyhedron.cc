@@ -9,7 +9,6 @@
 #include "ShapeSpheropolyhedron.h"
 #include "ShapeUnion.h"
 
-#include "ExternalField.h"
 #include "ExternalFieldWall.h"
 
 #include "UpdaterGCA.h"
@@ -43,9 +42,6 @@ void export_union_convex_polyhedron(pybind11::module& m)
     export_UpdaterGCA<ShapeUnion<ShapeSpheropolyhedron>>(m,
                                                          "UpdaterGCAConvexSpheropolyhedronUnion");
 
-    export_ExternalFieldInterface<ShapeUnion<ShapeSpheropolyhedron>>(
-        m,
-        "ExternalFieldConvexPolyhedronUnion");
     export_ExternalFieldWall<ShapeUnion<ShapeSpheropolyhedron>>(m,
                                                                 "WallConvexSpheropolyhedronUnion");
 

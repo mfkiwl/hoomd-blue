@@ -17,7 +17,6 @@
 #include "hoomd/Integrator.h"
 #include <hoomd/Variant.h>
 
-#include "ExternalField.h"
 #include "ExternalPotential.h"
 #include "HPMCCounters.h"
 #include "PairPotential.h"
@@ -346,14 +345,7 @@ class PYBIND11_EXPORT IntegratorHPMC : public Integrator
     //! Method to scale the box
     virtual bool attemptBoxResize(uint64_t timestep, const BoxDim& new_box);
 
-    ExternalField* getExternalField()
-        {
-        return m_external_base;
-        }
-
     /// Compute the total energy due to potentials in m_external_potentials
-    /** Does NOT include external energies in the soon to be removed m_external_base.
-     */
     double computeTotalExternalEnergy(uint64_t timestep,
                                       ExternalPotential::Trial trial
                                       = ExternalPotential::Trial::None)
@@ -517,9 +509,6 @@ class PYBIND11_EXPORT IntegratorHPMC : public Integrator
 
     /// Moves-per-second value last recorded
     double m_mps = 0;
-
-    ExternalField* m_external_base; //! This is a cast of the derived class's m_external that can be
-                                    //! used in a more general setting.
 
     bool m_past_first_run; //!< Flag to test if the first run() has started
 

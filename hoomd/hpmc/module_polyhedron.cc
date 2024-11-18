@@ -8,7 +8,6 @@
 #include "ComputeSDF.h"
 #include "ShapePolyhedron.h"
 
-#include "ExternalField.h"
 #include "ExternalFieldWall.h"
 
 #include "UpdaterGCA.h"
@@ -35,7 +34,6 @@ void export_polyhedron(pybind11::module& m)
     export_UpdaterMuVT<ShapePolyhedron>(m, "UpdaterMuVTPolyhedron");
     export_UpdaterGCA<ShapePolyhedron>(m, "UpdaterGCAPolyhedron");
 
-    export_ExternalFieldInterface<ShapePolyhedron>(m, "ExternalFieldPolyhedron");
     export_ExternalFieldWall<ShapePolyhedron>(m, "WallPolyhedron");
 
 #ifdef ENABLE_HIP

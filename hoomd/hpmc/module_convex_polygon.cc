@@ -8,7 +8,6 @@
 #include "ComputeSDF.h"
 #include "ShapeConvexPolygon.h"
 
-#include "ExternalField.h"
 #include "ExternalFieldWall.h"
 
 #include "UpdaterGCA.h"
@@ -35,7 +34,6 @@ void export_convex_polygon(pybind11::module& m)
     export_UpdaterMuVT<ShapeConvexPolygon>(m, "UpdaterMuVTConvexPolygon");
     export_UpdaterGCA<ShapeConvexPolygon>(m, "UpdaterGCAConvexPolygon");
 
-    export_ExternalFieldInterface<ShapeConvexPolygon>(m, "ExternalFieldConvexPolygon");
     export_ExternalFieldWall<ShapeConvexPolygon>(m, "WallConvexPolygon");
 
 #ifdef ENABLE_HIP

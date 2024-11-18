@@ -8,7 +8,6 @@
 #include "ComputeSDF.h"
 #include "ShapeFacetedEllipsoid.h"
 
-#include "ExternalField.h"
 #include "ExternalFieldWall.h"
 
 #include "UpdaterGCA.h"
@@ -35,7 +34,6 @@ void export_faceted_ellipsoid(pybind11::module& m)
     export_UpdaterMuVT<ShapeFacetedEllipsoid>(m, "UpdaterMuVTFacetedEllipsoid");
     export_UpdaterGCA<ShapeFacetedEllipsoid>(m, "UpdaterGCAFacetedEllipsoid");
 
-    export_ExternalFieldInterface<ShapeFacetedEllipsoid>(m, "ExternalFieldFacetedEllipsoid");
     export_ExternalFieldWall<ShapeFacetedEllipsoid>(m, "WallFacetedEllipsoid");
 
 #ifdef ENABLE_HIP

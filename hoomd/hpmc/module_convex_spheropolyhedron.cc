@@ -8,7 +8,6 @@
 #include "ComputeSDF.h"
 #include "ShapeSpheropolyhedron.h"
 
-#include "ExternalField.h"
 #include "ExternalFieldWall.h"
 
 #include "UpdaterGCA.h"
@@ -44,7 +43,6 @@ void export_convex_spheropolyhedron(pybind11::module& m)
     export_ShapeMoveBase<ShapeSpheropolyhedron>(m, "ShapeMoveBaseShapeSpheropolyhedron");
     export_PythonShapeMove<ShapeSpheropolyhedron>(m, "ShapeSpaceSpheropolyhedron");
 
-    export_ExternalFieldInterface<ShapeSpheropolyhedron>(m, "ExternalFieldSpheropolyhedron");
     export_ExternalFieldWall<ShapeSpheropolyhedron>(m, "WallConvexSpheropolyhedron");
 
 #ifdef ENABLE_HIP

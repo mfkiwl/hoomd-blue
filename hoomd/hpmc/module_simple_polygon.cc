@@ -8,7 +8,6 @@
 #include "ComputeSDF.h"
 #include "ShapeSimplePolygon.h"
 
-#include "ExternalField.h"
 #include "ExternalFieldWall.h"
 
 #include "UpdaterGCA.h"
@@ -35,7 +34,6 @@ void export_simple_polygon(pybind11::module& m)
     export_UpdaterMuVT<ShapeSimplePolygon>(m, "UpdaterMuVTSimplePolygon");
     export_UpdaterGCA<ShapeSimplePolygon>(m, "UpdaterGCASimplePolygon");
 
-    export_ExternalFieldInterface<ShapeSimplePolygon>(m, "ExternalFieldSimplePolygon");
     export_ExternalFieldWall<ShapeSimplePolygon>(m, "WallSimplePolygon");
 
 #ifdef ENABLE_HIP

@@ -8,7 +8,6 @@
 #include "ComputeSDF.h"
 #include "ShapeEllipsoid.h"
 
-#include "ExternalField.h"
 #include "ExternalFieldWall.h"
 
 #include "UpdaterGCA.h"
@@ -45,7 +44,6 @@ void export_ellipsoid(pybind11::module& m)
     export_PythonShapeMove<ShapeEllipsoid>(m, "ShapeSpaceEllipsoid");
     export_ElasticShapeMove<ShapeEllipsoid>(m, "ElasticEllipsoid");
 
-    export_ExternalFieldInterface<ShapeEllipsoid>(m, "ExternalFieldEllipsoid");
     export_ExternalFieldWall<ShapeEllipsoid>(m, "WallEllipsoid");
 
 #ifdef ENABLE_HIP

@@ -8,7 +8,6 @@
 
 #include "ShapeUnion.h"
 
-#include "ExternalField.h"
 #include "ExternalFieldWall.h"
 
 #include "UpdaterGCA.h"
@@ -35,7 +34,6 @@ void export_union_sphere(pybind11::module& m)
     export_UpdaterMuVT<ShapeUnion<ShapeSphere>>(m, "UpdaterMuVTSphereUnion");
     export_UpdaterGCA<ShapeUnion<ShapeSphere>>(m, "UpdaterGCASphereUnion");
 
-    export_ExternalFieldInterface<ShapeUnion<ShapeSphere>>(m, "ExternalFieldSphereUnion");
     export_ExternalFieldWall<ShapeUnion<ShapeSphere>>(m, "WallSphereUnion");
 
 #ifdef ENABLE_HIP

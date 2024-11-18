@@ -4,7 +4,6 @@
 #pragma once
 
 #include <iostream>
-#include <sstream>
 
 #include "GSDHPMCSchema.h"
 #include "IntegratorHPMC.h"
@@ -159,13 +158,6 @@ template<class Shape> class IntegratorHPMCMono : public IntegratorHPMC
 
     //! Get elements of the interaction matrix
     virtual bool getInteractionMatrixPy(std::pair<std::string, std::string> types);
-
-    //! Set the external field for the integrator
-    void setExternalField(std::shared_ptr<ExternalFieldMono<Shape>> external)
-        {
-        m_external = external;
-        this->m_external_base = (ExternalField*)external.get();
-        }
 
     //! Get the particle parameters
     virtual std::vector<param_type, hoomd::detail::managed_allocator<param_type>>& getParams()
@@ -353,7 +345,6 @@ template<class Shape> class IntegratorHPMCMono : public IntegratorHPMC
     bool m_hkl_max_warning_issued;      //!< True if the image list size warning has been issued
     bool m_hasOrientation; //!< true if there are any orientable particles in the system
 
-    std::shared_ptr<ExternalFieldMono<Shape>> m_external; //!< External Field
     hoomd::detail::AABBTree m_aabb_tree; //!< Bounding volume hierarchy for overlap checks
     hoomd::detail::AABB* m_aabbs;        //!< list of AABBs, one per particle
     unsigned int m_aabbs_capacity;       //!< Capacity of m_aabbs list
@@ -784,17 +775,6 @@ template<class Shape> void IntegratorHPMCMono<Shape>::update(uint64_t timestep)
             // Add external energetic contribution if there are no overlaps
             if (!overlap)
                 {
-                // Legacy external field energy difference
-                if (m_external)
-                    {
-                    patch_field_energy_diff -= m_external->energydiff(timestep,
-                                                                      h_tag.data[i],
-                                                                      pos_old,
-                                                                      shape_old,
-                                                                      pos_i,
-                                                                      shape_i);
-                    }
-
                 // U_old - U_new
                 patch_field_energy_diff
                     += this->computeOneExternalEnergy(timestep,
@@ -1822,7 +1802,6 @@ template<class Shape> void export_IntegratorHPMCMono(pybind11::module& m, const 
         .def("setParam", &IntegratorHPMCMono<Shape>::setParam)
         .def("setInteractionMatrix", &IntegratorHPMCMono<Shape>::setInteractionMatrix)
         .def("getInteractionMatrix", &IntegratorHPMCMono<Shape>::getInteractionMatrixPy)
-        .def("setExternalField", &IntegratorHPMCMono<Shape>::setExternalField)
         .def("mapOverlaps", &IntegratorHPMCMono<Shape>::mapOverlaps)
         .def("getTypeShapesPy", &IntegratorHPMCMono<Shape>::getTypeShapesPy)
         .def("getShape", &IntegratorHPMCMono<Shape>::getShape)

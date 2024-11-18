@@ -22,7 +22,7 @@ namespace hpmc
     {
 IntegratorHPMC::IntegratorHPMC(std::shared_ptr<SystemDefinition> sysdef)
     : Integrator(sysdef, 0.005), m_translation_move_probability(32768), m_nselect(4),
-      m_nominal_width(1.0), m_extra_ghost_width(0), m_external_base(NULL), m_past_first_run(false)
+      m_nominal_width(1.0), m_extra_ghost_width(0), m_past_first_run(false)
     {
     m_exec_conf->msg->notice(5) << "Constructing IntegratorHPMC" << endl;
 

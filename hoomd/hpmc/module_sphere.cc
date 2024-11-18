@@ -9,7 +9,6 @@
 #include "ComputeSDF.h"
 #include "ShapeSphere.h"
 
-#include "ExternalField.h"
 #include "ExternalFieldWall.h"
 
 #include "UpdaterGCA.h"
@@ -37,7 +36,6 @@ void export_sphere(pybind11::module& m)
     export_UpdaterMuVT<ShapeSphere>(m, "UpdaterMuVTSphere");
     export_UpdaterGCA<ShapeSphere>(m, "UpdaterGCASphere");
 
-    export_ExternalFieldInterface<ShapeSphere>(m, "ExternalFieldSphere");
     export_ExternalFieldWall<ShapeSphere>(m, "WallSphere");
 
 #ifdef ENABLE_HIP

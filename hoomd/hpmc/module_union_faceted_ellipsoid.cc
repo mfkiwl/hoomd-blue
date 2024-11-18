@@ -9,7 +9,6 @@
 #include "ShapeFacetedEllipsoid.h"
 #include "ShapeUnion.h"
 
-#include "ExternalField.h"
 #include "ExternalFieldWall.h"
 
 #include "UpdaterGCA.h"
@@ -40,9 +39,6 @@ void export_union_faceted_ellipsoid(pybind11::module& m)
     export_UpdaterMuVT<ShapeUnion<ShapeFacetedEllipsoid>>(m, "UpdaterMuVTFacetedEllipsoidUnion");
     export_UpdaterGCA<ShapeUnion<ShapeFacetedEllipsoid>>(m, "UpdaterGCAFacetedEllipsoidUnion");
 
-    export_ExternalFieldInterface<ShapeUnion<ShapeFacetedEllipsoid>>(
-        m,
-        "ExternalFieldFacetedEllipsoidUnion");
     export_ExternalFieldWall<ShapeUnion<ShapeFacetedEllipsoid>>(m, "WallFacetedEllipsoidUnion");
 
 #ifdef ENABLE_HIP

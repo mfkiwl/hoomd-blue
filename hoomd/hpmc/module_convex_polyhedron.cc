@@ -9,7 +9,6 @@
 #include "ComputeSDF.h"
 #include "ShapeConvexPolyhedron.h"
 
-#include "ExternalField.h"
 #include "ExternalFieldWall.h"
 
 #include "UpdaterGCA.h"
@@ -50,7 +49,6 @@ void export_convex_polyhedron(pybind11::module& m)
     export_ElasticShapeMove<ShapeConvexPolyhedron>(m, "ElasticConvexPolyhedron");
     export_ConvexPolyhedronVertexShapeMove(m, "VertexConvexPolyhedron");
 
-    export_ExternalFieldInterface<ShapeConvexPolyhedron>(m, "ExternalFieldConvexPolyhedron");
     export_ExternalFieldWall<ShapeConvexPolyhedron>(m, "WallConvexPolyhedron");
 
 #ifdef ENABLE_HIP
