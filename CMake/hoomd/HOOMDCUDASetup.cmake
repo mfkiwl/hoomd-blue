@@ -55,7 +55,7 @@ if (ENABLE_HIP)
         set(_cuda_min_arch 35)
 
         # ignore warnings about unused results
-        set(CMAKE_HIP_FLAGS "${CMAKE_CUDA_FLAGS} -Wno-unused-result -Wno-class-memaccess")
+        set(CMAKE_HIP_FLAGS "${CMAKE_CUDA_FLAGS} -Wno-unused-result")
     endif()
 endif (ENABLE_HIP)
 
