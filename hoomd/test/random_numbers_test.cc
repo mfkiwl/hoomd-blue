@@ -5,7 +5,6 @@
 #include "hoomd/RNGIdentifiers.h"
 #include "hoomd/RandomNumbers.h"
 
-#include <iomanip>
 #include <iostream>
 #include <vector>
 
@@ -457,8 +456,8 @@ UP_TEST(seed_fromIDStepSeed)
     {
     auto s = hoomd::Seed(hoomd::RNGIdentifier::HPMCMonoShuffle, 0xabcdef1234567890, 0x5eed);
 
-    UP_ASSERT_EQUAL(s.getKey()[0], 0x015eed12);
-    UP_ASSERT_EQUAL(s.getKey()[1], 0x34567890);
+    UP_ASSERT_EQUAL(s.getKey() >> 32, 0x015eed12);
+    UP_ASSERT_EQUAL(s.getKey() & 0xffffffff, 0x34567890);
     }
 
 //! Test that Counter initializes correctly
@@ -491,40 +490,6 @@ UP_TEST(counter)
     UP_ASSERT_EQUAL(d.getCounter()[1], 0x4567);
     UP_ASSERT_EQUAL(d.getCounter()[2], 0xef123);
     UP_ASSERT_EQUAL(d.getCounter()[3], 0xabcd);
-
-    auto e = hoomd::Counter(0xabcd, 0xef123, 0x4567, 0x1234);
-
-    UP_ASSERT_EQUAL(e.getCounter()[0], 0x12340000);
-    UP_ASSERT_EQUAL(e.getCounter()[1], 0x4567);
-    UP_ASSERT_EQUAL(e.getCounter()[2], 0xef123);
-    UP_ASSERT_EQUAL(e.getCounter()[3], 0xabcd);
-    }
-
-UP_TEST(rng_seeding)
-    {
-    auto s = hoomd::Seed(hoomd::RNGIdentifier::HPMCMonoShuffle, 0xabcdef1234567890, 0x5eed);
-    auto c = hoomd::Counter(0x9876, 0x5432, 0x10fe);
-
-    auto g = hoomd::RandomGenerator(s, c);
-    UP_ASSERT_EQUAL(g.getKey()[0], 0x015eed12);
-    UP_ASSERT_EQUAL(g.getKey()[1], 0x34567890);
-
-    UP_ASSERT_EQUAL(g.getCounter()[0], 0);
-    UP_ASSERT_EQUAL(g.getCounter()[1], 0x10fe);
-    UP_ASSERT_EQUAL(g.getCounter()[2], 0x5432);
-    UP_ASSERT_EQUAL(g.getCounter()[3], 0x9876);
-
-    g();
-    UP_ASSERT_EQUAL(g.getCounter()[0], 1);
-    UP_ASSERT_EQUAL(g.getCounter()[1], 0x10fe);
-    UP_ASSERT_EQUAL(g.getCounter()[2], 0x5432);
-    UP_ASSERT_EQUAL(g.getCounter()[3], 0x9876);
-
-    g();
-    UP_ASSERT_EQUAL(g.getCounter()[0], 2);
-    UP_ASSERT_EQUAL(g.getCounter()[1], 0x10fe);
-    UP_ASSERT_EQUAL(g.getCounter()[2], 0x5432);
-    UP_ASSERT_EQUAL(g.getCounter()[3], 0x9876);
     }
 
 // //! Find performance crossover

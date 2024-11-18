@@ -26,3 +26,6 @@
 [submodule "sphinx-doc/tutorial"]
 	path = sphinx-doc/tutorial
 	url = https://github.com/glotzerlab/hoomd-examples
+[submodule "hoomd/extern/OpenRAND"]
+	path = hoomd/extern/OpenRAND
+	url = https://github.com/glotzerlab/OpenRAND.git

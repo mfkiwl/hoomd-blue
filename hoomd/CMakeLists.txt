@@ -258,6 +258,10 @@ target_include_directories(_hoomd PUBLIC
                                   $<INSTALL_INTERFACE:${PYTHON_SITE_INSTALL_DIR}/include>)
 
 target_include_directories(_hoomd PUBLIC
+                                  $<BUILD_INTERFACE:${HOOMD_SOURCE_DIR}/hoomd/extern/OpenRAND/include>
+                                  $<INSTALL_INTERFACE:${PYTHON_SITE_INSTALL_DIR}/include/hoomd/extern/OpenRAND/include>)
+
+target_include_directories(_hoomd PUBLIC
                                   $<BUILD_INTERFACE:${HOOMD_BINARY_DIR}/hoomd/include>)
 
 # specify required definitions
