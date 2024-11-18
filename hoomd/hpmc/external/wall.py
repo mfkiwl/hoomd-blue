@@ -10,9 +10,10 @@ Set :math:`U_{\\mathrm{external},i}` evaluated in
 import hoomd
 from hoomd.wall import _WallsMetaList
 from hoomd.data.syncedlist import identity
-from hoomd.hpmc.external.field import ExternalField
 from hoomd.logging import log
 from hoomd import hpmc
+
+from .external import External
 
 
 def _to_hpmc_cpp_wall(wall):
@@ -82,7 +83,7 @@ class _HPMCWallsMetaList(_WallsMetaList):
         super().append(wall)
 
 
-class WallPotential(ExternalField):
+class WallPotential(External):
     r"""HPMC wall potential.
 
     Args:
@@ -150,26 +151,26 @@ class WallPotential(ExternalField):
     def __init__(self, walls):
         self._walls = _HPMCWallsMetaList(self, walls, _to_hpmc_cpp_wall)
 
-    def _attach_hook(self):
-        if isinstance(self._simulation.device, hoomd.device.GPU):
-            raise RuntimeError('HPMC walls are not supported on the GPU.')
+    def _make_cpp_obj(self):
         integrator = self._simulation.operations.integrator
-        if not isinstance(integrator, hoomd.hpmc.integrate.HPMCIntegrator):
-            raise RuntimeError('Walls require a valid HPMC integrator.')
-
         cpp_cls_name = "Wall"
         cpp_cls_name += integrator.__class__.__name__
         cpp_cls = getattr(hoomd.hpmc._hpmc, cpp_cls_name)
 
-        self._cpp_obj = cpp_cls(self._simulation.state._cpp_sys_def,
-                                integrator._cpp_obj)
-        self._walls._validate_walls()
+        cpp_obj = cpp_cls(self._simulation.state._cpp_sys_def,
+                          integrator._cpp_obj)
         self._walls._sync({
-            hoomd.wall.Sphere: self._cpp_obj.SphereWalls,
-            hoomd.wall.Cylinder: self._cpp_obj.CylinderWalls,
-            hoomd.wall.Plane: self._cpp_obj.PlaneWalls,
+            hoomd.wall.Sphere: cpp_obj.SphereWalls,
+            hoomd.wall.Cylinder: cpp_obj.CylinderWalls,
+            hoomd.wall.Plane: cpp_obj.PlaneWalls,
         })
+
+        return cpp_obj
+
+    def _attach_hook(self):
         super()._attach_hook()
+
+        self._walls._validate_walls()
 
     @property
     def walls(self):

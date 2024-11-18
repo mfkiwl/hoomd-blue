@@ -1523,7 +1523,7 @@ bool UpdaterMuVT<Shape>::tryInsertParticle(uint64_t timestep,
 
         if (has_field && (!m_gibbs || p == 0))
             {
-            delta_u += m_mc->computeOneExternalEnergy(timestep,
+            delta_u -= m_mc->computeOneExternalEnergy(timestep,
                                                       0, // particle has no tag yet
                                                       type,
                                                       pos,
