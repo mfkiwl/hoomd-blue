@@ -20,7 +20,7 @@
 #include <type_traits>
 
 #ifdef __HIPCC__
-#define DEVICE __device__
+#define DEVICE __host__ __device__
 #else
 #define DEVICE
 #endif // __HIPCC__
