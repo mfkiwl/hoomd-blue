@@ -53,6 +53,9 @@ if (ENABLE_HIP)
 
     elseif(HIP_PLATFORM STREQUAL "hip-clang")
         set(_cuda_min_arch 35)
+
+        # ignore warnings about unused results
+        set(CMAKE_HIP_FLAGS "${CMAKE_CUDA_FLAGS} -Wno-unused-result -Wno-class-memaccess")
     endif()
 endif (ENABLE_HIP)
 
