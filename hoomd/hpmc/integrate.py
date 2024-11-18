@@ -267,7 +267,6 @@ from hoomd.operation import Integrator
 from hoomd.logging import log
 import hoomd
 import json
-import warnings
 
 
 class HPMCIntegrator(Integrator):

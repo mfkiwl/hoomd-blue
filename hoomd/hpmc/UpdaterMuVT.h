@@ -1517,7 +1517,6 @@ bool UpdaterMuVT<Shape>::tryInsertParticle(uint64_t timestep,
                                                       orientation,
                                                       0.0,
                                                       ExternalPotential::Trial::New);
-
             }
 
         if (m_mc->hasPairInteractions())
