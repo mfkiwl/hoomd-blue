@@ -15,7 +15,7 @@ box moves (`hpmc.update.BoxMC`), execute the geometric cluster algorithm (`hpmc.
 and can compute the pressure during constant volume simulations (`hpmc.compute.SDF`).
 
 HPMC can also apply external and pair potentials to the particles. Use
-`hpmc.external.field.Harmonic` to restrain particles to a lattice (e.g. for Frenkel-Ladd
+`hpmc.external.Harmonic` to restrain particles to a lattice (e.g. for Frenkel-Ladd
 calculations) or `hpmc.external.Linear` to apply gravity. Use a class from `hpmc.pair` to define
 pairwise interactions between particles. At runtime, `hoomd.version.hpmc_built` indicates whether
 the build supports HPMC simulations.

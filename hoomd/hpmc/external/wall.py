@@ -5,6 +5,13 @@
 
 Set :math:`U_{\\mathrm{external},i}` evaluated in
 `hoomd.hpmc.integrate.HPMCIntegrator` to a hard particle-wall interaction.
+
+.. invisible-code-block: python
+
+    simulation = hoomd.util.make_example_simulation()
+    sphere = hoomd.hpmc.integrate.Sphere()
+    sphere.shape['A'] = dict(diameter=0.0)
+    simulation.operations.integrator = sphere
 """
 
 import hoomd
@@ -124,8 +131,8 @@ class WallPotential(External):
     wall.
 
 
-    Walls are enforced by the HPMC integrator. Assign a `WallPotential` instance
-    to `hpmc.integrate.HPMCIntegrator.external_potential` to activate the wall
+    Walls are enforced by the HPMC integrator. Append a `WallPotential` instance
+    to `hpmc.integrate.HPMCIntegrator.external_potentials` to activate the wall
     potential. Not all combinations of HPMC integrators and wall geometries have
     overlap checks implemented, and a `NotImplementedError` is raised if a wall
     geometry is attached to a simulation with a specific HPMC integrator
@@ -138,14 +145,14 @@ class WallPotential(External):
 
     See Also:
         `hoomd.wall`
+   
+    .. rubric:: Example
 
-    Example::
+    .. code-block:: python
 
-        mc = hoomd.hpmc.integrate.Sphere()
         walls = [hoomd.wall.Sphere(radius=4.0)]
         wall_potential = hoomd.hpmc.external.wall.WallPotential(walls)
-        mc.external_potential = wall_potential
-
+        simulation.operations.integrator.external_potentials = [wall_potential]
     """
 
     def __init__(self, walls):
