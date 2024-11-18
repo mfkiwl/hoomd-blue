@@ -143,14 +143,14 @@ inline LongReal ExternalPotential::totalEnergy(uint64_t timestep, Trial trial)
         }
 
 #ifdef ENABLE_MPI
-    if (particle_data->getDomainDecomposition())
+    if (m_pdata->getDomainDecomposition())
         {
         MPI_Allreduce(MPI_IN_PLACE,
                       &total_energy,
                       1,
                       MPI_DOUBLE,
                       MPI_SUM,
-                      particle_data->getExecConf()->getMPICommunicator());
+                      m_pdata->getExecConf()->getMPICommunicator());
         }
 #endif
 

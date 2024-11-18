@@ -145,7 +145,7 @@ class WallPotential(External):
 
     See Also:
         `hoomd.wall`
-   
+
     .. rubric:: Example
 
     .. code-block:: python

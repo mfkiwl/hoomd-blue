@@ -244,10 +244,9 @@ class ExternalFieldHarmonic : public ExternalPotential
     //! position
     Scalar calcE_trans(uint64_t timestep, const unsigned int& tag, const vec3<Scalar>& position)
         {
-        vec3<Scalar> origin(m_pdata->getOrigin());
         const BoxDim box = this->m_pdata->getGlobalBox();
         vec3<Scalar> r0 = m_reference_positions[tag];
-        vec3<Scalar> dr = vec3<Scalar>(box.minImage(vec_to_scalar3(r0 - position + origin)));
+        vec3<Scalar> dr = vec3<Scalar>(box.minImage(vec_to_scalar3(r0 - position)));
         Scalar k = (*m_k_translational)(timestep);
         return Scalar(0.5) * k * dot(dr, dr);
         }

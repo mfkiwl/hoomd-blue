@@ -1304,7 +1304,6 @@ bool UpdaterMuVT<Shape>::tryRemoveParticle(uint64_t timestep, unsigned int tag, 
             m_pdata->getGlobalBox().wrap(p, tmp);
             vec3<Scalar> pos(p);
 
-            const BoxDim box = this->m_pdata->getGlobalBox();
             unsigned int type = this->m_pdata->getType(tag);
             quat<Scalar> orientation(m_pdata->getOrientation(tag));
             Scalar charge = m_pdata->getCharge(tag);

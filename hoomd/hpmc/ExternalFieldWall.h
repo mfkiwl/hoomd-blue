@@ -595,7 +595,9 @@ template<class Shape> class ExternalFieldWall : public ExternalPotential
                           hoomd::detail::managed_allocator<typename Shape::param_type>>& params
             = m_mc->getParams();
         Shape shape(q_i, params[type_i]);
-        vec3<Scalar> origin(m_pdata->getOrigin());
+
+        // the new ExternalPotential code path already corrects for the origin
+        vec3<Scalar> origin(0, 0, 0);
         const auto& box = m_pdata->getGlobalBox();
 
         for (size_t i = 0; i < m_Spheres.size(); i++)
