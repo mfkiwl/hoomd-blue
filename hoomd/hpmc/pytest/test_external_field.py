@@ -135,7 +135,7 @@ class TestExternalPotentialHarmonic:
         mc, lattice = add_default_integrator(sim, 'harmonic')
         particle_diameter = 0.5
         mc.shape['A'] = dict(diameter=particle_diameter)
-        k_trans = 100.0
+        k_trans = 200.0
         lattice.k_translational = k_trans
         lattice.k_rotational = 0
 
