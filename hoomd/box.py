@@ -67,7 +67,7 @@ class Box:
         xz (float): tilt factor xz :math:`[\\mathrm{dimensionless}]`.
         yz (float): tilt factor yz :math:`[\\mathrm{dimensionless}]`.
 
-    .. image:: box.svg
+    .. image:: /box.svg
        :alt: Example simulation box labelled with lengths and vectors.
 
     Particles in a simulation exist in a triclinic box with

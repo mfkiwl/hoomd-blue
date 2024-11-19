@@ -7,9 +7,9 @@ Use the values in `hoomd.version` to query properties of the package set at
 compile time.
 
 See Also:
-    `features`
+    `/features`
 
-    `building`
+    `/building`
 
 Attributes:
     build_dir (str): The directory where this build was compiled.

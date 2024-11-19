@@ -55,6 +55,11 @@ autodoc_mock_imports = [
     'hoomd.hpmc._hpmc',
 ]
 
+autodoc_default_options = {
+    'members': None,
+    'show-inheritance': True,
+}
+
 templates_path = ['_templates']
 exclude_patterns = ['_build', 'figures', '**/create-figures.ipynb']
 

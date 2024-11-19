@@ -139,10 +139,7 @@ Molecular dynamics:
    :maxdepth: 1
    :caption: Python API
 
-   package-hoomd
-   package-hpmc
-   package-md
-   package-mpcd
+   module-hoomd
 
 .. toctree::
    :maxdepth: 2
