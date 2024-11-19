@@ -388,3 +388,14 @@ Note:
     Attributes that are `Trigger` objects can be set via a `trigger_like`
     object.
 """
+
+__all__ = ['Trigger',
+    'Periodic',
+    'Before',
+    'On',
+    'After',
+    'Not',
+    'And',
+    'Or',
+    'trigger_like',
+    ]

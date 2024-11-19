@@ -18,10 +18,6 @@ Attributes:
 
     compile_flags (str): Human readable summary of compilation flags.
 
-    cuda_include_path (str): CUDA toolkit include directory.
-
-    cuda_devrt_library (str): CUDA devrt library.
-
     cxx_compiler (str): Name and version of the C++ compiler used to build
         HOOMD.
 
@@ -56,13 +52,12 @@ Attributes:
 
     version (str): HOOMD-blue package version, following semantic versioning.
 """
+import os
 from hoomd import _hoomd
 
 from hoomd.version_config import (
     build_dir,
     compile_date,
-    cuda_include_path,
-    cuda_devrt_library,
     git_branch,
     git_sha1,
     hpmc_built,
@@ -81,3 +76,5 @@ mpi_enabled = _hoomd.BuildInfo.getEnableMPI()
 source_dir = _hoomd.BuildInfo.getSourceDir()
 install_dir = _hoomd.BuildInfo.getInstallDir()
 floating_point_precision = _hoomd.BuildInfo.getFloatingPointPrecision()
+
+__all__ = ['build_dir', 'compile_date', 'git_branch', 'git_sha1', 'hpmc_built', 'md_built', 'metal_built', 'mpcd_built', 'version', 'compile_flags', 'gpu_enabled', 'gpu_api_version', 'gpu_platform', 'cxx_compiler', 'mpi_enabled', 'source_dir', 'install_dir', 'floating_point_precision',]
