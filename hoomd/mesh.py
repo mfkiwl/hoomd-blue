@@ -145,3 +145,5 @@ class Mesh(_HOOMDBaseObject):
         if self.triangulation is None:
             return 0
         return len(self.triangulation["triangles"])
+
+__all__ = ['Mesh']

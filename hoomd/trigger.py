@@ -244,7 +244,7 @@ class Not(_hoomd.NotTrigger, Trigger):
     Args:
         trigger (hoomd.trigger.Trigger): The trigger object to negate.
 
-    `Not` returns the boolean negation of `trigger`::
+    `Not` returns the boolean negation of :py:attr:`trigger`::
 
         return not trigger(t)
 

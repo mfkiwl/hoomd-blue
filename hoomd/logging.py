@@ -9,9 +9,9 @@ backend such as `hoomd.write.GSD` or `hoomd.write.Table` to write the logged
 values to a file.
 
 See Also:
-    Tutorial: :doc:`tutorial/02-Logging/00-index`
+    Tutorial: :doc:`/tutorial/02-Logging/00-index`
 
-    Tutorial: :doc:`tutorial/04-Custom-Actions-In-Python/00-index`
+    Tutorial: :doc:`/tutorial/04-Custom-Actions-In-Python/00-index`
 
 .. invisible-code-block: python
 
@@ -35,7 +35,7 @@ class LoggerCategories(Flag):
     """Enum that marks all accepted logger types.
 
     The attribute names of `LoggerCategories` are valid strings for the
-    category argument of `Logger` constructor and the `log` method.
+    category argument of `Logger` constructor and the :py:func:`log` method.
 
     Attributes:
         scalar: `float` or `int` object.
@@ -246,7 +246,7 @@ class _LoggerQuantity:
         elif isinstance(category, LoggerCategories):
             self.category = category
         else:
-            raise ValueError("Flag must be a string convertable into "
+            raise ValueError("Flag must be a string convertible into "
                              "LoggerCategories or a LoggerCategories object.")
         self.default = bool(default)
 
@@ -406,7 +406,7 @@ def log(func=None,
         requires_run=False):
     """Creates loggable quantities for classes of type Loggable.
 
-    Use `log` with `hoomd.custom.Action` to expose loggable quantities from a
+    Use :py:func:`log` with `hoomd.custom.Action` to expose loggable quantities from a
     custom action.
 
     Args:
@@ -414,7 +414,7 @@ def log(func=None,
             arguments, func should not be set.
         is_property (`bool`, optional): Whether to make the method a
             property, defaults to True. Keyword only argument.
-        category (`str`, optional): The string represention of the type of
+        category (`str`, optional): The string representation of the type of
             loggable quantity, defaults to 'scalar'. See `LoggerCategories` for
             available types. Keyword only argument.
         default (`bool`, optional): Whether the quantity should be logged
@@ -446,7 +446,7 @@ def log(func=None,
         classes as they already use this metaclass.
 
     See Also:
-        Tutorial: :doc:`tutorial/04-Custom-Actions-In-Python/00-index`
+        Tutorial: :doc:`/tutorial/04-Custom-Actions-In-Python/00-index`
     """
 
     def helper(func):
@@ -614,7 +614,7 @@ class Logger(_SafeNamespaceDict):
 
     Note:
         The logger provides a way for users to create their own logger back
-        ends. See `log` for details on the intermediate representation.
+        ends. See :py:func:`log` for details on the intermediate representation.
         `LoggerCategories` defines the various categories available to specify
         logged quantities. Custom backends should be a subclass of
         `hoomd.custom.Action` and used with `hoomd.write.CustomWriter`.
@@ -945,3 +945,5 @@ def modify_namespace(cls, namespace=None):
         return modify
 
     return modify(cls)
+
+__all__ = ['LoggerCategories', 'log', 'Logger', 'modify_namespace',]

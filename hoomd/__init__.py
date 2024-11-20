@@ -28,7 +28,7 @@ methods, and variables in the API.
 * `hoomd.md` - Molecular dynamics.
 
 See Also:
-    Tutorial: :doc:`tutorial/00-Introducing-HOOMD-blue/00-index`
+    Tutorial: :doc:`/tutorial/00-Introducing-HOOMD-blue/00-index`
 
 .. rubric:: Signal handling
 
@@ -66,6 +66,7 @@ outside the hoomd source directory, execute `python3 -m pytest --pyargs hoomd`.
 
 from hoomd import version
 from hoomd import trigger
+from hoomd import box
 from hoomd.box import Box
 from hoomd import variant
 from hoomd import data
@@ -76,6 +77,7 @@ from hoomd import mesh
 from hoomd import update
 from hoomd import communicator
 from hoomd import util
+from hoomd import operation
 
 from hoomd import write
 from hoomd import wall
@@ -121,4 +123,25 @@ except ValueError:
 
 __all__ = ['version',
             'trigger',
-            'Box']
+            'box',
+            'Box',
+            'variant',
+            'data',
+            'filter',
+            'device',
+            'error',
+            'mesh',
+            'update',
+            'communicator',
+            'util',
+            'operation',
+            'write',
+            'wall',
+            'tune',
+            'logging',
+            'custom',
+            'Simulation',
+            'State',
+            'Operations',
+            'Snapshot',
+    ]

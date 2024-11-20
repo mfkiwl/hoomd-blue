@@ -17,3 +17,7 @@ from .local_access import (AngleLocalAccessBase, BondLocalAccessBase,
                            ParticleLocalAccessBase)
 from .local_access_cpu import LocalSnapshot
 from .local_access_gpu import LocalSnapshotGPU
+from .typeparam import TypeParameter
+
+__all__ = ['HOOMDArray', 'HOOMDGPUArray', 'AngleLocalAccessBase', 'BondLocalAccessBase', 'ConstraintLocalAccessBase', 'DihedralLocalAccessBase',
+'ImproperLocalAccessBase', 'PairLocalAccessBase', 'ParticleLocalAccessBase', 'LocalSnapshot', 'LocalSnapshotGPU', 'TypeParameter']

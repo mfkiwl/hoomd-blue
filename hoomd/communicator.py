@@ -4,7 +4,7 @@
 """MPI communicator.
 
 When compiled without MPI support, `Communicator` acts as if there is one MPI
-rank and 1 partition. To use MPI, :doc:`compile HOOMD-blue <building>` with the
+rank and 1 partition. To use MPI, :doc:`compile HOOMD-blue </building>` with the
 option ``ENABLE_MPI=on`` and use the appropriate MPI launcher to launch Python.
 Then the `Communicator` class will configure and query MPI ranks and partitions.
 By default, `Communicator` starts with the ``MPI_COMM_WOLRD`` MPI communicator,
@@ -15,9 +15,9 @@ implement workflows with multiple simulations that communicate using ``mpi4py``
 calls in user code (e.g. genetic algorithms, umbrella sampling).
 
 See Also:
-    :doc:`tutorial/03-Parallel-Simulations-With-MPI/00-index`
+    :doc:`/tutorial/03-Parallel-Simulations-With-MPI/00-index`
 
-    :doc:`tutorial/05-Organizing-and-Executing-Simulations/00-index`
+    :doc:`/tutorial/05-Organizing-and-Executing-Simulations/00-index`
 
 .. invisible-code-block: python
 
@@ -276,3 +276,5 @@ class Communicator(object):
 # to the world communicator, but users can opt in to a more specific
 # communicator using the Device.localize_abort context manager
 _current_communicator = Communicator()
+
+__all__ = ['Communicator',]

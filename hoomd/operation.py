@@ -40,7 +40,7 @@ class _HOOMDGetSetAttrBase:
             `_param_dict` and `_typeparam_dict` keys by default.
         _override_setattr (set[str]): Attributes that should not use the
             provided `__setattr__`. `super().__setattr__` is called for them.
-            Likely, this wil no longer be necessary when triggers are added to
+            Likely, this will no longer be necessary when triggers are added to
             C++ Updaters and Analyzers.
         _param_dict (ParameterDict): The `ParameterDict` for the class/instance.
         _typeparam_dict (dict[str, TypeParameter]): A dict of all the
@@ -620,3 +620,6 @@ class Integrator(Operation):
 
         # The integrator has changed, update the number of DOF in all groups
         self._simulation.state.update_group_dof()
+
+__all__ = ['AutotunedObject', 'Operation', 'TriggeredOperation', 'Updater', 'Writer',
+'Compute', 'Tuner', 'Integrator',]

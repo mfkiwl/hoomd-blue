@@ -464,7 +464,7 @@ def auto_select(
         notice_level (int): Minimum level of messages to print.
 
     Returns:
-        Instance of `GPU` if availabile, otherwise `CPU`.
+        Instance of `GPU` if available, otherwise `CPU`.
 
     .. rubric:: Example:
 
@@ -477,3 +477,5 @@ def auto_select(
         return GPU(communicator, message_filename, notice_level)
     else:
         return CPU(communicator, message_filename, notice_level)
+
+__all__ = ['NoticeFile', 'Device', 'GPU', 'CPU', 'auto_select',]

@@ -23,7 +23,7 @@ class CustomOperation(TriggeredOperation, metaclass=_AbstractLoggable):
     so they can be added to the simulation operations.
 
     This class also implements a "pass-through" system for attributes.
-    Attributes and methods from the passed in `action` will be available
+    Attributes and methods from the passed in :py:attr:`action` will be available
     directly in this class. This does not apply to attributes with these names:
     ``trigger``, ``_action``, and ``action``.
 

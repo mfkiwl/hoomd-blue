@@ -23,9 +23,9 @@ Tip:
     including logged per-particle array quantities and particle shapes.
 
 See Also:
-    Tutorial: :doc:`tutorial/00-Introducing-HOOMD-blue/00-index`
+    Tutorial: :doc:`/tutorial/00-Introducing-HOOMD-blue/00-index`
 
-    Tutorial: :doc:`tutorial/02-Logging/00-index`
+    Tutorial: :doc:`/tutorial/02-Logging/00-index`
 """
 
 from hoomd.write.custom_writer import CustomWriter
@@ -34,3 +34,5 @@ from hoomd.write.gsd_burst import Burst
 from hoomd.write.dcd import DCD
 from hoomd.write.table import Table
 from hoomd.write.hdf5 import HDF5Log
+
+__all__ = ['CustomWriter', 'GSD', 'Burst', 'DCD', 'Table', 'HDF5Log',]

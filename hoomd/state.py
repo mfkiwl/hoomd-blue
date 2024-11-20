@@ -1,9 +1,9 @@
 # Copyright (c) 2009-2024 The Regents of the University of Michigan.
 # Part of HOOMD-blue, released under the BSD 3-Clause License.
 
-"""Module implements the `State` class.
+"""Module implements the :py:class:`State` class.
 
-`State` stores and exposes a parent `hoomd.Simulation` object's data (e.g.
+:py:class:`State` stores and exposes a parent `hoomd.Simulation` object's data (e.g.
 particle positions, system bonds).
 
 .. invisible-code-block: python
@@ -80,19 +80,19 @@ class State:
     Note:
         This object cannot be directly instantiated. Use
         `Simulation.create_state_from_gsd` and
-        `Simulation.create_state_from_snapshot` to instantiate a `State`
+        `Simulation.create_state_from_snapshot` to instantiate a :py:class:`State`
         object as part of a simulation.
 
     .. rubric:: Overview
 
-    `State` stores the data that describes the thermodynamic microstate of a
+    :py:class:`State` stores the data that describes the thermodynamic microstate of a
     `Simulation` object. This data consists of the box, particles, bonds,
     angles, dihedrals, impropers, special pairs, and constraints.
 
     .. rubric:: Box
 
-    The simulation `box` describes the space that contains the particles as a
-    `Box` object.
+    The simulation :py:attr:`box` describes the space that contains the particles as a
+    :py:class:`Box` object.
 
     .. rubric:: Particles
 
@@ -530,7 +530,7 @@ class State:
         """hoomd.Box: A copy of the current simulation box.
 
         Note:
-            The `box` property cannot be set. Call `set_box` to set a new
+            The :py:attr:`box` property cannot be set. Call `set_box` to set a new
             simulation box.
 
         .. rubric:: Example:

@@ -263,7 +263,7 @@ Change Log
 * ``hoomd.variant.box.InverseVolumeRamp`` - Linearly ramp the inverse volume of the system
   (`#1685 <https://github.com/glotzerlab/hoomd-blue/pull/1685>`__).
 * ``hoomd.hpmc.update.QuickCompress`` now accepts a ``hoomd.variant.box.BoxVariant`` object for
-  `target_box` (`#1736 <https://github.com/glotzerlab/hoomd-blue/pull/1736>`__).
+  ``target_box`` (`#1736 <https://github.com/glotzerlab/hoomd-blue/pull/1736>`__).
 * ``box`` argument to ``hoomd.update.BoxResize`` that accepts a ``hoomd.variant.box.BoxVariant``
   (`#1740 <https://github.com/glotzerlab/hoomd-blue/pull/1740>`__).
 * ``hoomd.hpmc.pair.Union`` computes pair potentials between unions of points. Replaces

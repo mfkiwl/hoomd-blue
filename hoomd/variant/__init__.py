@@ -9,8 +9,23 @@ operations accept `Variant` values for certain parameters, such as the
 
 See `Variant` for details on creating user-defined variants or use one of the
 provided subclasses.
+
+.. autodata:: variant_like
+
+    Objects that are like a variant.
+
+    Any subclass of `Variant` is accepted along with float instances and objects
+    convertible to float. They are internally converted to variants of type
+    `Constant` via ``Constant(float(a))`` where ``a`` is the float or float
+    convertible object.
+
+    Note:
+        Attributes that are `Variant` objects can be set via a `variant_like`
+        object.
 """
 
 from hoomd.variant.scalar import (Variant, Constant, Ramp, Cycle, Power,
                                   variant_like)
 from hoomd.variant import box
+
+__all__ = ['box', 'Variant', 'Constant', 'Ramp', 'Cycle', 'Power', 'variant_like']

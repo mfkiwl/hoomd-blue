@@ -42,3 +42,6 @@ An object that acts like a particle filter.
 
 Either a subclass of `ParticleFilter` or `CustomFilter`.
 """
+
+__all__ = ['ParticleFilter', 'All', 'Null', 'Rigid', 'Intersection', 'SetDifference', 'Union',
+'Tags', 'Type', 'CustomFilter', 'filter_like']

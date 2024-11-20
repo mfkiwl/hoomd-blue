@@ -114,7 +114,7 @@ class Ramp(_hoomd.VariantRamp, Variant):
     `Ramp` holds the value *A* until time *t_start*. Then it ramps linearly from
     *A* to *B* over *t_ramp* steps and holds the value *B*.
 
-    .. image:: variant-ramp.svg
+    .. image:: /variant-ramp.svg
        :alt: Example plot of a ramp variant.
 
     .. rubric:: Example:
@@ -159,7 +159,7 @@ class Cycle(_hoomd.VariantCycle, Variant):
     back from *B* to *A* over *t_BA* steps and repeats the cycle starting with
     *t_A*. `Cycle` repeats this cycle indefinitely.
 
-    .. image:: variant-cycle.svg
+    .. image:: /variant-cycle.svg
        :alt: Example plot of a cycle variant.
 
     .. rubric:: Example:
@@ -206,7 +206,7 @@ class Power(_hoomd.VariantPower, Variant):
     :math:`t^{\\mathrm{power}}` from *A* to *B* over *t_ramp* steps and holds
     the value *B* after that.
 
-    .. image:: variant-power.svg
+    .. image:: /variant-power.svg
        :alt: Example plot of a power variant.
 
     .. rubric:: Example:
@@ -235,15 +235,4 @@ class Power(_hoomd.VariantPower, Variant):
 
 
 variant_like = typing.Union[Variant, float]
-"""
-Objects that are like a variant.
 
-Any subclass of `Variant` is accepted along with float instances and objects
-convertible to float. They are internally converted to variants of type
-`Constant` via ``Constant(float(a))`` where ``a`` is the float or float
-convertible object.
-
-Note:
-    Attributes that are `Variant` objects can be set via a `variant_like`
-    object.
-"""

@@ -209,3 +209,5 @@ class InverseVolumeRamp(_hoomd.VectorVariantBoxInverseVolumeRamp, BoxVariant):
     def initial_box(self, box):
         box = hoomd.data.typeconverter.box_preprocessing(box)
         self._initial_box = box._cpp_obj
+
+__all__ = ['BoxVariant', 'Constant', 'Interpolate', 'InverseVolumeRamp', ]

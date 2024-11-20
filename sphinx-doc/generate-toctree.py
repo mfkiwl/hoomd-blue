@@ -13,7 +13,7 @@ import inspect
 import os
 from pathlib import Path
 
-def generate_member_rst(path, full_module_name, name):
+def generate_member_rst(path, full_module_name, name, type):
     """Generate the rst file that describes a class or data element.
     
     Does not overwrite existing files. This allows files to be automatically created
@@ -22,13 +22,12 @@ def generate_member_rst(path, full_module_name, name):
     print(f"member: {name} in {str(path)}")
 
     # Generate the file {name}.rst
-    full_name = full_module_name + '.' + name
-    full_underline = '=' * len(full_name)
+    underline = '=' * len(name)
 
-    member_rst = f"{full_name}\n{full_underline}\n\n"
+    member_rst = f"{name}\n{underline}\n\n"
     member_rst += f".. py:currentmodule:: {full_module_name}\n\n"
     
-    member_rst += f".. autoclass:: {name}\n"
+    member_rst += f".. auto{type}:: {name}\n"
 
     destination = (path / name.lower()).with_suffix('.rst')
 
@@ -59,6 +58,7 @@ def generate_module_rst(path, module):
     # Split the items into modules and class members
     submodules = []
     classes = []
+    functions = []
 
     for member_name in sorted_all:
         member = getattr(module, member_name)
@@ -68,18 +68,22 @@ def generate_module_rst(path, module):
 
         if inspect.isclass(member):            
             classes.append(member_name)
-            generate_member_rst(path, full_module_name, member_name)
+            generate_member_rst(path, full_module_name, member_name, 'class')
+
+        if inspect.isfunction(member):            
+            functions.append(member_name)
+            generate_member_rst(path, full_module_name, member_name, 'function')
 
         # data members should be documented directly in the module's docstring, and
         # are ignored here.
 
     # Generate the file module-{module_name}.rst
-    full_module_underline = '=' * len(full_module_name)
+    module_underline = '=' * len(module_name)
 
-    module_rst = f"{full_module_name}\n{full_module_underline}\n\n"
+    module_rst = f"{module_name}\n{module_underline}\n\n"
     module_rst += f".. automodule:: {full_module_name}\n"
     module_rst += "    :members:\n"
-    module_rst += f"    :exclude-members: {','.join(classes)}\n\n"
+    module_rst += f"    :exclude-members: {','.join(classes + functions)}\n\n"
 
     if len(submodules) > 0:
         module_rst += '.. rubric:: Modules\n\n.. toctree::\n    :maxdepth: 1\n\n'
@@ -92,6 +96,12 @@ def generate_module_rst(path, module):
         module_rst += '.. rubric:: Classes\n\n.. toctree::\n    :maxdepth: 1\n\n'
         for class_name in classes:
             module_rst += f'    {module_name}/{class_name.lower()}\n'
+        module_rst += '\n'
+
+    if len(functions) > 0:
+        module_rst += '.. rubric:: Functions\n\n.. toctree::\n    :maxdepth: 1\n\n'
+        for function_name in functions:
+            module_rst += f'    {module_name}/{function_name.lower()}\n'
         module_rst += '\n'
 
     (path.parent / ('module-' + module_name)).with_suffix('.rst').write_text(module_rst)
