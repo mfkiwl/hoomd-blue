@@ -134,7 +134,7 @@ void mpcd::ParticleData::initializeFromSnapshot(const mpcd::ParticleDataSnapshot
         unsigned int num_types = 0;
         std::vector<int> num_per_rank;       // number per rank
         std::vector<int> rank_displacements; // displacement of particles per rank
-        std::vector<detail::pdata_element> particles;
+        std::vector<mpcd::detail::pdata_element> particles;
         if (rank == root)
             {
             const Index3D& di = m_decomposition->getDomainIndexer();
@@ -460,64 +460,80 @@ void mpcd::ParticleData::takeSnapshot(mpcd::ParticleDataSnapshot& snapshot,
 #ifdef ENABLE_MPI
     if (m_decomposition)
         {
-        // gather a global snapshot
-        std::vector<Scalar3> pos(m_N);
-        std::vector<Scalar3> vel(m_N);
-        std::vector<unsigned int> type(m_N);
-        std::vector<unsigned int> tag(m_N);
-        for (unsigned int idx = 0; idx < m_N; ++idx)
-            {
-            pos[idx] = make_scalar3(h_pos.data[idx].x, h_pos.data[idx].y, h_pos.data[idx].z);
-            vel[idx] = make_scalar3(h_vel.data[idx].x, h_vel.data[idx].y, h_vel.data[idx].z);
-            type[idx] = __scalar_as_int(h_pos.data[idx].w);
-            tag[idx] = h_tag.data[idx];
-            }
-
-        // Create per-processor arrays to gather the data back to root
-        std::vector<std::vector<Scalar3>> pos_proc;       // Position array of every processor
-        std::vector<std::vector<Scalar3>> vel_proc;       // Velocities array of every processor
-        std::vector<std::vector<unsigned int>> type_proc; // Particle types array of every processor
-        std::vector<std::vector<unsigned int>> tag_proc;  // Tag array of every processor
-
-        // resize to number of ranks in communicator
         const MPI_Comm mpi_comm = m_exec_conf->getMPICommunicator();
         const unsigned int n_ranks = m_exec_conf->getNRanks();
         const unsigned int rank = m_exec_conf->getRank();
-        pos_proc.resize(n_ranks);
-        vel_proc.resize(n_ranks);
-        type_proc.resize(n_ranks);
-        tag_proc.resize(n_ranks);
-
-        // collect all particle data on the root processor
         const unsigned int root = 0;
-        gather_v(pos, pos_proc, root, mpi_comm);
-        gather_v(vel, vel_proc, root, mpi_comm);
-        gather_v(type, type_proc, root, mpi_comm);
-        gather_v(tag, tag_proc, root, mpi_comm);
+
+        /*
+         * Stage particles to send on each rank. The root rank gets enough memory to hold ALL
+         * particles later even though we only fill with the local number for now.
+         */
+        std::vector<detail::pdata_element> particles((rank != root) ? m_N : m_N_global);
+        for (unsigned int idx = 0; idx < m_N; ++idx)
+            {
+            mpcd::detail::pdata_element particle;
+            particle.pos = h_pos.data[idx];
+            particle.vel = h_vel.data[idx];
+            particle.tag = h_tag.data[idx];
+            particle.comm_flag = 0;
+            particles[idx] = particle;
+            }
+
+        // size particles per rank and displacements
+        std::vector<int> num_per_rank(n_ranks);       // number per rank
+        std::vector<int> rank_displacements(n_ranks); // displacement of particles per rank
+        MPI_Gather(&m_N, 1, MPI_UNSIGNED, num_per_rank.data(), 1, MPI_UNSIGNED, root, mpi_comm);
+        rank_displacements[0] = 0;
+        for (size_t i = 1; i < num_per_rank.size(); ++i)
+            {
+            rank_displacements[i] = rank_displacements[i - 1] + num_per_rank[i - 1];
+            }
+
+        // gather data back to root rank
+        MPI_Gatherv((rank != root) ? particles.data() : MPI_IN_PLACE,
+                    m_N,
+                    m_mpi_pdata_element,
+                    particles.data(),
+                    num_per_rank.data(),
+                    rank_displacements.data(),
+                    m_mpi_pdata_element,
+                    root,
+                    mpi_comm);
 
         if (rank == root)
             {
+            /*
+             * First sort the particles into tag order. This is probably a slow step, but could be
+             * sped up by sorting on each rank first then merging the sorted segments here.
+             */
+            std::sort(particles.begin(),
+                      particles.end(),
+                      [](const mpcd::detail::pdata_element& a, const mpcd::detail::pdata_element& b)
+                      { return a.tag < b.tag; });
+
             // allocate memory in snapshot
-            snapshot.resize(getNGlobal());
+            snapshot.resize(m_N_global);
 
-            // write back into the snapshot in tag order, don't really care about cache coherency
-            for (unsigned int rank_idx = 0; rank_idx < n_ranks; ++rank_idx)
+            // unpack into snapshot
+            for (unsigned int idx = 0; idx < m_N_global; ++idx)
                 {
-                const unsigned int N = (unsigned int)pos_proc[rank_idx].size();
-                for (unsigned int idx = 0; idx < N; ++idx)
-                    {
-                    const unsigned int snap_idx = tag_proc[rank_idx][idx];
+                const auto particle = particles[idx];
 
-                    // make sure the position stored in the snapshot is within the boundaries
-                    Scalar3 pos_i = pos_proc[rank_idx][idx];
-                    int3 img = make_int3(0, 0, 0);
-                    global_box->wrap(pos_i, img);
+                // wrapped position
+                const Scalar4 postype = particle.pos;
+                Scalar3 pos = make_scalar3(postype.x, postype.y, postype.z);
+                int3 img = make_int3(0, 0, 0);
+                global_box->wrap(pos, img);
+                snapshot.position[idx] = vec3<Scalar>(pos);
 
-                    // push particle into the snapshot
-                    snapshot.position[snap_idx] = vec3<Scalar>(pos_i);
-                    snapshot.velocity[snap_idx] = vec3<Scalar>(vel_proc[rank_idx][idx]);
-                    snapshot.type[snap_idx] = type_proc[rank_idx][idx];
-                    }
+                // typeid
+                snapshot.type[idx] = __scalar_as_int(postype.w);
+
+                // velocity
+                const Scalar4 velcell = particle.vel;
+                const Scalar3 vel = make_scalar3(velcell.x, velcell.y, velcell.z);
+                snapshot.velocity[idx] = vec3<Scalar>(vel);
                 }
             }
         }
@@ -525,24 +541,37 @@ void mpcd::ParticleData::takeSnapshot(mpcd::ParticleDataSnapshot& snapshot,
 #endif
         {
         // allocate memory in snapshot
-        snapshot.resize(getNGlobal());
+        snapshot.resize(m_N);
 
-        // iterate through particles
+        // sort by tags
+        std::vector<std::pair<unsigned int, unsigned int>> tag_index(m_N);
         for (unsigned int idx = 0; idx < m_N; ++idx)
             {
-            const unsigned int snap_idx = h_tag.data[idx];
+            tag_index[idx] = std::make_pair(h_tag.data[idx], idx);
+            }
+        std::sort(tag_index.begin(),
+                  tag_index.end(),
+                  [](const auto& a, const auto& b) { return a.first < b.first; });
 
-            // make sure the position stored in the snapshot is within the boundaries
-            Scalar4 postype = h_pos.data[idx];
-            Scalar3 pos_i = make_scalar3(postype.x, postype.y, postype.z);
-            const unsigned int type_i = __scalar_as_int(postype.w);
+        // unpack into snapshot
+        for (unsigned int idx = 0; idx < m_N; ++idx)
+            {
+            const unsigned int pidx = tag_index[idx].second;
+
+            // wrapped position
+            const Scalar4 postype = h_pos.data[pidx];
+            Scalar3 pos = make_scalar3(postype.x, postype.y, postype.z);
             int3 img = make_int3(0, 0, 0);
-            global_box->wrap(pos_i, img);
+            global_box->wrap(pos, img);
+            snapshot.position[idx] = vec3<Scalar>(pos);
 
-            // push particle into the snapshot
-            snapshot.position[snap_idx] = vec3<Scalar>(pos_i);
-            snapshot.velocity[snap_idx] = vec3<Scalar>(h_vel.data[idx]);
-            snapshot.type[snap_idx] = type_i;
+            // typeid
+            snapshot.type[idx] = __scalar_as_int(postype.w);
+
+            // velocity
+            const Scalar4 velcell = h_vel.data[pidx];
+            const Scalar3 vel = make_scalar3(velcell.x, velcell.y, velcell.z);
+            snapshot.velocity[idx] = vec3<Scalar>(vel);
             }
         }
 
