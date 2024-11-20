@@ -212,3 +212,5 @@ class Table(Angle):
             cpp_cls = _md.TableAngleForceComputeGPU
 
         self._cpp_obj = cpp_cls(self._simulation.state._cpp_sys_def, self.width)
+
+__all__ = ['Angle', 'Harmonic', 'CosineSquared', 'Table',]

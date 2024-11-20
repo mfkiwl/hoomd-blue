@@ -165,3 +165,5 @@ class Periodic(Improper):
                 chi0=hoomd.data.typeconverter.nonnegative_real,
                 len_keys=1))
         self._add_typeparam(params)
+
+__all__ = ['Improper', 'Harmonic', 'Periodic',]

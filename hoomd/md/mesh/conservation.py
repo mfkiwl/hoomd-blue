@@ -183,3 +183,5 @@ class Volume(MeshConservationPotential):
     def volume(self):
         """Volume of the mesh triangulation."""
         return self._cpp_obj.getVolume()
+
+__all__ = ['Area', 'TriangleArea', 'Volume',]

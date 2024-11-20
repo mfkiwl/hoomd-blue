@@ -327,3 +327,5 @@ class Rigid(Constraint):
         # positions and orientations are accurate before integration.
         self._cpp_obj.validateRigidBodies()
         self._cpp_obj.updateCompositeParticles(0)
+
+__all__ = ['Constraint', 'Distance', 'Rigid',]

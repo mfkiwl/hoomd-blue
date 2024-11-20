@@ -106,3 +106,5 @@ class NVT(Alchemostat):
         self._cpp_obj = cpp_class(cpp_sys_def, self.period, self.alchemical_kT)
         self._cpp_obj.setNextAlchemicalTimestep(self._simulation.timestep)
         super()._attach_hook()
+
+__all__ = ['Alchemostat', 'NVT',]

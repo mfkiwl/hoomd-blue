@@ -614,3 +614,5 @@ class Constant(Force):
 
         self._cpp_obj = my_class(sim.state._cpp_sys_def,
                                  sim.state._get_group(self.filter))
+
+__all__ = ['Force', 'Custom', 'Active', 'ActiveOnManifold', 'Constant',]

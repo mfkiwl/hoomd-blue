@@ -449,3 +449,5 @@ class SquareDensity(Triplet):
         params = TypeParameter('params', 'particle_types',
                                TypeParameterDict(A=0.0, B=float, len_keys=2))
         self._add_typeparam(params)
+
+__all__ = ['Triplet', 'Tersoff', 'RevCross', 'SquareDensity',]

@@ -199,3 +199,5 @@ class Tether(MeshPotential):
         self._add_typeparam(params)
 
         super().__init__(mesh)
+
+__all__ = ['Harmonic', 'FENEWCA', 'Tether',]

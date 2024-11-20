@@ -395,3 +395,5 @@ class Berendsen(Thermostat):
         self._cpp_obj = _md.BerendsenThermostat(
             self.kT, group, self._thermo, self._simulation.state._cpp_sys_def,
             self.tau)
+
+__all__ = ['Thermostat', 'MTTK', 'Bussi', 'Berendsen',]

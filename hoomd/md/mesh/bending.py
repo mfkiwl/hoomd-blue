@@ -138,3 +138,5 @@ class Helfrich(MeshPotential):
             super()._attach_hook()
         else:
             raise MPINotAvailableError("Helfrich is not implemented for MPI")
+
+__all__ = ['BendingRigidity', 'Helfrich',]

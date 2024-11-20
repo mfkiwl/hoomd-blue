@@ -372,3 +372,5 @@ class Sphere(Manifold):
             self.r, _hoomd.make_scalar3(self.P[0], self.P[1], self.P[2]))
 
         super()._attach(self._simulation)
+
+__all__ = ['Manifold', 'Cylinder', 'Diamond', 'Ellipsoid', 'Gyroid', 'Plane', 'Primitive', 'Sphere',]

@@ -237,3 +237,5 @@ class OPLS(Dihedral):
                               k4=float,
                               len_keys=1))
         self._add_typeparam(params)
+
+__all__ = ['Dihedral', 'Periodic', 'Table', 'OPLS',]

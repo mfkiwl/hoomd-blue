@@ -324,3 +324,5 @@ def _rms(h, prd, N, order, kappa, q2):
     value = q2 * pow(h * kappa, order) * math.sqrt(
         kappa * prd * math.sqrt(2.0 * math.pi) * sum / N) / prd / prd
     return value
+
+__all__ = ['make_pppm_coulomb_forces', 'Coulomb',]

@@ -4,3 +4,5 @@
 """Energy minimizer for molecular dynamics."""
 
 from hoomd.md.minimize.fire import FIRE
+
+__all__ = ['FIRE',]
