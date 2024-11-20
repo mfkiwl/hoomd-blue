@@ -39,9 +39,8 @@ def generate_member_rst(path, full_module_name, name, type):
 
     destination = (path / name.lower()).with_suffix('.rst')
 
-    # TODO: uncomment when testing is complete    
-    # if destination.exists():
-    #     return
+    if destination.exists():
+        return
 
     destination.write_text(member_rst)
         
