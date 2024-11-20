@@ -14,6 +14,7 @@ import os
 from pathlib import Path
 
 TOPLEVEL = ['hpmc', 'mpcd', 'md']
+exit_value = 0
 
 def generate_member_rst(path, full_module_name, name, type):
     """Generate the rst file that describes a class or data element.
@@ -51,11 +52,19 @@ def generate_module_rst(path, module):
     Always overwrites the file to automatically update the table of contents when
     adding new classes.
     """
+    global exit_value
+    
     full_module_name = module.__name__
     module_name = full_module_name.split('.')[-1]
 
     # Alphabetize the items
-    sorted_all = module.__all__.copy()
+    module_all = getattr(module, '__all__', None)
+    if module_all is None:
+        exit_value = 1
+        print(f"Warning: {full_module_name} is missing __all__")
+        return
+
+    sorted_all = module_all.copy()
     sorted_all.sort()
    
     if len(sorted_all) > 0:
@@ -123,3 +132,4 @@ if __name__ == '__main__':
     import hoomd
 
     generate_module_rst(doc_dir / 'hoomd', hoomd)
+    sys.exit(exit_value)
