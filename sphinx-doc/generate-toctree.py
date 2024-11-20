@@ -29,6 +29,13 @@ def generate_member_rst(path, full_module_name, name, type):
     
     member_rst += f".. auto{type}:: {name}\n"
 
+    # set :members: and :show-inheritance: for classes. Developers can remove these
+    # individually when they are not appropriate. Unfortunately, we cannot make these
+    # default in `conf.py` because there is no way to opt out of the default.
+    if type == 'class':
+       member_rst += "   :members:\n"
+       member_rst += "   :show-inheritance:\n"
+
     destination = (path / name.lower()).with_suffix('.rst')
 
     # TODO: uncomment when testing is complete    
@@ -82,8 +89,8 @@ def generate_module_rst(path, module):
 
     module_rst = f"{module_name}\n{module_underline}\n\n"
     module_rst += f".. automodule:: {full_module_name}\n"
-    module_rst += "    :members:\n"
-    module_rst += f"    :exclude-members: {','.join(classes + functions)}\n\n"
+    module_rst += "   :members:\n"
+    module_rst += f"   :exclude-members: {','.join(classes + functions)}\n\n"
 
     if len(submodules) > 0:
         module_rst += '.. rubric:: Modules\n\n.. toctree::\n    :maxdepth: 1\n\n'

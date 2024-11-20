@@ -12,16 +12,15 @@ provided subclasses.
 
 .. autodata:: variant_like
 
-    Objects that are like a variant.
+   Objects that are like a variant.
 
-    Any subclass of `Variant` is accepted along with float instances and objects
-    convertible to float. They are internally converted to variants of type
-    `Constant` via ``Constant(float(a))`` where ``a`` is the float or float
-    convertible object.
+   Any subclass of `Variant` is accepted along with float instances and objects
+   convertible to float. They are internally converted to variants of type
+   `Constant` via ``Constant(float(a))`` where ``a`` is the float or float
+   convertible object.
 
-    Note:
-        Attributes that are `Variant` objects can be set via a `variant_like`
-        object.
+   Attributes that are `Variant` objects can be set via a `variant_like`
+   object.
 """
 
 from hoomd.variant.scalar import (Variant, Constant, Ramp, Cycle, Power,
