@@ -5,4 +5,3 @@ BondLocalAccessBase
 
 .. autoclass:: BondLocalAccessBase
    :members:
-   :show-inheritance:

@@ -5,4 +5,3 @@ TypeParameter
 
 .. autoclass:: TypeParameter
    :members:
-   :show-inheritance:

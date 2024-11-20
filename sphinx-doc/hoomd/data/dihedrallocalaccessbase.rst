@@ -5,4 +5,3 @@ DihedralLocalAccessBase
 
 .. autoclass:: DihedralLocalAccessBase
    :members:
-   :show-inheritance:

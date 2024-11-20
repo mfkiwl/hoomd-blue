@@ -613,7 +613,7 @@ class Patchy(AnisotropicPair):
         f_{min} &= \big( 1 + e^{-\omega (-1 - \cos{\alpha}) } \big)^{-1} \\
         \end{align}
 
-    .. image:: patchy-pair.svg
+    .. image:: /patchy-pair.svg
          :align: center
          :height: 400px
          :alt: Two dashed circles not quite touching. Circle i on the left has a faded
@@ -628,7 +628,7 @@ class Patchy(AnisotropicPair):
     :math:`cos(\theta_i) = \mathbf{q} \hat{d} \mathbf{q}^* \cdot \hat{r}_{ij}` and
     :math:`cos(\theta_j) = \mathbf{q} \hat{d} \mathbf{q}^* \cdot -\hat{r}_{ij}`.
 
-    .. image:: patchy-def.svg
+    .. image:: /patchy-def.svg
          :align: center
          :height: 400px
          :alt: A single dashed circle centered at the origin of Cartesian x y axes.
@@ -638,7 +638,7 @@ class Patchy(AnisotropicPair):
 
     :math:`\alpha` and :math:`\omega` control the shape of the patch:
 
-    .. image:: patchy-modulator.svg
+    .. image:: /patchy-modulator.svg
          :alt: Plots of modulator f with alpha equals pi over 3 for omegas of 2, 5, 10,
           20 and 50. For omega of 50, the plot is a barely rounded step from 0 to 1 at
           negative pi over 3 and back down to 0 at pi over 3. The omega 2 line is so

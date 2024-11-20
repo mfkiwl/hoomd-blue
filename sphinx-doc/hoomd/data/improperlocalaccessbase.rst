@@ -5,4 +5,3 @@ ImproperLocalAccessBase
 
 .. autoclass:: ImproperLocalAccessBase
    :members:
-   :show-inheritance:

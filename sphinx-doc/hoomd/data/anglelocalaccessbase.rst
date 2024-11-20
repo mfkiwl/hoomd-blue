@@ -5,4 +5,3 @@ AngleLocalAccessBase
 
 .. autoclass:: AngleLocalAccessBase
    :members:
-   :show-inheritance:

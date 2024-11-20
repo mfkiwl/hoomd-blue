@@ -5,4 +5,4 @@ LocalSnapshotGPU
 
 .. autoclass:: LocalSnapshotGPU
    :members:
-   :show-inheritance:
+   :inherited-members:

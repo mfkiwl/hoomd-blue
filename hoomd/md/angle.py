@@ -14,7 +14,7 @@ Each angle is defined by an ordered triplet of particle tags in the
 `hoomd.State` member ``angle_group``. HOOMD-blue does not construct angle
 groups, users must explicitly define angles in the initial condition.
 
-.. image:: md-angle.svg
+.. image:: /md-angle.svg
     :alt: Definition of the angle bond between particles i, j, and k.
 
 In the angle group (i,j,k), :math:`\theta` is the angle between the vectors

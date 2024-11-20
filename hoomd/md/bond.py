@@ -14,7 +14,7 @@ Each bond is defined by an ordered pair of particle tags in the
 `hoomd.State` member ``bond_group``. HOOMD-blue does not construct bond groups,
 users must explicitly define bonds in the initial condition.
 
-.. image:: md-bond.svg
+.. image:: /md-bond.svg
     :alt: Definition of the bond between particles j and k.
 
 In the bond group (j,k), :math:`r` is the length of the bond between the

@@ -5,4 +5,4 @@ LocalSnapshot
 
 .. autoclass:: LocalSnapshot
    :members:
-   :show-inheritance:
+   :inherited-members:

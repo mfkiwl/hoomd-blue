@@ -5,4 +5,3 @@ PairLocalAccessBase
 
 .. autoclass:: PairLocalAccessBase
    :members:
-   :show-inheritance:

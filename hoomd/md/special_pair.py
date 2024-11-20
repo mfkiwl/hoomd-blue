@@ -18,7 +18,7 @@ Each special pair is defined by an ordered pair of particle tags in the
 `hoomd.State` member ``pair_group``. HOOMD-blue does not compute special pair
 groups, users must explicitly define special pairs in the initial condition.
 
-.. image:: md-bond.svg
+.. image:: /md-bond.svg
     :alt: Definition of the special pair between particles j and k.
 
 In the special pair group (j,k), :math:`r` is the length of the vector between

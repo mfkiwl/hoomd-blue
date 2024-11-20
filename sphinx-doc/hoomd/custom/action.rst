@@ -5,4 +5,3 @@ Action
 
 .. autoclass:: Action
    :members:
-   :show-inheritance:

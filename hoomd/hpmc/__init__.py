@@ -5,8 +5,8 @@
 
 In hard particle Monte Carlo (HPMC) simulations, the particles in the system
 state have extended shapes. The potential energy of the system is infinite when
-any particle shapes overlap. Pair (:doc:`module-hpmc-pair`) and external
-(:doc:`module-hpmc-external`) potentials compute the potential energy when there
+any particle shapes overlap. Pair (`hoomd.hpmc.pair`) and external
+(`hoomd.hpmc.external`) potentials compute the potential energy when there
 are no shape overlaps. `hpmc` employs the Metropolis Monte Carlo algorithm to
 sample equilibrium configurations of the system.
 

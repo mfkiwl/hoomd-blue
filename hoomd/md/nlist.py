@@ -349,7 +349,7 @@ class Cell(NeighborList):
     is usually the best option for most users when the asymmetry between the
     largest and smallest cutoff radius is less than 2:1.
 
-    .. image:: cell_list.png
+    .. image:: /cell_list.png
         :width: 250 px
         :align: center
         :alt: Cell list schematic
@@ -443,7 +443,7 @@ class Stencil(NeighborList):
     cutoff radius (`P.J. in't Veld et al. 2008
     <https://dx.doi.org/10.1016/j.cpc.2008.03.005>`_):
 
-    .. image:: stencil_schematic.png
+    .. image:: /stencil_schematic.png
         :width: 300 px
         :align: center
         :alt: Stenciled cell list schematic
@@ -532,7 +532,7 @@ class Tree(NeighborList):
     per type.) The user should carefully benchmark neighbor list build times to
     select the appropriate neighbor list construction type.
 
-    .. image:: tree_schematic.png
+    .. image:: /tree_schematic.png
         :width: 400 px
         :align: center
         :alt: BVH tree schematic

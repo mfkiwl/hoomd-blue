@@ -15,7 +15,7 @@ Each dihedral is defined by an ordered quadruplet of particle tags in the
 `hoomd.State` member ``dihedral_group``. HOOMD-blue does not construct dihedral
 groups, users must explicitly define dihedrals in the initial condition.
 
-.. image:: md-dihedral.svg
+.. image:: /md-dihedral.svg
     :alt: Definition of the dihedral bond between particles i, j, k, and l.
 
 In the dihedral group (i,j,k,l), :math:`\phi` is the signed dihedral angle

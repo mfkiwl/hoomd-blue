@@ -65,12 +65,12 @@ Below we show the potential for a `hoomd.wall.Sphere` with radius 5 in 2D,
 using the Gaussian potential with :math:`\epsilon=1, \sigma=1` and
 ``inside=True``:
 
-.. image:: md-wall-potential.svg
+.. image:: /md-wall-potential.svg
     :alt: Example plot of wall potential.
 
 When ``inside=False``, the potential becomes:
 
-.. image:: md-wall-potential-outside.svg
+.. image:: /md-wall-potential-outside.svg
     :alt: Example plot of an outside wall potential.
 
 .. rubric:: Extrapolated Mode:
@@ -104,7 +104,7 @@ to the wall:
 Below is an example of extrapolation with ``r_extrap=1.1`` for a LJ
 potential with :math:`\epsilon=1, \sigma=1`.
 
-.. image:: md-wall-extrapolate.svg
+.. image:: /md-wall-extrapolate.svg
     :alt: Example plot demonstrating potential extrapolation.
 
 To use extrapolated mode ``r_extrap`` must be set per particle type.

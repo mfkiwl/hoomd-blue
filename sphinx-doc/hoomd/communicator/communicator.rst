@@ -5,4 +5,3 @@ Communicator
 
 .. autoclass:: Communicator
    :members:
-   :show-inheritance:

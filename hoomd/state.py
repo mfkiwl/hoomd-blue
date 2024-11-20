@@ -530,7 +530,7 @@ class State:
         """hoomd.Box: A copy of the current simulation box.
 
         Note:
-            The `box` property cannot be set. Call `set_box` to set a new
+            The :py:attr:`box` property cannot be set. Call `set_box` to set a new
             simulation box.
 
         .. rubric:: Example:

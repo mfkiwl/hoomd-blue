@@ -5,4 +5,3 @@ ParticleLocalAccessBase
 
 .. autoclass:: ParticleLocalAccessBase
    :members:
-   :show-inheritance:

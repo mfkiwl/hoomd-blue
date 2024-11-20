@@ -5,4 +5,3 @@ BoxInterface
 
 .. autoclass:: BoxInterface
    :members:
-   :show-inheritance:

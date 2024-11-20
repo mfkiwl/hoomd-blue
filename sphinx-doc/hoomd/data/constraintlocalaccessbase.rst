@@ -5,4 +5,3 @@ ConstraintLocalAccessBase
 
 .. autoclass:: ConstraintLocalAccessBase
    :members:
-   :show-inheritance:

@@ -23,7 +23,7 @@ Each improper is defined by an ordered quadruplet of particle tags in the
 `hoomd.State` member ``improper_group``. HOOMD-blue does not construct improper
 groups, users must explicitly define impropers in the initial condition.
 
-.. image:: md-improper.svg
+.. image:: /md-improper.svg
     :alt: Definition of the improper bond between particles i, j, k, and l.
 
 In an improper group (i,j,k,l), :math:`\chi` is the signed improper angle
