@@ -1,13 +1,11 @@
 # Copyright (c) 2009-2024 The Regents of the University of Michigan.
 # Part of HOOMD-blue, released under the BSD 3-Clause License.
 
-"""MPI communicator.
-
-When compiled without MPI support, `Communicator` acts as if there is one MPI
+"""When compiled without MPI support, `Communicator` acts as if there is one MPI
 rank and 1 partition. To use MPI, :doc:`compile HOOMD-blue </building>` with the
 option ``ENABLE_MPI=on`` and use the appropriate MPI launcher to launch Python.
 Then the `Communicator` class will configure and query MPI ranks and partitions.
-By default, `Communicator` starts with the ``MPI_COMM_WOLRD`` MPI communicator,
+By default, `Communicator` starts with the ``MPI_COMM_WOLRD`` MPI communicator
 and the communicator is not available for user scripts.
 
 `Communicator` also accepts MPI communicators from ``mpi4py``. Use this to

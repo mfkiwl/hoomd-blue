@@ -33,10 +33,29 @@ class CustomOperation(TriggeredOperation, metaclass=_AbstractLoggable):
 
     Note:
         This object should not be instantiated or subclassed by an user.
+   
+    {inherited}
 
-    Attributes:
-        trigger (hoomd.trigger.Trigger): A trigger to determine when the
-            wrapped `hoomd.custom.Action` is run.
+    ----------
+
+    **Members defined in:** `CustomOperation`:
+    """
+
+    __doc__ = __doc__.replace("{inherited}", TriggeredOperation._doc_inherited)
+
+    _doc_inherited = TriggeredOperation._doc_inherited + """
+    ----------
+
+    **Members inherited from:**
+    `CustomOperation <hoomd.operation.TriggeredOperation>`
+
+    .. py:method:: act
+
+        Perform the action of the custom action if attached
+
+    .. py:property:: action
+
+        Action that this operation wraps.
     """
 
     _override_setattr = {'_action', "_export_dict", "_simulation"}
@@ -98,7 +117,7 @@ class CustomOperation(TriggeredOperation, metaclass=_AbstractLoggable):
 
     @property
     def action(self):
-        """`hoomd.custom.Action` The action the operation wraps."""
+        """:hoomd.custom.Action: Action that this operation wraps."""
         return self._action
 
     def __setstate__(self, state):

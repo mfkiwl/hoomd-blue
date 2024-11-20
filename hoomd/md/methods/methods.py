@@ -34,6 +34,8 @@ class Method(AutotunedObject):
         Users should use the subclasses and not instantiate `Method` directly.
     """
 
+    __doc__ += AutotunedObject._doc_inherited
+
     def _attach_hook(self):
         self._simulation.state.update_group_dof()
 

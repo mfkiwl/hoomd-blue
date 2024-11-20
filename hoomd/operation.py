@@ -426,6 +426,27 @@ class AutotunedObject(_HOOMDBaseObject):
         * `hoomd.Operations.tune_kernel_parameters`
     """
 
+    _doc_inherited = """
+    ----------
+
+    **Members inherited from:** `AutotunedObject <hoomd.operation.AutotunedObject>`
+
+    .. py:property:: kernel_parameters
+
+        Kernel parameters.
+        `Read more... <hoomd.operation.AutotunedObject.kernel_parameters>`
+
+    .. py:property:: is_tuning_complete
+
+        Check if kernel parameter tuning is complete.
+        `Read more... <hoomd.operation.AutotunedObject.is_tuning_complete>`
+
+    .. py:method:: tune_kernel_parameters
+
+        Start tuning kernel parameters.
+        `Read more... <hoomd.operation.AutotunedObject.tune_kernel_parameters>`
+    """
+
     @property
     def kernel_parameters(self):
         """dict[str, tuple[float]]: Kernel parameters.
@@ -516,23 +537,21 @@ class Operation(AutotunedObject):
     Warning:
         This class should not be instantiated by users. The class can be used
         for `isinstance` or `issubclass` checks.
-
-    Note:
-        Developers or those contributing to HOOMD-blue, see our architecture
-        `file`_ for information on HOOMD-blue's architecture decisions regarding
-        operations.
-
-    .. _file: https://github.com/glotzerlab/hoomd-blue/blob/trunk-minor/ \
-        ARCHITECTURE.md
     """
+
+    __doc__ += AutotunedObject._doc_inherited
 
 
 class TriggeredOperation(Operation):
-    """Operations that include a trigger to determine when to run.
+    """Operations that execute on timesteps determined by a trigger.
 
     Warning:
         This class should not be instantiated by users. The class can be used
         for `isinstance` or `issubclass` checks.
+
+    {inherited}
+
+    **Members defined in:** `TriggeredOperation`:
 
     Attributes:
         trigger (hoomd.trigger.Trigger): The trigger to activate this operation.
@@ -544,6 +563,20 @@ class TriggeredOperation(Operation):
                 operation.trigger = hoomd.trigger.Periodic(10)
     """
 
+    __doc__ = __doc__.replace("{inherited}", Operation._doc_inherited)
+
+    _doc_inherited = Operation._doc_inherited + """
+    ----------
+
+    **Members inherited from:**
+    `TriggeredOperation <hoomd.operation.TriggeredOperation>`
+
+    .. py:attribute:: trigger
+
+        The trigger to activate this operation.
+        `Read more... <hoomd.operation.TriggeredOperation.trigger>`
+    """
+    
     def __init__(self, trigger):
         trigger_param = ParameterDict(trigger=hoomd.trigger.Trigger)
         self._param_dict.update(trigger_param)
@@ -558,8 +591,10 @@ class Updater(TriggeredOperation):
     Warning:
         This class should not be instantiated by users. The class can be used
         for `isinstance` or `issubclass` checks.
-    """
+    """   
     _cpp_list_name = 'updaters'
+
+    __doc__ += TriggeredOperation._doc_inherited
 
 
 class Writer(TriggeredOperation):
@@ -573,6 +608,8 @@ class Writer(TriggeredOperation):
     """
     _cpp_list_name = 'analyzers'
 
+    __doc__ += TriggeredOperation._doc_inherited
+
 
 class Compute(Operation):
     """Compute properties of the simulation's state.
@@ -584,7 +621,7 @@ class Compute(Operation):
         This class should not be instantiated by users. The class can be used
         for `isinstance` or `issubclass` checks.
     """
-    pass
+    __doc__ += Operation._doc_inherited
 
 
 class Tuner(TriggeredOperation):
@@ -599,7 +636,7 @@ class Tuner(TriggeredOperation):
         This class should not be instantiated by users. The class can be used
         for `isinstance` or `issubclass` checks.
     """
-    pass
+    __doc__ += TriggeredOperation._doc_inherited
 
 
 class Integrator(Operation):
@@ -614,6 +651,7 @@ class Integrator(Operation):
         This class should not be instantiated by users. The class can be used
         for `isinstance` or `issubclass` checks.
     """
+    __doc__ += Operation._doc_inherited
 
     def _attach_hook(self):
         self._simulation._cpp_sys.setIntegrator(self._cpp_obj)

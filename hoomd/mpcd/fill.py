@@ -36,6 +36,10 @@ class VirtualParticleFiller(Operation):
     Their velocities will be drawn from a Maxwell--Boltzmann distribution
     consistent with `kT`.
 
+    {inherited}
+
+    **Members defined in:** `VirtualParticleFiller`:
+    
     .. invisible-code-block: python
 
         filler = hoomd.mpcd.fill.VirtualParticleFiller(
@@ -78,6 +82,8 @@ class VirtualParticleFiller(Operation):
                 filler.kT = hoomd.variant.Ramp(1.0, 2.0, 0, 100)
 
     """
+
+    __doc__ = __doc__.replace("{inherited}", Operation._doc_inherited)
 
     def __init__(self, type, density, kT):
         super().__init__()
