@@ -91,6 +91,9 @@ mpcd::ParticleData::ParticleData(const mpcd::ParticleDataSnapshot& snapshot,
 mpcd::ParticleData::~ParticleData()
     {
     m_exec_conf->msg->notice(5) << "Destroying MPCD ParticleData" << endl;
+#ifdef ENABLE_MPI
+    MPI_Type_free(&m_mpi_pdata_element);
+#endif // ENABLE_MPI
     }
 
 /*!

@@ -94,6 +94,14 @@ MPIConfiguration::MPIConfiguration(
 #endif
     }
 
+MPIConfiguration::~MPIConfiguration()
+    {
+    MPI_Type_free(&m_mpi_scalar2);
+    MPI_Type_free(&m_mpi_scalar3);
+    MPI_Type_free(&m_mpi_vec3_scalar);
+    MPI_Type_free(&m_mpi_scalar4);
+    }
+
 void MPIConfiguration::splitPartitions(unsigned int nrank)
     {
 #ifdef ENABLE_MPI
