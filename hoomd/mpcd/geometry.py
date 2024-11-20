@@ -413,3 +413,6 @@ class Sphere(Geometry):
     def _attach_hook(self):
         self._cpp_obj = _mpcd.Sphere(self.radius, self.no_slip)
         super()._attach_hook()
+
+__all__ = ['Geometry', 'ConcentricCylinders', 'CosineChannel','CosineExpansionContraction','ParallelPlates',
+'PlanarPore','Sphere',]

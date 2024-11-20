@@ -480,3 +480,5 @@ class SDF(Compute):
             return result * integrator.kT(self._simulation.timestep)
         else:
             return None
+
+__all__ = ['FreeVolume', 'SDF',]

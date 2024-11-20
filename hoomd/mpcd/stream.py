@@ -303,3 +303,5 @@ class BounceBack(StreamingMethod):
         if force is None:
             force = type(None)
         cls._cpp_cpp_class_map[geometry, force] = (module, cpp_class_name)
+
+__all__ = ['StreamingMethod', 'Bulk', 'BounceBack',]

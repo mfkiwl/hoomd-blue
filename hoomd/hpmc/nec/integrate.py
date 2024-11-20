@@ -133,7 +133,7 @@ class Sphere(HPMCNECIntegrator):
     """HPMC chain integration for spheres (2D/3D).
 
     Args:
-        default_d (`float`, optional): Default colission search distance
+        default_d (`float`, optional): Default collision search distance
             :math:`[\\mathrm{length}]`, defaults to 0.1.
         chain_time (`float`, optional): Length of a chain
             :math:`[\\mathrm{time}]`, defaults to 0.5.
@@ -222,7 +222,7 @@ class ConvexPolyhedron(HPMCNECIntegrator):
     """HPMC integration for convex polyhedra (3D) with nec.
 
     Args:
-        default_d (`float`, optional): Default colission search distance
+        default_d (`float`, optional): Default collision search distance
             :math:`[\\mathrm{length}]`, defaults to 0.1.
         default_a (`float`, optional): Default maximum size of rotation trial
             moves :math:`[\\mathrm{dimensionless}]`, defaults to 0.1.
@@ -326,3 +326,5 @@ class ConvexPolyhedron(HPMCNECIntegrator):
                            [-0.5, 0.5, -0.5], [-0.5, -0.5, 0.5]]}]
         """
         return super(ConvexPolyhedron, self)._return_type_shapes()
+
+__all__ = ['HPMCNECIntegrator', 'Sphere', 'ConvexPolyhedron',]

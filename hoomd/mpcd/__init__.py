@@ -63,8 +63,9 @@ from hoomd.mpcd import collide
 from hoomd.mpcd import fill
 from hoomd.mpcd import force
 from hoomd.mpcd import geometry
-from hoomd.mpcd import integrate
 from hoomd.mpcd.integrate import Integrator
 from hoomd.mpcd import methods
 from hoomd.mpcd import stream
 from hoomd.mpcd import tune
+
+__all__ = ['collide', 'fill', 'force', 'geometry', 'Integrator', 'methods', 'stream', 'tune',]

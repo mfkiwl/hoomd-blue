@@ -278,3 +278,5 @@ class ChainTime(_InternalCustomTuner):
         """
         solver = SecantSolver(gamma, tol)
         return cls(trigger, target, solver, max_chain_time)
+
+__all__ = ['ChainTime',]

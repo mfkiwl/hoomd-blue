@@ -138,3 +138,5 @@ class BounceBack(Method):
     @classmethod
     def _register_cpp_class(cls, geometry, module, cpp_class_name):
         cls._cpp_class_map[geometry] = (module, cpp_class_name)
+
+__all__ = ['BounceBack',]

@@ -41,7 +41,7 @@ class ShapeMove(_HOOMDBaseObject):
             of shape trial moves.
     """
 
-    _suported_shapes = None
+    _supported_shapes = None
 
     def __init__(self, default_step_size=None):
         if default_step_size is None:
@@ -62,7 +62,7 @@ class ShapeMove(_HOOMDBaseObject):
             raise RuntimeError("Integrator is not attached yet.")
 
         integrator_name = integrator.__class__.__name__
-        if integrator_name in self._suported_shapes:
+        if integrator_name in self._supported_shapes:
             self._move_cls = getattr(_hpmc,
                                      self.__class__.__name__ + integrator_name)
         else:
@@ -136,7 +136,7 @@ class Elastic(ShapeMove):
             deformation trial moves (**default**: 0.5).
     """
 
-    _suported_shapes = {'ConvexPolyhedron'}
+    _supported_shapes = {'ConvexPolyhedron'}
 
     def __init__(self,
                  stiffness,
@@ -155,11 +155,11 @@ class Elastic(ShapeMove):
             cls = mc.__class__
         else:
             cls = mc
-        if cls.__name__ not in self._suported_shapes:
+        if cls.__name__ not in self._supported_shapes:
             raise ValueError(f"Unsupported integrator type {cls}. Supported "
-                             f"types are {self._suported_shapes}")
+                             f"types are {self._supported_shapes}")
         # Class can only be used for this type of integrator now.
-        self._suported_shapes = {cls.__name__}
+        self._supported_shapes = {cls.__name__}
         shape = cls().shape
         shape.name = "reference_shape"
         return shape
@@ -245,7 +245,7 @@ class ShapeSpace(ShapeMove):
             parameters to change each timestep (**default**: 1).
     """
 
-    _suported_shapes = {
+    _supported_shapes = {
         'ConvexPolyhedron', 'ConvexSpheropolyhedron', 'Ellipsoid'
     }
 
@@ -320,7 +320,7 @@ class Vertex(ShapeMove):
             maintain this volume.
     """
 
-    _suported_shapes = {'ConvexPolyhedron'}
+    _supported_shapes = {'ConvexPolyhedron'}
 
     def __init__(self, default_step_size=None, vertex_move_probability=1):
         super().__init__(default_step_size)
@@ -332,3 +332,5 @@ class Vertex(ShapeMove):
                                          param_dict=TypeParameterDict(
                                              float, len_keys=1))
         self._add_typeparam(typeparam_volume)
+
+__all__ = ['ShapeMove', 'Elastic', 'ShapeSpace', 'Vertex', ]

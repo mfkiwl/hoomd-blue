@@ -673,7 +673,7 @@ class ConvexPolygon(HPMCIntegrator):
     of a convex polygon includes the points inside and on the surface of the
     convex hull of the vertices (see `shape`). For example:
 
-    .. image:: convex-polygon.svg
+    .. image:: /convex-polygon.svg
        :alt: Example of a convex polygon with vertex labels.
 
     Important:
@@ -777,7 +777,7 @@ class ConvexSpheropolygon(HPMCIntegrator):
     surface of the convex hull of the vertices plus a disk (with radius
     ``sweep_radius``)swept along the perimeter (see `shape`). For example:
 
-    .. image:: convex-spheropolygon.svg
+    .. image:: /convex-spheropolygon.svg
        :alt: Example of a convex spheropolygon with vertex and sweep labels.
 
     Important:
@@ -890,7 +890,7 @@ class SimplePolygon(HPMCIntegrator):
     a simple polygon includes the points inside and on the surface of the simple
     polygon defined by the vertices (see `shape`). For example:
 
-    .. image:: simple-polygon.svg
+    .. image:: /simple-polygon.svg
        :alt: Example of a simple polygon with vertex labels.
 
     Important:
@@ -1140,7 +1140,7 @@ class ConvexPolyhedron(HPMCIntegrator):
     of a convex polyhedron includes the points inside and on the surface of the
     convex hull of the vertices (see `shape`). For example:
 
-    .. image:: convex-polyhedron.svg
+    .. image:: /convex-polyhedron.svg
        :alt: Example of a convex polyhedron with vertex labels.
 
     See Also:
@@ -2025,3 +2025,7 @@ class FacetedEllipsoidUnion(HPMCIntegrator):
                                              'overlap': None
                                          }))
         self._add_typeparam(typeparam_shape)
+
+__all__ = ['HPMCIntegrator', 'Sphere', 'ConvexPolygon', 'ConvexSpheropolygon', 'SimplePolygon',
+'Polyhedron', 'ConvexPolyhedron', 'FacetedEllipsoid', 'Sphinx', 'ConvexSpheropolyhedron', 
+'Ellipsoid', 'SphereUnion', 'ConvexSpheropolyhedronUnion', 'FacetedEllipsoidUnion',]

@@ -13,14 +13,14 @@ import inspect
 import os
 from pathlib import Path
 
+TOPLEVEL = ['hpmc', 'mpcd', 'md']
+
 def generate_member_rst(path, full_module_name, name, type):
     """Generate the rst file that describes a class or data element.
     
     Does not overwrite existing files. This allows files to be automatically created
     and then customized as needed. 80+% of the files should not need customization.
     """
-    print(f"member: {name} in {str(path)}")
-
     # Generate the file {name}.rst
     underline = '=' * len(name)
 
@@ -53,7 +53,6 @@ def generate_module_rst(path, module):
     """
     full_module_name = module.__name__
     module_name = full_module_name.split('.')[-1]
-    print(f"module: `{module_name}` in `{str(path)}`")
 
     # Alphabetize the items
     sorted_all = module.__all__.copy()
@@ -95,7 +94,8 @@ def generate_module_rst(path, module):
     if len(submodules) > 0:
         module_rst += '.. rubric:: Modules\n\n.. toctree::\n    :maxdepth: 1\n\n'
         for submodule in submodules:
-            module_rst += f'    {module_name}/module-{submodule}\n'
+            if submodule not in TOPLEVEL:
+                module_rst += f'    {module_name}/module-{submodule}\n'
         module_rst += '\n'
        
 
@@ -122,5 +122,4 @@ if __name__ == '__main__':
 
     import hoomd
 
-    print('Generating API rst files')
     generate_module_rst(doc_dir / 'hoomd', hoomd)
