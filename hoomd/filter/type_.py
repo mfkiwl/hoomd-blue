@@ -20,7 +20,15 @@ class Type(ParticleFilter, ParticleFilterType):
     .. code-block:: python
 
         type_A_B = hoomd.filter.Type(['A', 'B'])
+    
+    {inherited}
+
+    ----------
+
+    **Members defined in:** `Type`:
     """
+
+    __doc__ = __doc__.replace("{inherited}", ParticleFilter._doc_inherited)
 
     def __init__(self, types):
         ParticleFilter.__init__(self)

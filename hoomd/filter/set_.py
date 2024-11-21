@@ -77,8 +77,6 @@ class SetDifference(_ParticleFilterSetOperations,
     `SetDifference` is a composite filter. It selects particles in the set
     difference :math:`f \setminus g`.
 
-    Base: `ParticleFilter`
-
     .. rubric:: Example:
 
     .. code-block:: python
@@ -87,6 +85,7 @@ class SetDifference(_ParticleFilterSetOperations,
     """
     _cpp_cls_name = 'ParticleFilterSetDifference'
     _symmetric = False
+    __doc__ += ParticleFilter._doc_inherited
 
 
 class Union(_ParticleFilterSetOperations, _hoomd.ParticleFilterUnion):
@@ -99,8 +98,6 @@ class Union(_ParticleFilterSetOperations, _hoomd.ParticleFilterUnion):
     `Union` is a composite filter. It selects particles in the set
     union :math:`f \cup g`.
 
-    Base: `ParticleFilter`
-
     .. rubric:: Example:
 
     .. code-block:: python
@@ -109,6 +106,7 @@ class Union(_ParticleFilterSetOperations, _hoomd.ParticleFilterUnion):
     """
     _cpp_cls_name = 'ParticleFilterUnion'
     _symmetric = True
+    __doc__ += ParticleFilter._doc_inherited
 
 
 class Intersection(_ParticleFilterSetOperations,
@@ -122,8 +120,6 @@ class Intersection(_ParticleFilterSetOperations,
     `Intersection` is a composite filter. It selects particles in the set
     intersection :math:`f \cap g`.
 
-    Base: `ParticleFilter`
-
     .. rubric:: Example:
 
     .. code-block:: python
@@ -132,3 +128,4 @@ class Intersection(_ParticleFilterSetOperations,
     """
     _cpp_cls_name = 'ParticleFilterIntersection'
     _symmetric = True
+    __doc__ += ParticleFilter._doc_inherited

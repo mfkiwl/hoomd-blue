@@ -551,6 +551,8 @@ class TriggeredOperation(Operation):
 
     {inherited}
 
+    ----------
+
     **Members defined in:** `TriggeredOperation`:
 
     Attributes:

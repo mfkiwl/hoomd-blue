@@ -33,6 +33,8 @@ class Rigid(ParticleFilter, ParticleFilterRigid):
         rigid_center = hoomd.filter.Rigid(flags=('center',))
     """
 
+    __doc__ += ParticleFilter._doc_inherited
+    
     def __init__(self, flags=("center",)):
         if not all(flag in {"center", "constituent", "free"} for flag in flags):
             raise ValueError(

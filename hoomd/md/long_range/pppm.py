@@ -46,7 +46,7 @@ def make_pppm_coulomb_forces(nlist, resolution, order, r_cut, alpha=0):
 
     Note:
         In HOOMD-blue, the :math:`\\frac{1}{4\\pi\\epsilon_0}` factor is
-        included in the `units of charge <units>`.
+        included in the `units of charge </units>`.
 
     The particle particle particle mesh (PPPM) method splits this computation
     into real space and reciprocal space components.
@@ -110,8 +110,8 @@ def make_pppm_coulomb_forces(nlist, resolution, order, r_cut, alpha=0):
         Add both of these forces to the integrator.
 
     Warning:
-        `make_pppm_coulomb_forces` sets all parameters for the returned `Force`
-        objects given the input resolution and order. Do not change the
+        :py:func:`make_pppm_coulomb_forces` sets all parameters for the returned
+        `Force` objects given the input resolution and order. Do not change the
         parameters of the returned objects directly.
 
     .. _J. W. Eastwood, R. W. Hockney, and D. N. Lawrence 1980:
@@ -142,7 +142,7 @@ class Coulomb(Force):
     """Reciprocal space part of the PPPM Coulomb forces.
 
     Note:
-        Use `make_pppm_coulomb_forces` to create a connected pair of
+        Use :py:func:`make_pppm_coulomb_forces` to create a connected pair of
         `md.pair.Ewald` and `md.long_range.pppm.Coulomb` instances that together
         implement the PPPM method for electrostatics.
 

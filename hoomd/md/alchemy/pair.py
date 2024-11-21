@@ -152,7 +152,7 @@ class AlchemicalDOF(_HOOMDBaseObject):
     """
 
     def __init__(self,
-                 force: _AlchemicalPairForce,
+                 force,
                  name: str = '',
                  typepair: tuple = None,
                  alpha: float = 1.0,
