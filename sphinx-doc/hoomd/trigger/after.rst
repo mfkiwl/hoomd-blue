@@ -3,6 +3,6 @@ After
 
 .. py:currentmodule:: hoomd.trigger
 
-.. autoclass:: After
+.. autoclass:: After(timestep)
    :members:
    :show-inheritance:

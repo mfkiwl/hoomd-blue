@@ -3,6 +3,6 @@ Or
 
 .. py:currentmodule:: hoomd.trigger
 
-.. autoclass:: Or
+.. autoclass:: Or(triggers)
    :members:
    :show-inheritance:

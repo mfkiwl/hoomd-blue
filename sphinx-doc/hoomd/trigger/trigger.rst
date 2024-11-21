@@ -3,6 +3,5 @@ Trigger
 
 .. py:currentmodule:: hoomd.trigger
 
-.. autoclass:: Trigger
+.. autoclass:: Trigger()
    :members:
-   :show-inheritance:
