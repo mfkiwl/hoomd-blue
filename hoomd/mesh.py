@@ -1,9 +1,7 @@
 # Copyright (c) 2009-2024 The Regents of the University of Michigan.
 # Part of HOOMD-blue, released under the BSD 3-Clause License.
 
-"""Triangulated mesh data structure.
-
-The mesh data structure combines particles into a connected triangulated
+"""The mesh data structure combines particles into a connected triangulated
 network. The particles act as vertices of the triangulation and are
 linked with their neighbors in both pairs via mesh bonds and triplets via
 mesh triangles.
