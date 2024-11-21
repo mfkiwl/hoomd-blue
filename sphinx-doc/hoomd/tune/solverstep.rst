@@ -5,4 +5,3 @@ SolverStep
 
 .. autoclass:: SolverStep
    :members:
-   :show-inheritance:

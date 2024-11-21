@@ -74,9 +74,13 @@ class LoadBalancer(Tuner):
     Balancing is ignored if there is no domain decomposition available (MPI is
     not built or is running on a single rank).
 
+    {inherited}
+
+    ----------
+
+    **Members defined in:** `LoadBalancer`:
+
     Attributes:
-        trigger (hoomd.trigger.Trigger): Select the timesteps on which to
-            perform load balancing.
         x (bool): Balance the **x** direction when `True`.
         y (bool): Balance the **y** direction when `True`.
         z (bool): Balance the **z** direction when `True`.
@@ -84,6 +88,8 @@ class LoadBalancer(Tuner):
         max_iterations (int): Maximum number of iterations to
             attempt in a single step.
     """
+
+    __doc__ = __doc__.replace("{inherited}", Tuner._doc_inherited)
 
     def __init__(self,
                  trigger,

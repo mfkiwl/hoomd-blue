@@ -5,4 +5,4 @@ ManualTuneDefinition
 
 .. autoclass:: ManualTuneDefinition
    :members:
-   :show-inheritance:
+   :inherited-members:

@@ -31,15 +31,21 @@ class ParticleSorter(Tuner):
         New `hoomd.Operations` instances include a `ParticleSorter`
         constructed with default parameters.
 
-    Attributes:
-        trigger (hoomd.trigger.Trigger): Select the timesteps on which to sort.
+    {inherited}
 
+    ----------
+
+    **Members defined in:** `ParticleSorter`:
+
+    Attributes:
         grid (int): Set the resolution of the space-filling curve.
             `grid` rounds up to the nearest power of 2 when set. Larger values
             of `grid` provide more accurate space-filling curves, but consume
             more memory (``grid**D * 4`` bytes, where *D* is the dimensionality
             of the system).
     """
+
+    __doc__ = __doc__.replace("{inherited}", Tuner._doc_inherited)
 
     def __init__(self, trigger=200, grid=None):
         super().__init__(trigger)

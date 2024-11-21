@@ -65,6 +65,7 @@ class CustomTuner(CustomOperation, _TunerProperty, Tuner):
     """
     _cpp_list_name = 'tuners'
     _cpp_class_name = 'PythonTuner'
+    __doc__ += CustomOperation._doc_inherited
 
 
 class _InternalCustomTuner(_InternalCustomOperation, Tuner):
