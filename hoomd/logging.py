@@ -1,9 +1,7 @@
 # Copyright (c) 2009-2024 The Regents of the University of Michigan.
 # Part of HOOMD-blue, released under the BSD 3-Clause License.
 
-"""Logging infrastructure.
-
-Use the `Logger` class to collect loggable quantities (e.g. kinetic temperature,
+"""Use the `Logger` class to collect loggable quantities (e.g. kinetic temperature,
 pressure, per-particle energy) during the simulation run. Pass the `Logger` to a
 backend such as `hoomd.write.GSD` or `hoomd.write.Table` to write the logged
 values to a file.
