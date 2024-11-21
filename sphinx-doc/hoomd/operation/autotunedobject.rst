@@ -5,4 +5,3 @@ AutotunedObject
 
 .. autoclass:: AutotunedObject
    :members:
-   :show-inheritance:

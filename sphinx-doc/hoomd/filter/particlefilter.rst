@@ -3,6 +3,5 @@ ParticleFilter
 
 .. py:currentmodule:: hoomd.filter
 
-.. autoclass:: ParticleFilter
+.. autoclass:: ParticleFilter()
    :members:
-   :show-inheritance:

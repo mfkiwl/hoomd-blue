@@ -3,6 +3,5 @@ Null
 
 .. py:currentmodule:: hoomd.filter
 
-.. autoclass:: Null
-   :members:
+.. autoclass:: Null()
    :show-inheritance:

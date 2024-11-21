@@ -3,6 +3,5 @@ All
 
 .. py:currentmodule:: hoomd.filter
 
-.. autoclass:: All
-   :members:
+.. autoclass:: All()
    :show-inheritance:

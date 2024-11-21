@@ -5,4 +5,3 @@ Mesh
 
 .. autoclass:: Mesh
    :members:
-   :show-inheritance:

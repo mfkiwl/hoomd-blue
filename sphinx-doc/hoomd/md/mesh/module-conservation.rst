@@ -3,7 +3,7 @@ conservation
 
 .. automodule:: hoomd.md.mesh.conservation
    :members:
-   :exclude-members: Area,TriangleArea,Volume
+   :exclude-members: Area,MeshConservationPotential,TriangleArea,Volume
 
 .. rubric:: Classes
 
@@ -11,6 +11,7 @@ conservation
     :maxdepth: 1
 
     conservation/area
+    conservation/meshconservationpotential
     conservation/trianglearea
     conservation/volume
 

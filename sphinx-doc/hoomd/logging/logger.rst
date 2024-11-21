@@ -5,4 +5,3 @@ Logger
 
 .. autoclass:: Logger
    :members:
-   :show-inheritance:

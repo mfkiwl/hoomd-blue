@@ -5,4 +5,3 @@ HalfStepHook
 
 .. autoclass:: HalfStepHook
    :members:
-   :show-inheritance:

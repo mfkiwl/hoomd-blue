@@ -5,4 +5,3 @@ LJGauss
 
 .. autoclass:: LJGauss
    :members:
-   :show-inheritance:

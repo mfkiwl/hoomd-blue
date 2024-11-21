@@ -3,6 +3,5 @@ Rigid
 
 .. py:currentmodule:: hoomd.filter
 
-.. autoclass:: Rigid
-   :members:
+.. autoclass:: Rigid(flags=("center",))
    :show-inheritance:

@@ -5,4 +5,3 @@ NoticeFile
 
 .. autoclass:: NoticeFile
    :members:
-   :show-inheritance:

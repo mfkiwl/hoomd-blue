@@ -3,6 +3,6 @@ Tags
 
 .. py:currentmodule:: hoomd.filter
 
-.. autoclass:: Tags
-   :members:
+.. autoclass:: Tags(tags)
+   :members: tags
    :show-inheritance:

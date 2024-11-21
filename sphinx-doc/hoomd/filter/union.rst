@@ -3,6 +3,4 @@ Union
 
 .. py:currentmodule:: hoomd.filter
 
-.. autoclass:: Union
-   :members:
-   :show-inheritance:
+.. autoclass:: Union(f,g)

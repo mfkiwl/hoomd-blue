@@ -3,6 +3,6 @@ Type
 
 .. py:currentmodule:: hoomd.filter
 
-.. autoclass:: Type
-   :members:
+.. autoclass:: Type(types)
+   :members: types
    :show-inheritance:

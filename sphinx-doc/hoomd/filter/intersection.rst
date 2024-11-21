@@ -3,6 +3,4 @@ Intersection
 
 .. py:currentmodule:: hoomd.filter
 
-.. autoclass:: Intersection
-   :members:
-   :show-inheritance:
+.. autoclass:: Intersection(f,g)
