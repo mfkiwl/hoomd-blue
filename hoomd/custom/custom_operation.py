@@ -38,7 +38,7 @@ class CustomOperation(TriggeredOperation, metaclass=_AbstractLoggable):
 
     ----------
 
-    **Members defined in:** `CustomOperation`:
+    **Members defined in** `CustomOperation`:
     """
 
     __doc__ = __doc__.replace("{inherited}", TriggeredOperation._doc_inherited)
@@ -46,8 +46,8 @@ class CustomOperation(TriggeredOperation, metaclass=_AbstractLoggable):
     _doc_inherited = TriggeredOperation._doc_inherited + """
     ----------
 
-    **Members inherited from:**
-    `CustomOperation <hoomd.operation.TriggeredOperation>`
+    **Members inherited from**
+    `CustomOperation <hoomd.operation.TriggeredOperation>`:
 
     .. py:method:: act
 

@@ -427,7 +427,7 @@ class AutotunedObject(_HOOMDBaseObject):
     _doc_inherited = """
     ----------
 
-    **Members inherited from:** `AutotunedObject <hoomd.operation.AutotunedObject>`
+    **Members inherited from** `AutotunedObject <hoomd.operation.AutotunedObject>`:
 
     .. py:property:: kernel_parameters
 
@@ -551,7 +551,7 @@ class TriggeredOperation(Operation):
 
     ----------
 
-    **Members defined in:** `TriggeredOperation`:
+    **Members defined in** `TriggeredOperation`:
 
     Attributes:
         trigger (hoomd.trigger.Trigger): The trigger to activate this operation.
@@ -568,8 +568,8 @@ class TriggeredOperation(Operation):
     _doc_inherited = Operation._doc_inherited + """
     ----------
 
-    **Members inherited from:**
-    `TriggeredOperation <hoomd.operation.TriggeredOperation>`
+    **Members inherited from**
+    `TriggeredOperation <hoomd.operation.TriggeredOperation>`:
 
     .. py:attribute:: trigger
 

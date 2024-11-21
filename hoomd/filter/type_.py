@@ -25,7 +25,7 @@ class Type(ParticleFilter, ParticleFilterType):
 
     ----------
 
-    **Members defined in:** `Type`:
+    **Members defined in** `Type`:
     """
 
     __doc__ = __doc__.replace("{inherited}", ParticleFilter._doc_inherited)

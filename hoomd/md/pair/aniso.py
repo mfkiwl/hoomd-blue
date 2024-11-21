@@ -722,7 +722,7 @@ class Patchy(AnisotropicPair):
 
     _doc_inherited = r"""
 
-    **Inherited from:** `Patchy <hoomd.md.pair.aniso.Patchy>`
+    **Members inherited from** `Patchy <hoomd.md.pair.aniso.Patchy>`:
 
     .. py:attribute:: directors
 

@@ -30,7 +30,7 @@ class Tags(ParticleFilter, ParticleFilterTags):
 
     ----------
 
-    **Members defined in:** `Tags`:
+    **Members defined in** `Tags`:
     """
 
     __doc__ = __doc__.replace("{inherited}", ParticleFilter._doc_inherited)

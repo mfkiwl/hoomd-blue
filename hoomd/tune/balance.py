@@ -78,7 +78,7 @@ class LoadBalancer(Tuner):
 
     ----------
 
-    **Members defined in:** `LoadBalancer`:
+    **Members defined in** `LoadBalancer`:
 
     Attributes:
         x (bool): Balance the **x** direction when `True`.

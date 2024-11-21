@@ -80,6 +80,12 @@ class BoxResize(Updater):
                                             box=inverse_volume_ramp)
         simulation.operations.updaters.append(box_resize)
 
+    {inherited}
+
+    ----------
+
+    **Members defined in** `BoxResize`:
+
     Attributes:
         box (hoomd.variant.box.BoxVariant): The box as a function of time.
 
@@ -98,6 +104,8 @@ class BoxResize(Updater):
 
                 filter_ = box_resize.filter
     """
+   
+    __doc__ = __doc__.replace("{inherited}", Updater._doc_inherited)
 
     def __init__(
             self,

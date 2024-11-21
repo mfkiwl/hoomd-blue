@@ -25,7 +25,7 @@ class ParticleFilter(_hoomd.ParticleFilter):
     _doc_inherited = """
     ----------
 
-    **Members inherited from:** `ParticleFilter <hoomd.filter.ParticleFilter>`
+    **Members inherited from** `ParticleFilter <hoomd.filter.ParticleFilter>`:
 
     .. py:method:: __hash__
 

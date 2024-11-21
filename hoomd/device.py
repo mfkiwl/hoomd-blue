@@ -109,7 +109,7 @@ class Device:
     _doc_inherited = """    
     ----------
 
-    **Members inherited from:** `Device <hoomd.device.Device>`
+    **Members inherited from** `Device <hoomd.device.Device>`:
 
     .. py:attribute:: communicator
     
@@ -334,7 +334,7 @@ class GPU(Device):
 
     ----------
 
-    **Members defined in:** `GPU`:
+    **Members defined in** `GPU`:
     """
     
     __doc__ = __doc__.replace("{inherited}", Device._doc_inherited)

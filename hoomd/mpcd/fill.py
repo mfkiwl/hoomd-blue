@@ -38,7 +38,7 @@ class VirtualParticleFiller(Operation):
 
     {inherited}
 
-    **Members defined in:** `VirtualParticleFiller`:
+    **Members defined in** `VirtualParticleFiller`:
     
     .. invisible-code-block: python
 

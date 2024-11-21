@@ -505,13 +505,13 @@ After `{inherited}`, the docstring should include the lines
 ```
 ----------
 
-**Members defined in:** `ThisClassName`:
+**Members defined in** `ThisClassName`:
 ```
 Similarly, any additions to `_doc_inherited` should start with
 ```
 ----------
 
-**Members inherited from:** `ThisClassName <hoomd.module.ThisClassName>`
+**Members inherited from** `ThisClassName <hoomd.module.ThisClassName>:`
 ```
 Together, these visually break up the sections and allow the user to see which
 methods come from where. Each entry in `_doc_inherited` should repeat only the brief

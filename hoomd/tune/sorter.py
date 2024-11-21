@@ -35,7 +35,7 @@ class ParticleSorter(Tuner):
 
     ----------
 
-    **Members defined in:** `ParticleSorter`:
+    **Members defined in** `ParticleSorter`:
 
     Attributes:
         grid (int): Set the resolution of the space-filling curve.

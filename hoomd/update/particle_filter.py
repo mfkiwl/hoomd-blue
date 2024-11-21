@@ -73,7 +73,15 @@ class FilterUpdater(hoomd.operation.Updater):
         filter_updater = hoomd.update.FilterUpdater(
             trigger=hoomd.trigger.Periodic(1_000),
             filters=[filter1, filter2])
+
+    {inherited}
+
+    ----------
+
+    **Members defined in** `FilterUpdater`:
     """
+
+    __doc__ = __doc__.replace("{inherited}", hoomd.operation.Updater._doc_inherited)
 
     def __init__(self, trigger, filters):
         super().__init__(trigger)

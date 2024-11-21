@@ -84,7 +84,7 @@ class Trigger(_hoomd.Trigger):
     _doc_inherited = """
     ----------
 
-    **Members inherited from:** `Trigger <hoomd.trigger.Trigger>`
+    **Members inherited from** `Trigger <hoomd.trigger.Trigger>`:
 
     .. py:method:: __call__
 
@@ -128,7 +128,7 @@ class Periodic(_hoomd.PeriodicTrigger, Trigger):
 
     ----------
 
-    **Members defined in:** `Periodic`:
+    **Members defined in** `Periodic`:
     
     Attributes:
         period (int): periodicity in time step.
@@ -172,7 +172,7 @@ class Before(_hoomd.BeforeTrigger, Trigger):
 
     ----------
 
-    **Members defined in:** `Before`:
+    **Members defined in** `Before`:
 
     Attributes:
         timestep (int): The step after the trigger ends.
@@ -216,7 +216,7 @@ class On(_hoomd.OnTrigger, Trigger):
 
     ----------
 
-    **Members defined in:** `On`:
+    **Members defined in** `On`:
 
     Attributes:
         timestep (int): The timestep to trigger on.
@@ -260,7 +260,7 @@ class After(_hoomd.AfterTrigger, Trigger):
 
     ----------
 
-    **Members defined in:** `After`:
+    **Members defined in** `After`:
 
     Attributes:
         timestep (int): The step before the trigger will start.
@@ -304,7 +304,7 @@ class Not(_hoomd.NotTrigger, Trigger):
 
     ----------
 
-    **Members defined in:** `Not`:
+    **Members defined in** `Not`:
 
     Attributes:
         trigger (hoomd.trigger.Trigger): The trigger object to negate.
@@ -354,7 +354,7 @@ class And(_hoomd.AndTrigger, Trigger):
 
     ----------
 
-    **Members defined in:** `And`:
+    **Members defined in** `And`:
 
     Attributes:
         triggers (list[hoomd.trigger.Trigger]): List of triggers.
@@ -410,7 +410,7 @@ class Or(_hoomd.OrTrigger, Trigger):
 
     ----------
 
-    **Members defined in:** `Or`:
+    **Members defined in** `Or`:
 
     Attributes:
         triggers (`list` [`Trigger`]): List of triggers.
