@@ -3,6 +3,5 @@ BoxVariant
 
 .. py:currentmodule:: hoomd.variant.box
 
-.. autoclass:: BoxVariant
+.. autoclass:: BoxVariant()
    :members:
-   :show-inheritance:

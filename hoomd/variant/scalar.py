@@ -46,6 +46,28 @@ class Variant(_hoomd.Variant):
         :rtype: float
     """
 
+    _doc_inherited = """
+    ----------
+
+    **Members inherited from**
+    `BoxVariant <hoomd.variant.box.BoxVariant>`:
+
+    .. py:method:: __call__
+
+        Evaluate the function.
+        `Read more... <hoomd.variant.Variant.__call__>`
+
+    .. py:property:: max
+
+        Maximum value of the variant.
+        `Read more... <hoomd.variant.Variant.max>`
+
+    .. py:property:: min
+
+        Minimum value of the variant.
+        `Read more... <hoomd.variant.Variant.min>`
+    """
+    
     @property
     def min(self):
         """The minimum value of this variant for :math:`t \\in [0,\\infty)`."""
@@ -90,6 +112,12 @@ class Constant(_hoomd.VariantConstant, Variant):
 
             variant = hoomd.variant.Constant(1.0)
 
+    {inherited}
+
+    ----------
+
+    **Members defined in** `Constant`:
+
     Attributes:
         value (float): The value.
     """
@@ -100,6 +128,7 @@ class Constant(_hoomd.VariantConstant, Variant):
         _hoomd.VariantConstant.__init__(self, value)
 
     __eq__ = Variant._private_eq
+    __doc__ = __doc__.replace("{inherited}", Variant._doc_inherited)
 
 
 class Ramp(_hoomd.VariantRamp, Variant):
@@ -125,6 +154,11 @@ class Ramp(_hoomd.VariantRamp, Variant):
                                          B=2.0,
                                          t_start=10_000,
                                          t_ramp=100_000)
+    {inherited}
+
+    ----------
+
+    **Members defined in** `Ramp`:
 
     Attributes:
         A (float): The start value.
@@ -133,6 +167,7 @@ class Ramp(_hoomd.VariantRamp, Variant):
         t_ramp (int): The length of the ramp.
     """
     _eq_attrs = ("A", "B", "t_start", "t_ramp")
+    __doc__ = __doc__.replace("{inherited}", Variant._doc_inherited)
 
     def __init__(self, A, B, t_start, t_ramp):
         Variant.__init__(self)
@@ -174,6 +209,12 @@ class Cycle(_hoomd.VariantCycle, Variant):
                                           t_B=200_000,
                                           t_BA=2_000_000)
 
+    {inherited}
+
+    ----------
+
+    **Members defined in** `Cycle`:
+
     Attributes:
         A (float): The first value.
         B (float): The second value.
@@ -184,6 +225,7 @@ class Cycle(_hoomd.VariantCycle, Variant):
         t_BA (int): The time spent ramping from B to A.
     """
     _eq_attrs = ("A", "B", "t_start", "t_A", "t_AB", "t_B", "t_BA")
+    __doc__ = __doc__.replace("{inherited}", Variant._doc_inherited)
 
     def __init__(self, A, B, t_start, t_A, t_AB, t_B, t_BA):
         Variant.__init__(self)
@@ -218,6 +260,12 @@ class Power(_hoomd.VariantPower, Variant):
                                       power=1 / 10,
                                       t_start=10, t_ramp=20)
 
+    {inherited}
+
+    ----------
+
+    **Members defined in** `Power`:
+    
     Attributes:
         A (float): The start value.
         B (float): The end value.
@@ -226,6 +274,7 @@ class Power(_hoomd.VariantPower, Variant):
         t_ramp (int): The length of the ramp.
     """
     _eq_attrs = ("A", "B", "power", "t_start", "t_ramp")
+    __doc__ = __doc__.replace("{inherited}", Variant._doc_inherited)
 
     def __init__(self, A, B, power, t_start, t_ramp):
         Variant.__init__(self)

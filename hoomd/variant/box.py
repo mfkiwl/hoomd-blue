@@ -38,6 +38,18 @@ class BoxVariant(_hoomd.VectorVariantBox):
         :rtype: [float, float, float, float, float, float]
     """
 
+    _doc_inherited = """
+    ----------
+
+    **Members inherited from**
+    `BoxVariant <hoomd.variant.box.BoxVariant>`:
+
+    .. py:method:: __call__
+
+        Evaluate the function.
+        `Read more... <hoomd.variant.box.BoxVariant.__call__>`
+    """
+
     def _private_eq(self, other):
         """Return whether two vector variants are equivalent."""
         if not isinstance(other, BoxVariant):
@@ -57,9 +69,16 @@ class Constant(_hoomd.VectorVariantBoxConstant, BoxVariant):
 
     `Constant` returns ``[box.Lx, box.Ly, box.Lz, box.xz, box.xz, box.yz]`` at
     all time steps.
+
+    {inherited}
+
+    ----------
+
+    **Members defined in** `Constant`:
     """
     _eq_attrs = ("box",)
     __eq__ = BoxVariant._private_eq
+    __doc__ = __doc__.replace("{inherited}", BoxVariant._doc_inherited)
 
     def __init__(self, box):
         box = hoomd.data.typeconverter.box_preprocessing(box)
@@ -110,6 +129,12 @@ class Interpolate(_hoomd.VectorVariantBoxInterpolate, BoxVariant):
     :math:`\\lambda = \\frac{f(t) - \\min f}{\\max f - \\min f}`, :math:`t`
     is the timestep, and :math:`f(t)` is given by `variant`.
 
+    {inherited}
+
+    ----------
+
+    **Members defined in** `Interpolate`:
+
     Attributes:
         variant (hoomd.variant.Variant): A variant used to interpolate between
             the two boxes.
@@ -119,6 +144,7 @@ class Interpolate(_hoomd.VectorVariantBoxInterpolate, BoxVariant):
         "final_box",
     )
     __eq__ = BoxVariant._private_eq
+    __doc__ = __doc__.replace("{inherited}", BoxVariant._doc_inherited)
 
     def __init__(self, initial_box, final_box, variant):
         box1 = hoomd.data.typeconverter.box_preprocessing(initial_box)
@@ -181,6 +207,12 @@ class InverseVolumeRamp(_hoomd.VectorVariantBoxInverseVolumeRamp, BoxVariant):
     where :math:`\\lambda = \\frac{t - t_{\\mathrm{start}}}{t_{\\mathrm{ramp}} -
     t_{\\mathrm{start}}}`.
 
+    {inherited}
+
+    ----------
+
+    **Members defined in** `InverseVolumeRamp`:
+    
     Attributes:
         final_volume (float): The volume of the final box.
         t_start (int): The time step at the start of the ramp.
@@ -188,6 +220,7 @@ class InverseVolumeRamp(_hoomd.VectorVariantBoxInverseVolumeRamp, BoxVariant):
     """
     _eq_attrs = ("initial_box", "final_volume", "t_start", "t_ramp")
     __eq__ = BoxVariant._private_eq
+    __doc__ = __doc__.replace("{inherited}", BoxVariant._doc_inherited)
 
     def __init__(self, initial_box, final_volume, t_start, t_ramp):
         BoxVariant.__init__(self)

@@ -3,6 +3,5 @@ Variant
 
 .. py:currentmodule:: hoomd.variant
 
-.. autoclass:: Variant
+.. autoclass:: Variant()
    :members:
-   :show-inheritance:

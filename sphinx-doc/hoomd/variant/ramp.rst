@@ -3,6 +3,6 @@ Ramp
 
 .. py:currentmodule:: hoomd.variant
 
-.. autoclass:: Ramp
+.. autoclass:: Ramp(A, B, t_start, t_ramp)
    :members:
    :show-inheritance:

@@ -3,6 +3,6 @@ Constant
 
 .. py:currentmodule:: hoomd.variant.box
 
-.. autoclass:: Constant
+.. autoclass:: Constant(box)
    :members:
    :show-inheritance:

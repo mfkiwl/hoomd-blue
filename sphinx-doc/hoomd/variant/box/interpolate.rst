@@ -3,6 +3,6 @@ Interpolate
 
 .. py:currentmodule:: hoomd.variant.box
 
-.. autoclass:: Interpolate
+.. autoclass:: Interpolate(initial_box, final_box, variant)
    :members:
    :show-inheritance:
