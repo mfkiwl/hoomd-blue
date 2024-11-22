@@ -1,9 +1,7 @@
 # Copyright (c) 2009-2024 The Regents of the University of Michigan.
 # Part of HOOMD-blue, released under the BSD 3-Clause License.
 
-"""Writers.
-
-Writers write the state of the simulation, logger quantities, or calculated
+"""Writers write the state of the simulation, logger quantities, or calculated
 results to output files or streams:
 
 * `GSD` and `DCD` save the simulation trajectory to a file.

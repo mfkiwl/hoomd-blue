@@ -5,4 +5,3 @@ Simulation
 
 .. autoclass:: Simulation
    :members:
-   :show-inheritance:

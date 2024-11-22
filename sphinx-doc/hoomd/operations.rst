@@ -5,4 +5,3 @@ Operations
 
 .. autoclass:: Operations
    :members:
-   :show-inheritance:

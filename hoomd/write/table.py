@@ -21,6 +21,7 @@ from hoomd.data.parameterdicts import ParameterDict
 from hoomd.data.typeconverter import OnlyTypes
 from hoomd.util import _dict_flatten
 from hoomd.custom import Action
+from hoomd.operation import Writer
 
 
 class _OutputWriter(metaclass=ABCMeta):
@@ -373,7 +374,7 @@ class Table(_InternalCustomWriter):
         pretty (`bool`, optional): Flags whether to attempt to make output
             prettier and easier to read (defaults to `True`).
         max_precision (`int`, optional): If pretty is not set, then this
-            controls the maximum precision to use when outputing numerical
+            controls the maximum precision to use when writing numerical
             values, defaults to 10.
         max_header_len (`int`, optional): If not `None` (the default), limit
             the outputted header names to length ``max_header_len``. When not
@@ -399,6 +400,12 @@ class Table(_InternalCustomWriter):
         logger = hoomd.logging.Logger(categories=['scalar', 'string'])
         table = hoomd.write.Table(trigger=hoomd.trigger.Periodic(10_000),
                                   logger=logger)
+
+    {inherited}
+
+    ----------
+
+    **Members defined in** `Table`:
 
     Attributes:
         logger (hoomd.logging.Logger): The logger to query for output. `Table`
@@ -449,7 +456,7 @@ class Table(_InternalCustomWriter):
                 pretty = table.pretty
 
         max_precision (`int`, optional): If pretty is not set, then this
-            controls the maximum precision to use when outputing numerical
+            controls the maximum precision to use when writing numerical
             values (*read-only*).
 
             .. rubric:: Example:
@@ -476,6 +483,7 @@ class Table(_InternalCustomWriter):
                 min_column_width = table.min_column_width
     """
     _internal_class = _TableInternal
+    __doc__ = __doc__.replace("{inherited}", Writer._doc_inherited)
 
     def write(self):
         """Write out data to ``self.output``.

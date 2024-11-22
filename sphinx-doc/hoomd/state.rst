@@ -5,4 +5,3 @@ State
 
 .. autoclass:: State
    :members:
-   :show-inheritance:

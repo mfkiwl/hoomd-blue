@@ -5,4 +5,3 @@ Snapshot
 
 .. autoclass:: Snapshot
    :members:
-   :show-inheritance:

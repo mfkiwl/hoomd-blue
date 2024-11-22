@@ -5,4 +5,3 @@ Box
 
 .. autoclass:: Box
    :members:
-   :show-inheritance:
