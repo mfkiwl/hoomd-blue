@@ -5,4 +5,3 @@ External
 
 .. autoclass:: External
    :members:
-   :show-inheritance:

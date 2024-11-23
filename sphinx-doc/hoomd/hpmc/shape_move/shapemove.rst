@@ -5,4 +5,3 @@ ShapeMove
 
 .. autoclass:: ShapeMove
    :members:
-   :show-inheritance:

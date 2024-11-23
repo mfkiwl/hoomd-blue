@@ -11,6 +11,7 @@ from hoomd.tune import _InternalCustomTuner
 from hoomd.tune import ScaleSolver, SecantSolver
 from hoomd.hpmc.integrate import HPMCIntegrator
 from hoomd.hpmc.tune import mc_move_tune
+from hoomd.operation import Tuner
 
 
 class _MoveSizeTuneDefinition(mc_move_tune._MCTuneDefinition):
@@ -208,23 +209,6 @@ class MoveSize(_InternalCustomTuner):
         max_rotation_move (float): The maximum value of a rotational move size
             to attempt.
 
-    Attributes:
-        trigger (hoomd.trigger.Trigger): ``Trigger`` to determine when to
-            run the tuner.
-        moves (list[str]): A list of types of moves to tune. Available options
-            are ``'a'`` and ``'d'``.
-        target (float): The acceptance rate for trial moves that is desired. The
-            value should be between 0 and 1.
-        solver (hoomd.tune.RootSolver): A solver that tunes move sizes to reach
-            the specified target.
-        types (list[str]): A list of string particle
-            types to tune the move size for, defaults to None which upon
-            attaching will tune all types in the system currently.
-        max_translation_move (float): The maximum value of a translational move
-            size to attempt :math:`[\\mathrm{length}]`.
-        max_rotation_move (float): The maximum value of a rotational move size
-            to attempt.
-
     Note:
         Limiting the maximum move sizes can lead to the inability to converge to
         the desired acceptance rate. Also, not limiting the move size can lead
@@ -246,9 +230,30 @@ class MoveSize(_InternalCustomTuner):
         ``ignore_statistics`` flag of the shape property of the HPMC integrator
         for all other types to ``True``.
 
+    {inherited}
+
+    ----------
+
+    **Members defined in** `MoveSize`:
+
+    Attributes:
+        moves (list[str]): A list of types of moves to tune. Available options
+            are ``'a'`` and ``'d'``.
+        target (float): The acceptance rate for trial moves that is desired. The
+            value should be between 0 and 1.
+        solver (hoomd.tune.RootSolver): A solver that tunes move sizes to reach
+            the specified target.
+        types (list[str]): A list of string particle
+            types to tune the move size for, defaults to None which upon
+            attaching will tune all types in the system currently.
+        max_translation_move (float): The maximum value of a translational move
+            size to attempt :math:`[\\mathrm{length}]`.
+        max_rotation_move (float): The maximum value of a rotational move size
+            to attempt.
     """
     _internal_class = _InternalMoveSize
     _wrap_methods = ("tuned",)
+    __doc__ = __doc__.replace("{inherited}", Tuner._doc_inherited)
 
     @classmethod
     def scale_solver(cls,

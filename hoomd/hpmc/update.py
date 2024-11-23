@@ -1,9 +1,7 @@
 # Copyright (c) 2009-2024 The Regents of the University of Michigan.
 # Part of HOOMD-blue, released under the BSD 3-Clause License.
 
-"""HPMC updaters.
-
-HPMC updaters work with the `hpmc.integrate.HPMCIntegrator` to apply changes to
+"""HPMC updaters work with the `hpmc.integrate.HPMCIntegrator` to apply changes to
 the system consistent with the particle shape and defined interaction energies.
 The `BoxMC`, `GCA`, and `MuVT` updaters apply trial moves that enable
 enhanced sampling or the equilibration of different ensembles. `QuickCompress`
@@ -219,6 +217,12 @@ class BoxMC(Updater):
     `BoxMC` uses reduced precision floating point arithmetic when checking
     for particle overlaps in the local particle reference frame.
 
+    {inherited}
+
+    ----------
+
+    **Members defined in** `BoxMC`:
+
     Attributes:
         P (hoomd.variant.Variant): The pressure :math:`P`
             :math:`[\mathrm{energy} \ \mathrm{length}^{-2}]` in 2D or
@@ -272,6 +276,8 @@ class BoxMC(Updater):
             give each a unique value for `instance` so they generate
             different streams of random numbers.
     """
+
+    __doc__ = __doc__.replace("{inherited}", Updater._doc_inherited)
 
     def __init__(self, trigger, P):
         super().__init__(trigger)
@@ -404,6 +410,12 @@ class MuVT(Updater):
         with the ``ngibbs`` option to update.muvt(), where the number of
         partitions can be a multiple of ``ngibbs``.
 
+    {inherited}
+
+    ----------
+
+    **Members defined in** `MuVT`:
+
     Attributes:
         trigger (int): Select the timesteps on which to perform cluster moves.
         transfer_types (list): List of type names that are being transferred
@@ -416,6 +428,8 @@ class MuVT(Updater):
             Particle fugacity
             :math:`[\mathrm{energy}] \cdot [\mathrm{volume}^{-1}]` (**default:** 0).
     """
+
+    __doc__ = __doc__.replace("{inherited}", Updater._doc_inherited)
 
     def __init__(self,
                  transfer_types,
@@ -548,6 +562,12 @@ class Shape(Updater):
                                           type_select=1,
                                           nsweeps=1)
 
+    {inherited}
+
+    ----------
+
+    **Members defined in** `Shape`:
+
     Attributes:
         trigger (Trigger): Call the updater on triggered time steps.
 
@@ -564,6 +584,8 @@ class Shape(Updater):
         nsweeps (int): Number of times to update shape definitions during each
             triggered timesteps.
     """
+
+    __doc__ = __doc__.replace("{inherited}", Updater._doc_inherited)
 
     def __init__(self,
                  trigger,
@@ -667,6 +689,12 @@ class GCA(Updater):
     `GCA` uses reduced precision floating point arithmetic when checking
     for particle overlaps in the local particle reference frame.
 
+    {inherited}
+
+    ----------
+
+    **Members defined in** `GCA`:
+
     Attributes:
         pivot_move_probability (float): Set the probability for attempting a
                                         pivot move.
@@ -677,6 +705,7 @@ class GCA(Updater):
     """
     _remove_for_pickling = Updater._remove_for_pickling + ('_cpp_cell',)
     _skip_for_equality = Updater._skip_for_equality | {'_cpp_cell'}
+    __doc__ = __doc__.replace("{inherited}", Updater._doc_inherited)
 
     def __init__(self,
                  pivot_move_probability=0.5,
@@ -884,6 +913,12 @@ class QuickCompress(Updater):
     `QuickCompress` uses reduced precision floating point arithmetic when
     checking for particle overlaps in the local particle reference frame.
 
+    {inherited}
+
+    ----------
+
+    **Members defined in** `QuickCompress`:
+
     Attributes:
         trigger (Trigger): Update the box dimensions on triggered time steps.
 
@@ -902,8 +937,11 @@ class QuickCompress(Updater):
             give each a unique value for `instance` so that they generate
             different streams of random numbers.
 
-        allow_unsafe_resize (bool): Flag that determines whether
+        allow_unsafe_resize (bool): When `True`, box moves are proposed
+            independent of particle translational move sizes.
     """
+
+    __doc__ = __doc__.replace("{inherited}", Updater._doc_inherited)
 
     def __init__(self,
                  trigger,

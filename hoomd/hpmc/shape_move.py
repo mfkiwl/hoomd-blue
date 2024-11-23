@@ -1,9 +1,7 @@
 # Copyright (c) 2009-2024 The Regents of the University of Michigan.
 # Part of HOOMD-blue, released under the BSD 3-Clause License.
 
-"""Shape moves for a for alchemical simulations in extended ensembles.
-
-`ShapeMove` subclasses extend the Hamiltonian of the system by adding degrees of
+"""`ShapeMove` subclasses extend the Hamiltonian of the system by adding degrees of
 freedom to the shape of the hard particle.
 
 See Also:
@@ -40,6 +38,17 @@ class ShapeMove(_HOOMDBaseObject):
         step_size (`TypeParameter` [``particle type``, `float`]): Maximum size
             of shape trial moves.
     """
+
+    _doc_inherited = """
+    ----------
+
+    **Members inherited from** `ShapeMove <hoomd.hpmc.shape_move.ShapeMove>`:
+
+    .. py:attribute:: step_size
+
+        Maximum size of the shape trial moves.
+        `Read more... <hoomd.hpmc.shape_move.ShapeMove.step_size>`
+    """    
 
     _supported_shapes = None
 
@@ -122,12 +131,15 @@ class Elastic(ShapeMove):
         elastic_move.stiffness = 100
         elastic_move.reference_shape["A"] = verts
 
+    {inherited}
+
+    ----------
+
+    **Members defined in** `Elastic`:
+
     Attributes:
         stiffness (hoomd.variant.Variant): Shape stiffness against
             deformations.
-
-        step_size (`TypeParameter` [``particle type``, `float`]): Maximum size
-            of shape trial moves.
 
         reference_shape (`TypeParameter` [``particle type``, `dict`]): Reference
             shape against to which compute the deformation energy.
@@ -137,6 +149,7 @@ class Elastic(ShapeMove):
     """
 
     _supported_shapes = {'ConvexPolyhedron'}
+    __doc__ = __doc__.replace("{inherited}", ShapeMove._doc_inherited)
 
     def __init__(self,
                  stiffness,
@@ -226,6 +239,12 @@ class ShapeSpace(ShapeMove):
                 return dict("vertices":verts, **self.default_dict))
         move = hpmc.shape_move.ShapeSpace(callback = ExampleCallback)
 
+    {inherited}
+
+    ----------
+
+    **Members defined in** `Elastic`:
+
     Attributes:
         callback (``callable`` [`str`, `list`], `dict` ]): The python function
             that will be called to map the given shape parameters to a shape
@@ -233,9 +252,6 @@ class ShapeSpace(ShapeMove):
             parameters as arguments and return a dictionary with the shape
             definition whose keys **must** match the shape definition of the
             integrator: ``callable[[str, list], dict]``.
-
-        step_size (`TypeParameter` [``particle type``, `float`]): Maximum size
-            of shape trial moves.
 
         params (`TypeParameter` [``particle type``, `list`]): List of tunable
             parameters to be updated. The length of the list defines the
@@ -248,6 +264,7 @@ class ShapeSpace(ShapeMove):
     _supported_shapes = {
         'ConvexPolyhedron', 'ConvexSpheropolyhedron', 'Ellipsoid'
     }
+    __doc__ = __doc__.replace("{inherited}", ShapeMove._doc_inherited)
 
     def __init__(self,
                  callback,
@@ -308,10 +325,13 @@ class Vertex(ShapeMove):
         vertex_move = shape_move.Vertex()
         vertex_move.volume["A"] = 1
 
-    Attributes:
-        step_size (`TypeParameter` [``particle type``, `float`]): Maximum size
-            of shape trial moves.
+    {inherited}
 
+    ----------
+
+    **Members defined in** `Elastic`:
+
+    Attributes:
         vertex_move_probability (`float`): Average fraction of vertices to
             change during each shape move.
 
@@ -321,6 +341,7 @@ class Vertex(ShapeMove):
     """
 
     _supported_shapes = {'ConvexPolyhedron'}
+    __doc__ = __doc__.replace("{inherited}", ShapeMove._doc_inherited)
 
     def __init__(self, default_step_size=None, vertex_move_probability=1):
         super().__init__(default_step_size)

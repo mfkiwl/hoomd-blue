@@ -5,4 +5,3 @@ Pair
 
 .. autoclass:: Pair
    :members:
-   :show-inheritance:

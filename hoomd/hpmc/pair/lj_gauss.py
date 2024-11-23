@@ -47,6 +47,12 @@ class LJGauss(Pair):
         )
         simulation.operations.integrator.pair_potentials = [lj_gauss]
 
+    {inherited}
+
+    ----------
+
+    **Members defined in** `LJGauss`:
+
     .. py:attribute:: params
 
         The potential parameters. The dictionary has the following keys:
@@ -81,6 +87,7 @@ class LJGauss(Pair):
         Type: `str`
     """
     _cpp_class_name = "PairPotentialLJGauss"
+    __doc__ = __doc__.replace("{inherited}", Pair._doc_inherited)
 
     def __init__(self, default_r_cut=None, default_r_on=0.0, mode='none'):
         if default_r_cut is None:

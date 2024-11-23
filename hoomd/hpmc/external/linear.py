@@ -49,6 +49,12 @@ class Linear(External):
         linear.alpha['A'] = 0.2
         simulation.operations.integrator.external_potentials = [linear]
 
+    {inherited}
+
+    ----------
+
+    **Members defined in** `Linear`:
+
     .. py:attribute:: alpha
 
         The linear energy coefficient :math:`\\alpha` by particle type.
@@ -70,6 +76,7 @@ class Linear(External):
         Type: (`float`, `float`, `float`)
     """
     _cpp_class_name = "ExternalPotentialLinear"
+    __doc__ = __doc__.replace("{inherited}", External._doc_inherited)
 
     def __init__(self,
                  default_alpha=None,
