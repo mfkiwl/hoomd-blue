@@ -104,6 +104,13 @@ class GeometryFiller(VirtualParticleFiller):
     specified `geometry`. The algorithm for doing the filling depends on the
     specific `geometry`.
 
+    .. rubric:: Limitations:
+
+    This filler **does not** currently support triclinic boxes for any
+    :class:`~hoomd.mpcd.geometry.Geometry`. Additionally, this filler does not
+    support the :class:`~hoomd.mpcd.geometry.PlanarPore` geometry for any
+    non-cubic cell shape. Exceptions will be raised in these cases.
+
     .. rubric:: Example:
 
     Filler for parallel plate geometry.

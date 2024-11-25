@@ -66,8 +66,14 @@ class PYBIND11_EXPORT RejectionVirtualParticleFillerGPU
 
 template<class Geometry> void RejectionVirtualParticleFillerGPU<Geometry>::fill(uint64_t timestep)
     {
-    // Number of particles that we need to draw (constant)
     const BoxDim& box = this->m_pdata->getBox();
+    if (box.getTiltFactorXY() != Scalar(0.0) || box.getTiltFactorXZ() != Scalar(0.0)
+        || box.getTiltFactorYZ() != Scalar(0.0))
+        {
+        throw std::runtime_error("Rejection particle filler does not work with skewed boxes");
+        }
+
+    // Number of particles that we need to draw (constant)
     const Scalar3 lo = box.getLo();
     const Scalar3 hi = box.getHi();
     const unsigned int num_virtual_max
