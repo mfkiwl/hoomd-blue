@@ -5,4 +5,3 @@ AlchemicalDOF
 
 .. autoclass:: AlchemicalDOF
    :members:
-   :show-inheritance:

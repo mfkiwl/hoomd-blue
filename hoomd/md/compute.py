@@ -1,9 +1,7 @@
 # Copyright (c) 2009-2024 The Regents of the University of Michigan.
 # Part of HOOMD-blue, released under the BSD 3-Clause License.
 
-"""Compute properties of molecular dynamics simulations.
-
-The MD compute classes compute instantaneous properties of the simulation state
+"""The MD compute classes compute instantaneous properties of the simulation state
 and provide results as loggable quantities for use with `hoomd.logging.Logger`
 or by direct access via the Python API.
 """
@@ -38,7 +36,15 @@ class ThermodynamicQuantities(Compute):
 
         f = filter.Type('A')
         compute.ThermodynamicQuantities(filter=f)
+
+    {inherited}
+
+    ----------
+
+    **Members defined in** `ThermodynamicQuantities`:
     """
+
+    __doc__ = __doc__.replace("{inherited}", Compute._doc_inherited)
 
     def __init__(self, filter):
         super().__init__()
@@ -337,6 +343,11 @@ class HarmonicAveragedThermodynamicQuantities(Compute):
         hma = hoomd.compute.HarmonicAveragedThermodynamicQuantities(
             filter=hoomd.filter.Type('A'), kT=1.0)
 
+    {inherited}
+
+    ----------
+
+    **Members defined in** `HarmonicAveragedThermodynamicQuantities`:
 
     Attributes:
         filter (hoomd.filter.filter_like): Subset of particles compute
@@ -348,6 +359,8 @@ class HarmonicAveragedThermodynamicQuantities(Compute):
         harmonic_pressure (float): Harmonic contribution to the pressure
             :math:`[\\mathrm{pressure}]`.
     """
+
+    __doc__ = __doc__.replace("{inherited}", Compute._doc_inherited)
 
     def __init__(self, filter, kT, harmonic_pressure=0):
 

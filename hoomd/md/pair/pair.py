@@ -431,7 +431,7 @@ class Yukawa(Pair):
         keys:
 
         * ``epsilon`` (`float`, **required**) - energy parameter
-          :math:`\varepsilon` :math:`[\mathrm{energy}]`
+          :math:`\varepsilon` :math:`[\mathrm{energy}] [\mathrm{length}]`
         * ``kappa`` (`float`, **required**) - scaling parameter
           :math:`\kappa` :math:`[\mathrm{length}^{-1}]`
 

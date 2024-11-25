@@ -1,9 +1,7 @@
 # Copyright (c) 2009-2024 The Regents of the University of Michigan.
 # Part of HOOMD-blue, released under the BSD 3-Clause License.
 
-r"""Dihedral forces.
-
-Dihedral force classes apply a force and virial on every particle in the
+r"""Dihedral force classes apply a force and virial on every particle in the
 simulation state commensurate with the potential energy:
 
 .. math::
@@ -60,6 +58,8 @@ class Dihedral(Force):
         for `isinstance` or `issubclass` checks.
     """
 
+    __doc__ += Force._doc_inherited
+
     # Module where the C++ class is defined. Reassign this when developing an
     # external plugin.
     _ext_module = _md
@@ -94,6 +94,18 @@ class Periodic(Dihedral):
         U(\phi) = \frac{1}{2}k \left( 1 + d \cos\left(n \phi - \phi_0 \right)
                \right)
 
+    Examples::
+
+        harmonic = dihedral.Periodic()
+        harmonic.params['A-A-A-A'] = dict(k=3.0, d=-1, n=3, phi0=0)
+        harmonic.params['A-B-C-D'] = dict(k=100.0, d=1, n=4, phi0=math.pi/2)
+
+    {inherited}
+
+    ----------
+
+    **Members defined in** `Periodic`:
+
     Attributes:
         params (`TypeParameter` [``dihedral type``, `dict`]):
             The parameter of the harmonic bonds for each dihedral type. The
@@ -105,14 +117,9 @@ class Periodic(Dihedral):
             * ``n`` (`int`, **required**) - angle multiplicity factor :math:`n`
             * ``phi0`` (`float`, **required**) - phase shift :math:`\phi_0`
               :math:`[\mathrm{radians}]`
-
-    Examples::
-
-        harmonic = dihedral.Periodic()
-        harmonic.params['A-A-A-A'] = dict(k=3.0, d=-1, n=3, phi0=0)
-        harmonic.params['A-B-C-D'] = dict(k=100.0, d=1, n=4, phi0=math.pi/2)
     """
     _cpp_class_name = "HarmonicDihedralForceCompute"
+    __doc__ = __doc__.replace("{inherited}", Dihedral._doc_inherited)
 
     def __init__(self):
         super().__init__()
@@ -145,8 +152,14 @@ class Table(Dihedral):
     :math:`U_\\mathrm{table}(\\phi)` on evenly spaced grid points points
     in the range :math:`\\phi \\in [-\\pi,\\pi]`. `Table` linearly
     interpolates values when :math:`\\phi` lies between grid points. The
-    torque must be specificed commensurate with the potential: :math:`\\tau =
+    torque must be commensurate with the potential: :math:`\\tau =
     -\\frac{\\partial U}{\\partial \\phi}`.
+
+    {inherited}
+
+    ----------
+
+    **Members defined in** `Table`:
 
     Attributes:
         params (`TypeParameter` [``dihedral type``, `dict`]):
@@ -162,6 +175,8 @@ class Table(Dihedral):
 
         width (int): Number of points in the table.
     """
+
+    __doc__ = __doc__.replace("{inherited}", Dihedral._doc_inherited)
 
     def __init__(self, width):
         super().__init__()
@@ -202,6 +217,17 @@ class OPLS(Dihedral):
 
     :math:`k_n` are the force coefficients in the Fourier series.
 
+    Examples::
+
+        opls = dihedral.OPLS()
+        opls.params['A-A-A-A'] = dict(k1=1.0, k2=1.0, k3=1.0, k4=1.0)
+
+    {inherited}
+
+    ----------
+
+    **Members defined in** `OPLS`:
+
     Attributes:
         params (`TypeParameter` [``dihedral type``, `dict`]):
             The parameter of the OPLS bonds for each particle type.
@@ -218,13 +244,9 @@ class OPLS(Dihedral):
 
             * ``k4`` (`float`, **required**) -  force constant of the
               fourth term :math:`[\mathrm{energy}]`
-
-    Examples::
-
-        opls = dihedral.OPLS()
-        opls.params['A-A-A-A'] = dict(k1=1.0, k2=1.0, k3=1.0, k4=1.0)
     """
     _cpp_class_name = "OPLSDihedralForceCompute"
+    __doc__ = __doc__.replace("{inherited}", Dihedral._doc_inherited)
 
     def __init__(self):
         super().__init__()

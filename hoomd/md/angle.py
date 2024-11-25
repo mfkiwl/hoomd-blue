@@ -1,9 +1,7 @@
 # Copyright (c) 2009-2024 The Regents of the University of Michigan.
 # Part of HOOMD-blue, released under the BSD 3-Clause License.
 
-r"""Angle forces.
-
-Angle force classes apply a force and virial on every particle in the simulation
+r"""Angle force classes apply a force and virial on every particle in the simulation
 state commensurate with the potential energy:
 
 .. math::
@@ -51,6 +49,8 @@ class Angle(Force):
         for `isinstance` or `issubclass` checks.
     """
 
+    __doc__ += Force._doc_inherited
+
     # Module where the C++ class is defined. Reassign this when developing an
     # external plugin.
     _ext_module = _md
@@ -82,6 +82,18 @@ class Harmonic(Angle):
 
         U(\theta) = \frac{1}{2} k \left( \theta - \theta_0 \right)^2
 
+    Examples::
+
+        harmonic = angle.Harmonic()
+        harmonic.params['A-A-A'] = dict(k=3.0, t0=0.7851)
+        harmonic.params['A-B-A'] = dict(k=100.0, t0=1.0)
+
+    {inherited}
+
+    ----------
+
+    **Members defined in** `Harmonic`:
+
     Attributes:
         params (TypeParameter[``angle type``, dict]):
             The parameter of the harmonic bonds for each particle type.
@@ -92,16 +104,10 @@ class Harmonic(Angle):
 
             * ``t0`` (`float`, **required**) - rest angle :math:`\theta_0`
               :math:`[\mathrm{radians}]`
-
-    Examples::
-
-        harmonic = angle.Harmonic()
-        harmonic.params['A-A-A'] = dict(k=3.0, t0=0.7851)
-        harmonic.params['A-B-A'] = dict(k=100.0, t0=1.0)
-
     """
 
     _cpp_class_name = 'HarmonicAngleForceCompute'
+    __doc__ = __doc__.replace("{inherited}", Angle._doc_inherited)
 
     def __init__(self):
         super().__init__()
@@ -122,6 +128,18 @@ class CosineSquared(Angle):
 
     `CosineSquared` is used in the gromos96 and MARTINI force fields.
 
+    Examples::
+
+        cosinesq = angle.CosineSquared()
+        cosinesq.params['A-A-A'] = dict(k=3.0, t0=0.7851)
+        cosinesq.params['A-B-A'] = dict(k=100.0, t0=1.0)
+
+    {inherited}
+
+    ----------
+
+    **Members defined in** `CosineSquared`:
+
     Attributes:
         params (TypeParameter[``angle type``, dict]):
             The parameter of the harmonic bonds for each particle type.
@@ -132,15 +150,10 @@ class CosineSquared(Angle):
 
             * ``t0`` (`float`, **required**) - rest angle :math:`\theta_0`
               :math:`[\mathrm{radians}]`
-
-    Examples::
-
-        cosinesq = angle.CosineSquared()
-        cosinesq.params['A-A-A'] = dict(k=3.0, t0=0.7851)
-        cosinesq.params['A-B-A'] = dict(k=100.0, t0=1.0)
     """
 
     _cpp_class_name = 'CosineSqAngleForceCompute'
+    __doc__ = __doc__.replace("{inherited}", Angle._doc_inherited)
 
     def __init__(self):
         super().__init__()
@@ -172,8 +185,14 @@ class Table(Angle):
     :math:`U_\\mathrm{table}(\\theta)` on evenly spaced grid points points
     in the range :math:`\\theta \\in [0,\\pi]`. `Table` linearly
     interpolates values when :math:`\\theta` lies between grid points. The
-    torque must be specificed commensurate with the potential: :math:`\\tau =
+    torque must be commensurate with the potential: :math:`\\tau =
     -\\frac{\\partial U}{\\partial \\theta}`.
+
+    {inherited}
+
+    ----------
+
+    **Members defined in** `Table`:
 
     Attributes:
         params (`TypeParameter` [``angle type``, `dict`]):
@@ -189,6 +208,8 @@ class Table(Angle):
 
         width (int): Number of points in the table.
     """
+
+    __doc__ = __doc__.replace("{inherited}", Angle._doc_inherited)
 
     def __init__(self, width):
         super().__init__()

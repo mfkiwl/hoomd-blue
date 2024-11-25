@@ -3,6 +3,5 @@ NeighborListLocalAccessGPU
 
 .. py:currentmodule:: hoomd.md.data
 
-.. autoclass:: NeighborListLocalAccessGPU
+.. autoclass:: NeighborListLocalAccessGPU()
    :members:
-   :show-inheritance:

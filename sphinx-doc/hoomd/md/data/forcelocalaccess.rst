@@ -3,6 +3,5 @@ ForceLocalAccess
 
 .. py:currentmodule:: hoomd.md.data
 
-.. autoclass:: ForceLocalAccess
+.. autoclass:: ForceLocalAccess()
    :members:
-   :show-inheritance:

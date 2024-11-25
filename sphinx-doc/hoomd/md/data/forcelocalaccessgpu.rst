@@ -3,6 +3,5 @@ ForceLocalAccessGPU
 
 .. py:currentmodule:: hoomd.md.data
 
-.. autoclass:: ForceLocalAccessGPU
+.. autoclass:: ForceLocalAccessGPU()
    :members:
-   :show-inheritance:

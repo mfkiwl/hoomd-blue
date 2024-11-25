@@ -3,6 +3,5 @@ NeighborListLocalAccess
 
 .. py:currentmodule:: hoomd.md.data
 
-.. autoclass:: NeighborListLocalAccess
+.. autoclass:: NeighborListLocalAccess()
    :members:
-   :show-inheritance:
