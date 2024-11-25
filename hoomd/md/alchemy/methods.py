@@ -19,7 +19,25 @@ class Alchemostat(Method):
         Users should use the subclasses and not instantiate `Alchemostat`
         directly.
 
-    .. versionadded:: 3.1.0
+    {inherited}
+
+    ----------
+
+    **Members defined in** `Alchemostat`:
+    """
+
+    __doc__ = __doc__.replace("{inherited}", Method._doc_inherited)
+
+    _doc_inherited = Method._doc_inherited + """
+    ----------
+
+    **Members inherited from**
+    `Alchemostat <hoomd.md.alchemy.methods.Alchemostat>`:
+
+    .. py:attribute:: alchemical_dof
+
+        List of alchemical degrees of freedom.
+        `Read more... <hoomd.md.alchemy.methods.Alchemostat.alchemical_dof>`
     """
 
     def __init__(self, alchemical_dof):
@@ -79,17 +97,20 @@ class NVT(Alchemostat):
     See Also:
         `Zhou et al. 2019 <https://doi.org/10.1080/00268976.2019.1680886>`_.
 
-    .. versionadded:: 3.1.0
+    {inherited}
+
+    ----------
+
+    **Members defined in** `NVT`:
 
     Attributes:
         alchemical_kT (hoomd.variant.Variant): Temperature set point
             for the alchemostat :math:`[\mathrm{energy}]`.
 
-        alchemical_dof (`list` [`hoomd.md.alchemy.pair.AlchemicalDOF`]): List of
-            alchemical degrees of freedom.
-
         period (int): Timesteps between applications of the alchemostat.
     """
+
+    __doc__ = __doc__.replace("{inherited}", Alchemostat._doc_inherited)
 
     def __init__(self, alchemical_kT, alchemical_dof, period=1):
 

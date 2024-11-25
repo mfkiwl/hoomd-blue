@@ -1,9 +1,7 @@
 # Copyright (c) 2009-2024 The Regents of the University of Michigan.
 # Part of HOOMD-blue, released under the BSD 3-Clause License.
 
-"""Molecular dynamics.
-
-In molecular dynamics simulations, HOOMD-blue numerically integrates the degrees
+"""In molecular dynamics simulations, HOOMD-blue numerically integrates the degrees
 of freedom in the system as a function of time under the influence of forces. To
 perform MD simulations, assign a MD `Integrator` to the `hoomd.Simulation`
 operations. Provide the `Integrator` with lists of integration methods, forces,

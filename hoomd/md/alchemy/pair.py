@@ -37,8 +37,6 @@ class AlchemicalDOFStore(Mapping):
 
     The class acts as a cache so once an alchemical DOF is queried it is
     returned and not recreated when queried again.
-
-    .. versionadded:: 3.1.0
     """
 
     def __init__(self, name, pair_instance, dof_cls):
@@ -139,8 +137,6 @@ class AlchemicalDOF(_HOOMDBaseObject):
     Note:
         To access an alchemical degree of freedom for a particular type pair,
         query the corresponding attribute in the alchemical pair force instance.
-
-    .. versionadded:: 3.1.0
 
     Attributes:
         mass (float): The mass of the alchemical degree of freedom.
@@ -287,7 +283,11 @@ class LJGauss(BaseLJGauss, _AlchemicalPairForce):
         `hoomd.md.alchemy.pair.LJGauss` does not support MPI parallel
         simulations.
 
-    .. versionadded:: 3.1.0
+    {inherited}
+
+    ----------
+
+    **Members defined in** `LJGauss`:
 
     .. py:attribute:: params
 
@@ -327,6 +327,7 @@ class LJGauss(BaseLJGauss, _AlchemicalPairForce):
         ``particle_type``], `AlchemicalDOF`])
     """
     _alchemical_dofs = ['epsilon', 'sigma', 'r0']
+    __doc__ = __doc__.replace("{inherited}", BaseLJGauss._doc_inherited)
 
     def __init__(self,
                  nlist,
