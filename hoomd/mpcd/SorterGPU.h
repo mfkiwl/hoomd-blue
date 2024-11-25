@@ -42,10 +42,10 @@ class PYBIND11_EXPORT SorterGPU : public mpcd::Sorter
     std::shared_ptr<Autotuner<1>> m_apply_tuner;
 
     //! Compute the sorting order at the current timestep on the GPU
-    virtual void computeOrder(uint64_t timestep);
+    virtual void computeOrder(uint64_t timestep) override;
 
     //! Apply the sorting order on the GPU
-    virtual void applyOrder() const;
+    virtual void applyOrder() const override;
     };
     } // end namespace mpcd
     } // end namespace hoomd

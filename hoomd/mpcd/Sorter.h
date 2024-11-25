@@ -49,7 +49,7 @@ class PYBIND11_EXPORT Sorter : public Tuner
     virtual ~Sorter();
 
     //! Update the particle data order
-    virtual void update(uint64_t timestep);
+    virtual void update(uint64_t timestep) override;
 
     //! Set the cell list used for sorting
     virtual void setCellList(std::shared_ptr<mpcd::CellList> cl)

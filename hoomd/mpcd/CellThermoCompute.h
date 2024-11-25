@@ -39,7 +39,13 @@ class PYBIND11_EXPORT CellThermoCompute : public Compute
     virtual ~CellThermoCompute();
 
     //! Compute the cell thermodynamic properties
-    void compute(uint64_t timestep);
+    void compute(uint64_t timestep) override;
+
+    //! Start autotuning kernel launch parameters
+    void startAutotuning() override;
+
+    //! Check if kernel autotuning is complete
+    bool isAutotuningComplete() override;
 
     //! Get the cell indexer for the attached cell list
     const Index3D& getCellIndexer() const

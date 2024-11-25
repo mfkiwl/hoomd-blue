@@ -54,7 +54,7 @@ class PYBIND11_EXPORT RejectionVirtualParticleFillerGPU
 
     protected:
     //! Fill the volume outside the confinement
-    virtual void fill(uint64_t timestep);
+    virtual void fill(uint64_t timestep) override;
 
     private:
     GPUArray<bool> m_keep_particles; // Track whether particles are in/out of bounds for geometry

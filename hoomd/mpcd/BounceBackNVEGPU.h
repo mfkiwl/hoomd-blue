@@ -44,10 +44,10 @@ template<class Geometry> class PYBIND11_EXPORT BounceBackNVEGPU : public BounceB
         }
 
     //! Performs the first step of the integration
-    virtual void integrateStepOne(uint64_t timestep);
+    virtual void integrateStepOne(uint64_t timestep) override;
 
     //! Performs the second step of the integration
-    virtual void integrateStepTwo(uint64_t timestep);
+    virtual void integrateStepTwo(uint64_t timestep) override;
 
     private:
     std::shared_ptr<Autotuner<1>> m_tuner_1;

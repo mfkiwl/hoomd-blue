@@ -29,6 +29,21 @@ mpcd::SRDCollisionMethod::~SRDCollisionMethod()
     detachCallbacks();
     }
 
+void mpcd::SRDCollisionMethod::startAutotuning()
+    {
+    mpcd::CollisionMethod::startAutotuning();
+    if (m_thermo)
+        m_thermo->startAutotuning();
+    }
+
+bool mpcd::SRDCollisionMethod::isAutotuningComplete()
+    {
+    bool result = mpcd::CollisionMethod::isAutotuningComplete();
+    if (m_thermo)
+        result = result && m_thermo->isAutotuningComplete();
+    return result;
+    }
+
 void mpcd::SRDCollisionMethod::rule(uint64_t timestep)
     {
     m_thermo->compute(timestep);
