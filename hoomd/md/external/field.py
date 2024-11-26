@@ -27,6 +27,8 @@ class Field(force.Force):
         for `isinstance` or `issubclass` checks.
     """
 
+    __doc__ += force.Force._doc_inherited
+
     # Module where the C++ class is defined. Reassign this when developing an
     # external plugin.
     _ext_module = _md
@@ -59,6 +61,21 @@ class Periodic(Field):
     `Periodic` results in no virial stress due functional dependence on box
     scaled coordinates.
 
+    .. rubric:: Example:
+
+    .. code-block:: python
+
+        periodic = hoomd.md.external.field.Periodic()
+        periodic.params['A'] = dict(A=1.0, i=0, w=0.02, p=3)
+        periodic.params['B'] = dict(A=-1.0, i=0, w=0.02, p=3)
+        simulation.operations.integrator.forces = [periodic]
+
+    {inherited}
+
+    ----------
+
+    **Members defined in** `Periodic`:
+
     .. py:attribute:: params
 
         The `Periodic` external potential parameters. The dictionary has the
@@ -76,17 +93,9 @@ class Periodic(Field):
             modulation :math:`[\\mathrm{dimensionless}]`.
 
         Type: `TypeParameter` [``particle_type``, `dict`]
-
-    .. rubric:: Example:
-
-    .. code-block:: python
-
-        periodic = hoomd.md.external.field.Periodic()
-        periodic.params['A'] = dict(A=1.0, i=0, w=0.02, p=3)
-        periodic.params['B'] = dict(A=-1.0, i=0, w=0.02, p=3)
-        simulation.operations.integrator.forces = [periodic]
     """
     _cpp_class_name = "PotentialExternalPeriodic"
+    __doc__ = __doc__.replace("{inherited}", Field._doc_inherited)
 
     def __init__(self):
         params = TypeParameter(
@@ -110,6 +119,20 @@ class Electric(Field):
     vector. The field vector :math:`\\vec{E}` must be set per unique particle
     type.
 
+    .. rubric:: Example:
+
+    .. code-block:: python
+
+        electric = hoomd.md.external.field.Electric()
+        electric.E['A'] = (1, 0, 0)
+        simulation.operations.integrator.forces = [electric]
+
+    {inherited}
+
+    ----------
+
+    **Members defined in** `Electric`:
+
     .. py:attribute:: E
 
         The electric field vector :math:`\\vec{E}` as a tuple
@@ -118,16 +141,9 @@ class Electric(Field):
 
         Type: `TypeParameter` [``particle_type``, `tuple` [`float`, `float`,
         `float`]]
-
-    .. rubric:: Example:
-
-    .. code-block:: python
-
-        electric = hoomd.md.external.field.Electric()
-        electric.E['A'] = (1, 0, 0)
-        simulation.operations.integrator.forces = [electric]
     """
     _cpp_class_name = "PotentialExternalElectricField"
+    __doc__ = __doc__.replace("{inherited}", Field._doc_inherited)
 
     def __init__(self):
         params = TypeParameter(
@@ -150,6 +166,20 @@ class Magnetic(Field):
     where :math:`\\vec{\\mu}_i` is the magnetic dipole moment of particle
     :math:`i` and :math:`\\vec{B}` is the field vector.
 
+    .. rubric:: Example:
+
+    .. code-block:: python
+
+        magnetic = hoomd.md.external.field.Magnetic()
+        magnetic.params['A'] = dict(B=(1.0,0.0,0.0), mu=(1.0,0.0,0.0))
+        simulation.operations.integrator.forces = [magnetic]
+
+    {inherited}
+
+    ----------
+
+    **Members defined in** `Electric`:
+
     .. py:attribute:: params
 
         The `Magnetic` external potential parameters. The dictionary has the
@@ -165,16 +195,9 @@ class Magnetic(Field):
           \\cdot \\mathrm{time}^{-1}]`.
 
         Type: `TypeParameter` [``particle_type``, `dict`]
-
-    .. rubric:: Example:
-
-    .. code-block:: python
-
-        magnetic = hoomd.md.external.field.Magnetic()
-        magnetic.params['A'] = dict(B=(1.0,0.0,0.0), mu=(1.0,0.0,0.0))
-        simulation.operations.integrator.forces = [magnetic]
     """
     _cpp_class_name = "PotentialExternalMagneticField"
+    __doc__ = __doc__.replace("{inherited}", Field._doc_inherited)
 
     def __init__(self):
         params = TypeParameter(
@@ -183,3 +206,11 @@ class Magnetic(Field):
                               mu=(float, float, float),
                               len_keys=1))
         self._add_typeparam(params)
+
+
+__all__ = [
+    'Field',
+    'Periodic',
+    'Electric',
+    'Magnetic',
+]

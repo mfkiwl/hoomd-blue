@@ -1,9 +1,7 @@
 # Copyright (c) 2009-2024 The Regents of the University of Michigan.
 # Part of HOOMD-blue, released under the BSD 3-Clause License.
 
-r"""MPCD integration methods.
-
-Extra integration methods for solutes (MD particles) embedded in an MPCD
+r"""Extra integration methods for solutes (MD particles) embedded in an MPCD
 fluid. These methods are not restricted to MPCD simulations: they can be used
 as methods of `hoomd.md.Integrator`. For example, `BounceBack` might be used to
 run DPD simulations with surfaces.
@@ -73,16 +71,22 @@ class BounceBack(Method):
             filter=hoomd.filter.All(), geometry=plates)
         simulation.operations.integrator.methods.append(nve)
 
+    {inherited}
+
+    ----------
+
+    **Members defined in** `BounceBack`:
+
     Attributes:
         filter (hoomd.filter.filter_like): Subset of particles on which to apply
             this method (*read only*).
 
         geometry (hoomd.mpcd.geometry.Geometry): Surface to bounce back from
             (*read only*).
-
     """
 
     _cpp_class_map = {}
+    __doc__ = __doc__.replace("{inherited}", Method._doc_inherited)
 
     def __init__(self, filter, geometry):
         super().__init__()
@@ -138,3 +142,8 @@ class BounceBack(Method):
     @classmethod
     def _register_cpp_class(cls, geometry, module, cpp_class_name):
         cls._cpp_class_map[geometry] = (module, cpp_class_name)
+
+
+__all__ = [
+    'BounceBack',
+]

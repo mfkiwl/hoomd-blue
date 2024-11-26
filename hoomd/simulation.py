@@ -38,15 +38,15 @@ class Simulation(metaclass=Loggable):
         seed (int): Random number seed.
 
     `Simulation` is the central class that defines a simulation, including the
-    `state` of the system, the `operations` that apply to the state during a
-    simulation `run`, and the `device` to use when executing the simulation.
+    :py:attr:`state` of the system, the :py:attr:`operations` that apply to the state
+    during a simulation `run`, and the `device` to use when executing the simulation.
 
     `seed` sets the seed for the random number generator used by all operations
     added to this `Simulation`.
 
     Newly initialized `Simulation` objects have no state. Call
     `create_state_from_gsd` or `create_state_from_snapshot` to initialize the
-    simulation's `state`.
+    simulation's :py:attr:`state`.
 
     .. rubric:: Example:
 
@@ -489,7 +489,7 @@ class Simulation(metaclass=Loggable):
         Note:
             Initialize the simulation's state before calling `run`.
 
-        `Simulation` applies its `operations` to the
+        `Simulation` applies its :py:attr:`operations` to the
         state during each time step in the order: tuners, updaters, integrator,
         then writers following the logic in this pseudocode::
 

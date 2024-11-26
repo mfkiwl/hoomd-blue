@@ -22,6 +22,25 @@ class MeshPotential(Force):
     Warning:
         This class should not be instantiated by users. The class can be used
         for `isinstance` or `issubclass` checks.
+
+    {inherited}
+
+    ----------
+
+    **Members defined in** `MeshPotential`:
+    """
+
+    __doc__ = __doc__.replace("{inherited}", Force._doc_inherited)
+    _doc_inherited = Force._doc_inherited + """
+    ----------
+
+    **Members inherited from**
+    `MeshPotential <hoomd.md.mesh.MeshPotential>`:
+
+    .. py:attribute:: mesh
+
+        Mesh data structure used to compute the bond potential.
+        `Read more... <hoomd.md.mesh.MeshPotential.mesh>`
     """
 
     def __init__(self, mesh):
@@ -33,7 +52,7 @@ class MeshPotential(Force):
             warnings.warn(
                 f"{self} object is creating a new equivalent mesh structure."
                 f" This is happending since the force is moving to a new "
-                f"simulation. To supress the warning explicitly set new mesh.",
+                f"simulation. To suppress the warning explicitly set new mesh.",
                 RuntimeWarning)
             self._mesh = copy.deepcopy(self._mesh)
         self.mesh._attach(self._simulation)
@@ -83,6 +102,8 @@ class MeshConservationPotential(MeshPotential):
         for `isinstance` or `issubclass` checks.
     """
 
+    __doc__ += MeshPotential._doc_inherited
+
     def __init__(self, mesh, ignore_type):
         super().__init__(mesh)
         self._ignore_type = ignore_type
@@ -93,7 +114,7 @@ class MeshConservationPotential(MeshPotential):
             warnings.warn(
                 f"{self} object is creating a new equivalent mesh structure."
                 f" This is happending since the force is moving to a new "
-                f"simulation. To supress the warning explicitly set new mesh.",
+                f"simulation. To suppress the warning explicitly set new mesh.",
                 RuntimeWarning)
             self._mesh = copy.deepcopy(self._mesh)
         self.mesh._attach(self._simulation)

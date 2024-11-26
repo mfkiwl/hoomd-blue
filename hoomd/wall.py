@@ -1,9 +1,7 @@
 # Copyright (c) 2009-2024 The Regents of the University of Michigan.
 # Part of HOOMD-blue, released under the BSD 3-Clause License.
 
-"""Wall geometries.
-
-Walls define an oriented surface in space. Walls exist only in the primary box
+"""Walls define an oriented surface in space. Walls exist only in the primary box
 image and are not replicated across the periodic boundary conditions. Points on
 one side of the surface have a positive signed distance to that surface, and
 points on the other side have a negative signed distance.
@@ -510,3 +508,11 @@ class _WallsMetaList(MutableSequence):
         # index object to use.
         else:
             return _MetaListIndex(new_type)
+
+
+__all__ = [
+    'WallGeometry',
+    'Sphere',
+    'Cylinder',
+    'Plane',
+]

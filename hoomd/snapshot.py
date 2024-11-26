@@ -44,13 +44,13 @@ class _ConfigurationData:
 
 
 class Snapshot:
-    """Self-contained copy of the simulation `State`.
+    """Self-contained copy of the simulation :py:class:`State`.
 
     Args:
         communicator (Communicator): MPI communicator to be used when accessing
             the snapshot.
 
-    See `State` and `gsd.hoomd.Frame` for detailed documentation on the
+    See :py:class:`State` and `gsd.hoomd.Frame` for detailed documentation on the
     components of `Snapshot`.
 
     Note:
@@ -67,7 +67,7 @@ class Snapshot:
                 pos = snapshot.particles.position[0]
 
     See Also:
-        `State`
+        :py:class:`State`
 
         `Simulation.create_state_from_snapshot`
 

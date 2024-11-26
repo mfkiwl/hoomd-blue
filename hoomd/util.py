@@ -276,7 +276,7 @@ def make_example_simulation(device=None,
         hoomd.Simulation: The simulation object.
 
     Note:
-        `make_example_simulation` is intended for use in the documentation and
+        :py:func:`make_example_simulation` is intended for use in the documentation and
         other minimal working examples. Use `hoomd.Simulation` directly in other
         cases.
 
@@ -314,3 +314,8 @@ def make_example_simulation(device=None,
     simulation.run(0)
 
     return simulation
+
+
+__all__ = [
+    'make_example_simulation',
+]

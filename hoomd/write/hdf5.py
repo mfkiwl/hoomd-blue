@@ -34,6 +34,7 @@ import hoomd.custom as custom
 import hoomd.logging as logging
 import hoomd.data.typeconverter as typeconverter
 import hoomd.util as util
+from hoomd.operation import Writer
 
 from hoomd.write.custom_writer import _InternalCustomWriter
 from hoomd.data.parameterdicts import ParameterDict
@@ -291,6 +292,12 @@ class HDF5Log(_InternalCustomWriter):
             logger=logger)
         simulation.operations.writers.append(hdf5_log)
 
+    {inherited}
+
+    ----------
+
+    **Members defined in** `HDF5Log`:
+
     Attributes:
         accepted_categories (hoomd.logging.LoggerCategories): The enum value
             for all accepted categories for `HDF5Log` instances which is all
@@ -330,6 +337,7 @@ class HDF5Log(_InternalCustomWriter):
     """
     _internal_class = _HDF5LogInternal
     _wrap_methods = ("flush",)
+    __doc__ = __doc__.replace("{inherited}", Writer._doc_inherited)
 
 
 __all__ = ["HDF5Log"]

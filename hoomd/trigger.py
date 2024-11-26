@@ -1,9 +1,7 @@
 # Copyright (c) 2009-2024 The Regents of the University of Michigan.
 # Part of HOOMD-blue, released under the BSD 3-Clause License.
 
-"""Triggers determine when most `hoomd.operation.Operation` instances activate.
-
-A `Trigger` is a boolean valued function of the timestep. The operation will
+"""A `Trigger` is a boolean valued function of the timestep. An operation will
 perform its action when Trigger returns `True`. A single trigger object
 may be assigned to multiple operations.
 
@@ -83,6 +81,22 @@ class Trigger(_hoomd.Trigger):
                 bool: `True` when the trigger is active, `False` when it is not.
     """
 
+    _doc_inherited = """
+    ----------
+
+    **Members inherited from** `Trigger <hoomd.trigger.Trigger>`:
+
+    .. py:method:: __call__
+
+        Evaluate the trigger.
+        `Read more... <hoomd.trigger.Trigger.__call__>`
+
+    .. py:method:: compute
+
+        Evaluate the trigger.
+        `Read more... <hoomd.trigger.Trigger.compute>`
+    """
+
     def __getstate__(self):
         """Get the state of the trigger object."""
         return self.__dict__
@@ -110,10 +124,18 @@ class Periodic(_hoomd.PeriodicTrigger, Trigger):
 
             trigger = hoomd.trigger.Periodic(period=100)
 
+    {inherited}
+
+    ----------
+
+    **Members defined in** `Periodic`:
+
     Attributes:
         period (int): periodicity in time step.
         phase (int): phase in time step.
     """
+
+    __doc__ = __doc__.replace("{inherited}", Trigger._doc_inherited)
 
     def __init__(self, period, phase=0):
         Trigger.__init__(self)
@@ -146,9 +168,17 @@ class Before(_hoomd.BeforeTrigger, Trigger):
 
             trigger = hoomd.trigger.Before(5000)
 
+    {inherited}
+
+    ----------
+
+    **Members defined in** `Before`:
+
     Attributes:
         timestep (int): The step after the trigger ends.
     """
+
+    __doc__ = __doc__.replace("{inherited}", Trigger._doc_inherited)
 
     def __init__(self, timestep):
         Trigger.__init__(self)
@@ -182,9 +212,17 @@ class On(_hoomd.OnTrigger, Trigger):
 
             trigger = hoomd.trigger.On(1000)
 
+    {inherited}
+
+    ----------
+
+    **Members defined in** `On`:
+
     Attributes:
         timestep (int): The timestep to trigger on.
     """
+
+    __doc__ = __doc__.replace("{inherited}", Trigger._doc_inherited)
 
     def __init__(self, timestep):
         Trigger.__init__(self)
@@ -218,9 +256,17 @@ class After(_hoomd.AfterTrigger, Trigger):
 
             trigger = hoomd.trigger.After(1000)
 
+    {inherited}
+
+    ----------
+
+    **Members defined in** `After`:
+
     Attributes:
         timestep (int): The step before the trigger will start.
     """
+
+    __doc__ = __doc__.replace("{inherited}", Trigger._doc_inherited)
 
     def __init__(self, timestep):
         Trigger.__init__(self)
@@ -244,7 +290,7 @@ class Not(_hoomd.NotTrigger, Trigger):
     Args:
         trigger (hoomd.trigger.Trigger): The trigger object to negate.
 
-    `Not` returns the boolean negation of `trigger`::
+    `Not` returns the boolean negation of :py:attr:`trigger`::
 
         return not trigger(t)
 
@@ -254,9 +300,17 @@ class Not(_hoomd.NotTrigger, Trigger):
 
             trigger = hoomd.trigger.Not(other_trigger)
 
+    {inherited}
+
+    ----------
+
+    **Members defined in** `Not`:
+
     Attributes:
         trigger (hoomd.trigger.Trigger): The trigger object to negate.
     """
+
+    __doc__ = __doc__.replace("{inherited}", Trigger._doc_inherited)
 
     def __init__(self, trigger):
         Trigger.__init__(self)
@@ -296,9 +350,17 @@ class And(_hoomd.AndTrigger, Trigger):
 
             trigger = hoomd.trigger.And([other_trigger1, other_trigger2])
 
+    {inherited}
+
+    ----------
+
+    **Members defined in** `And`:
+
     Attributes:
         triggers (list[hoomd.trigger.Trigger]): List of triggers.
     """
+
+    __doc__ = __doc__.replace("{inherited}", Trigger._doc_inherited)
 
     def __init__(self, triggers):
         Trigger.__init__(self)
@@ -344,9 +406,17 @@ class Or(_hoomd.OrTrigger, Trigger):
 
             trig = hoomd.trigger.Or([other_trigger1, other_trigger2])
 
+    {inherited}
+
+    ----------
+
+    **Members defined in** `Or`:
+
     Attributes:
         triggers (`list` [`Trigger`]): List of triggers.
     """
+
+    __doc__ = __doc__.replace("{inherited}", Trigger._doc_inherited)
 
     def __init__(self, triggers):
         Trigger.__init__(self)
@@ -388,3 +458,15 @@ Note:
     Attributes that are `Trigger` objects can be set via a `trigger_like`
     object.
 """
+
+__all__ = [
+    'Trigger',
+    'Periodic',
+    'Before',
+    'On',
+    'After',
+    'Not',
+    'And',
+    'Or',
+    'trigger_like',
+]

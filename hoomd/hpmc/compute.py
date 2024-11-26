@@ -1,9 +1,7 @@
 # Copyright (c) 2009-2024 The Regents of the University of Michigan.
 # Part of HOOMD-blue, released under the BSD 3-Clause License.
 
-"""Compute properties of hard particle configurations.
-
-The HPMC compute classes analyze the system configuration and provide results
+"""The HPMC compute classes analyze the system configuration and provide results
 as loggable quantities for use with `hoomd.logging.Logger` or by direct access
 via the Python API. `FreeVolume` computes the free volume available to small
 particles and `SDF` samples the pressure.
@@ -92,12 +90,20 @@ class FreeVolume(Compute):
                                            num_samples=1000)
 
 
+    {inherited}
+
+    ----------
+
+    **Members defined in** `FreeVolume`:
+
     Attributes:
         test_particle_type (str): Test particle type.
 
         num_samples (int): Number of samples to evaluate.
 
     """
+
+    __doc__ = __doc__.replace("{inherited}", Compute._doc_inherited)
 
     def __init__(self, test_particle_type, num_samples):
         # store metadata
@@ -314,12 +320,20 @@ class SDF(Compute):
     where particles may overlap with non-primary images of other particles,
     including self overlap.
 
+    {inherited}
+
+    ----------
+
+    **Members defined in** `SDF`:
+
     Attributes:
         xmax (float): Maximum *x* value at the right hand side of the rightmost
             bin :math:`[\mathrm{length}]`.
 
         dx (float): Bin width :math:`[\mathrm{length}]`.
     """
+
+    __doc__ = __doc__.replace("{inherited}", Compute._doc_inherited)
 
     def __init__(self, xmax, dx):
         # store metadata
@@ -480,3 +494,9 @@ class SDF(Compute):
             return result * integrator.kT(self._simulation.timestep)
         else:
             return None
+
+
+__all__ = [
+    'FreeVolume',
+    'SDF',
+]

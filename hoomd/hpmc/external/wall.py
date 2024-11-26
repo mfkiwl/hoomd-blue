@@ -153,7 +153,15 @@ class WallPotential(External):
         walls = [hoomd.wall.Sphere(radius=4.0)]
         wall_potential = hoomd.hpmc.external.wall.WallPotential(walls)
         simulation.operations.integrator.external_potentials = [wall_potential]
+
+    {inherited}
+
+    ----------
+
+    **Members defined in** `WallPotential`:
     """
+
+    __doc__ = __doc__.replace("{inherited}", External._doc_inherited)
 
     def __init__(self, walls):
         self._walls = _HPMCWallsMetaList(self, walls, _to_hpmc_cpp_wall)

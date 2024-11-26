@@ -76,6 +76,12 @@ class AngularStep(Pair):
     that represent the patch locations on a particle, and deltas are the half
     opening angles of the patch in radian.
 
+    {inherited}
+
+    ----------
+
+    **Members defined in** `AngularStep`:
+
     .. py:attribute:: mask
 
         The mask definition.
@@ -94,6 +100,7 @@ class AngularStep(Pair):
         Type: `TypeParameter` [``particle_type``, `dict`]
     """
     _cpp_class_name = "PairPotentialAngularStep"
+    __doc__ = __doc__.replace("{inherited}", Pair._doc_inherited)
 
     def __init__(self, isotropic_potential):
         mask = TypeParameter(

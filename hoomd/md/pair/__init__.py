@@ -1,9 +1,7 @@
 # Copyright (c) 2009-2024 The Regents of the University of Michigan.
 # Part of HOOMD-blue, released under the BSD 3-Clause License.
 
-r"""Pair Potentials for molecular dynamics.
-
-Pair force classes apply a force and virial on every particle in the
+r"""Pair force classes apply a force and virial on every particle in the
 simulation state commensurate with the potential energy:
 
 .. math::
@@ -161,3 +159,33 @@ from .pair import (
     TWF,
     LJGauss,
 )
+
+__all__ = [
+    'aniso',
+    'Pair',
+    'LJ',
+    'Gaussian',
+    'ExpandedLJ',
+    'ExpandedGaussian',
+    'Yukawa',
+    'Ewald',
+    'Morse',
+    'DPD',
+    'DPDConservative',
+    'DPDLJ',
+    'ForceShiftedLJ',
+    'Moliere',
+    'ZBL',
+    'Mie',
+    'ExpandedMie',
+    'ReactionField',
+    'DLVO',
+    'Buckingham',
+    'LJ1208',
+    'LJ0804',
+    'Fourier',
+    'OPP',
+    'Table',
+    'TWF',
+    'LJGauss',
+]

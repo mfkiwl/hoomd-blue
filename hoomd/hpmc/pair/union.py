@@ -52,7 +52,7 @@ class Union(Pair):
     where :math:`N_{\mathrm{constituents},i}` is the number of constituents on
     the :math:`i` particle and :math:`U_\mathrm{constituent}` is the potential
     evaluated by the given ``constituent_potential``. :math:`\vec{P}_{i,a}` and
-    :math:`\mathbf{Q}_{i,a}` are the constituent postitions and orientations
+    :math:`\mathbf{Q}_{i,a}` are the constituent positions and orientations
     with index :math:`a` on the :math:`i` particle.
     :math:`U_\mathrm{constituent}` also depends on the constituent particle
     types and charges (not shown in the equation).
@@ -92,6 +92,12 @@ class Union(Pair):
     As shown above, set the body for constituent types to ``None`` (which is
     equivalent to ``dict(types=[], positions=[])``).
 
+    {inherited}
+
+    ----------
+
+    **Members defined in** `Union`:
+
     .. py:attribute:: body
 
         The body definition.
@@ -129,6 +135,7 @@ class Union(Pair):
                 union.leaf_capacity = 4
     """
     _cpp_class_name = "PairPotentialUnion"
+    __doc__ = __doc__.replace("{inherited}", Pair._doc_inherited)
 
     def __init__(self, constituent_potential, leaf_capacity=0):
         body = TypeParameter(

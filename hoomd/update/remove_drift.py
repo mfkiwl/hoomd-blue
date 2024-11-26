@@ -53,6 +53,12 @@ class RemoveDrift(Updater):
             reference_positions=[(0,0,0), (1,0,0)])
         simulation.operations.updaters.append(remove_drift)
 
+    {inherited}
+
+    ----------
+
+    **Members defined in** `RemoveDrift`:
+
     Attributes:
         reference_positions ((*N_particles*, 3) `numpy.ndarray` of `float`):
             the reference positions :math:`[\mathrm{length}]`.
@@ -63,6 +69,8 @@ class RemoveDrift(Updater):
 
                 remove_drift.reference_positions = [(0,0,0), (1,0,0)]
     """
+
+    __doc__ = __doc__.replace("{inherited}", Updater._doc_inherited)
 
     def __init__(self, reference_positions, trigger=1):
         super().__init__(trigger)
