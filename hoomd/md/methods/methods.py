@@ -976,7 +976,6 @@ class Brownian(Method):
     .. _I. Snook 2007: https://dx.doi.org/10.1016/B978-0-444-52129-3.50028-6
 
     Warning:
-
         This numerical method has errors in :math:`O(\delta t)`, which is much
         larger than the errors of most other integration methods which are in
         :math:`O(\delta t^2)`. As a consequence, expect to use much smaller
@@ -1136,7 +1135,6 @@ class OverdampedViscous(Method):
     damping coefficients, respectively, by particle type.
 
     Warning:
-
         This numerical method has errors in :math:`O(\delta t)`, which is much
         larger than the errors of most other integration methods which are in
         :math:`O(\delta t^2)`. As a consequence, expect to use much smaller

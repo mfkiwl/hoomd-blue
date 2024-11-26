@@ -236,7 +236,6 @@ class GayBerne(AnisotropicPair):
         """Get all the types of shapes in the current simulation.
 
         Example:
-
             >>> gay_berne.type_shapes
             [{'type': 'Ellipsoid', 'a': 1.0, 'b': 1.0, 'c': 1.5}]
 

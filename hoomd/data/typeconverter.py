@@ -136,7 +136,7 @@ class _HelpValidate(ABC):
             if isinstance(err, TypeConversionError):
                 raise err
             raise TypeConversionError(
-                f"Error raised in conversion: {str(err)}") from err
+                f"Error raised in conversion: {err!s}") from err
 
     @abstractmethod
     def _validate(self, value):
@@ -207,7 +207,7 @@ class OnlyIf(_HelpValidate):
 
     def __str__(self):
         """str: String representation of the validator."""
-        return f"OnlyIf({str(self.cond)})"
+        return f"OnlyIf({self.cond!s})"
 
 
 class OnlyTypes(_HelpValidate):
@@ -257,7 +257,7 @@ class OnlyTypes(_HelpValidate):
 
     def __str__(self):
         """str: String representation of the validator."""
-        return f"OnlyTypes({str(self.types)})"
+        return f"OnlyTypes({self.types!s})"
 
 
 class OnlyFrom(_HelpValidate):
@@ -480,7 +480,7 @@ class TypeConverterSequence(TypeConverter):
                     new_sequence.append(self.converter(v))
             except (ValueError, TypeError) as err:
                 raise TypeConversionError(
-                    f"In list item number {i}: {str(err)}") from err
+                    f"In list item number {i}: {err!s}") from err
             return new_sequence
 
 
@@ -528,7 +528,7 @@ class TypeConverterFixedLengthSequence(TypeConverter):
                     new_sequence.append(c(v))
             except (ValueError, TypeError) as err:
                 raise TypeConversionError(
-                    f"In tuple item number {i}: {str(err)}") from err
+                    f"In tuple item number {i}: {err!s}") from err
             return tuple(new_sequence)
 
     def __iter__(self):
@@ -587,7 +587,7 @@ class TypeConverterMapping(TypeConverter, MutableMapping):
                     new_mapping[key] = self.converter[key](value)
                 except (ValueError, TypeError) as err:
                     raise TypeConversionError(
-                        f"In key {key}: {str(err)}") from err
+                        f"In key {key}: {err!s}") from err
             else:
                 new_mapping[key] = value
         return new_mapping

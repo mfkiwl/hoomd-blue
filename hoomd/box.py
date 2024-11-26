@@ -389,7 +389,7 @@ class Box:
                 xz = box.get('xz', 0)
                 yz = box.get('yz', 0)
             except (IndexError, KeyError, TypeError):
-                if not len(box) in [2, 3, 6]:
+                if len(box) not in [2, 3, 6]:
                     raise ValueError(
                         "List-like objects must have length 2, 3, or 6 to be "
                         "converted to hoomd.Box.")

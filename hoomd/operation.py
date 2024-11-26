@@ -354,7 +354,7 @@ class _HOOMDBaseObject(_HOOMDGetSetAttrBase,
             except ValueError as err:
                 raise err.__class__(
                     f"For {type(self)} in TypeParameter {typeparam.name} "
-                    f"{str(err)}")
+                    f"{err!s}")
 
     def _unapply_typeparam_dict(self):
         for typeparam in self._typeparam_dict.values():

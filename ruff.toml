@@ -33,7 +33,6 @@ ignore = [
   "D214", # ignore overindented sections in Trigger - this is Google napoleon formatting
   "RUF012", # hoomd does not use typing annotations
   "NPY002", # TODO: refactor tests to use modern numpy Generator API.
-  "RUF005", #TODO, remove
 ]
 
 [lint.pydocstyle]

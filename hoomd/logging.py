@@ -666,19 +666,22 @@ class Logger(_SafeNamespaceDict):
     @property
     def categories(self):
         """`LoggerCategories`: The enum representing the \
-        acceptable categories for the `Logger` object."""
+        acceptable categories for the `Logger` object.
+        """
         return self._categories
 
     @property
     def string_categories(self):
         """list[str]: A list of the string names of the allowed \
-        categories for logging."""
+        categories for logging.
+        """
         return LoggerCategories._get_string_list(self._categories)
 
     @property
     def only_default(self):
         """`bool`: Whether the logger object should only add default loggable \
-        quantities."""
+        quantities.
+        """
         return self._only_default
 
     def _filter_quantities(self, quantities, force_quantities=False):

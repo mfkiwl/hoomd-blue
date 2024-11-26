@@ -190,7 +190,8 @@ class WallPotential(External):
     @property
     def walls(self):
         """`list` [`hoomd.wall.WallGeometry`]: \
-            The wall geometries associated with this potential."""
+            The wall geometries associated with this potential.
+        """
         return self._walls
 
     @walls.setter

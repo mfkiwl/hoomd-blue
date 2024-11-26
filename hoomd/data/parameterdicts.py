@@ -246,7 +246,7 @@ class _ValidatedDefaultDict(MutableMapping):
             validated_value = self._validate_values(item)
         except ValueError as err:
             raise TypeConversionError(
-                f"For types {list(keys)}: {str(err)}.") from err
+                f"For types {list(keys)}: {err!s}.") from err
         for key in keys:
             self._single_setitem(key, validated_value)
 
@@ -514,7 +514,7 @@ class TypeParameterDict(_ValidatedDefaultDict):
                 _raise_if_required_arg(parameters[key])
             except IncompleteSpecificationError as err:
                 self._cpp_obj = None
-                raise IncompleteSpecificationError(f"for key {key} {str(err)}")
+                raise IncompleteSpecificationError(f"for key {key} {err!s}")
             self._single_setitem(key, parameters[key])
 
     def _detach(self):

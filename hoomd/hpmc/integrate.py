@@ -634,14 +634,16 @@ class HPMCIntegrator(Integrator):
     @log(requires_run=True)
     def pair_energy(self):
         """float: Total potential energy contributed by all pair potentials \
-        :math:`[\\mathrm{energy}]`."""
+        :math:`[\\mathrm{energy}]`.
+        """
         timestep = self._simulation.timestep
         return self._cpp_obj.computeTotalPairEnergy(timestep)
 
     @log(requires_run=True)
     def external_energy(self):
         """float: Total external energy contributed by all external potentials \
-        :math:`[\\mathrm{energy}]`."""
+        :math:`[\\mathrm{energy}]`.
+        """
         return self._cpp_obj.computeTotalExternalEnergy(
             self._simulation.timestep)
 

@@ -54,7 +54,6 @@ class BounceBack(Method):
        reduce density fluctuations.
 
     Warning:
-
         This method does not support anisotropic integration because torques are
         not computed for collisions with the boundary. Rigid bodies will also
         not be treated correctly because the integrator is not aware of the

@@ -306,7 +306,8 @@ class ThermodynamicQuantities(Compute):
     @log(requires_run=True)
     def volume(self):
         """Volume :math:`V` of the simulation box (area in 2D) \
-        :math:`[\\mathrm{length}^{D}]`."""
+        :math:`[\\mathrm{length}^{D}]`.
+        """
         return self._cpp_obj.volume
 
 

@@ -137,7 +137,8 @@ class Force(Compute):
     @log(requires_run=True)
     def energy(self):
         """float: The potential energy :math:`U` of the system from this force \
-        :math:`[\\mathrm{energy}]`."""
+        :math:`[\\mathrm{energy}]`.
+        """
         self._cpp_obj.compute(self._simulation.timestep)
         return self._cpp_obj.calcEnergySum()
 
@@ -156,7 +157,8 @@ class Force(Compute):
     @log(requires_run=True)
     def additional_energy(self):
         """float: Additional energy term :math:`U_\\mathrm{additional}` \
-        :math:`[\\mathrm{energy}]`."""
+        :math:`[\\mathrm{energy}]`.
+        """
         self._cpp_obj.compute(self._simulation.timestep)
         return self._cpp_obj.getExternalEnergy()
 
@@ -209,7 +211,8 @@ class Force(Compute):
     @log(category="sequence", requires_run=True)
     def additional_virial(self):
         """(1, 6) `numpy.ndarray` of ``float``: Additional virial tensor \
-        term :math:`W_\\mathrm{additional}` :math:`[\\mathrm{energy}]`."""
+        term :math:`W_\\mathrm{additional}` :math:`[\\mathrm{energy}]`.
+        """
         self._cpp_obj.compute(self._simulation.timestep)
         virial = []
         for i in range(6):
@@ -424,7 +427,6 @@ class Active(Force):
         sim.operations += rotational_diffusion_updater
 
     Note:
-
         The energy and virial associated with the active force are 0.
 
     {inherited}
@@ -636,7 +638,6 @@ class Constant(Force):
         constant.constant_torque['A'] = (0,0,0)
 
     Note:
-
         The energy and virial associated with the constant force are 0.
 
     {inherited}
