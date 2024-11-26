@@ -1145,17 +1145,19 @@ double IntegratorHPMCMono<Shape>::computePairEnergy(uint64_t timestep,
                             if (h_tag.data[i] <= h_tag.data[j])
                                 {
                                 LongReal r_squared = dot(r_ij, r_ij);
-                                if (selected_pair
-                                    && r_squared < selected_pair->getRCutSquaredTotal(typ_i, typ_j))
+                                if (selected_pair)
                                     {
-                                    energy += selected_pair->energy(r_squared,
-                                                                    r_ij,
-                                                                    typ_i,
-                                                                    orientation_i,
-                                                                    h_charge.data[i],
-                                                                    typ_j,
-                                                                    orientation_j,
-                                                                    h_charge.data[j]);
+                                    if (r_squared < selected_pair->getRCutSquaredTotal(typ_i, typ_j))
+                                    {
+                                        energy += selected_pair->energy(r_squared,
+                                                                        r_ij,
+                                                                        typ_i,
+                                                                        orientation_i,
+                                                                        h_charge.data[i],
+                                                                        typ_j,
+                                                                        orientation_j,
+                                                                        h_charge.data[j]);
+                                    }
                                     }
                                 else
                                     {
