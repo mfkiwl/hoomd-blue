@@ -220,7 +220,7 @@ class Tether(MeshPotential):
 
 
 __all__ = [
-    'Harmonic',
     'FENEWCA',
+    'Harmonic',
     'Tether',
 ]

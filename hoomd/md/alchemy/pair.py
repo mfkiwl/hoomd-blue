@@ -369,7 +369,7 @@ class _NLJGauss(BaseLJGauss, _AlchemicalPairForce):
 
 
 __all__ = [
-    'AlchemicalDOFStore',
     'AlchemicalDOF',
+    'AlchemicalDOFStore',
     'LJGauss',
 ]

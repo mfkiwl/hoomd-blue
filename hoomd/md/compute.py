@@ -398,6 +398,6 @@ class HarmonicAveragedThermodynamicQuantities(Compute):
 
 
 __all__ = [
-    'ThermodynamicQuantities',
     'HarmonicAveragedThermodynamicQuantities',
+    'ThermodynamicQuantities',
 ]

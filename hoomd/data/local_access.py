@@ -9,7 +9,7 @@ from hoomd import _hoomd
 
 
 class _LocalAccess(ABC):
-    __slots__ = ('_entered', '_accessed_fields', '_cpp_obj')
+    __slots__ = ('_accessed_fields', '_cpp_obj', '_entered')
     _global_fields = {'rtag': 'getRTags'}
 
     @property

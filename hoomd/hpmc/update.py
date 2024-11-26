@@ -985,9 +985,9 @@ class QuickCompress(Updater):
 
 
 __all__ = [
+    'GCA',
     'BoxMC',
     'MuVT',
-    'Shape',
-    'GCA',
     'QuickCompress',
+    'Shape',
 ]

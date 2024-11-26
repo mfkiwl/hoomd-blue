@@ -2207,18 +2207,18 @@ class FacetedEllipsoidUnion(HPMCIntegrator):
 
 
 __all__ = [
-    'HPMCIntegrator',
-    'Sphere',
     'ConvexPolygon',
-    'ConvexSpheropolygon',
-    'SimplePolygon',
-    'Polyhedron',
     'ConvexPolyhedron',
-    'FacetedEllipsoid',
-    'Sphinx',
+    'ConvexSpheropolygon',
     'ConvexSpheropolyhedron',
-    'Ellipsoid',
-    'SphereUnion',
     'ConvexSpheropolyhedronUnion',
+    'Ellipsoid',
+    'FacetedEllipsoid',
     'FacetedEllipsoidUnion',
+    'HPMCIntegrator',
+    'Polyhedron',
+    'SimplePolygon',
+    'Sphere',
+    'SphereUnion',
+    'Sphinx',
 ]

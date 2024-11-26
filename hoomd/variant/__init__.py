@@ -26,11 +26,11 @@ from hoomd.variant.scalar import (Variant, Constant, Ramp, Cycle, Power,
 from hoomd.variant import box
 
 __all__ = [
-    'box',
-    'Variant',
     'Constant',
-    'Ramp',
     'Cycle',
     'Power',
+    'Ramp',
+    'Variant',
+    'box',
     'variant_like',
 ]

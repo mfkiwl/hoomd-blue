@@ -18,16 +18,16 @@ from .local_access_gpu import LocalSnapshotGPU
 from .typeparam import TypeParameter
 
 __all__ = [
-    'HOOMDArray',
-    'HOOMDGPUArray',
     'AngleLocalAccessBase',
     'BondLocalAccessBase',
     'ConstraintLocalAccessBase',
     'DihedralLocalAccessBase',
+    'HOOMDArray',
+    'HOOMDGPUArray',
     'ImproperLocalAccessBase',
-    'PairLocalAccessBase',
-    'ParticleLocalAccessBase',
     'LocalSnapshot',
     'LocalSnapshotGPU',
+    'PairLocalAccessBase',
+    'ParticleLocalAccessBase',
     'TypeParameter',
 ]

@@ -511,8 +511,8 @@ class _WallsMetaList(MutableSequence):
 
 
 __all__ = [
-    'WallGeometry',
-    'Sphere',
     'Cylinder',
     'Plane',
+    'Sphere',
+    'WallGeometry',
 ]

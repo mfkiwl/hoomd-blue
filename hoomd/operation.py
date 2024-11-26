@@ -662,11 +662,11 @@ class Integrator(Operation):
 
 __all__ = [
     'AutotunedObject',
+    'Compute',
+    'Integrator',
     'Operation',
     'TriggeredOperation',
+    'Tuner',
     'Updater',
     'Writer',
-    'Compute',
-    'Tuner',
-    'Integrator',
 ]

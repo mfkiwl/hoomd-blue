@@ -517,9 +517,9 @@ def auto_select(
 
 
 __all__ = [
-    'NoticeFile',
-    'Device',
-    'GPU',
     'CPU',
+    'GPU',
+    'Device',
+    'NoticeFile',
     'auto_select',
 ]

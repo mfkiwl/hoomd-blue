@@ -356,8 +356,8 @@ class Vertex(ShapeMove):
 
 
 __all__ = [
-    'ShapeMove',
     'Elastic',
+    'ShapeMove',
     'ShapeSpace',
     'Vertex',
 ]

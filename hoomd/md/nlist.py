@@ -668,8 +668,8 @@ class Tree(NeighborList):
 
 
 __all__ = [
-    'NeighborList',
     'Cell',
+    'NeighborList',
     'Stencil',
     'Tree',
 ]

@@ -396,8 +396,8 @@ class Berendsen(Thermostat):
 
 
 __all__ = [
-    'Thermostat',
     'MTTK',
-    'Bussi',
     'Berendsen',
+    'Bussi',
+    'Thermostat',
 ]

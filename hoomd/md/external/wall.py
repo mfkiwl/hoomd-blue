@@ -623,11 +623,11 @@ class Mie(WallPotential):
 
 
 __all__ = [
-    'WallPotential',
     'LJ',
-    'Gaussian',
-    'Yukawa',
-    'Morse',
     'ForceShiftedLJ',
+    'Gaussian',
     'Mie',
+    'Morse',
+    'WallPotential',
+    'Yukawa',
 ]

@@ -471,10 +471,10 @@ class Sphere(Geometry):
 
 
 __all__ = [
-    'Geometry',
     'ConcentricCylinders',
     'CosineChannel',
     'CosineExpansionContraction',
+    'Geometry',
     'ParallelPlates',
     'PlanarPore',
     'Sphere',

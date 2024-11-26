@@ -949,8 +949,8 @@ def modify_namespace(cls, namespace=None):
 
 
 __all__ = [
+    'Logger',
     'LoggerCategories',
     'log',
-    'Logger',
     'modify_namespace',
 ]

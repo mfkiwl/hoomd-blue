@@ -33,12 +33,12 @@ from hoomd.hpmc import nec
 from hoomd.hpmc import shape_move
 
 __all__ = [
-    'integrate',
-    'update',
     'compute',
-    'tune',
-    'pair',
     'external',
+    'integrate',
     'nec',
+    'pair',
     'shape_move',
+    'tune',
+    'update',
 ]

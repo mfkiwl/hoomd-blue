@@ -131,6 +131,6 @@ class NVT(Alchemostat):
 
 
 __all__ = [
-    'Alchemostat',
     'NVT',
+    'Alchemostat',
 ]

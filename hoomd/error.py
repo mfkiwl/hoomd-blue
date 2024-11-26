@@ -77,12 +77,12 @@ class IsolationWarning(UserWarning):
 
 
 __all__ = [
-    'MutabilityError',
     'DataAccessError',
-    'TypeConversionError',
     'GPUNotAvailableError',
-    'MPINotAvailableError',
     'IncompleteSpecificationError',
-    'SimulationDefinitionError',
     'IsolationWarning',
+    'MPINotAvailableError',
+    'MutabilityError',
+    'SimulationDefinitionError',
+    'TypeConversionError',
 ]

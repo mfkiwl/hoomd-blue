@@ -460,13 +460,13 @@ Note:
 """
 
 __all__ = [
-    'Trigger',
-    'Periodic',
-    'Before',
-    'On',
     'After',
-    'Not',
     'And',
+    'Before',
+    'Not',
+    'On',
     'Or',
+    'Periodic',
+    'Trigger',
     'trigger_like',
 ]

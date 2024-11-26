@@ -48,13 +48,13 @@ from hoomd.tune.solve import (GridOptimizer, GradientDescent, Optimizer,
                               RootSolver, ScaleSolver, SecantSolver, SolverStep)
 
 __all__ = [
-    'ParticleSorter',
-    'LoadBalancer',
     'CustomTuner',
-    'ManualTuneDefinition',
-    'GridOptimizer',
     'GradientDescent',
+    'GridOptimizer',
+    'LoadBalancer',
+    'ManualTuneDefinition',
     'Optimizer',
+    'ParticleSorter',
     'RootSolver',
     'ScaleSolver',
     'SecantSolver',

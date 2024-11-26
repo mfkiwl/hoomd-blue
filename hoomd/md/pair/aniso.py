@@ -1172,16 +1172,16 @@ class PatchyYukawa(Patchy):
 
 
 __all__ = [
+    'ALJ',
     'AnisotropicPair',
     'Dipole',
     'GayBerne',
-    'ALJ',
     'Patchy',
-    'PatchyLJ',
     'PatchyExpandedGaussian',
     'PatchyExpandedLJ',
     'PatchyExpandedMie',
     'PatchyGaussian',
+    'PatchyLJ',
     'PatchyMie',
     'PatchyYukawa',
 ]

@@ -262,8 +262,8 @@ class OPLS(Dihedral):
 
 
 __all__ = [
+    'OPLS',
     'Dihedral',
     'Periodic',
     'Table',
-    'OPLS',
 ]

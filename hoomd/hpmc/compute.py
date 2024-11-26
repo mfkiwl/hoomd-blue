@@ -499,6 +499,6 @@ class SDF(Compute):
 
 
 __all__ = [
-    'FreeVolume',
     'SDF',
+    'FreeVolume',
 ]

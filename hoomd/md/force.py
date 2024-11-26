@@ -706,9 +706,9 @@ class Constant(Force):
 
 
 __all__ = [
-    'Force',
-    'Custom',
     'Active',
     'ActiveOnManifold',
     'Constant',
+    'Custom',
+    'Force',
 ]

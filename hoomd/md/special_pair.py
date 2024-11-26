@@ -196,7 +196,7 @@ class Coulomb(SpecialPair):
 
 
 __all__ = [
-    'SpecialPair',
     'LJ',
     'Coulomb',
+    'SpecialPair',
 ]
