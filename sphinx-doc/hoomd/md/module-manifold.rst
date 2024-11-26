@@ -18,4 +18,3 @@ manifold
     manifold/plane
     manifold/primitive
     manifold/sphere
-

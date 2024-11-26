@@ -11,4 +11,3 @@ box
     :maxdepth: 1
 
     box/boxinterface
-

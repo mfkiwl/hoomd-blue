@@ -129,7 +129,7 @@ class Periodic(_hoomd.PeriodicTrigger, Trigger):
     ----------
 
     **Members defined in** `Periodic`:
-    
+
     Attributes:
         period (int): periodicity in time step.
         phase (int): phase in time step.
@@ -265,7 +265,7 @@ class After(_hoomd.AfterTrigger, Trigger):
     Attributes:
         timestep (int): The step before the trigger will start.
     """
-   
+
     __doc__ = __doc__.replace("{inherited}", Trigger._doc_inherited)
 
     def __init__(self, timestep):
@@ -459,7 +459,8 @@ Note:
     object.
 """
 
-__all__ = ['Trigger',
+__all__ = [
+    'Trigger',
     'Periodic',
     'Before',
     'On',
@@ -468,4 +469,4 @@ __all__ = ['Trigger',
     'And',
     'Or',
     'trigger_like',
-    ]
+]

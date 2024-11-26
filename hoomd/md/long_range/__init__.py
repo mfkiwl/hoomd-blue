@@ -5,4 +5,6 @@
 
 from . import pppm
 
-__all__ = ['pppm',]
+__all__ = [
+    'pppm',
+]

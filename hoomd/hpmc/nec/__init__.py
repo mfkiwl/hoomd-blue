@@ -49,4 +49,7 @@ See Also:
 from . import integrate
 from . import tune
 
-__all__ = ['integrate', 'tune',]
+__all__ = [
+    'integrate',
+    'tune',
+]

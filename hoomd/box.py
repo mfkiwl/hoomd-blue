@@ -761,4 +761,7 @@ Note:
     they are considered 0.
 """
 
-__all__ = ['BoxInterface', 'box_like',]
+__all__ = [
+    'BoxInterface',
+    'box_like',
+]

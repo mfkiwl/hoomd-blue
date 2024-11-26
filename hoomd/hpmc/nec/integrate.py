@@ -375,4 +375,9 @@ class ConvexPolyhedron(HPMCNECIntegrator):
         """
         return super(ConvexPolyhedron, self)._return_type_shapes()
 
-__all__ = ['HPMCNECIntegrator', 'Sphere', 'ConvexPolyhedron',]
+
+__all__ = [
+    'HPMCNECIntegrator',
+    'Sphere',
+    'ConvexPolyhedron',
+]

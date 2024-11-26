@@ -15,4 +15,3 @@ force
     force/constant
     force/custom
     force/force
-

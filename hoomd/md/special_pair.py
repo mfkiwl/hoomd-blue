@@ -194,4 +194,9 @@ class Coulomb(SpecialPair):
                               TypeParameterDict(float, len_keys=1))
         self._extend_typeparam([params, r_cut])
 
-__all__ = ['SpecialPair','LJ', 'Coulomb',]
+
+__all__ = [
+    'SpecialPair',
+    'LJ',
+    'Coulomb',
+]

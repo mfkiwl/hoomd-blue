@@ -199,7 +199,7 @@ class ChainTime(_InternalCustomTuner):
         solver (`hoomd.tune.RootSolver`): A solver that tunes chain times to
             reach the specified target.
         max_chain_time (float): The maximum value of chain time to attempt.
-    
+
     {inherited}
 
     ----------
@@ -285,4 +285,7 @@ class ChainTime(_InternalCustomTuner):
         solver = SecantSolver(gamma, tol)
         return cls(trigger, target, solver, max_chain_time)
 
-__all__ = ['ChainTime',]
+
+__all__ = [
+    'ChainTime',
+]

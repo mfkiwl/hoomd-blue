@@ -151,7 +151,7 @@ class NVE(MethodRATTLE):
     `NVE <hoomd.md.methods.rattle.NVE>`:
 
     .. py:attribute:: filter
-        
+
         Subset of particles on which to apply this method.
         `Read more... <hoomd.md.methods.ConstantVolume.filter>`
     """
@@ -624,4 +624,12 @@ class OverdampedViscous(MethodRATTLE):
                                  hoomd.variant.Constant(0.0), True, True,
                                  self.tolerance)
 
-__all__ = ['MethodRATTLE', 'NVE', 'DisplacementCapped', 'Langevin', 'Brownian', 'OverdampedViscous',]
+
+__all__ = [
+    'MethodRATTLE',
+    'NVE',
+    'DisplacementCapped',
+    'Langevin',
+    'Brownian',
+    'OverdampedViscous',
+]

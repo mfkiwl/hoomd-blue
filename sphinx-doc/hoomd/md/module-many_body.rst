@@ -14,4 +14,3 @@ many_body
     many_body/squaredensity
     many_body/tersoff
     many_body/triplet
-

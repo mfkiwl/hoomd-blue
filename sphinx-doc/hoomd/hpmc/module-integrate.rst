@@ -24,4 +24,3 @@ integrate
     integrate/sphere
     integrate/sphereunion
     integrate/sphinx
-

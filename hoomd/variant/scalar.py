@@ -67,7 +67,7 @@ class Variant(_hoomd.Variant):
         Minimum value of the variant.
         `Read more... <hoomd.variant.Variant.min>`
     """
-    
+
     @property
     def min(self):
         """The minimum value of this variant for :math:`t \\in [0,\\infty)`."""
@@ -154,6 +154,7 @@ class Ramp(_hoomd.VariantRamp, Variant):
                                          B=2.0,
                                          t_start=10_000,
                                          t_ramp=100_000)
+
     {inherited}
 
     ----------
@@ -265,7 +266,7 @@ class Power(_hoomd.VariantPower, Variant):
     ----------
 
     **Members defined in** `Power`:
-    
+
     Attributes:
         A (float): The start value.
         B (float): The end value.
@@ -284,4 +285,3 @@ class Power(_hoomd.VariantPower, Variant):
 
 
 variant_like = typing.Union[Variant, float]
-

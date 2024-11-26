@@ -25,7 +25,7 @@ class Tags(ParticleFilter, ParticleFilterTags):
     .. code-block:: python
 
         tags = hoomd.filter.Tags([0, 1, 2])
-   
+
     {inherited}
 
     ----------

@@ -3,7 +3,7 @@ hpmc
 
 .. automodule:: hoomd.hpmc
    :members:
-   :exclude-members: 
+   :exclude-members:
 
 .. rubric:: Modules
 
@@ -18,4 +18,3 @@ hpmc
     hpmc/module-shape_move
     hpmc/module-tune
     hpmc/module-update
-

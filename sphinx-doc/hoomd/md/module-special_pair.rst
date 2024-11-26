@@ -13,4 +13,3 @@ special_pair
     special_pair/coulomb
     special_pair/lj
     special_pair/specialpair
-

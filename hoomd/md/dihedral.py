@@ -260,4 +260,10 @@ class OPLS(Dihedral):
                               len_keys=1))
         self._add_typeparam(params)
 
-__all__ = ['Dihedral', 'Periodic', 'Table', 'OPLS',]
+
+__all__ = [
+    'Dihedral',
+    'Periodic',
+    'Table',
+    'OPLS',
+]

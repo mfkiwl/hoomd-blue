@@ -339,4 +339,5 @@ class HDF5Log(_InternalCustomWriter):
     _wrap_methods = ("flush",)
     __doc__ = __doc__.replace("{inherited}", Writer._doc_inherited)
 
+
 __all__ = ["HDF5Log"]

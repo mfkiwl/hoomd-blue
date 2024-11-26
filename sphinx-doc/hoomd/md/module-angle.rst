@@ -14,4 +14,3 @@ angle
     angle/cosinesquared
     angle/harmonic
     angle/table
-

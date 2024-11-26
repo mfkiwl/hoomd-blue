@@ -68,6 +68,11 @@ repos:
     # These also need to be removed in setup.cfg
     exclude: |
       (?x)(
+        ^hoomd/_hoomd.py|
+        ^hoomd/version_config.py|
+        ^hoomd/md/_md.py|
+        ^hoomd/hpmc/_hpmc.py|
+        ^hoomd/mpcd/_mpcd.py|
         ^hoomd/extern/|
         ^hoomd/metal/
       )

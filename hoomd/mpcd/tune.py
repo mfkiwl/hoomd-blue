@@ -63,4 +63,7 @@ class ParticleSorter(TriggeredOperation):
         self._cpp_obj = class_(self._simulation.state._cpp_sys_def,
                                self.trigger)
 
-__all__ = ['ParticleSorter',]
+
+__all__ = [
+    'ParticleSorter',
+]

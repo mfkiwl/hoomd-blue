@@ -14,4 +14,3 @@ collide
     collide/celllist
     collide/collisionmethod
     collide/stochasticrotationdynamics
-

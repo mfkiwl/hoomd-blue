@@ -778,7 +778,7 @@ class PatchyLJ(Patchy):
         nlist (hoomd.md.nlist.NeighborList): Neighbor list
         default_r_cut (float): Default cutoff radius :math:`[\mathrm{length}]`.
         mode (str): energy shifting/smoothing mode.
-        
+
     .. rubric:: Example:
 
     .. code-block:: python
@@ -826,12 +826,12 @@ class PatchyLJ(Patchy):
 
 class PatchyExpandedGaussian(Patchy):
     r"""Modulate `hoomd.md.pair.ExpandedGaussian` with angular patches.
-    
+
     Args:
         nlist (hoomd.md.nlist.NeighborList): Neighbor list
         default_r_cut (float): Default cutoff radius :math:`[\mathrm{length}]`.
         mode (str): energy shifting/smoothing mode.
-    
+
     .. rubric:: Example:
 
     .. code-block:: python
@@ -853,7 +853,7 @@ class PatchyExpandedGaussian(Patchy):
     ----------
 
     **Members defined in** `PatchyExpandedGaussian`:
-    
+
     .. py:attribute:: params
 
         The Patchy potential parameters unique to each pair of particle types. The
@@ -938,7 +938,7 @@ class PatchyExpandedLJ(Patchy):
 
 class PatchyExpandedMie(Patchy):
     r"""Modulate `hoomd.md.pair.ExpandedMie` with angular patches.
-    
+
     Args:
         nlist (hoomd.md.nlist.NeighborList): Neighbor list
         default_r_cut (float): Default cutoff radius :math:`[\mathrm{length}]`.
@@ -1010,7 +1010,7 @@ class PatchyGaussian(Patchy):
         nlist (hoomd.md.nlist.NeighborList): Neighbor list
         default_r_cut (float): Default cutoff radius :math:`[\mathrm{length}]`.
         mode (str): energy shifting/smoothing mode.
-        
+
     .. rubric:: Example:
 
     .. code-block:: python
@@ -1126,7 +1126,7 @@ class PatchyYukawa(Patchy):
         nlist (hoomd.md.nlist.NeighborList): Neighbor list
         default_r_cut (float): Default cutoff radius :math:`[\mathrm{length}]`.
         mode (str): energy shifting/smoothing mode.
-    
+
     .. rubric:: Example:
 
     .. code-block:: python
@@ -1171,4 +1171,18 @@ class PatchyYukawa(Patchy):
     _cpp_class_name = "AnisoPotentialPairPatchyYukawa"
     _pair_params = {"epsilon": float, "kappa": float}
 
-__all__ = ['AnisotropicPair','Dipole', 'GayBerne', 'ALJ', 'Patchy', 'PatchyLJ', 'PatchyExpandedGaussian', 'PatchyExpandedLJ', 'PatchyExpandedMie', 'PatchyGaussian', 'PatchyMie', 'PatchyYukawa',]
+
+__all__ = [
+    'AnisotropicPair',
+    'Dipole',
+    'GayBerne',
+    'ALJ',
+    'Patchy',
+    'PatchyLJ',
+    'PatchyExpandedGaussian',
+    'PatchyExpandedLJ',
+    'PatchyExpandedMie',
+    'PatchyGaussian',
+    'PatchyMie',
+    'PatchyYukawa',
+]

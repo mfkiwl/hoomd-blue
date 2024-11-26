@@ -20,4 +20,3 @@ logging
 
     logging/log
     logging/modify_namespace
-

@@ -48,7 +48,7 @@ class ShapeMove(_HOOMDBaseObject):
 
         Maximum size of the shape trial moves.
         `Read more... <hoomd.hpmc.shape_move.ShapeMove.step_size>`
-    """    
+    """
 
     _supported_shapes = None
 
@@ -354,4 +354,10 @@ class Vertex(ShapeMove):
                                              float, len_keys=1))
         self._add_typeparam(typeparam_volume)
 
-__all__ = ['ShapeMove', 'Elastic', 'ShapeSpace', 'Vertex', ]
+
+__all__ = [
+    'ShapeMove',
+    'Elastic',
+    'ShapeSpace',
+    'Vertex',
+]

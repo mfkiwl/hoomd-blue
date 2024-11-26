@@ -371,4 +371,14 @@ class Sphere(Manifold):
 
         super()._attach(self._simulation)
 
-__all__ = ['Manifold', 'Cylinder', 'Diamond', 'Ellipsoid', 'Gyroid', 'Plane', 'Primitive', 'Sphere',]
+
+__all__ = [
+    'Manifold',
+    'Cylinder',
+    'Diamond',
+    'Ellipsoid',
+    'Gyroid',
+    'Plane',
+    'Primitive',
+    'Sphere',
+]

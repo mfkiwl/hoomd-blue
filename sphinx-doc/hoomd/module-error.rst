@@ -18,4 +18,3 @@ error
     error/mutabilityerror
     error/simulationdefinitionerror
     error/typeconversionerror
-

@@ -13,4 +13,3 @@ integrate
     integrate/convexpolyhedron
     integrate/hpmcnecintegrator
     integrate/sphere
-

@@ -102,7 +102,7 @@ class FENEWCA(MeshPotential):
 
     Args:
         mesh (hoomd.mesh.Mesh): Mesh data structure constraint.
-    
+
     `FENEWCA` computes forces, virials, and energies on all mesh bonds
     in ``mesh`` with the harmonic potential (see `hoomd.md.bond.FENEWCA`).
 
@@ -218,4 +218,9 @@ class Tether(MeshPotential):
 
         super().__init__(mesh)
 
-__all__ = ['Harmonic', 'FENEWCA', 'Tether',]
+
+__all__ = [
+    'Harmonic',
+    'FENEWCA',
+    'Tether',
+]

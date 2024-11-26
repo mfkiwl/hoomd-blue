@@ -11,4 +11,3 @@ communicator
     :maxdepth: 1
 
     communicator/communicator
-

@@ -75,4 +75,23 @@ source_dir = _hoomd.BuildInfo.getSourceDir()
 install_dir = _hoomd.BuildInfo.getInstallDir()
 floating_point_precision = _hoomd.BuildInfo.getFloatingPointPrecision()
 
-__all__ = ['build_dir', 'compile_date', 'git_branch', 'git_sha1', 'hpmc_built', 'md_built', 'metal_built', 'mpcd_built', 'version', 'compile_flags', 'gpu_enabled', 'gpu_api_version', 'gpu_platform', 'cxx_compiler', 'mpi_enabled', 'source_dir', 'install_dir', 'floating_point_precision',]
+__all__ = [
+    'build_dir',
+    'compile_date',
+    'git_branch',
+    'git_sha1',
+    'hpmc_built',
+    'md_built',
+    'metal_built',
+    'mpcd_built',
+    'version',
+    'compile_flags',
+    'gpu_enabled',
+    'gpu_api_version',
+    'gpu_platform',
+    'cxx_compiler',
+    'mpi_enabled',
+    'source_dir',
+    'install_dir',
+    'floating_point_precision',
+]

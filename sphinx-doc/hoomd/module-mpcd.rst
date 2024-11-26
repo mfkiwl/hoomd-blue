@@ -24,4 +24,3 @@ mpcd
     :maxdepth: 1
 
     mpcd/integrator
-

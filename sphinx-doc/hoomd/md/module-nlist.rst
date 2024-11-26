@@ -14,4 +14,3 @@ nlist
     nlist/neighborlist
     nlist/stencil
     nlist/tree
-

@@ -22,4 +22,3 @@ aniso
     aniso/patchylj
     aniso/patchymie
     aniso/patchyyukawa
-

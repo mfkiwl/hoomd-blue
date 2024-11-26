@@ -14,4 +14,3 @@ data
     data/forcelocalaccessgpu
     data/neighborlistlocalaccess
     data/neighborlistlocalaccessgpu
-

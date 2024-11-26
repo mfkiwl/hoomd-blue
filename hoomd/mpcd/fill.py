@@ -33,7 +33,7 @@ class VirtualParticleFiller(Operation):
     Virtual particles will be added with the specified `type` and `density`.
     Their velocities will be drawn from a Maxwell--Boltzmann distribution
     consistent with `kT`.
-    
+
     .. invisible-code-block: python
 
         filler = hoomd.mpcd.fill.VirtualParticleFiller(
@@ -144,7 +144,7 @@ class GeometryFiller(VirtualParticleFiller):
             kT=1.0,
             geometry=plates)
         simulation.operations.integrator.virtual_particle_fillers = [filler]
-    
+
     {inherited}
 
     ----------
@@ -156,7 +156,8 @@ class GeometryFiller(VirtualParticleFiller):
             (*read only*).
     """
 
-    __doc__ = __doc__.replace("{inherited}", VirtualParticleFiller._doc_inherited)
+    __doc__ = __doc__.replace("{inherited}",
+                              VirtualParticleFiller._doc_inherited)
     _cpp_class_map = {}
 
     def __init__(self, type, density, kT, geometry):
@@ -207,4 +208,7 @@ class GeometryFiller(VirtualParticleFiller):
 GeometryFiller._register_cpp_class(ParallelPlates, _mpcd,
                                    "ParallelPlateGeometryFiller")
 
-__all__ = ['VirtualParticleFiller', 'GeometryFiller',]
+__all__ = [
+    'VirtualParticleFiller',
+    'GeometryFiller',
+]

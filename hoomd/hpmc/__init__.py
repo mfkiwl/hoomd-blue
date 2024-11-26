@@ -32,4 +32,13 @@ from hoomd.hpmc import external
 from hoomd.hpmc import nec
 from hoomd.hpmc import shape_move
 
-__all__ = ['integrate', 'update', 'compute', 'tune', 'pair', 'external', 'nec', 'shape_move',]
+__all__ = [
+    'integrate',
+    'update',
+    'compute',
+    'tune',
+    'pair',
+    'external',
+    'nec',
+    'shape_move',
+]

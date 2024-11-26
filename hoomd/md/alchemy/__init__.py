@@ -24,4 +24,7 @@ Example::
 from . import methods
 from . import pair
 
-__all__ = ['methods', 'pair',]
+__all__ = [
+    'methods',
+    'pair',
+]

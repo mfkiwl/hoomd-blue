@@ -179,4 +179,9 @@ class Periodic(Improper):
                 len_keys=1))
         self._add_typeparam(params)
 
-__all__ = ['Improper', 'Harmonic', 'Periodic',]
+
+__all__ = [
+    'Improper',
+    'Harmonic',
+    'Periodic',
+]

@@ -576,7 +576,7 @@ class TriggeredOperation(Operation):
         The trigger to activate this operation.
         `Read more... <hoomd.operation.TriggeredOperation.trigger>`
     """
-    
+
     def __init__(self, trigger):
         trigger_param = ParameterDict(trigger=hoomd.trigger.Trigger)
         self._param_dict.update(trigger_param)
@@ -591,7 +591,7 @@ class Updater(TriggeredOperation):
     Warning:
         This class should not be instantiated by users. The class can be used
         for `isinstance` or `issubclass` checks.
-    """   
+    """
     _cpp_list_name = 'updaters'
 
     __doc__ += TriggeredOperation._doc_inherited
@@ -659,5 +659,14 @@ class Integrator(Operation):
         # The integrator has changed, update the number of DOF in all groups
         self._simulation.state.update_group_dof()
 
-__all__ = ['AutotunedObject', 'Operation', 'TriggeredOperation', 'Updater', 'Writer',
-'Compute', 'Tuner', 'Integrator',]
+
+__all__ = [
+    'AutotunedObject',
+    'Operation',
+    'TriggeredOperation',
+    'Updater',
+    'Writer',
+    'Compute',
+    'Tuner',
+    'Integrator',
+]

@@ -20,4 +20,3 @@ filter
     filter/tags
     filter/type
     filter/union
-

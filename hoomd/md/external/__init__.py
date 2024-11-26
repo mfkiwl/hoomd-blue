@@ -12,4 +12,7 @@ field as a function of particle position and orientation:
 from . import field
 from . import wall
 
-__all__ = ['field', 'wall',]
+__all__ = [
+    'field',
+    'wall',
+]

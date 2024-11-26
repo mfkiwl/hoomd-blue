@@ -33,7 +33,7 @@ class CustomOperation(TriggeredOperation, metaclass=_AbstractLoggable):
 
     Note:
         This object should not be instantiated or subclassed by an user.
-   
+
     {inherited}
 
     ----------

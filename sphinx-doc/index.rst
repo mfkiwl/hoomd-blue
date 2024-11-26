@@ -142,7 +142,7 @@ Molecular dynamics:
    module-hoomd
    hoomd/module-hpmc
    hoomd/module-md
-   hoomd/module-mpcd 
+   hoomd/module-mpcd
 
 .. toctree::
    :maxdepth: 2

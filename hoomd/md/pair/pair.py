@@ -35,7 +35,7 @@ class Pair(force.Force):
         Neighbor list used to compute the pair force.
 
         Type: `hoomd.md.nlist.NeighborList`
-    
+
     .. py:attribute:: mode
 
         *mode*, *optional*: defaults to ``"none"``.
@@ -59,7 +59,7 @@ class Pair(force.Force):
         ``default_r_on`` specified on construction.
 
         Type: `TypeParameter` [`tuple` [``particle_type``, ``particle_type``],
-        `float`])        
+        `float`])
     """
 
     __doc__ = __doc__.replace("{inherited}", force.Force._doc_inherited)
@@ -92,7 +92,7 @@ class Pair(force.Force):
     .. py:method:: compute_energy
 
         Compute the energy between two sets of particles.
-        `Read more... <hoomd.md.pair.Pair.compute_energy>`    
+        `Read more... <hoomd.md.pair.Pair.compute_energy>`
     """
 
     # The accepted modes for the potential. Should be reset by subclasses with

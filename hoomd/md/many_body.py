@@ -82,7 +82,7 @@ class Triplet(Force):
         Type: `hoomd.md.nlist.NeighborList`
     """
 
-    __doc__ = __doc__.replace("{inherited}", Force._doc_inherited)    
+    __doc__ = __doc__.replace("{inherited}", Force._doc_inherited)
     _doc_inherited = Force._doc_inherited + """
     ----------
 
@@ -217,7 +217,7 @@ class Tersoff(Triplet):
         nl = md.nlist.Cell()
         tersoff = md.many_body.Tersoff(default_r_cut=1.3, nlist=nl)
         tersoff.params[('A', 'B')] = dict(magnitudes=(2.0, 1.0), lambda3=5.0)
-    
+
     {inherited}
 
     ----------
@@ -494,4 +494,10 @@ class SquareDensity(Triplet):
                                TypeParameterDict(A=0.0, B=float, len_keys=2))
         self._add_typeparam(params)
 
-__all__ = ['Triplet', 'Tersoff', 'RevCross', 'SquareDensity',]
+
+__all__ = [
+    'Triplet',
+    'Tersoff',
+    'RevCross',
+    'SquareDensity',
+]

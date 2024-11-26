@@ -16,4 +16,3 @@ write
     write/gsd
     write/hdf5log
     write/table
-

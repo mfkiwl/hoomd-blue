@@ -39,4 +39,3 @@ hoomd
     hoomd/simulation
     hoomd/snapshot
     hoomd/state
-

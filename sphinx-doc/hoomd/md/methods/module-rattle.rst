@@ -16,4 +16,3 @@ rattle
     rattle/methodrattle
     rattle/nve
     rattle/overdampedviscous
-

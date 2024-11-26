@@ -3,7 +3,7 @@ nec
 
 .. automodule:: hoomd.hpmc.nec
    :members:
-   :exclude-members: 
+   :exclude-members:
 
 .. rubric:: Modules
 
@@ -12,4 +12,3 @@ nec
 
     nec/module-integrate
     nec/module-tune
-

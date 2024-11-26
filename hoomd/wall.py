@@ -509,4 +509,10 @@ class _WallsMetaList(MutableSequence):
         else:
             return _MetaListIndex(new_type)
 
-__all__ = ['WallGeometry', 'Sphere', 'Cylinder', 'Plane',]
+
+__all__ = [
+    'WallGeometry',
+    'Sphere',
+    'Cylinder',
+    'Plane',
+]

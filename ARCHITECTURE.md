@@ -488,8 +488,8 @@ for each module and class. `generate-toctree.py` is run as a `pre-commit` hook t
 that the documentation is always updated.
 
 Users also strongly prefer not to navigate up the super class chain in the documentation
-in order to discover the members of a given class. Unfortunately, we are not able to 
-use Sphinx'x automatic inherit-documentation because HOOMD extensively uses 
+in order to discover the members of a given class. Unfortunately, we are not able to
+use Sphinx'x automatic inherit-documentation because HOOMD extensively uses
 `__getattr__/__setattr__`. To meet this need, HOOMD based classes define a class-level
 `_doc_inherited` string that summarizes the inherited members. Classes should append
 this string to `__doc__` and _then_ add their inherited members (if any) to

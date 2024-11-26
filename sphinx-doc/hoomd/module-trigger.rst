@@ -18,4 +18,3 @@ trigger
     trigger/or
     trigger/periodic
     trigger/trigger
-

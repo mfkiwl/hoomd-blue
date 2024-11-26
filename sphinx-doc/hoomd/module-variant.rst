@@ -22,4 +22,3 @@ variant
     variant/power
     variant/ramp
     variant/variant
-

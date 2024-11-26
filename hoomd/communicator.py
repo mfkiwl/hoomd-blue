@@ -275,4 +275,6 @@ class Communicator(object):
 # communicator using the Device.localize_abort context manager
 _current_communicator = Communicator()
 
-__all__ = ['Communicator',]
+__all__ = [
+    'Communicator',
+]

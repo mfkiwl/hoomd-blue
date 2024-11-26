@@ -95,7 +95,7 @@ class FreeVolume(Compute):
     ----------
 
     **Members defined in** `FreeVolume`:
-    
+
     Attributes:
         test_particle_type (str): Test particle type.
 
@@ -325,7 +325,7 @@ class SDF(Compute):
     ----------
 
     **Members defined in** `SDF`:
-    
+
     Attributes:
         xmax (float): Maximum *x* value at the right hand side of the rightmost
             bin :math:`[\mathrm{length}]`.
@@ -495,4 +495,8 @@ class SDF(Compute):
         else:
             return None
 
-__all__ = ['FreeVolume', 'SDF',]
+
+__all__ = [
+    'FreeVolume',
+    'SDF',
+]

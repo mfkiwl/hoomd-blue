@@ -46,8 +46,7 @@ class ParticleFilter(_hoomd.ParticleFilter):
 
         Evaluate the filter.
         `Read more... <hoomd.filter.ParticleFilter.__call__>`
-    """    
-
+    """
 
     def __hash__(self):
         """Return a hash of the filter parameters.

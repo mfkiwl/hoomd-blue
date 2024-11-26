@@ -333,4 +333,8 @@ def _rms(h, prd, N, order, kappa, q2):
         kappa * prd * math.sqrt(2.0 * math.pi) * sum / N) / prd / prd
     return value
 
-__all__ = ['make_pppm_coulomb_forces', 'Coulomb',]
+
+__all__ = [
+    'make_pppm_coulomb_forces',
+    'Coulomb',
+]

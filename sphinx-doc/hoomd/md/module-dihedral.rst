@@ -14,4 +14,3 @@ dihedral
     dihedral/opls
     dihedral/periodic
     dihedral/table
-

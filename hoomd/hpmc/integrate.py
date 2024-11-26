@@ -377,7 +377,7 @@ class HPMCIntegrator(Integrator):
     .. py:property:: counters
 
         Trial move counters.
-        `Read more... <HPMCIntegrator.counters>`        
+        `Read more... <HPMCIntegrator.counters>`
 
     .. py:property:: external_energy
 
@@ -2203,6 +2203,20 @@ class FacetedEllipsoidUnion(HPMCIntegrator):
                                          }))
         self._add_typeparam(typeparam_shape)
 
-__all__ = ['HPMCIntegrator', 'Sphere', 'ConvexPolygon', 'ConvexSpheropolygon', 'SimplePolygon',
-'Polyhedron', 'ConvexPolyhedron', 'FacetedEllipsoid', 'Sphinx', 'ConvexSpheropolyhedron', 
-'Ellipsoid', 'SphereUnion', 'ConvexSpheropolyhedronUnion', 'FacetedEllipsoidUnion',]
+
+__all__ = [
+    'HPMCIntegrator',
+    'Sphere',
+    'ConvexPolygon',
+    'ConvexSpheropolygon',
+    'SimplePolygon',
+    'Polyhedron',
+    'ConvexPolyhedron',
+    'FacetedEllipsoid',
+    'Sphinx',
+    'ConvexSpheropolyhedron',
+    'Ellipsoid',
+    'SphereUnion',
+    'ConvexSpheropolyhedronUnion',
+    'FacetedEllipsoidUnion',
+]

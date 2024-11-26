@@ -11,4 +11,3 @@ mesh
     :maxdepth: 1
 
     mesh/mesh
-

@@ -63,7 +63,7 @@ class Harmonic(External):
     ----------
 
     **Members defined in** `Harmonic`:
-    
+
     Attributes:
         k_translational (hoomd.variant.Variant): The translational spring
             constant :math:`[\mathrm{energy} \cdot \mathrm{length}^{-2}]`.

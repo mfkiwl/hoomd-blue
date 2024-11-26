@@ -16,9 +16,10 @@ from pathlib import Path
 TOPLEVEL = ['hpmc', 'mpcd', 'md']
 exit_value = 0
 
+
 def generate_member_rst(path, full_module_name, name, type):
     """Generate the rst file that describes a class or data element.
-    
+
     Does not overwrite existing files. This allows files to be automatically created
     and then customized as needed. 80+% of the files should not need customization.
     """
@@ -27,15 +28,15 @@ def generate_member_rst(path, full_module_name, name, type):
 
     member_rst = f"{name}\n{underline}\n\n"
     member_rst += f".. py:currentmodule:: {full_module_name}\n\n"
-    
+
     member_rst += f".. auto{type}:: {name}\n"
 
     # set :members: and :show-inheritance: for classes. Developers can remove these
     # individually when they are not appropriate. Unfortunately, we cannot make these
     # default in `conf.py` because there is no way to opt out of the default.
     if type == 'class':
-       member_rst += "   :members:\n"
-       member_rst += "   :show-inheritance:\n"
+        member_rst += "   :members:\n"
+        member_rst += "   :show-inheritance:\n"
 
     destination = (path / name.lower()).with_suffix('.rst')
 
@@ -43,7 +44,7 @@ def generate_member_rst(path, full_module_name, name, type):
         return
 
     destination.write_text(member_rst)
-        
+
 
 def generate_module_rst(path, module):
     """Generate the rst file that describes a module.
@@ -52,7 +53,7 @@ def generate_module_rst(path, module):
     adding new classes.
     """
     global exit_value
-    
+
     full_module_name = module.__name__
     module_name = full_module_name.split('.')[-1]
 
@@ -65,7 +66,7 @@ def generate_module_rst(path, module):
 
     sorted_all = module_all.copy()
     sorted_all.sort()
-   
+
     if len(sorted_all) > 0:
         path.mkdir(exist_ok=True)
 
@@ -80,11 +81,11 @@ def generate_module_rst(path, module):
             submodules.append(member_name)
             generate_module_rst(path / member_name, member)
 
-        if inspect.isclass(member):            
+        if inspect.isclass(member):
             classes.append(member_name)
             generate_member_rst(path, full_module_name, member_name, 'class')
 
-        if inspect.isfunction(member):            
+        if inspect.isfunction(member):
             functions.append(member_name)
             generate_member_rst(path, full_module_name, member_name, 'function')
 
@@ -105,7 +106,6 @@ def generate_module_rst(path, module):
             if submodule not in TOPLEVEL:
                 module_rst += f'    {module_name}/module-{submodule}\n'
         module_rst += '\n'
-       
 
     if len(classes) > 0:
         module_rst += '.. rubric:: Classes\n\n.. toctree::\n    :maxdepth: 1\n\n'
@@ -119,7 +119,9 @@ def generate_module_rst(path, module):
             module_rst += f'    {module_name}/{function_name.lower()}\n'
         module_rst += '\n'
 
-    (path.parent / ('module-' + module_name)).with_suffix('.rst').write_text(module_rst)
+    file = (path.parent / ('module-' + module_name)).with_suffix('.rst')
+    file.write_text(module_rst)
+
 
 if __name__ == '__main__':
     doc_dir = Path(__file__).parent

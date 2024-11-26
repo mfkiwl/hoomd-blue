@@ -14,4 +14,3 @@ thermostats
     thermostats/bussi
     thermostats/mttk
     thermostats/thermostat
-

@@ -212,7 +212,7 @@ class InverseVolumeRamp(_hoomd.VectorVariantBoxInverseVolumeRamp, BoxVariant):
     ----------
 
     **Members defined in** `InverseVolumeRamp`:
-    
+
     Attributes:
         final_volume (float): The volume of the final box.
         t_start (int): The time step at the start of the ramp.
@@ -243,4 +243,10 @@ class InverseVolumeRamp(_hoomd.VectorVariantBoxInverseVolumeRamp, BoxVariant):
         box = hoomd.data.typeconverter.box_preprocessing(box)
         self._initial_box = box._cpp_obj
 
-__all__ = ['BoxVariant', 'Constant', 'Interpolate', 'InverseVolumeRamp', ]
+
+__all__ = [
+    'BoxVariant',
+    'Constant',
+    'Interpolate',
+    'InverseVolumeRamp',
+]

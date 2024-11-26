@@ -17,4 +17,3 @@ wall
     wall/morse
     wall/wallpotential
     wall/yukawa
-

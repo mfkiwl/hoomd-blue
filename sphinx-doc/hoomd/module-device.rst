@@ -21,4 +21,3 @@ device
     :maxdepth: 1
 
     device/auto_select
-

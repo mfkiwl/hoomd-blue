@@ -270,8 +270,9 @@ class Integrator(_DynamicIntegrator):
             simulation associated with the integrator.
     """
 
-    __doc__ = __doc__.replace("{inherited}", hoomd.operation.Integrator._doc_inherited)
-    _doc_inherited = hoomd.operation.Integrator._doc_inherited + """    
+    __doc__ = __doc__.replace("{inherited}",
+                              hoomd.operation.Integrator._doc_inherited)
+    _doc_inherited = hoomd.operation.Integrator._doc_inherited + """
     ----------
 
     **Members inherited from** `Integrator <hoomd.md.Integrator>`:

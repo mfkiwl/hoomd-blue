@@ -342,4 +342,9 @@ class Rigid(Constraint):
         self._cpp_obj.validateRigidBodies()
         self._cpp_obj.updateCompositeParticles(0)
 
-__all__ = ['Constraint', 'Distance', 'Rigid',]
+
+__all__ = [
+    'Constraint',
+    'Distance',
+    'Rigid',
+]

@@ -13,4 +13,3 @@ pair
     pair/alchemicaldof
     pair/alchemicaldofstore
     pair/ljgauss
-

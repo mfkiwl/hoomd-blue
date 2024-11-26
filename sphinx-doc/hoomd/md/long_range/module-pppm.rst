@@ -18,4 +18,3 @@ pppm
     :maxdepth: 1
 
     pppm/make_pppm_coulomb_forces
-

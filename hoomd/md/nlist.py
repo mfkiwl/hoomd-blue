@@ -46,8 +46,8 @@ Note:
 
 Attention:
     Users should only set this attribute when utilizing the accessor APIs,
-    `pair_list <NeighborList.pair_list>`, 
-    `local_pair_list <NeighborList.local_pair_list>`, 
+    `pair_list <NeighborList.pair_list>`,
+    `local_pair_list <NeighborList.local_pair_list>`,
     `cpu_local_nlist_arrays <NeighborList.cpu_local_nlist_arrays>`, or
     `gpu_local_nlist_arrays <NeighborList.gpu_local_nlist_arrays>`.
 
@@ -175,7 +175,7 @@ class NeighborList(Compute):
 
         The number of neighbor list builds.
         `Read more... <hoomd.md.nlist.NeighborList.num_builds>`
-    
+
     .. py:property:: pair_list
 
         Global pair list.
@@ -185,7 +185,7 @@ class NeighborList(Compute):
 
         The shortest period between neighbor list rebuilds.
         `Read more... <hoomd.md.nlist.NeighborList.shortest_rebuild>`
-        
+
     """
 
     def __init__(self, buffer, exclusions, rebuild_check_delay, check_dist,
@@ -666,4 +666,10 @@ class Tree(NeighborList):
                                   self.buffer)
         super()._attach_hook()
 
-__all__ = ['NeighborList', 'Cell', 'Stencil', 'Tree',]
+
+__all__ = [
+    'NeighborList',
+    'Cell',
+    'Stencil',
+    'Tree',
+]

@@ -71,7 +71,8 @@ class Area(MeshConservationPotential):
               :math:`[\mathrm{length}]^2]`
     """
     _cpp_class_name = "AreaConservationMeshForceCompute"
-    __doc__ = __doc__.replace("{inherited}", MeshConservationPotential._doc_inherited)
+    __doc__ = __doc__.replace("{inherited}",
+                              MeshConservationPotential._doc_inherited)
 
     def __init__(self, mesh, ignore_type=False):
         params = TypeParameter("params", "types",
@@ -133,7 +134,8 @@ class TriangleArea(MeshPotential):
               :math:`[\mathrm{length}]^2`
     """
     _cpp_class_name = "TriangleAreaConservationMeshForceCompute"
-    __doc__ = __doc__.replace("{inherited}", MeshConservationPotential._doc_inherited)
+    __doc__ = __doc__.replace("{inherited}",
+                              MeshConservationPotential._doc_inherited)
 
     def __init__(self, mesh):
         params = TypeParameter("params", "types",
@@ -189,7 +191,8 @@ class Volume(MeshConservationPotential):
               :math:`[\mathrm{length}^{3}]`
     """
     _cpp_class_name = "VolumeConservationMeshForceCompute"
-    __doc__ = __doc__.replace("{inherited}", MeshConservationPotential._doc_inherited)
+    __doc__ = __doc__.replace("{inherited}",
+                              MeshConservationPotential._doc_inherited)
 
     def __init__(self, mesh, ignore_type=False):
         params = TypeParameter("params", "types",
@@ -203,4 +206,10 @@ class Volume(MeshConservationPotential):
         """Volume of the mesh triangulation."""
         return self._cpp_obj.getVolume()
 
-__all__ = ['Area', 'TriangleArea', 'Volume', 'MeshConservationPotential',]
+
+__all__ = [
+    'Area',
+    'TriangleArea',
+    'Volume',
+    'MeshConservationPotential',
+]

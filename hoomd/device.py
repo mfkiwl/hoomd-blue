@@ -106,33 +106,33 @@ class Device:
         `Device` cannot be used directly. Instiatate a `CPU` or `GPU` object.
     """
 
-    _doc_inherited = """    
+    _doc_inherited = """
     ----------
 
     **Members inherited from** `Device <hoomd.device.Device>`:
 
     .. py:attribute:: communicator
-    
+
         The MPI Communicator.
         `Read more... <hoomd.device.Device.communicator>`
 
     .. py:property:: notice_level
-    
+
         Minimum level of messages to print.
         `Read more... <hoomd.device.Device.notice_level>`
 
     .. py:property:: message_filename
-    
+
         Filename to write messages to.
         `Read more... <hoomd.device.Device.message_filename>`
 
     .. py:property:: device
-    
+
         Descriptions of the active hardware device.
         `Read more... <hoomd.device.Device.device>`
 
     .. py:method:: notice
-    
+
         Write a notice message.
         `Read more... <hoomd.device.Device.notice>`
     """
@@ -336,7 +336,7 @@ class GPU(Device):
 
     **Members defined in** `GPU`:
     """
-    
+
     __doc__ = __doc__.replace("{inherited}", Device._doc_inherited)
 
     def __init__(
@@ -516,4 +516,11 @@ def auto_select(
     else:
         return CPU(communicator, message_filename, notice_level)
 
-__all__ = ['NoticeFile', 'Device', 'GPU', 'CPU', 'auto_select',]
+
+__all__ = [
+    'NoticeFile',
+    'Device',
+    'GPU',
+    'CPU',
+    'auto_select',
+]

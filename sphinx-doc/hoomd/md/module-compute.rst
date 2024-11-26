@@ -12,4 +12,3 @@ compute
 
     compute/harmonicaveragedthermodynamicquantities
     compute/thermodynamicquantities
-

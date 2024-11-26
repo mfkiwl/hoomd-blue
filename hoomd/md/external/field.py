@@ -207,4 +207,10 @@ class Magnetic(Field):
                               len_keys=1))
         self._add_typeparam(params)
 
-__all__ = ['Field', 'Periodic', 'Electric', 'Magnetic',]
+
+__all__ = [
+    'Field',
+    'Periodic',
+    'Electric',
+    'Magnetic',
+]

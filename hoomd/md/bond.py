@@ -377,4 +377,11 @@ class Tether(Bond):
                               len_keys=1))
         self._add_typeparam(params)
 
-__all__ = ['Bond', 'Harmonic', 'FENEWCA', 'Table', 'Tether',]
+
+__all__ = [
+    'Bond',
+    'Harmonic',
+    'FENEWCA',
+    'Table',
+    'Tether',
+]

@@ -3,7 +3,7 @@ alchemy
 
 .. automodule:: hoomd.md.alchemy
    :members:
-   :exclude-members: 
+   :exclude-members:
 
 .. rubric:: Modules
 
@@ -12,4 +12,3 @@ alchemy
 
     alchemy/module-methods
     alchemy/module-pair
-

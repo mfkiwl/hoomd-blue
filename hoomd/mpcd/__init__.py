@@ -68,4 +68,13 @@ from hoomd.mpcd import methods
 from hoomd.mpcd import stream
 from hoomd.mpcd import tune
 
-__all__ = ['collide', 'fill', 'force', 'geometry', 'Integrator', 'methods', 'stream', 'tune',]
+__all__ = [
+    'collide',
+    'fill',
+    'force',
+    'geometry',
+    'Integrator',
+    'methods',
+    'stream',
+    'tune',
+]

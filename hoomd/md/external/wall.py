@@ -620,4 +620,13 @@ class Mie(WallPotential):
                                                         len_keys=1))
         self._add_typeparam(params)
 
-__all__ = ['WallPotential', 'LJ', 'Gaussian', 'Yukawa', 'Morse', 'ForceShiftedLJ', 'Mie',]
+
+__all__ = [
+    'WallPotential',
+    'LJ',
+    'Gaussian',
+    'Yukawa',
+    'Morse',
+    'ForceShiftedLJ',
+    'Mie',
+]

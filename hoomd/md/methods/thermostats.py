@@ -394,4 +394,10 @@ class Berendsen(Thermostat):
             self.kT, group, self._thermo, self._simulation.state._cpp_sys_def,
             self.tau)
 
-__all__ = ['Thermostat', 'MTTK', 'Bussi', 'Berendsen',]
+
+__all__ = [
+    'Thermostat',
+    'MTTK',
+    'Bussi',
+    'Berendsen',
+]

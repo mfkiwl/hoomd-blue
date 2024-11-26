@@ -11,4 +11,3 @@ util
     :maxdepth: 1
 
     util/make_example_simulation
-

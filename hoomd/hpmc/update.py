@@ -983,4 +983,11 @@ class QuickCompress(Updater):
 
         return self._cpp_obj.isComplete()
 
-__all__ = ['BoxMC', 'MuVT', 'Shape', 'GCA', 'QuickCompress',]
+
+__all__ = [
+    'BoxMC',
+    'MuVT',
+    'Shape',
+    'GCA',
+    'QuickCompress',
+]

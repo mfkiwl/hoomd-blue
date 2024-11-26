@@ -207,7 +207,7 @@ class AndersenThermostat(CollisionMethod):
     ----------
 
     **Members defined in** `AndersenThermostat`:
-    
+
     Attributes:
         kT (hoomd.variant.variant_like): Temperature of the thermostat
             :math:`[\mathrm{energy}]`.
@@ -386,4 +386,10 @@ class StochasticRotationDynamics(CollisionMethod):
 
         super()._attach_hook()
 
-__all__ = ['CellList', 'CollisionMethod', 'AndersenThermostat', 'StochasticRotationDynamics', ]
+
+__all__ = [
+    'CellList',
+    'CollisionMethod',
+    'AndersenThermostat',
+    'StochasticRotationDynamics',
+]

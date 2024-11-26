@@ -128,4 +128,8 @@ class NVT(Alchemostat):
         self._cpp_obj.setNextAlchemicalTimestep(self._simulation.timestep)
         super()._attach_hook()
 
-__all__ = ['Alchemostat', 'NVT',]
+
+__all__ = [
+    'Alchemostat',
+    'NVT',
+]

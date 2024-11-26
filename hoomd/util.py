@@ -315,4 +315,7 @@ def make_example_simulation(device=None,
 
     return simulation
 
-__all__ = ['make_example_simulation',]
+
+__all__ = [
+    'make_example_simulation',
+]

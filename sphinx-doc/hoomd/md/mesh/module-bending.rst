@@ -12,4 +12,3 @@ bending
 
     bending/bendingrigidity
     bending/helfrich
-

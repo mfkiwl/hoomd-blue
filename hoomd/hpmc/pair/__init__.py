@@ -34,4 +34,13 @@ from .union import Union
 from .angular_step import AngularStep
 from .step import Step
 
-__all__ = ['Pair', 'LennardJones', 'ExpandedGaussian', 'LJGauss', 'OPP', 'Union', 'AngularStep', 'Step',]
+__all__ = [
+    'Pair',
+    'LennardJones',
+    'ExpandedGaussian',
+    'LJGauss',
+    'OPP',
+    'Union',
+    'AngularStep',
+    'Step',
+]

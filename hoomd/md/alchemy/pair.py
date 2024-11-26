@@ -366,4 +366,9 @@ class _NLJGauss(BaseLJGauss, _AlchemicalPairForce):
         _AlchemicalPairForce.__init__(self)
         super().__init__(nlist, default_r_cut, default_r_on, mode)
 
-__all__ = ['AlchemicalDOFStore', 'AlchemicalDOF', 'LJGauss',]
+
+__all__ = [
+    'AlchemicalDOFStore',
+    'AlchemicalDOF',
+    'LJGauss',
+]

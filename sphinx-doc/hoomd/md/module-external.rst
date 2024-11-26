@@ -3,7 +3,7 @@ external
 
 .. automodule:: hoomd.md.external
    :members:
-   :exclude-members: 
+   :exclude-members:
 
 .. rubric:: Modules
 
@@ -12,4 +12,3 @@ external
 
     external/module-field
     external/module-wall
-

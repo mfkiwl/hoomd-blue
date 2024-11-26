@@ -230,4 +230,10 @@ class SineForce(BodyForce):
         self._cpp_obj = _mpcd.SineForce(self.amplitude, self.wavenumber)
         super()._attach_hook()
 
-__all__ = ['BodyForce', 'BlockForce', 'ConstantForce', 'SineForce',]
+
+__all__ = [
+    'BodyForce',
+    'BlockForce',
+    'ConstantForce',
+    'SineForce',
+]

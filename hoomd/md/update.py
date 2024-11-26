@@ -128,7 +128,7 @@ class ReversePerturbationFlow(Updater):
     ----------
 
     **Members defined in** `ReversePerturbationFlow`:
-    
+
     Attributes:
         filter (hoomd.filter.filter_like): Subset of particles on which to
             apply this updater.
@@ -265,7 +265,7 @@ class ActiveRotationalDiffusion(Updater):
     Tip:
         Use `hoomd.md.force.Active.create_diffusion_updater` to construct
         a `ActiveRotationalDiffusion` instance.
-    
+
     {inherited}
 
     ----------
@@ -317,4 +317,9 @@ class ActiveRotationalDiffusion(Updater):
             raise ValueError("active_force is not settable after construction.")
         super()._setattr_param(attr, value)
 
-__all__ = ['ZeroMomentum', 'ReversePerturbationFlow', 'ActiveRotationalDiffusion',]
+
+__all__ = [
+    'ZeroMomentum',
+    'ReversePerturbationFlow',
+    'ActiveRotationalDiffusion',
+]

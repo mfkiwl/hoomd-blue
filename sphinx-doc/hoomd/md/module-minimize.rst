@@ -11,4 +11,3 @@ minimize
     :maxdepth: 1
 
     minimize/fire
-

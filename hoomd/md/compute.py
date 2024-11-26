@@ -395,4 +395,8 @@ class HarmonicAveragedThermodynamicQuantities(Compute):
         self._cpp_obj.compute(self._simulation.timestep)
         return self._cpp_obj.pressure
 
-__all__ = ['ThermodynamicQuantities', 'HarmonicAveragedThermodynamicQuantities',]
+
+__all__ = [
+    'ThermodynamicQuantities',
+    'HarmonicAveragedThermodynamicQuantities',
+]

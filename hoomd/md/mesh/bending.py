@@ -152,4 +152,8 @@ class Helfrich(MeshPotential):
         else:
             raise MPINotAvailableError("Helfrich is not implemented for MPI")
 
-__all__ = ['BendingRigidity', 'Helfrich',]
+
+__all__ = [
+    'BendingRigidity',
+    'Helfrich',
+]

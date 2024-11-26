@@ -291,7 +291,7 @@ class Custom(Force):
 
     Derive a custom force class from `Custom`, and override the `set_forces`
     method to compute forces on particles. Users have direct, zero-copy access
-    to the C++ managed buffers via either the 
+    to the C++ managed buffers via either the
     `cpu_local_force_arrays <Force.cpu_local_force_arrays>` or
     `gpu_local_force_arrays <Force.gpu_local_force_arrays>` property. Choose the
     property that corresponds to the device you wish to alter the data on. In
@@ -703,4 +703,11 @@ class Constant(Force):
         self._cpp_obj = my_class(sim.state._cpp_sys_def,
                                  sim.state._get_group(self.filter))
 
-__all__ = ['Force', 'Custom', 'Active', 'ActiveOnManifold', 'Constant',]
+
+__all__ = [
+    'Force',
+    'Custom',
+    'Active',
+    'ActiveOnManifold',
+    'Constant',
+]

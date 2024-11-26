@@ -186,7 +186,7 @@ class ConstantVolume(Thermostatted):
     `ConstantVolume <hoomd.md.methods.ConstantVolume>`:
 
     .. py:attribute:: filter
-        
+
         Subset of particles on which to apply this method.
         `Read more... <hoomd.md.methods.ConstantVolume.filter>`
     """

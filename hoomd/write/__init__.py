@@ -33,4 +33,11 @@ from hoomd.write.dcd import DCD
 from hoomd.write.table import Table
 from hoomd.write.hdf5 import HDF5Log
 
-__all__ = ['CustomWriter', 'GSD', 'Burst', 'DCD', 'Table', 'HDF5Log',]
+__all__ = [
+    'CustomWriter',
+    'GSD',
+    'Burst',
+    'DCD',
+    'Table',
+    'HDF5Log',
+]

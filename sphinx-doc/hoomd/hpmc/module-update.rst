@@ -15,4 +15,3 @@ update
     update/muvt
     update/quickcompress
     update/shape
-
