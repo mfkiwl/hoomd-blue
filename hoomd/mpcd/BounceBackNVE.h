@@ -46,10 +46,10 @@ class PYBIND11_EXPORT BounceBackNVE : public hoomd::md::IntegrationMethodTwoStep
     virtual ~BounceBackNVE();
 
     //! Performs the first step of the integration
-    virtual void integrateStepOne(uint64_t timestep);
+    void integrateStepOne(uint64_t timestep) override;
 
     //! Performs the second step of the integration
-    virtual void integrateStepTwo(uint64_t timestep);
+    void integrateStepTwo(uint64_t timestep) override;
 
     //! Get the streaming geometry
     std::shared_ptr<Geometry> getGeometry()

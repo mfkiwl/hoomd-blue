@@ -18,6 +18,9 @@ Change Log
   (`#1934 <https://github.com/glotzerlab/hoomd-blue/pull/1934>`__).
 * Correctly apply ``HPMCIntegrator.external_potentials`` in ``hoomd.hpmc.update.MuVT``
   (`#1941 <https://github.com/glotzerlab/hoomd-blue/pull/1941>`__).
+* Ensure GPU autotuners for MPCD methods are included in ``hoomd.Operations.is_tuning_complete`` and
+  ``hoomd.Operations.tune_kernel_parameters`` through ``hoomd.mpcd.Integrator``
+  (`#1951 <https://github.com/glotzerlab/hoomd-blue/pull/1951>`__).
 * Read after write hazard in the GPU implementation of ``Dipole``, ``ALJ``, and all ``Patchy``
   potentials in ``hoomd.md.pair.ansiso``
   (`#1944 <https://github.com/glotzerlab/hoomd-blue/pull/1944>`__).

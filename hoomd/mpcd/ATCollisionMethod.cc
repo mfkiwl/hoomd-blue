@@ -28,6 +28,25 @@ mpcd::ATCollisionMethod::~ATCollisionMethod()
     detachCallbacks();
     }
 
+void mpcd::ATCollisionMethod::startAutotuning()
+    {
+    mpcd::CollisionMethod::startAutotuning();
+    if (m_thermo)
+        m_thermo->startAutotuning();
+    if (m_rand_thermo)
+        m_rand_thermo->startAutotuning();
+    }
+
+bool mpcd::ATCollisionMethod::isAutotuningComplete()
+    {
+    bool result = mpcd::CollisionMethod::isAutotuningComplete();
+    if (m_thermo)
+        result = result && m_thermo->isAutotuningComplete();
+    if (m_rand_thermo)
+        result = result && m_rand_thermo->isAutotuningComplete();
+    return result;
+    }
+
 /*!
  * \param timestep Current timestep.
  */

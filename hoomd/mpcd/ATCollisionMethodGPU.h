@@ -34,10 +34,10 @@ class PYBIND11_EXPORT ATCollisionMethodGPU : public mpcd::ATCollisionMethod
 
     protected:
     //! Draw velocities for particles in each cell on the GPU
-    virtual void drawVelocities(uint64_t timestep);
+    void drawVelocities(uint64_t timestep) override;
 
     //! Apply the random velocities to particles in each cell on the GPU
-    virtual void applyVelocities();
+    void applyVelocities() override;
 
     private:
     std::shared_ptr<Autotuner<1>> m_tuner_draw;  //!< Tuner for drawing random velocities
