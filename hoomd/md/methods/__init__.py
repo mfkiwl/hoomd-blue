@@ -1,9 +1,7 @@
 # Copyright (c) 2009-2024 The Regents of the University of Michigan.
 # Part of HOOMD-blue, released under the BSD 3-Clause License.
 
-"""Integration methods for molecular dynamics.
-
-Integration methods work with `hoomd.md.Integrator` to define the equations
+"""Integration methods work with `hoomd.md.Integrator` to define the equations
 of motion for the system. Each individual method applies the given equations
 of motion to a subset of particles.
 

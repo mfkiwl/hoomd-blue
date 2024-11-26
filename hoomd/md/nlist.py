@@ -1,9 +1,7 @@
 # Copyright (c) 2009-2024 The Regents of the University of Michigan.
 # Part of HOOMD-blue, released under the BSD 3-Clause License.
 
-r"""Neighbor list acceleration structures.
-
-Pair forces (`hoomd.md.pair`) use neighbor list data structures to find
+r"""Pair forces (`hoomd.md.pair`) use neighbor list data structures to find
 neighboring particle pairs (those within a distance of :math:`r_\mathrm{cut}`)
 efficiently. HOOMD-blue provides a several types of neighbor list construction
 algorithms that you can select from: `Cell`, `Tree`, and `Stencil`.
@@ -48,8 +46,10 @@ Note:
 
 Attention:
     Users should only set this attribute when utilizing the accessor APIs,
-    `pair_list`, `local_pair_list`, `cpu_local_nlist_arrays`, or
-    `gpu_local_nlist_arrays`.
+    `pair_list <NeighborList.pair_list>`, 
+    `local_pair_list <NeighborList.local_pair_list>`, 
+    `cpu_local_nlist_arrays <NeighborList.cpu_local_nlist_arrays>`, or
+    `gpu_local_nlist_arrays <NeighborList.gpu_local_nlist_arrays>`.
 
 .. rubric:: Exclusions
 
@@ -93,16 +93,20 @@ class NeighborList(Compute):
         Users should not instantiate this class directly. The class can be used
         for `isinstance` or `issubclass` checks.
 
+    {inherited}
+
+    ----------
+
+    **Members defined in** `NeighborList`:
+
     Attributes:
         buffer (float): Buffer width :math:`[\mathrm{length}]`.
+        check_dist (bool): Flag to enable / disable distance checking.
         exclusions (tuple[str]): Defines which particles to exclude from the
-            neighbor list, see more details above.
+            neighbor list, as described in `hoomd.md.nlist`.
+        mesh (Mesh): Associated mesh data structure.
         rebuild_check_delay (int): How often to attempt to rebuild the neighbor
             list.
-        check_dist (bool): Flag to enable / disable distance checking.
-        mesh (Mesh): mesh data structure (optional)
-        default_r_cut (float): Default cutoff distance :math:`[\mathrm{length}]`
-            (optional).
 
     .. py:attribute:: r_cut
 
@@ -112,6 +116,76 @@ class NeighborList(Compute):
 
         Type: `TypeParameter` [`tuple` [``particle_type``, ``particle_type``],
         `float`])
+    """
+
+    __doc__ = __doc__.replace("{inherited}", Compute._doc_inherited)
+
+    _doc_inherited = Compute._doc_inherited + """
+    ----------
+
+    **Members inherited from**
+    `NeighborList <hoomd.md.nlist.NeighborList>`:
+
+    .. py:attribute:: buffer
+
+        Buffer width.
+        `Read more... <hoomd.md.nlist.NeighborList.buffer>`
+
+    .. py:attribute:: check_dist
+
+        Flag to enable / disable distance checking.
+        `Read more... <hoomd.md.nlist.NeighborList.check_dist>`
+
+    .. py:attribute:: exclusions
+
+        Defines which particles to exclude from the neighbor list.
+        `Read more... <hoomd.md.nlist.NeighborList.exclusions>`
+
+    .. py:attribute:: mesh
+
+        Associated mesh data structure.
+        `Read more... <hoomd.md.nlist.NeighborList.mesh>`
+
+    .. py:attribute:: rebuild_check_delay
+
+        How often to attempt to rebuild the neighbor list.
+        `Read more... <hoomd.md.nlist.NeighborList.rebuild_check_delay>`
+
+    .. py:attribute:: r_cut
+
+        Base cutoff radius for neighbor list queries.
+        `Read more... <hoomd.md.nlist.NeighborList.r_cut>`
+
+    .. py:property:: cpu_local_nlist_arrays
+
+        Local nlist arrays on the CPU.
+        `Read more... <hoomd.md.nlist.NeighborList.cpu_local_nlist_arrays>`
+
+    .. py:property:: gpu_local_nlist_arrays
+
+        Local nlist arrays on the GPU.
+        `Read more... <hoomd.md.nlist.NeighborList.gpu_local_nlist_arrays>`
+
+    .. py:property:: local_pair_list
+
+        Local pair list.
+        `Read more... <hoomd.md.nlist.NeighborList.local_pair_list>`
+
+    .. py:property:: num_builds
+
+        The number of neighbor list builds.
+        `Read more... <hoomd.md.nlist.NeighborList.num_builds>`
+    
+    .. py:property:: pair_list
+
+        Global pair list.
+        `Read more... <hoomd.md.nlist.NeighborList.pair_list>`
+
+    .. py:property:: shortest_rebuild
+
+        The shortest period between neighbor list rebuilds.
+        `Read more... <hoomd.md.nlist.NeighborList.shortest_rebuild>`
+        
     """
 
     def __init__(self, buffer, exclusions, rebuild_check_delay, check_dist,
@@ -152,14 +226,14 @@ class NeighborList(Compute):
 
     @property
     def cpu_local_nlist_arrays(self):
-        """hoomd.md.data.NeighborListLocalAccess: Expose nlist arrays on the \
+        """hoomd.md.data.NeighborListLocalAccess: Local nlist arrays on the \
         CPU.
 
-        Provides direct acces to the neighbor list arrays on the cpu. All data
+        Provides direct access to the neighbor list arrays on the cpu. All data
         is MPI rank-local.
 
         The `hoomd.md.data.NeighborListLocalAccess` object exposes the internal
-        data representation to efficently iterate over the neighbor list.
+        data representation to efficiently iterate over the neighbor list.
 
         Note:
             The local arrays are read only.
@@ -192,7 +266,7 @@ class NeighborList(Compute):
         is MPI rank-local.
 
         The `hoomd.md.data.NeighborListLocalAccessGPU` object exposes the
-        internal data representation to efficently iterate over the neighbor
+        internal data representation to efficiently iterate over the neighbor
         list.
 
         Note:
@@ -367,10 +441,18 @@ class Cell(NeighborList):
 
         cell = nlist.Cell()
 
+    {inherited}
+
+    ----------
+
+    **Members defined in** `Cell`:
+
     Attributes:
         deterministic (bool): When `True`, sort neighbors to help provide
             deterministic simulation runs.
     """
+
+    __doc__ = __doc__.replace("{inherited}", NeighborList._doc_inherited)
 
     def __init__(self,
                  buffer,
@@ -472,12 +554,20 @@ class Stencil(NeighborList):
         describes this neighbor list implementation. Cite it if you utilize
         `Stencil` in your research.
 
+    {inherited}
+
+    ----------
+
+    **Members defined in** `Stencil`:
+
     Attributes:
         cell_width (float): The underlying stencil bin width for the cell list
             :math:`[\\mathrm{length}]`.
         deterministic (bool): When `True`, sort neighbors to help provide
             deterministic simulation runs.
     """
+
+    __doc__ = __doc__.replace("{inherited}", NeighborList._doc_inherited)
 
     def __init__(self,
                  cell_width,
@@ -553,6 +643,8 @@ class Tree(NeighborList):
 
         nl_t = nlist.Tree(check_dist=False)
     """
+
+    __doc__ += NeighborList._doc_inherited
 
     def __init__(self,
                  buffer,

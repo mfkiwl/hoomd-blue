@@ -1,9 +1,7 @@
 # Copyright (c) 2009-2024 The Regents of the University of Michigan.
 # Part of HOOMD-blue, released under the BSD 3-Clause License.
 
-r"""Special pair forces.
-
-Special pair force classes apply a force and virial on every particle in the
+r"""Special pair force classes apply a force and virial on every particle in the
 simulation state commensurate with the potential energy:
 
 .. math::
@@ -55,6 +53,8 @@ class SpecialPair(Force):
         for `isinstance` or `issubclass` checks.
     """
 
+    __doc__ += Force._doc_inherited
+
     # Module where the C++ class is defined. Reassign this when developing an
     # external plugin.
     _ext_module = _md
@@ -96,6 +96,18 @@ class LJ(SpecialPair):
         fields, such as the scaled 1-4 interactions in OPLS where both the 1-4
         `LJ` and `Coulomb` interactions are scaled by 0.5.
 
+    Examples::
+
+        lj = special_pair.LJ()
+        lj.params['cluster'] = dict(epsilon=3, sigma=0.5)
+        lj.r_cut['cluster'] = 5
+
+    {inherited}
+
+    ----------
+
+    **Members defined in** `LJ`:
+
     Attributes:
         params (TypeParameter[``special pair type``, dict]):
             The parameter of the lj forces for each particle type.
@@ -110,15 +122,10 @@ class LJ(SpecialPair):
         r_cut (TypeParameter[``special pair type``, float]):
             The cut-off distance for special pair potential
             :math:`[\mathrm{length}]`
-
-    Examples::
-
-        lj = special_pair.LJ()
-        lj.params['cluster'] = dict(epsilon=3, sigma=0.5)
-        lj.r_cut['cluster'] = 5
     """
 
     _cpp_class_name = "PotentialSpecialPairLJ"
+    __doc__ = __doc__.replace("{inherited}", SpecialPair._doc_inherited)
 
     def __init__(self):
         super().__init__()
@@ -151,6 +158,18 @@ class Coulomb(SpecialPair):
         fields, such as the scaled 1-4 interactions in OPLS where both the 1-4
         `LJ` and `Coulomb` interactions are scaled by 0.5.
 
+    Examples::
+
+        coulomb = special_pair.Coulomb()
+        coulomb.params['cluster'] = dict(alpha=1.0)
+        coulomb.r_cut['cluster'] = 2
+
+    {inherited}
+
+    ----------
+
+    **Members defined in** `Coulomb`:
+
     Attributes:
         params (TypeParameter[``special pair type``, dict]):
             The parameter of the Coulomb forces for each particle type.
@@ -162,15 +181,10 @@ class Coulomb(SpecialPair):
         r_cut (TypeParameter[``special pair type``, float]):
             The cut-off distance for special pair potential
             :math:`[\mathrm{length}]`
-
-    Examples::
-
-        coulomb = special_pair.Coulomb()
-        coulomb.params['cluster'] = dict(alpha=1.0)
-        coulomb.r_cut['cluster'] = 2
     """
 
     _cpp_class_name = "PotentialSpecialPairCoulomb"
+    __doc__ = __doc__.replace("{inherited}", SpecialPair._doc_inherited)
 
     def __init__(self):
         super().__init__()

@@ -1,17 +1,7 @@
 # Copyright (c) 2009-2024 The Regents of the University of Michigan.
 # Part of HOOMD-blue, released under the BSD 3-Clause License.
 
-r"""Improper forces.
-
-.. skip: next if(not hoomd.version.md_built)
-
-.. invisible-code-block: python
-
-    if hoomd.version.md_built:
-        simulation = hoomd.util.make_example_simulation()
-        simulation.operations.integrator = hoomd.md.Integrator(dt=0.001)
-
-Improper force classes apply a force and virial on every particle in the
+r"""Improper force classes apply a force and virial on every particle in the
 simulation state commensurate with the potential energy:
 
 .. math::
@@ -42,6 +32,14 @@ particles in the improper group:
     U_{ijkl}(\chi) [m=i \lor m=j \lor m=k \lor m=l]
 
 and similarly for virials.
+
+.. skip: next if(not hoomd.version.md_built)
+
+.. invisible-code-block: python
+
+    if hoomd.version.md_built:
+        simulation = hoomd.util.make_example_simulation()
+        simulation.operations.integrator = hoomd.md.Integrator(dt=0.001)
 """
 
 import hoomd
@@ -58,6 +56,8 @@ class Improper(md.force.Force):
         This class should not be instantiated by users. The class can be used
         for `isinstance` or `issubclass` checks.
     """
+
+    __doc__ += md.force.Force._doc_inherited
 
     # Module where the C++ class is defined. Reassign this when developing an
     # external plugin.
@@ -92,6 +92,17 @@ class Harmonic(Improper):
 
         U(r) = \\frac{1}{2}k \\left( \\chi - \\chi_{0}  \\right )^2
 
+    Example::
+
+        harmonic = hoomd.md.improper.Harmonic()
+        harmonic.params['A-B-C-D'] = dict(k=1.0, chi0=0)
+
+    {inherited}
+
+    ----------
+
+    **Members defined in** `Harmonic`:
+
     Attributes:
         params(`TypeParameter` [``improper type``, `dict`]):
             The parameter of the harmonic impropers for each improper type. The
@@ -101,13 +112,9 @@ class Harmonic(Improper):
               :math:`[\\mathrm{energy}]`.
             * ``chi0`` (`float`, **required**), equilibrium angle
               :math:`\\chi_0` :math:`[\\mathrm{radian}]`.
-
-    Example::
-
-        harmonic = hoomd.md.improper.Harmonic()
-        harmonic.params['A-B-C-D'] = dict(k=1.0, chi0=0)
     """
     _cpp_class_name = "HarmonicImproperForceCompute"
+    __doc__ = __doc__.replace("{inherited}", Improper._doc_inherited)
 
     def __init__(self):
         super().__init__()
@@ -130,6 +137,19 @@ class Periodic(Improper):
 
         U(\\chi) = k \\left( 1 + d \\cos(n \\chi - \\chi_{0})  \\right )
 
+    .. rubric:: Example:
+
+    .. code-block:: python
+
+        periodic = hoomd.md.improper.Periodic()
+        periodic.params['A-B-C-D'] = dict(k=1.0, n = 1, chi0=0, d=1.0)
+
+    {inherited}
+
+    ----------
+
+    **Members defined in** `Periodic`:
+
     Attributes:
         params(`TypeParameter` [``improper type``, `dict`]):
             The parameter of the harmonic impropers for each improper type. The
@@ -143,16 +163,9 @@ class Periodic(Improper):
               :math:`n` :math:`[\\mathrm{dimensionless}]`.
             * ``d`` (`float`, **required**), sign factor
               :math:`d` :math:`[\\mathrm{dimensionless}]`.
-
-    .. rubric:: Example:
-
-    .. code-block:: python
-
-        periodic = hoomd.md.improper.Periodic()
-        periodic.params['A-B-C-D'] = dict(k=1.0, n = 1, chi0=0, d=1.0)
-
     """
     _cpp_class_name = "PeriodicImproperForceCompute"
+    __doc__ = __doc__.replace("{inherited}", Improper._doc_inherited)
 
     def __init__(self):
         super().__init__()

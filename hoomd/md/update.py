@@ -45,6 +45,8 @@ class ZeroMomentum(Updater):
             hoomd.trigger.Periodic(100))
     """
 
+    __doc__ += Updater._doc_inherited
+
     def __init__(self, trigger):
         # initialize base class
         super().__init__(trigger)
@@ -57,21 +59,6 @@ class ZeroMomentum(Updater):
 
 class ReversePerturbationFlow(Updater):
     """Reverse Perturbation method to establish shear flow.
-
-     "Florian Mueller-Plathe. Reversing the perturbation in nonequilibrium
-     molecular dynamics: An easy way to calculate the shear viscosity of fluids.
-     Phys. Rev. E, 59:4894-4898, May 1999."
-
-    The simulation box is divided in a number of slabs.  Two distinct slabs of
-    those are chosen. The "max" slab searches for the maximum velocity component
-    in flow direction while the "min" slab searches for the minimum velocity
-    component. Afterward, both velocity components are swapped.
-
-    This introduces a momentum flow, which drives the flow. The strength of this
-    flow is set through the `flow_target` argument, which defines a target value
-    for the time-integrated momentum flux. The searching and swapping is
-    repeated until the target is reached. Depending on the target sign, the
-    "max" and "min" slab might be swapped.
 
     Args:
         filter (hoomd.filter.filter_like): Subset of particles on which to
@@ -101,11 +88,25 @@ class ReversePerturbationFlow(Updater):
         min_slab (int): Id < n_slabs where the min velocity component is search
             for. If set < 0 the value is set to its default 0.
 
+    "Florian Mueller-Plathe. Reversing the perturbation in nonequilibrium
+    molecular dynamics: An easy way to calculate the shear viscosity of fluids.
+    Phys. Rev. E, 59:4894-4898, May 1999."
+
+    The simulation box is divided in a number of slabs.  Two distinct slabs of
+    those are chosen. The "max" slab searches for the maximum velocity component
+    in flow direction while the "min" slab searches for the minimum velocity
+    component. Afterward, both velocity components are swapped.
+
+    This introduces a momentum flow, which drives the flow. The strength of this
+    flow is set through the `flow_target` argument, which defines a target value
+    for the time-integrated momentum flux. The searching and swapping is
+    repeated until the target is reached. Depending on the target sign, the
+    "max" and "min" slab might be swapped.
+
     Attention:
         * This updater uses ``hoomd.trigger.Periodic(1)`` as a trigger, meaning
           it is applied every timestep.
         * This updater works currently only with orthorhombic boxes.
-
 
     Note:
         The attributes of this updater are immutable once the updater is
@@ -122,6 +123,12 @@ class ReversePerturbationFlow(Updater):
                                                       flow_direction="X",
                                                       n_slabs=20)
 
+    {inherited}
+
+    ----------
+
+    **Members defined in** `ReversePerturbationFlow`:
+    
     Attributes:
         filter (hoomd.filter.filter_like): Subset of particles on which to
             apply this updater.
@@ -142,6 +149,8 @@ class ReversePerturbationFlow(Updater):
         min_slab (int): Id < n_slabs where the min velocity component is
             searched for.
     """
+
+    __doc__ = __doc__.replace("{inherited}", Updater._doc_inherited)
 
     def __init__(self,
                  filter,
@@ -256,15 +265,21 @@ class ActiveRotationalDiffusion(Updater):
     Tip:
         Use `hoomd.md.force.Active.create_diffusion_updater` to construct
         a `ActiveRotationalDiffusion` instance.
+    
+    {inherited}
+
+    ----------
+
+    **Members defined in** `ActiveRotationalDiffusion`:
 
     Attributes:
-        trigger (hoomd.trigger.Trigger): Select the timesteps to update
-            rotational diffusion.
         active_force (hoomd.md.force.Active): The active force associated with
             the updater. This is not settable after construction.
         rotational_diffusion (hoomd.variant.Variant): The rotational diffusion
             as a function of time.
     """
+
+    __doc__ = __doc__.replace("{inherited}", Updater._doc_inherited)
 
     def __init__(self, trigger, active_force, rotational_diffusion):
         super().__init__(trigger)

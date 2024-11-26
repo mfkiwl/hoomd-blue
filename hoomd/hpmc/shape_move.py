@@ -100,7 +100,7 @@ class Elastic(ShapeMove):
         stiffness (hoomd.variant.variant_like): Shape stiffness against
             deformations.
 
-        mc (`type` or `hoomd.hpmc.integrate.HPMCIntegrator`): The class of
+        mc (`hoomd.hpmc.integrate.HPMCIntegrator`): The class of
             the MC shape integrator or an instance (see `hoomd.hpmc.integrate`)
             to use with this elastic shape. Must be a compatible class. We use
             this argument to create validation for `reference_shape`.

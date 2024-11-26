@@ -1,9 +1,7 @@
 # Copyright (c) 2009-2024 The Regents of the University of Michigan.
 # Part of HOOMD-blue, released under the BSD 3-Clause License.
 
-r"""MPCD particle body forces.
-
-MPCD can apply a body force to each MPCD particle as a function of position.
+r"""MPCD can apply a body force to each MPCD particle as a function of position.
 The external force should be compatible with the chosen
 :class:`~hoomd.mpcd.geometry.Geometry`. Global momentum conservation can be
 broken by adding a body force, so care should be chosen that the entire model

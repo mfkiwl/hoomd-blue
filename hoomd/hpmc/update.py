@@ -224,6 +224,30 @@ class BoxMC(Updater):
     **Members defined in** `BoxMC`:
 
     Attributes:
+        aspect (dict):
+            Parameters for isovolume aspect ratio moves. The dictionary has the
+            following keys:
+
+            * ``weight`` (float) - Relative weight of aspect box moves.
+            * ``delta`` (float) - Maximum relative change of box aspect ratio
+              :math:`\delta_\mathrm{aspect} [\mathrm{dimensionless}]`.
+
+        instance (int):
+            When using multiple `BoxMC` updaters in a single simulation,
+            give each a unique value for `instance` so they generate
+            different streams of random numbers.
+
+        length (dict):
+            Parameters for isobaric box length moves that change box lengths
+            independently. The dictionary has the following keys:
+
+            * ``weight`` (float) - Maximum change of HOOMD-blue box parameters
+              Lx, Ly, and Lz.
+            * ``delta`` (tuple[float, float, float]) - Maximum change of the
+              box lengths :math:`(\delta_{\mathrm{length},x},
+              \delta_{\mathrm{length},y}, \delta_{\mathrm{length},z})
+              [\mathrm{length}]`.
+
         P (hoomd.variant.Variant): The pressure :math:`P`
             :math:`[\mathrm{energy} \ \mathrm{length}^{-2}]` in 2D or
             :math:`[\mathrm{energy} \ \mathrm{length}^{-3}]` in 3D.
@@ -239,25 +263,6 @@ class BoxMC(Updater):
             * ``delta`` (float) - Maximum change in **V** or **ln(V)** where V
               is box area (2D) or volume (3D) :math:`\delta_\mathrm{volume}`.
 
-        aspect (dict):
-            Parameters for isovolume aspect ratio moves. The dictionary has the
-            following keys:
-
-            * ``weight`` (float) - Relative weight of aspect box moves.
-            * ``delta`` (float) - Maximum relative change of box aspect ratio
-              :math:`\delta_\mathrm{aspect} [\mathrm{dimensionless}]`.
-
-        length (dict):
-            Parameters for isobaric box length moves that change box lengths
-            independently. The dictionary has the following keys:
-
-            * ``weight`` (float) - Maximum change of HOOMD-blue box parameters
-              Lx, Ly, and Lz.
-            * ``delta`` (tuple[float, float, float]) - Maximum change of the
-              box lengths :math:`(\delta_{\mathrm{length},x},
-              \delta_{\mathrm{length},y}, \delta_{\mathrm{length},z})
-              [\mathrm{length}]`.
-
         shear (dict):
             Parameters for isovolume box shear moves. The dictionary has the
             following keys:
@@ -270,11 +275,6 @@ class BoxMC(Updater):
             * ``reduce`` (float) - Maximum number of lattice vectors of shear
               to allow before applying lattice reduction. Values less than 0.5
               disable shear reduction.
-
-        instance (int):
-            When using multiple `BoxMC` updaters in a single simulation,
-            give each a unique value for `instance` so they generate
-            different streams of random numbers.
     """
 
     __doc__ = __doc__.replace("{inherited}", Updater._doc_inherited)
@@ -417,16 +417,15 @@ class MuVT(Updater):
     **Members defined in** `MuVT`:
 
     Attributes:
-        trigger (int): Select the timesteps on which to perform cluster moves.
-        transfer_types (list): List of type names that are being transferred
-          from/to the reservoir or between boxes
+        fugacity (`TypeParameter` [ ``particle type``, `float`]):
+            Particle fugacity
+            :math:`[\mathrm{energy}] \cdot [\mathrm{volume}^{-1}]` (**default:** 0).
         max_volume_rescale (float): Maximum step size in ln(V) (applies to
           Gibbs ensemble)
         move_ratio (float): The ratio between volume and exchange/transfer moves
           (applies to Gibbs ensemble)
-        fugacity (`TypeParameter` [ ``particle type``, `float`]):
-            Particle fugacity
-            :math:`[\mathrm{energy}] \cdot [\mathrm{volume}^{-1}]` (**default:** 0).
+        transfer_types (list): List of type names that are being transferred
+          from/to the reservoir or between boxes
     """
 
     __doc__ = __doc__.replace("{inherited}", Updater._doc_inherited)
@@ -569,8 +568,6 @@ class Shape(Updater):
     **Members defined in** `Shape`:
 
     Attributes:
-        trigger (Trigger): Call the updater on triggered time steps.
-
         shape_move (ShapeMove): Type of shape move to apply when updating shape
             definitions
 
@@ -696,12 +693,10 @@ class GCA(Updater):
     **Members defined in** `GCA`:
 
     Attributes:
-        pivot_move_probability (float): Set the probability for attempting a
-                                        pivot move.
         flip_probability (float): Set the probability for transforming an
                                  individual cluster.
-        trigger (Trigger): Select the timesteps on which to perform cluster
-            moves.
+        pivot_move_probability (float): Set the probability for attempting a
+                                        pivot move.
     """
     _remove_for_pickling = Updater._remove_for_pickling + ('_cpp_cell',)
     _skip_for_equality = Updater._skip_for_equality | {'_cpp_cell'}
@@ -920,8 +915,6 @@ class QuickCompress(Updater):
     **Members defined in** `QuickCompress`:
 
     Attributes:
-        trigger (Trigger): Update the box dimensions on triggered time steps.
-
         target_box (BoxVariant): The variant for the dimensions of the target
             box.
 

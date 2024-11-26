@@ -5,4 +5,3 @@ Geometry
 
 .. autoclass:: Geometry
    :members:
-   :show-inheritance:

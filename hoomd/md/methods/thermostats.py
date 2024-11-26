@@ -1,9 +1,7 @@
 # Copyright (c) 2009-2024 The Regents of the University of Michigan.
 # Part of HOOMD-blue, released under the BSD 3-Clause License.
 
-"""Provide classes for thermostatting simulations.
-
-The thermostat classes are for use with `hoomd.md.methods.ConstantVolume` and
+"""The thermostat classes are for use with `hoomd.md.methods.ConstantVolume` and
 `hoomd.md.methods.ConstantPressure`.
 
 .. invisible-code-block: python
@@ -216,11 +214,11 @@ class MTTK(Thermostat):
     def thermalize_dof(self):
         r"""Set the thermostat momenta to random values.
 
-        `thermalize_dof` sets a random value for the momentum
-        :math:`\xi`. When `Integrator.integrate_rotational_dof` is `True`, it
-        also sets a random value for the rotational thermostat momentum
-        :math:`\xi_{\mathrm{rot}}`. Call `thermalize_dof` to set a
-        new random state for the thermostat.
+        `thermalize_dof` sets a random value for the momentum :math:`\xi`.
+        When `hoomd.md.Integrator.integrate_rotational_dof` is `True`,
+        it also sets a random value for the rotational thermostat
+        momentum :math:`\xi_{\mathrm{rot}}`. Call `thermalize_dof` to set a new
+        random state for the thermostat.
 
         .. rubric:: Example
 

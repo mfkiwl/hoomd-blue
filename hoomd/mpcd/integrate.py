@@ -148,6 +148,12 @@ class Integrator(_MDIntegrator):
             mpcd_particle_sorter=hoomd.mpcd.tune.ParticleSorter(trigger=20))
         simulation.operations.integrator = integrator
 
+    {inherited}
+
+    ----------
+
+    **Members defined in** `hoomd.mpcd.Integrator`:
+
     Attributes:
         collision_method (hoomd.mpcd.collide.CollisionMethod): Collision method
             for the MPCD particles and any embedded particles.
@@ -157,8 +163,9 @@ class Integrator(_MDIntegrator):
 
         streaming_method (hoomd.mpcd.stream.StreamingMethod): Streaming method
             for the MPCD particles.
-
     """
+
+    __doc__ = __doc__.replace("{inherited}", _MDIntegrator._doc_inherited)
 
     def __init__(
         self,

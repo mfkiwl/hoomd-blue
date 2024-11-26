@@ -146,6 +146,12 @@ class Coulomb(Force):
         `md.pair.Ewald` and `md.long_range.pppm.Coulomb` instances that together
         implement the PPPM method for electrostatics.
 
+    {inherited}
+
+    ----------
+
+    **Members defined in** `Coulomb`:
+
     Attributes:
         resolution (tuple[int, int, int]): Number of grid points in the x, y,
           and z directions :math:`\\mathrm{[dimensionless]}`.
@@ -156,6 +162,8 @@ class Coulomb(Force):
         alpha (float): Debye screening parameter
           :math:`\\mathrm{[length^{-1}]}`.
     """
+
+    __doc__ = __doc__.replace("{inherited}", Force._doc_inherited)
 
     def __init__(self, nlist, resolution, order, r_cut, alpha, pair_force):
         super().__init__()

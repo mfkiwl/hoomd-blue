@@ -1,9 +1,7 @@
 # Copyright (c) 2009-2024 The Regents of the University of Michigan.
 # Part of HOOMD-blue, released under the BSD 3-Clause License.
 
-"""MPCD collision methods.
-
-An MPCD collision method is required to update the particle velocities over
+"""An MPCD collision method is required to update the particle velocities over
 time. Particles are binned into cells based on their positions, and all
 particles in a cell undergo a stochastic collision that updates their velocities
 while conserving linear momentum. Collision rules can optionally be extended to
@@ -49,6 +47,12 @@ class CellList(Compute):
 
         cell_list = simulation.operations.integrator.cell_list
 
+    {inherited}
+
+    ----------
+
+    **Members defined in** `CellList`:
+
     Attributes:
         shift (bool): When True, randomly shift underlying collision cells.
 
@@ -59,6 +63,8 @@ class CellList(Compute):
                 cell_list.shift = True
 
     """
+
+    __doc__ = __doc__.replace("{inherited}", Operation._doc_inherited)
 
     def __init__(self, shift=True):
         super().__init__()
@@ -88,6 +94,12 @@ class CollisionMethod(Operation):
         embedded_particles (hoomd.filter.filter_like): HOOMD particles to
             include in collision.
 
+    {inherited}
+
+    ----------
+
+    **Members defined in** `CollisionMethod`:
+
     Attributes:
         embedded_particles (hoomd.filter.filter_like): HOOMD particles to
             include in collision (*read only*).
@@ -116,6 +128,24 @@ class CollisionMethod(Operation):
             :class:`~hoomd.mpcd.stream.StreamingMethod` if one is attached to
             the :class:`~hoomd.mpcd.Integrator`.
 
+    """
+
+    __doc__ = __doc__.replace("{inherited}", Operation._doc_inherited)
+    _doc_inherited = Operation._doc_inherited + """
+    ----------
+
+    **Members inherited from**
+    `CollisionMethod <hoomd.mpcd.collide.CollisionMethod>`:
+
+    .. py:attribute:: embedded_particiles
+
+        HOOMD particles to include in collision.
+        `Read more... <hoomd.mpcd.collide.CollisionMethod.embedded_particles>`
+
+    .. py:attribute:: period
+
+        Number of integration steps between collisions.
+        `Read more... <hoomd.mpcd.collide.CollisionMethod.period>`
     """
 
     def __init__(self, period, embedded_particles=None):
@@ -172,6 +202,12 @@ class AndersenThermostat(CollisionMethod):
             embedded_particles=hoomd.filter.All())
         simulation.operations.integrator.collision_method = andersen_thermostat
 
+    {inherited}
+
+    ----------
+
+    **Members defined in** `AndersenThermostat`:
+    
     Attributes:
         kT (hoomd.variant.variant_like): Temperature of the thermostat
             :math:`[\mathrm{energy}]`.
@@ -194,6 +230,8 @@ class AndersenThermostat(CollisionMethod):
                 andersen_thermostat.kT = hoomd.variant.Ramp(1.0, 2.0, 0, 100)
 
     """
+
+    __doc__ = __doc__.replace("{inherited}", CollisionMethod._doc_inherited)
 
     def __init__(self, period, kT, embedded_particles=None):
         super().__init__(period, embedded_particles)
@@ -282,6 +320,12 @@ class StochasticRotationDynamics(CollisionMethod):
             embedded_particles=hoomd.filter.All())
         simulation.operations.integrator.collision_method = srd
 
+    {inherited}
+
+    ----------
+
+    **Members defined in** `StochasticRotationDynamics`:
+
     Attributes:
         angle (float): Rotation angle (in degrees)
 
@@ -309,6 +353,8 @@ class StochasticRotationDynamics(CollisionMethod):
                 srd.kT = hoomd.variant.Ramp(1.0, 2.0, 0, 100)
 
     """
+
+    __doc__ = __doc__.replace("{inherited}", CollisionMethod._doc_inherited)
 
     def __init__(self, period, angle, kT=None, embedded_particles=None):
         super().__init__(period, embedded_particles)

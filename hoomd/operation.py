@@ -569,7 +569,7 @@ class TriggeredOperation(Operation):
     ----------
 
     **Members inherited from**
-    `TriggeredOperation <hoomd.operation.TriggeredOperation>`:
+    `Integrator <hoomd.md.Integrator>`:
 
     .. py:attribute:: trigger
 

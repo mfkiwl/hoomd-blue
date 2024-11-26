@@ -5,4 +5,3 @@ Thermostat
 
 .. autoclass:: Thermostat
    :members:
-   :show-inheritance:

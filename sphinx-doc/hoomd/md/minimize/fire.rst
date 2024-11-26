@@ -5,4 +5,3 @@ FIRE
 
 .. autoclass:: FIRE
    :members:
-   :show-inheritance:

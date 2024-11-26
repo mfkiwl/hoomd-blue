@@ -5,4 +5,3 @@ BodyForce
 
 .. autoclass:: BodyForce
    :members:
-   :show-inheritance:

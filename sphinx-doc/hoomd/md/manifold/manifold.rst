@@ -5,4 +5,3 @@ Manifold
 
 .. autoclass:: Manifold
    :members:
-   :show-inheritance:

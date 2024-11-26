@@ -355,9 +355,11 @@ class Custom(Force):
     Note:
         Access to the force buffers is constant (O(1)) time.
 
-    .. versionchanged:: 3.1.0
-        `Custom` zeros the force, torque, energy, and virial arrays before
-        calling the user-provided `set_forces`.
+    {inherited}
+
+    ----------
+
+    **Members defined in** `Custom`:
     """
 
     def __init__(self, aniso=False):
@@ -425,6 +427,12 @@ class Active(Force):
 
         The energy and virial associated with the active force are 0.
 
+    {inherited}
+
+    ----------
+
+    **Members defined in** `Active`:
+
     Attributes:
         filter (`hoomd.filter`): Subset of particles on which to
             apply active forces.
@@ -447,6 +455,8 @@ class Active(Force):
         Type: `TypeParameter` [``particle_type``, `tuple` [`float`, `float`,
         `float`]]
     """
+
+    __doc__ = __doc__.replace("{inherited}", Force._doc_inherited)
 
     def __init__(self, filter):
         super().__init__()
@@ -542,6 +552,12 @@ class ActiveOnManifold(Active):
         active.active_force['A','B'] = (1,0,0)
         active.active_torque['A','B'] = (0,0,0)
 
+    {inherited}
+
+    ----------
+
+    **Members defined in** `ActiveOnManifold`:
+
     Attributes:
         filter (`hoomd.filter`): Subset of particles on which to
             apply active forces.
@@ -565,6 +581,8 @@ class ActiveOnManifold(Active):
         Type: `TypeParameter` [``particle_type``, `tuple` [`float`, `float`,
         `float`]]
     """
+
+    __doc__ = __doc__.replace("{inherited}", Force._doc_inherited)
 
     def __init__(self, filter, manifold_constraint):
         # store metadata
@@ -621,6 +639,12 @@ class Constant(Force):
 
         The energy and virial associated with the constant force are 0.
 
+    {inherited}
+
+    ----------
+
+    **Members defined in** `Constant`:
+
     Attributes:
         filter (`hoomd.filter`): Subset of particles on which to
             apply constant forces.
@@ -643,6 +667,8 @@ class Constant(Force):
         Type: `TypeParameter` [``particle_type``, `tuple` [`float`, `float`,
         `float`]]
     """
+
+    __doc__ = __doc__.replace("{inherited}", Force._doc_inherited)
 
     def __init__(self, filter):
         super().__init__()

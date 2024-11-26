@@ -1,9 +1,7 @@
 # Copyright (c) 2009-2024 The Regents of the University of Michigan.
 # Part of HOOMD-blue, released under the BSD 3-Clause License.
 
-r"""Mesh Bending potentials.
-
-Mesh bending force classes apply a force and virial to every mesh vertex
+r"""Mesh bending force classes apply a force and virial to every mesh vertex
 particle based on the local curvature :math:`K` of the given mesh triangulation.
 
 .. math::
@@ -35,6 +33,9 @@ from hoomd.error import MPINotAvailableError
 class BendingRigidity(MeshPotential):
     r"""Bending potential.
 
+    Args:
+        mesh (`hoomd.mesh.Mesh`): Mesh data structure constraint.
+
     `BendingRigidity` specifies a bending energy applied to
     all mesh triangles in ``mesh``.
 
@@ -46,8 +47,18 @@ class BendingRigidity(MeshPotential):
     with :math:`\theta_{ij}` is the angle between the two normal
     directors of the bordering triangles of bond :math:`i` and :math:`j`.
 
-    Args:
-        mesh (`hoomd.mesh.Mesh`): Mesh data structure constraint.
+    .. rubric:: Example:
+
+    .. code-block:: python
+
+        bending_potential = hoomd.md.mesh.bending.BendingRigidity(mesh)
+        bending_potential.params["mesh"] = dict(k=10.0)
+
+    {inherited}
+
+    ----------
+
+    **Members defined in** `BendingRigidity`:
 
     Attributes:
         params (TypeParameter[``mesh name``,dict]):
@@ -57,15 +68,9 @@ class BendingRigidity(MeshPotential):
 
             * ``k`` (`float`, **required**) - bending stiffness
               :math:`[\mathrm{energy}]`
-
-    .. rubric:: Example:
-
-    .. code-block:: python
-
-        bending_potential = hoomd.md.mesh.bending.BendingRigidity(mesh)
-        bending_potential.params["mesh"] = dict(k=10.0)
     """
     _cpp_class_name = "BendingRigidityMeshForceCompute"
+    __doc__ = __doc__.replace("{inherited}", MeshPotential._doc_inherited)
 
     def __init__(self, mesh):
         params = TypeParameter("params", "types",
@@ -77,6 +82,9 @@ class BendingRigidity(MeshPotential):
 
 class Helfrich(MeshPotential):
     r"""Helfrich bending potential.
+
+    Args:
+        mesh (:py:mod:`hoomd.mesh.Mesh`): Mesh data structure constraint.
 
     `Helfrich` specifies a Helfrich bending energy applied to
     all particles within the mesh.
@@ -101,8 +109,20 @@ class Helfrich(MeshPotential):
     Attention:
         `Helfrich` is NOT implemented for MPI parallel execution!
 
-    Args:
-        mesh (:py:mod:`hoomd.mesh.Mesh`): Mesh data structure constraint.
+    .. rubric:: Example:
+
+    .. skip: next if(hoomd.version.mpi_enabled)
+
+    .. code-block:: python
+
+        helfrich_potential = hoomd.md.mesh.bending.Helfrich(mesh)
+        helfrich_potential.params["mesh"] = dict(k=10.0)
+
+    {inherited}
+
+    ----------
+
+    **Members defined in** `Helfrich`:
 
     Attributes:
         params (TypeParameter[dict]):
@@ -113,16 +133,9 @@ class Helfrich(MeshPotential):
             * ``k`` (`float`, **required**) - bending stiffness
               :math:`[\mathrm{energy}]`
 
-    .. rubric:: Example:
-
-    .. skip: next if(hoomd.version.mpi_enabled)
-
-    .. code-block:: python
-
-        helfrich_potential = hoomd.md.mesh.bending.Helfrich(mesh)
-        helfrich_potential.params["mesh"] = dict(k=10.0)
     """
     _cpp_class_name = "HelfrichMeshForceCompute"
+    __doc__ = __doc__.replace("{inherited}", MeshPotential._doc_inherited)
 
     def __init__(self, mesh):
 

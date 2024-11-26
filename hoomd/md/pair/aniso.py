@@ -1,9 +1,7 @@
 # Copyright (c) 2009-2024 The Regents of the University of Michigan.
 # Part of HOOMD-blue, released under the BSD 3-Clause License.
 
-r"""Anisotropic pair forces.
-
-Anisotropic pair force classes apply a force, torque, and virial on every
+r"""Anisotropic pair force classes apply a force, torque, and virial on every
 particle in the simulation state commensurate with the potential energy:
 
 .. math::
@@ -24,7 +22,6 @@ parameter.
     simulation.operations.integrator = hoomd.md.Integrator(
         dt=0.001,
         integrate_rotational_dof = True)
-
 """
 
 from collections.abc import Sequence
@@ -47,15 +44,8 @@ class AnisotropicPair(Pair):
     Warning:
         This class should not be instantiated by users. The class can be used
         for `isinstance` or `issubclass` checks.
-
-    Args:
-        nlist (hoomd.md.nlist.NeighborList) : The neighbor list.
-        default_r_cut (`float`, optional) : The default cutoff for the
-            potential, defaults to ``None`` which means no cutoff
-            :math:`[\mathrm{length}]`.
-        mode (`str`, optional) : the energy shifting mode, defaults to "none".
     """
-
+    __doc__ += Pair._doc_inherited
     _accepted_modes = ("none", "shift")
 
     def __init__(self, nlist, default_r_cut=None, mode="none"):
@@ -106,6 +96,12 @@ class Dipole(AnisotropicPair):
         dipole.params[('A', 'B')] = dict(A=1.0, kappa=4.0)
         dipole.mu['A'] = (4.0, 1.0, 0.0)
 
+    {inherited}
+
+    ----------
+
+    **Members defined in** `Dipole`:
+
     .. py:attribute:: params
 
         The dipole potential parameters. The dictionary has the following
@@ -131,6 +127,7 @@ class Dipole(AnisotropicPair):
         `float` ]]
     """
     _cpp_class_name = "AnisoPotentialPairDipole"
+    __doc__ = __doc__.replace("{inherited}", AnisotropicPair._doc_inherited)
 
     def __init__(self, nlist, default_r_cut=None):
         super().__init__(nlist, default_r_cut, 'none')
@@ -181,6 +178,8 @@ class GayBerne(AnisotropicPair):
               (\vec{e_i} \otimes \vec{e_i} + \vec{e_j} \otimes \vec{e_j}),
 
     and :math:`\sigma_{\mathrm{min}} = 2 \min(\ell_\perp, \ell_\parallel)`.
+    The parallel direction is aligned with *z* axis in the particle's
+    reference frame.
 
     The cut-off parameter :math:`r_{\mathrm{cut}}` is defined for two particles
     oriented parallel along the **long** axis, i.e.
@@ -198,6 +197,12 @@ class GayBerne(AnisotropicPair):
         gay_berne.params[('A', 'A')] = dict(epsilon=1.0, lperp=0.45, lpar=0.5)
         gay_berne.r_cut[('A', 'B')] = 2 ** (1.0 / 6.0)
 
+    {inherited}
+
+    ----------
+
+    **Members defined in** `GayBerne`:
+
     .. py:attribute:: params
 
         The Gay-Berne potential parameters. The dictionary has the following
@@ -214,6 +219,7 @@ class GayBerne(AnisotropicPair):
         `dict`]
     """
     _cpp_class_name = "AnisoPotentialPairGB"
+    __doc__ = __doc__.replace("{inherited}", AnisotropicPair._doc_inherited)
 
     def __init__(self, nlist, default_r_cut=None, mode='none'):
         super().__init__(nlist, default_r_cut, mode)
@@ -398,58 +404,11 @@ class ALJ(AnisotropicPair):
         Changing dimension in a simulation will invalidate this force and will
         lead to error or unrealistic behavior.
 
-    .. py:attribute:: params
-
-        The ALJ potential parameters. The dictionary has the following keys:
-
-        * ``epsilon`` (`float`, **required**) - base energy scale
-          :math:`\varepsilon` :math:`[energy]`.
-        * ``sigma_i`` (`float`, **required**) - the insphere diameter of the
-          first particle type, :math:`\sigma_i` :math:`[length]`.
-        * ``sigma_j`` (`float`, **required**) - the insphere diameter of the
-          second particle type, :math:`\sigma_j` :math:`[length]`.
-        * ``alpha`` (`int`, **required**) - Integer 0-3 indicating whether or
-          not to include the attractive component of the interaction (see
-          above for details).
-        * ``contact_ratio_i`` (`float`, **optional**) - :math:`\beta_i`, the
-          ratio of the contact sphere diameter of the first type with
-          ``sigma_i``.
-          Defaults to 0.15.
-        * ``contact_ratio_j`` (`float`, **optional**) - :math:`\beta_j`, the
-          ratio of the contact sphere diameter of the second type with
-          ``sigma_j``.
-          Defaults to 0.15.
-        * ``average_simplices`` (`bool`, **optional**) - Whether to average over
-          simplices. Defaults to ``True``. See class documentation for more
-          information.
-
-        Type: `hoomd.data.typeparam.TypeParameter` [`tuple` [``particle_types``,
-        ``particle_types``], `dict`]
-
     Note:
         While the evaluation of the potential is symmetric with respect to
         the potential parameter labels ``i`` and ``j``, the parameters which
         physically represent a specific particle type must appear in all sets
         of pair parameters which include that particle type.
-
-    .. py:attribute:: shape
-
-        The shape of a given type. The dictionary has the following keys per
-        type:
-
-        * ``vertices`` (`list` [`tuple` [`float`, `float`, `float`]],
-          **required**) - The vertices of a convex polytope in 2 or 3
-          dimensions. The third dimension in 2D is ignored.
-        * ``rounding_radii`` (`tuple` [`float`, `float`, `float`] or `float`)
-          - The semimajor axes of a rounding ellipsoid
-          :math:`R_{\mathrm{rounding},i}`. If a single value is specified, the
-          rounding ellipsoid is a sphere. Defaults to (0.0, 0.0, 0.0).
-        * ``faces`` (`list` [`list` [`int`]], **required**) - The faces of the
-          polyhedron specified as a list of list of integers.  The indices
-          corresponding to the vertices must be ordered counterclockwise with
-          respect to the face normal vector pointing outward from the origin.
-
-        Type: `hoomd.data.typeparam.TypeParameter` [``particle_types``, `dict`]
 
     Example::
 
@@ -516,7 +475,61 @@ class ALJ(AnisotropicPair):
         alj.shape["A"] = dict(vertices=cube.vertices,
                               faces=cube.faces)
 
+    {inherited}
+
+    ----------
+
+    **Members defined in** `ALJ`:
+
+    .. py:attribute:: params
+
+        The ALJ potential parameters. The dictionary has the following keys:
+
+        * ``epsilon`` (`float`, **required**) - base energy scale
+          :math:`\varepsilon` :math:`[energy]`.
+        * ``sigma_i`` (`float`, **required**) - the insphere diameter of the
+          first particle type, :math:`\sigma_i` :math:`[length]`.
+        * ``sigma_j`` (`float`, **required**) - the insphere diameter of the
+          second particle type, :math:`\sigma_j` :math:`[length]`.
+        * ``alpha`` (`int`, **required**) - Integer 0-3 indicating whether or
+          not to include the attractive component of the interaction (see
+          above for details).
+        * ``contact_ratio_i`` (`float`, **optional**) - :math:`\beta_i`, the
+          ratio of the contact sphere diameter of the first type with
+          ``sigma_i``.
+          Defaults to 0.15.
+        * ``contact_ratio_j`` (`float`, **optional**) - :math:`\beta_j`, the
+          ratio of the contact sphere diameter of the second type with
+          ``sigma_j``.
+          Defaults to 0.15.
+        * ``average_simplices`` (`bool`, **optional**) - Whether to average over
+          simplices. Defaults to ``True``. See class documentation for more
+          information.
+
+        Type: `hoomd.data.typeparam.TypeParameter` [`tuple` [``particle_types``,
+        ``particle_types``], `dict`]
+
+    .. py:attribute:: shape
+
+        The shape of a given type. The dictionary has the following keys per
+        type:
+
+        * ``vertices`` (`list` [`tuple` [`float`, `float`, `float`]],
+          **required**) - The vertices of a convex polytope in 2 or 3
+          dimensions. The third dimension in 2D is ignored.
+        * ``rounding_radii`` (`tuple` [`float`, `float`, `float`] or `float`)
+          - The semimajor axes of a rounding ellipsoid
+          :math:`R_{\mathrm{rounding},i}`. If a single value is specified, the
+          rounding ellipsoid is a sphere. Defaults to (0.0, 0.0, 0.0).
+        * ``faces`` (`list` [`list` [`int`]], **required**) - The faces of the
+          polyhedron specified as a list of list of integers.  The indices
+          corresponding to the vertices must be ordered counterclockwise with
+          respect to the face normal vector pointing outward from the origin.
+
+        Type: `hoomd.data.typeparam.TypeParameter` [``particle_types``, `dict`]
     """
+
+    __doc__ = __doc__.replace("{inherited}", AnisotropicPair._doc_inherited)
 
     # We don't define a _cpp_class_name since the dimension is a template
     # parameter in C++, so use an instance level attribute instead that is
@@ -568,7 +581,7 @@ class ALJ(AnisotropicPair):
                 with GSD files for visualization.
 
         This is not meant to be used for access to shape information in Python.
-        See the attribute ``shape`` for programatic assess. Use this property to
+        See the attribute ``shape`` for programmatic assess. Use this property to
         log shape for visualization and storage through the GSD file type.
         """
         return self._return_type_shapes()
@@ -668,6 +681,12 @@ class Patchy(AnisotropicPair):
         This class should not be instantiated by users. The class can be used
         for `isinstance` or `issubclass` checks.
 
+    {inherited}
+
+    ----------
+
+    **Members defined in** `Patchy`:
+
     .. py:attribute:: params
 
         The Patchy potential parameters unique to each pair of particle types. The
@@ -712,15 +731,9 @@ class Patchy(AnisotropicPair):
             patchy.directors['A'] = []
 
     """
-
-    _doc_args = r"""
-    Args:
-        nlist (hoomd.md.nlist.NeighborList): Neighbor list
-        default_r_cut (float): Default cutoff radius :math:`[\mathrm{length}]`.
-        mode (str): energy shifting/smoothing mode.
-    """
-
-    _doc_inherited = r"""
+    __doc__ = __doc__.replace("{inherited}", AnisotropicPair._doc_inherited)
+    _doc_inherited = AnisotropicPair._doc_inherited + r"""
+    ----------
 
     **Members inherited from** `Patchy <hoomd.md.pair.aniso.Patchy>`:
 
@@ -759,8 +772,13 @@ class Patchy(AnisotropicPair):
 
 
 class PatchyLJ(Patchy):
-    """Modulate `hoomd.md.pair.LJ` with angular patches."""
-    _doc = r"""
+    r"""Modulate `hoomd.md.pair.LJ` with angular patches.
+
+    Args:
+        nlist (hoomd.md.nlist.NeighborList): Neighbor list
+        default_r_cut (float): Default cutoff radius :math:`[\mathrm{length}]`.
+        mode (str): energy shifting/smoothing mode.
+        
     .. rubric:: Example:
 
     .. code-block:: python
@@ -774,6 +792,12 @@ class PatchyLJ(Patchy):
                                            envelope_params=envelope_params)
         patchylj.directors['A'] = [(1,0,0)]
         simulation.operations.integrator.forces = [patchylj]
+
+    {inherited}
+
+    ----------
+
+    **Members defined in** `PatchyLJ`:
 
     .. py:attribute:: params
 
@@ -793,17 +817,21 @@ class PatchyLJ(Patchy):
 
         Type: `TypeParameter` [`tuple` [``particle_type``, ``particle_type``],
         `dict`]
-
     """
 
-    __doc__ += "\n" + Patchy._doc_args + _doc + Patchy._doc_inherited
+    __doc__ = __doc__.replace("{inherited}", Patchy._doc_inherited)
     _cpp_class_name = "AnisoPotentialPairPatchyLJ"
     _pair_params = {"epsilon": float, "sigma": float}
 
 
 class PatchyExpandedGaussian(Patchy):
-    """Modulate `hoomd.md.pair.ExpandedGaussian` with angular patches."""
-    _doc = r"""
+    r"""Modulate `hoomd.md.pair.ExpandedGaussian` with angular patches.
+    
+    Args:
+        nlist (hoomd.md.nlist.NeighborList): Neighbor list
+        default_r_cut (float): Default cutoff radius :math:`[\mathrm{length}]`.
+        mode (str): energy shifting/smoothing mode.
+    
     .. rubric:: Example:
 
     .. code-block:: python
@@ -820,6 +848,12 @@ class PatchyExpandedGaussian(Patchy):
         patchy_expanded_gaussian.directors['A'] = [(1,0,0), (1,1,1)]
         simulation.operations.integrator.forces = [patchy_expanded_gaussian]
 
+    {inherited}
+
+    ----------
+
+    **Members defined in** `PatchyExpandedGaussian`:
+    
     .. py:attribute:: params
 
         The Patchy potential parameters unique to each pair of particle types. The
@@ -842,14 +876,19 @@ class PatchyExpandedGaussian(Patchy):
         Type: `TypeParameter` [`tuple` [``particle_type``, ``particle_type``],
         `dict`]
     """
-    __doc__ += "\n" + Patchy._doc_args + _doc + Patchy._doc_inherited
+    __doc__ = __doc__.replace("{inherited}", Patchy._doc_inherited)
     _cpp_class_name = "AnisoPotentialPairPatchyExpandedGaussian"
     _pair_params = {"epsilon": float, "sigma": float, "delta": float}
 
 
 class PatchyExpandedLJ(Patchy):
-    """Modulate `hoomd.md.pair.ExpandedLJ` with angular patches."""
-    _doc = r"""
+    r"""Modulate `hoomd.md.pair.ExpandedLJ` with angular patches.
+
+    Args:
+        nlist (hoomd.md.nlist.NeighborList): Neighbor list
+        default_r_cut (float): Default cutoff radius :math:`[\mathrm{length}]`.
+        mode (str): energy shifting/smoothing mode.
+
     .. rubric: Example:
 
     .. code-block:: python
@@ -864,6 +903,11 @@ class PatchyExpandedLJ(Patchy):
         patchylj.directors['A'] = [(1,0,0)]
         simulation.operation.integrator.forces = [patchylj]
 
+    {inherited}
+
+    ----------
+
+    **Members defined in** `PatchyExpandedLJ`:
 
     .. py:attribute:: params
 
@@ -887,14 +931,19 @@ class PatchyExpandedLJ(Patchy):
         Type: `TypeParameter` [`tuple` [``particle_type``, ``particle_type``],
         `dict`]
     """
-    __doc__ += "\n" + Patchy._doc_args + _doc + Patchy._doc_inherited
+    __doc__ = __doc__.replace("{inherited}", Patchy._doc_inherited)
     _cpp_class_name = "AnisoPotentialPairPatchyExpandedLJ"
     _pair_params = {"epsilon": float, "sigma": float, "delta": float}
 
 
 class PatchyExpandedMie(Patchy):
-    """Modulate `hoomd.md.pair.ExpandedMie` with angular patches."""
-    _doc = r"""
+    r"""Modulate `hoomd.md.pair.ExpandedMie` with angular patches.
+    
+    Args:
+        nlist (hoomd.md.nlist.NeighborList): Neighbor list
+        default_r_cut (float): Default cutoff radius :math:`[\mathrm{length}]`.
+        mode (str): energy shifting/smoothing mode.
+
     .. rubric:: Example:
 
     .. code-block:: python
@@ -911,6 +960,12 @@ class PatchyExpandedMie(Patchy):
         patchy_expanded_mie.directors['A'] = [(1,0,0)]
         simulation.operations.integrator.forces = [patchy_expanded_mie]
 
+    {inherited}
+
+    ----------
+
+    **Members defined in** `PatchyExpandedMie`:
+
     .. py:attribute:: params
 
         The Patchy potential parameters unique to each pair of particle types. The
@@ -937,7 +992,7 @@ class PatchyExpandedMie(Patchy):
         Type: `TypeParameter` [`tuple` [``particle_type``, ``particle_type``],
         `dict`]
     """
-    __doc__ += "\n" + Patchy._doc_args + _doc + Patchy._doc_inherited
+    __doc__ = __doc__.replace("{inherited}", Patchy._doc_inherited)
     _cpp_class_name = "AnisoPotentialPairPatchyExpandedMie"
     _pair_params = {
         "epsilon": float,
@@ -949,8 +1004,13 @@ class PatchyExpandedMie(Patchy):
 
 
 class PatchyGaussian(Patchy):
-    """Modulate `hoomd.md.pair.Gaussian` with angular patches."""
-    _doc = r"""
+    r"""Modulate `hoomd.md.pair.Gaussian` with angular patches.
+
+    Args:
+        nlist (hoomd.md.nlist.NeighborList): Neighbor list
+        default_r_cut (float): Default cutoff radius :math:`[\mathrm{length}]`.
+        mode (str): energy shifting/smoothing mode.
+        
     .. rubric:: Example:
 
     .. code-block:: python
@@ -965,6 +1025,12 @@ class PatchyGaussian(Patchy):
         patchy_gaussian.directors['A'] = [(1,0,0)]
         simulation.operations.integrator.forces = [patchy_gaussian]
 
+    {inherited}
+
+    ----------
+
+    **Members defined in** `PatchyGaussian`:
+
     .. py:attribute:: params
 
         The Patchy potential parameters unique to each pair of particle types. The
@@ -991,14 +1057,19 @@ class PatchyGaussian(Patchy):
         Type: `TypeParameter` [`tuple` [``particle_type``, ``particle_type``],
         `dict`]
     """
-    __doc__ += "\n" + Patchy._doc_args + _doc + Patchy._doc_inherited
+    __doc__ = __doc__.replace("{inherited}", Patchy._doc_inherited)
     _cpp_class_name = "AnisoPotentialPairPatchyGauss"
     _pair_params = {"epsilon": float, "sigma": float}
 
 
 class PatchyMie(Patchy):
-    """Modulate `hoomd.md.pair.Mie` with angular patches."""
-    _doc = r"""
+    r"""Modulate `hoomd.md.pair.Mie` with angular patches.
+
+    Args:
+        nlist (hoomd.md.nlist.NeighborList): Neighbor list
+        default_r_cut (float): Default cutoff radius :math:`[\mathrm{length}]`.
+        mode (str): energy shifting/smoothing mode.
+
     .. rubric:: Example:
 
     .. code-block:: python
@@ -1012,6 +1083,12 @@ class PatchyMie(Patchy):
                                              envelope_params = envelope_params)
         patchy_mie.directors['A'] = [(1,0,0)]
         simulation.operations.integrator.forces = [patchy_mie]
+
+    {inherited}
+
+    ----------
+
+    **Members defined in** `PatchyMie`:
 
     .. py:attribute:: params
 
@@ -1037,14 +1114,19 @@ class PatchyMie(Patchy):
         `dict`]
     """
 
-    __doc__ += "\n" + Patchy._doc_args + _doc + Patchy._doc_inherited
+    __doc__ = __doc__.replace("{inherited}", Patchy._doc_inherited)
     _cpp_class_name = "AnisoPotentialPairPatchyMie"
     _pair_params = {"epsilon": float, "sigma": float, "n": float, "m": float}
 
 
 class PatchyYukawa(Patchy):
-    """Modulate `hoomd.md.pair.Yukawa` with angular patches."""
-    _doc = r"""
+    r"""Modulate `hoomd.md.pair.Yukawa` with angular patches.
+
+    Args:
+        nlist (hoomd.md.nlist.NeighborList): Neighbor list
+        default_r_cut (float): Default cutoff radius :math:`[\mathrm{length}]`.
+        mode (str): energy shifting/smoothing mode.
+    
     .. rubric:: Example:
 
     .. code-block:: python
@@ -1058,6 +1140,12 @@ class PatchyYukawa(Patchy):
                                                 envelope_params=envelope_params)
         patchy_yukawa.directors['A'] = [(1,0,0)]
         simulation.operations.integrator.forces = [patchy_yukawa]
+
+    {inherited}
+
+    ----------
+
+    **Members defined in** `PatchyYukawa`:
 
     .. py:attribute:: params
 
@@ -1079,7 +1167,7 @@ class PatchyYukawa(Patchy):
         `dict`]
     """
 
-    __doc__ += "\n" + Patchy._doc_args + _doc + Patchy._doc_inherited
+    __doc__ = __doc__.replace("{inherited}", Patchy._doc_inherited)
     _cpp_class_name = "AnisoPotentialPairPatchyYukawa"
     _pair_params = {"epsilon": float, "kappa": float}
 
