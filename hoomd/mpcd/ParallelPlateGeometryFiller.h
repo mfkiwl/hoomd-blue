@@ -56,10 +56,10 @@ class PYBIND11_EXPORT ParallelPlateGeometryFiller : public mpcd::ManualVirtualPa
     unsigned int m_N_hi; //!< number of particles to fill above channel
 
     //! Compute the total number of particles to fill
-    virtual void computeNumFill() override;
+    void computeNumFill() override;
 
     //! Draw particles within the fill volume
-    virtual void drawParticles(uint64_t timestep) override;
+    void drawParticles(uint64_t timestep) override;
     };
     } // end namespace mpcd
     } // end namespace hoomd

@@ -39,17 +39,17 @@ class PYBIND11_EXPORT CellThermoComputeGPU : public mpcd::CellThermoCompute
     protected:
 #ifdef ENABLE_MPI
     //! Begin the calculation of outer cell properties on the GPU
-    virtual void beginOuterCellProperties() override;
+    void beginOuterCellProperties() override;
 
     //! Finish the calculation of outer cell properties on the GPU
-    virtual void finishOuterCellProperties() override;
+    void finishOuterCellProperties() override;
 #endif // ENABLE_MPI
 
     //! Calculate the inner cell properties on the GPU
-    virtual void calcInnerCellProperties() override;
+    void calcInnerCellProperties() override;
 
     //! Compute the net properties from the cell properties
-    virtual void computeNetProperties() override;
+    void computeNetProperties() override;
 
     private:
     std::shared_ptr<Autotuner<2>> m_begin_tuner; //!< Tuner for cell begin kernel
