@@ -3,8 +3,6 @@ hpmc
 
 .. automodule:: hoomd.hpmc
    :members:
-   :exclude-members:
-
 .. rubric:: Modules
 
 .. toctree::

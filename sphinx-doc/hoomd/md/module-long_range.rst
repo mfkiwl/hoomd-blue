@@ -3,8 +3,6 @@ long_range
 
 .. automodule:: hoomd.md.long_range
    :members:
-   :exclude-members:
-
 .. rubric:: Modules
 
 .. toctree::

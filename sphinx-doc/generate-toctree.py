@@ -98,7 +98,8 @@ def generate_module_rst(path, module):
     module_rst = f"{module_name}\n{module_underline}\n\n"
     module_rst += f".. automodule:: {full_module_name}\n"
     module_rst += "   :members:\n"
-    module_rst += f"   :exclude-members: {','.join(classes + functions)}\n\n"
+    if len(classes) > 0 or len(functions) > 0:
+        module_rst += f"   :exclude-members: {','.join(classes + functions)}\n\n"
 
     if len(submodules) > 0:
         module_rst += '.. rubric:: Modules\n\n.. toctree::\n    :maxdepth: 1\n\n'
@@ -119,6 +120,9 @@ def generate_module_rst(path, module):
             module_rst += f'    {module_name}/{function_name.lower()}\n'
         module_rst += '\n'
 
+    # ensure there is only one newline at the end of the file
+    module_rst = module_rst.rstrip()
+    module_rst += '\n'
     file = (path.parent / ('module-' + module_name)).with_suffix('.rst')
     file.write_text(module_rst)
 

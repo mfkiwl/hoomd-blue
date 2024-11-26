@@ -3,8 +3,6 @@ external
 
 .. automodule:: hoomd.md.external
    :members:
-   :exclude-members:
-
 .. rubric:: Modules
 
 .. toctree::

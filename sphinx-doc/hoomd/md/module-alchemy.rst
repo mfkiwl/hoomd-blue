@@ -3,8 +3,6 @@ alchemy
 
 .. automodule:: hoomd.md.alchemy
    :members:
-   :exclude-members:
-
 .. rubric:: Modules
 
 .. toctree::

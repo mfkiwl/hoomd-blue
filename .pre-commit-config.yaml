@@ -17,6 +17,16 @@ repos:
     entry: '(# Maintainer:|\/\/ Maintainer:)'
     language: pygrep
     types_or: [python, c, c++, cuda, inc]
+- repo: local
+  hooks:
+  - id: generate_toctree
+    name: Generate Sphinx toctree
+    language: python
+    entry: python3 sphinx-doc/generate-toctree.py
+    pass_filenames: false
+    always_run: true
+    additional_dependencies:
+     - numpy==2.1.0
 - repo: https://github.com/pre-commit/pre-commit-hooks
   rev: 'v5.0.0'
   hooks:
