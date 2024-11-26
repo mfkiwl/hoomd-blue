@@ -46,6 +46,12 @@ class OPP(Pair):
         )
         simulation.operations.integrator.pair_potentials = [opp]
 
+    {inherited}
+
+    ----------
+
+    **Members defined in** `OPP`:
+
     .. py:attribute:: params
 
         The potential parameters. The dictionary has the following keys:
@@ -88,6 +94,7 @@ class OPP(Pair):
         Type: `str`
     """
     _cpp_class_name = "PairPotentialOPP"
+    __doc__ = __doc__.replace("{inherited}", Pair._doc_inherited)
 
     def __init__(self, default_r_cut=None, default_r_on=0.0, mode='none'):
         if default_r_cut is None:

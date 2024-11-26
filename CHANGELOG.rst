@@ -1,6 +1,3 @@
-.. Copyright (c) 2009-2024 The Regents of the University of Michigan.
-.. Part of HOOMD-blue, released under the BSD 3-Clause License.
-
 Change Log
 ==========
 
@@ -24,6 +21,11 @@ Change Log
 * Ensure GPU autotuners for MPCD methods are included in ``hoomd.Operations.is_tuning_complete`` and
   ``hoomd.Operations.tune_kernel_parameters`` through ``hoomd.mpcd.Integrator``
   (`#1951 <https://github.com/glotzerlab/hoomd-blue/pull/1951>`__).
+* Read after write hazard in the GPU implementation of ``Dipole``, ``ALJ``, and all ``Patchy``
+  potentials in ``hoomd.md.pair.ansiso``
+  (`#1944 <https://github.com/glotzerlab/hoomd-blue/pull/1944>`__).
+* Read after write hazard in the GPU implementation of ``hoomd.md.mesh.conservation.Volume``
+  (`#1953 <https://github.com/glotzerlab/hoomd-blue/pull/1953>`__).
 
 *Added*
 
@@ -46,6 +48,8 @@ Change Log
 * ``hoomd.hpmc.external.field.Harmonic`` is now ``hoomd.hpmc.external.Harmonic`` and works
   with ``IntegratorHPMC.external_potentials``
   (`#1941 <https://github.com/glotzerlab/hoomd-blue/pull/1941>`__).
+* Document one class per html page and show inherited members in class documentation
+  (`#1952 <https://github.com/glotzerlab/hoomd-blue/pull/1952>`__).
 
 *Removed*
 
@@ -269,7 +273,7 @@ Change Log
 * ``hoomd.variant.box.InverseVolumeRamp`` - Linearly ramp the inverse volume of the system
   (`#1685 <https://github.com/glotzerlab/hoomd-blue/pull/1685>`__).
 * ``hoomd.hpmc.update.QuickCompress`` now accepts a ``hoomd.variant.box.BoxVariant`` object for
-  `target_box` (`#1736 <https://github.com/glotzerlab/hoomd-blue/pull/1736>`__).
+  ``target_box`` (`#1736 <https://github.com/glotzerlab/hoomd-blue/pull/1736>`__).
 * ``box`` argument to ``hoomd.update.BoxResize`` that accepts a ``hoomd.variant.box.BoxVariant``
   (`#1740 <https://github.com/glotzerlab/hoomd-blue/pull/1740>`__).
 * ``hoomd.hpmc.pair.Union`` computes pair potentials between unions of points. Replaces

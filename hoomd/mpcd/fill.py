@@ -1,9 +1,7 @@
 # Copyright (c) 2009-2024 The Regents of the University of Michigan.
 # Part of HOOMD-blue, released under the BSD 3-Clause License.
 
-r"""MPCD virtual-particle fillers.
-
-Virtual particles are MPCD particles that are added to ensure MPCD
+r"""Virtual particles are MPCD particles that are added to ensure MPCD
 collision cells that are sliced by solid boundaries do not become "underfilled".
 From the perspective of the MPCD algorithm, the number density of particles in
 these sliced cells is lower than the average density, and so the transport
@@ -44,15 +42,13 @@ class VirtualParticleFiller(Operation):
             kT=1.0)
         simulation.operations.integrator.virtual_particle_fillers = [filler]
 
+    {inherited}
+
+    ----------
+
+    **Members defined in** `VirtualParticleFiller`:
+
     Attributes:
-        type (str): Type of particles to fill.
-
-            .. rubric:: Example:
-
-            .. code-block:: python
-
-                filler.type = "A"
-
         density (float): Particle number density.
 
             .. rubric:: Example:
@@ -77,6 +73,37 @@ class VirtualParticleFiller(Operation):
 
                 filler.kT = hoomd.variant.Ramp(1.0, 2.0, 0, 100)
 
+        type (str): Type of particles to fill.
+
+            .. rubric:: Example:
+
+            .. code-block:: python
+
+                filler.type = "A"
+
+    """
+
+    __doc__ = __doc__.replace("{inherited}", Operation._doc_inherited)
+    _doc_inherited = Operation._doc_inherited + """
+    ----------
+
+    **Members inherited from**
+    `VirtualParticleFiller <hoomd.mpcd.fill.VirtualParticleFiller>`:
+
+    .. py:attribute:: density
+
+        Particle number density.
+        `Read more... <hoomd.mpcd.fill.VirtualParticleFiller.density>`
+
+    .. py:attribute:: kT
+
+        Temperature of particles.
+        `Read more... <hoomd.mpcd.fill.VirtualParticleFiller.kT>`
+
+    .. py:attribute:: type
+
+        Type of particles to fill.
+        `Read more... <hoomd.mpcd.fill.VirtualParticleFiller.type>`
     """
 
     def __init__(self, type, density, kT):
@@ -118,12 +145,19 @@ class GeometryFiller(VirtualParticleFiller):
             geometry=plates)
         simulation.operations.integrator.virtual_particle_fillers = [filler]
 
+    {inherited}
+
+    ----------
+
+    **Members defined in** `GeometryFiller`:
+
     Attributes:
         geometry (hoomd.mpcd.geometry.Geometry): Surface to fill around
             (*read only*).
-
     """
 
+    __doc__ = __doc__.replace("{inherited}",
+                              VirtualParticleFiller._doc_inherited)
     _cpp_class_map = {}
 
     def __init__(self, type, density, kT, geometry):
@@ -173,3 +207,8 @@ class GeometryFiller(VirtualParticleFiller):
 
 GeometryFiller._register_cpp_class(ParallelPlates, _mpcd,
                                    "ParallelPlateGeometryFiller")
+
+__all__ = [
+    'VirtualParticleFiller',
+    'GeometryFiller',
+]

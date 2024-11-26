@@ -38,13 +38,13 @@ _gpu_force_access_docs = """
 Access HOOMD-Blue force data buffers on the GPU.
 
 Attributes:
-    force ((N_particles, 3) `hoomd.data.array` of ``float``):
+    force ((N_particles, 3) `HOOMDArray` or `HOOMDGPUArray` of ``float``):
         Local force data. :math:`[\\mathrm{force}]`
-    potential_energy ((N_particles,) `hoomd.data.array` of ``float``):
+    potential_energy ((N_particles,) `HOOMDArray` or `HOOMDGPUArray` of ``float``):
         Local potential energy data. :math:`[\\mathrm{energy}]`
-    torque ((N_particles, 3) `hoomd.data.array` of ``float``):
+    torque ((N_particles, 3) `HOOMDArray` or `HOOMDGPUArray` of ``float``):
         Local torque data. :math:`[\\mathrm{force} \\cdot \\mathrm{length}]`
-    virial ((N_particles, 6) `hoomd.data.array` of ``float``):
+    virial ((N_particles, 6) `HOOMDArray` or `HOOMDGPUArray` of ``float``):
         Local virial data. :math:`[\\mathrm{energy}]`
 """
 
@@ -68,11 +68,11 @@ or two copies for each pair (False). Under MPI, pairs that cross domains
 are stored twice, once in each domain rank.
 
 Attributes:
-    head_list ((N_particles,) `hoomd.data.array` of ``unsigned long``):
+    head_list ((N_particles,) `HOOMDArray` or `HOOMDGPUArray` of ``unsigned long``):
         Local head list.
-    n_neigh ((N_particles,) `hoomd.data.array` of ``unsigned int``):
+    n_neigh ((N_particles,) `HOOMDArray` or `HOOMDGPUArray` of ``unsigned int``):
         Number of neighbors.
-    nlist ((...) `hoomd.data.array` of ``unsigned int``):
+    nlist ((...) `HOOMDArray` or `HOOMDGPUArray` of ``unsigned int``):
         Raw neighbor list data.
     half_nlist (``bool``):
         Convenience property to check if the storage mode is 'half'.

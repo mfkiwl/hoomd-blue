@@ -282,6 +282,21 @@ jobs:
       env:
         _HOOMD_DISALLOW_CUPY_: 1
 
+    ### compute-sanitizer checks: These checks are slow, so run them only when validation is
+    # requested, but no on the actual long validation tests. Every class's basic test should ensure
+    # that the GPU kernel is called for at least a few timesteps for these checks to be effective.
+    - name: Run memcheck
+      if: ${{ contains(inputs.config, 'cuda') && contains(github.event.pull_request.labels.*.name, 'validate') && inputs.validate == 'true' }}
+      run: compute-sanitizer --tool memcheck --error-exitcode 1 python3 -m pytest --pyargs hoomd -x -v -ra --durations=0 --durations-min=0.1
+
+    - name: Run racecheck
+      if: ${{ contains(inputs.config, 'cuda') && contains(github.event.pull_request.labels.*.name, 'validate') && inputs.validate == 'true' }}
+      run: compute-sanitizer --tool racecheck --error-exitcode 1 python3 -m pytest --pyargs hoomd -x -v -ra --durations=0 --durations-min=0.1
+
+    - name: Run synccheck
+      if: ${{ contains(inputs.config, 'cuda') && contains(github.event.pull_request.labels.*.name, 'validate') && inputs.validate == 'true' }}
+      run: compute-sanitizer --tool synccheck --error-exitcode 1 python3 -m pytest --pyargs hoomd -x -v -ra --durations=0 --durations-min=0.1
+
     ### Validation tests
     - name: Run pytest -m validate (serial)
       if: ${{ !contains(inputs.config, 'mpi') && contains(github.event.pull_request.labels.*.name, 'validate') && inputs.validate == 'true' }}

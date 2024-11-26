@@ -1,9 +1,7 @@
 # Copyright (c) 2009-2024 The Regents of the University of Michigan.
 # Part of HOOMD-blue, released under the BSD 3-Clause License.
 
-"""HPMC updaters.
-
-HPMC updaters work with the `hpmc.integrate.HPMCIntegrator` to apply changes to
+"""HPMC updaters work with the `hpmc.integrate.HPMCIntegrator` to apply changes to
 the system consistent with the particle shape and defined interaction energies.
 The `BoxMC`, `GCA`, and `MuVT` updaters apply trial moves that enable
 enhanced sampling or the equilibration of different ensembles. `QuickCompress`
@@ -219,7 +217,37 @@ class BoxMC(Updater):
     `BoxMC` uses reduced precision floating point arithmetic when checking
     for particle overlaps in the local particle reference frame.
 
+    {inherited}
+
+    ----------
+
+    **Members defined in** `BoxMC`:
+
     Attributes:
+        aspect (dict):
+            Parameters for isovolume aspect ratio moves. The dictionary has the
+            following keys:
+
+            * ``weight`` (float) - Relative weight of aspect box moves.
+            * ``delta`` (float) - Maximum relative change of box aspect ratio
+              :math:`\delta_\mathrm{aspect} [\mathrm{dimensionless}]`.
+
+        instance (int):
+            When using multiple `BoxMC` updaters in a single simulation,
+            give each a unique value for `instance` so they generate
+            different streams of random numbers.
+
+        length (dict):
+            Parameters for isobaric box length moves that change box lengths
+            independently. The dictionary has the following keys:
+
+            * ``weight`` (float) - Maximum change of HOOMD-blue box parameters
+              Lx, Ly, and Lz.
+            * ``delta`` (tuple[float, float, float]) - Maximum change of the
+              box lengths :math:`(\delta_{\mathrm{length},x},
+              \delta_{\mathrm{length},y}, \delta_{\mathrm{length},z})
+              [\mathrm{length}]`.
+
         P (hoomd.variant.Variant): The pressure :math:`P`
             :math:`[\mathrm{energy} \ \mathrm{length}^{-2}]` in 2D or
             :math:`[\mathrm{energy} \ \mathrm{length}^{-3}]` in 3D.
@@ -235,25 +263,6 @@ class BoxMC(Updater):
             * ``delta`` (float) - Maximum change in **V** or **ln(V)** where V
               is box area (2D) or volume (3D) :math:`\delta_\mathrm{volume}`.
 
-        aspect (dict):
-            Parameters for isovolume aspect ratio moves. The dictionary has the
-            following keys:
-
-            * ``weight`` (float) - Relative weight of aspect box moves.
-            * ``delta`` (float) - Maximum relative change of box aspect ratio
-              :math:`\delta_\mathrm{aspect} [\mathrm{dimensionless}]`.
-
-        length (dict):
-            Parameters for isobaric box length moves that change box lengths
-            independently. The dictionary has the following keys:
-
-            * ``weight`` (float) - Maximum change of HOOMD-blue box parameters
-              Lx, Ly, and Lz.
-            * ``delta`` (tuple[float, float, float]) - Maximum change of the
-              box lengths :math:`(\delta_{\mathrm{length},x},
-              \delta_{\mathrm{length},y}, \delta_{\mathrm{length},z})
-              [\mathrm{length}]`.
-
         shear (dict):
             Parameters for isovolume box shear moves. The dictionary has the
             following keys:
@@ -266,12 +275,9 @@ class BoxMC(Updater):
             * ``reduce`` (float) - Maximum number of lattice vectors of shear
               to allow before applying lattice reduction. Values less than 0.5
               disable shear reduction.
-
-        instance (int):
-            When using multiple `BoxMC` updaters in a single simulation,
-            give each a unique value for `instance` so they generate
-            different streams of random numbers.
     """
+
+    __doc__ = __doc__.replace("{inherited}", Updater._doc_inherited)
 
     def __init__(self, trigger, P):
         super().__init__(trigger)
@@ -404,18 +410,25 @@ class MuVT(Updater):
         with the ``ngibbs`` option to update.muvt(), where the number of
         partitions can be a multiple of ``ngibbs``.
 
+    {inherited}
+
+    ----------
+
+    **Members defined in** `MuVT`:
+
     Attributes:
-        trigger (int): Select the timesteps on which to perform cluster moves.
-        transfer_types (list): List of type names that are being transferred
-          from/to the reservoir or between boxes
+        fugacity (`TypeParameter` [ ``particle type``, `float`]):
+            Particle fugacity
+            :math:`[\mathrm{energy}] \cdot [\mathrm{volume}^{-1}]` (**default:** 0).
         max_volume_rescale (float): Maximum step size in ln(V) (applies to
           Gibbs ensemble)
         move_ratio (float): The ratio between volume and exchange/transfer moves
           (applies to Gibbs ensemble)
-        fugacity (`TypeParameter` [ ``particle type``, `float`]):
-            Particle fugacity
-            :math:`[\mathrm{energy}] \cdot [\mathrm{volume}^{-1}]` (**default:** 0).
+        transfer_types (list): List of type names that are being transferred
+          from/to the reservoir or between boxes
     """
+
+    __doc__ = __doc__.replace("{inherited}", Updater._doc_inherited)
 
     def __init__(self,
                  transfer_types,
@@ -548,9 +561,13 @@ class Shape(Updater):
                                           type_select=1,
                                           nsweeps=1)
 
-    Attributes:
-        trigger (Trigger): Call the updater on triggered time steps.
+    {inherited}
 
+    ----------
+
+    **Members defined in** `Shape`:
+
+    Attributes:
         shape_move (ShapeMove): Type of shape move to apply when updating shape
             definitions
 
@@ -564,6 +581,8 @@ class Shape(Updater):
         nsweeps (int): Number of times to update shape definitions during each
             triggered timesteps.
     """
+
+    __doc__ = __doc__.replace("{inherited}", Updater._doc_inherited)
 
     def __init__(self,
                  trigger,
@@ -667,16 +686,21 @@ class GCA(Updater):
     `GCA` uses reduced precision floating point arithmetic when checking
     for particle overlaps in the local particle reference frame.
 
+    {inherited}
+
+    ----------
+
+    **Members defined in** `GCA`:
+
     Attributes:
-        pivot_move_probability (float): Set the probability for attempting a
-                                        pivot move.
         flip_probability (float): Set the probability for transforming an
                                  individual cluster.
-        trigger (Trigger): Select the timesteps on which to perform cluster
-            moves.
+        pivot_move_probability (float): Set the probability for attempting a
+                                        pivot move.
     """
     _remove_for_pickling = Updater._remove_for_pickling + ('_cpp_cell',)
     _skip_for_equality = Updater._skip_for_equality | {'_cpp_cell'}
+    __doc__ = __doc__.replace("{inherited}", Updater._doc_inherited)
 
     def __init__(self,
                  pivot_move_probability=0.5,
@@ -884,9 +908,13 @@ class QuickCompress(Updater):
     `QuickCompress` uses reduced precision floating point arithmetic when
     checking for particle overlaps in the local particle reference frame.
 
-    Attributes:
-        trigger (Trigger): Update the box dimensions on triggered time steps.
+    {inherited}
 
+    ----------
+
+    **Members defined in** `QuickCompress`:
+
+    Attributes:
         target_box (BoxVariant): The variant for the dimensions of the target
             box.
 
@@ -902,8 +930,11 @@ class QuickCompress(Updater):
             give each a unique value for `instance` so that they generate
             different streams of random numbers.
 
-        allow_unsafe_resize (bool): Flag that determines whether
+        allow_unsafe_resize (bool): When `True`, box moves are proposed
+            independent of particle translational move sizes.
     """
+
+    __doc__ = __doc__.replace("{inherited}", Updater._doc_inherited)
 
     def __init__(self,
                  trigger,
@@ -951,3 +982,12 @@ class QuickCompress(Updater):
             return False
 
         return self._cpp_obj.isComplete()
+
+
+__all__ = [
+    'BoxMC',
+    'MuVT',
+    'Shape',
+    'GCA',
+    'QuickCompress',
+]

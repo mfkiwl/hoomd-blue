@@ -23,7 +23,7 @@ class CustomOperation(TriggeredOperation, metaclass=_AbstractLoggable):
     so they can be added to the simulation operations.
 
     This class also implements a "pass-through" system for attributes.
-    Attributes and methods from the passed in `action` will be available
+    Attributes and methods from the passed in :py:attr:`action` will be available
     directly in this class. This does not apply to attributes with these names:
     ``trigger``, ``_action``, and ``action``.
 
@@ -34,9 +34,30 @@ class CustomOperation(TriggeredOperation, metaclass=_AbstractLoggable):
     Note:
         This object should not be instantiated or subclassed by an user.
 
-    Attributes:
-        trigger (hoomd.trigger.Trigger): A trigger to determine when the
-            wrapped `hoomd.custom.Action` is run.
+    {inherited}
+
+    ----------
+
+    **Members defined in** `CustomOperation`:
+    """
+
+    __doc__ = __doc__.replace("{inherited}", TriggeredOperation._doc_inherited)
+
+    _doc_inherited = TriggeredOperation._doc_inherited + """
+    ----------
+
+    **Members inherited from**
+    `CustomOperation <hoomd.custom.CustomOperation>`:
+
+    .. py:method:: act
+
+        Perform the action of the custom action if attached
+        `Read more... <hoomd.custom.CustomOperation.act>`
+
+    .. py:property:: action
+
+        Action that this operation wraps.
+        `Read more... <hoomd.custom.CustomOperation.action>`
     """
 
     _override_setattr = {'_action', "_export_dict", "_simulation"}
@@ -98,7 +119,7 @@ class CustomOperation(TriggeredOperation, metaclass=_AbstractLoggable):
 
     @property
     def action(self):
-        """`hoomd.custom.Action` The action the operation wraps."""
+        """hoomd.custom.Action: Action that this operation wraps."""
         return self._action
 
     def __setstate__(self, state):

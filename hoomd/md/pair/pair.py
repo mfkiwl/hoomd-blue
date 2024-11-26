@@ -24,6 +24,25 @@ class Pair(force.Force):
         This class should not be instantiated by users. The class can be used
         for `isinstance` or `issubclass` checks.
 
+    {inherited}
+
+    ----------
+
+    **Members defined in** `Pair`:
+
+    .. py:attribute:: nlist
+
+        Neighbor list used to compute the pair force.
+
+        Type: `hoomd.md.nlist.NeighborList`
+
+    .. py:attribute:: mode
+
+        *mode*, *optional*: defaults to ``"none"``.
+        Possible values: ``"none"``, ``"shift"``, ``"xplor"``
+
+        Type: `str`
+
     .. py:attribute:: r_cut
 
         Cuttoff radius beyond which the energy and force are 0
@@ -41,19 +60,39 @@ class Pair(force.Force):
 
         Type: `TypeParameter` [`tuple` [``particle_type``, ``particle_type``],
         `float`])
+    """
 
-    .. py:attribute:: mode
+    __doc__ = __doc__.replace("{inherited}", force.Force._doc_inherited)
+    _doc_inherited = force.Force._doc_inherited + """
+    ----------
 
-        *mode*, *optional*: defaults to ``"none"``.
-        Possible values: ``"none"``, ``"shift"``, ``"xplor"``
-
-        Type: `str`
+    **Members inherited from**
+    `Pair <hoomd.md.pair.Pair>`:
 
     .. py:attribute:: nlist
 
         Neighbor list used to compute the pair force.
+        `Read more... <hoomd.md.pair.Pair.nlist>`
 
-        Type: `hoomd.md.nlist.NeighborList`
+    .. py:attribute:: mode
+
+        Energy smoothing/cutoff mode.
+        `Read more... <hoomd.md.pair.Pair.mode>`
+
+    .. py:attribute:: r_cut
+
+        Cuttoff radius beyond which the energy and force are 0.
+        `Read more... <hoomd.md.pair.Pair.r_cut>`
+
+    .. py:attribute:: r_on
+
+        Radius at which the XPLOR smoothing function starts.
+        `Read more... <hoomd.md.pair.Pair.r_on>`
+
+    .. py:method:: compute_energy
+
+        Compute the energy between two sets of particles.
+        `Read more... <hoomd.md.pair.Pair.compute_energy>`
     """
 
     # The accepted modes for the potential. Should be reset by subclasses with
@@ -186,6 +225,12 @@ class LJ(Pair):
         lj.params[('A', 'A')] = {'sigma': 1.0, 'epsilon': 1.0}
         lj.r_cut[('A', 'B')] = 3.0
 
+    {inherited}
+
+    ----------
+
+    **Members defined in** `LJ`:
+
     .. py:attribute:: params
 
         The LJ potential parameters. The dictionary has the following keys:
@@ -198,12 +243,6 @@ class LJ(Pair):
         Type: `TypeParameter` [`tuple` [``particle_type``, ``particle_type``],
         `dict`]
 
-    .. py:attribute:: mode
-
-        Energy shifting/smoothing mode: ``"none"``, ``"shift"``, or ``"xplor"``.
-
-        Type: `str`
-
     .. py:attribute:: tail_correction
 
         Whether to apply the isotropic integrated long range tail correction.
@@ -211,6 +250,7 @@ class LJ(Pair):
         Type: `bool`
     """
     _cpp_class_name = "PotentialPairLJ"
+    __doc__ = __doc__.replace("{inherited}", Pair._doc_inherited)
 
     def __init__(self,
                  nlist,
@@ -250,6 +290,12 @@ class Gaussian(Pair):
         gauss.params[('A', 'A')] = dict(epsilon=1.0, sigma=1.0)
         gauss.r_cut[('A', 'B')] = 3.0
 
+    {inherited}
+
+    ----------
+
+    **Members defined in** `Gaussian`:
+
     .. py:attribute:: params
 
         The Gauss potential parameters. The dictionary has the following
@@ -262,14 +308,9 @@ class Gaussian(Pair):
 
         Type: `TypeParameter` [`tuple` [``particle_type``, ``particle_type``],
         `dict`]
-
-    .. py:attribute:: mode
-
-        Energy shifting/smoothing mode: ``"none"``, ``"shift"``, or ``"xplor"``.
-
-        Type: `str`
     """
     _cpp_class_name = "PotentialPairGauss"
+    __doc__ = __doc__.replace("{inherited}", Pair._doc_inherited)
 
     def __init__(self, nlist, default_r_cut=None, default_r_on=0., mode='none'):
         super().__init__(nlist, default_r_cut, default_r_on, mode)
@@ -303,6 +344,12 @@ class ExpandedGaussian(Pair):
         sigma=1.0, delta=0.5)
         expanded_gauss.r_cut[('A', 'B')] = 3.0
 
+    {inherited}
+
+    ----------
+
+    **Members defined in** `ExpandedGaussian`:
+
     .. py:attribute:: params
 
         The expanded Gaussian potential parameters. The dictionary has the
@@ -317,14 +364,9 @@ class ExpandedGaussian(Pair):
 
         Type: `TypeParameter` [`tuple` [``particle_type``, ``particle_type``],
         `dict`]
-
-    .. py:attribute:: mode
-
-        Energy shifting/smoothing mode: ``"none"``, ``"shift"``, or ``"xplor"``.
-
-        Type: `str`
     """
     _cpp_class_name = "PotentialPairExpandedGaussian"
+    __doc__ = __doc__.replace("{inherited}", Pair._doc_inherited)
 
     def __init__(self, nlist, default_r_cut=None, default_r_on=0., mode='none'):
         super().__init__(nlist, default_r_cut, default_r_on, mode)
@@ -367,6 +409,12 @@ class ExpandedLJ(Pair):
                                              delta=0.75)
         expanded_lj.params[('B', 'B')] = dict(epsilon=1.0, sigma=1.0, delta=0.5)
 
+    {inherited}
+
+    ----------
+
+    **Members defined in** `ExpandedLJ`:
+
     .. py:attribute:: params
 
         The potential parameters. The dictionary has the following keys:
@@ -380,14 +428,9 @@ class ExpandedLJ(Pair):
 
         Type: `TypeParameter` [`tuple` [``particle_type``, ``particle_type``],
         `dict`]
-
-    .. py:attribute:: mode
-
-        Energy shifting/smoothing mode: ``"none"``, ``"shift"``, or ``"xplor"``.
-
-        Type: `str`
     """
     _cpp_class_name = 'PotentialPairExpandedLJ'
+    __doc__ = __doc__.replace("{inherited}", Pair._doc_inherited)
 
     def __init__(self, nlist, default_r_cut=None, default_r_on=0., mode='none'):
         super().__init__(nlist, default_r_cut, default_r_on, mode)
@@ -425,26 +468,27 @@ class Yukawa(Pair):
         yukawa.params[('A', 'A')] = dict(epsilon=1.0, kappa=1.0)
         yukawa.r_cut[('A', 'B')] = 3.0
 
+    {inherited}
+
+    ----------
+
+    **Members defined in** `Yukawa`:
+
     .. py:attribute:: params
 
         The Yukawa potential parameters. The dictionary has the following
         keys:
 
         * ``epsilon`` (`float`, **required**) - energy parameter
-          :math:`\varepsilon` :math:`[\mathrm{energy}]`
+          :math:`\varepsilon` :math:`[\mathrm{energy}] [\mathrm{length}]`
         * ``kappa`` (`float`, **required**) - scaling parameter
           :math:`\kappa` :math:`[\mathrm{length}^{-1}]`
 
         Type: `TypeParameter` [`tuple` [``particle_type``, ``particle_type``],
         `dict`]
-
-    .. py:attribute:: mode
-
-        Energy shifting/smoothing mode: ``"none"``, ``"shift"``, or ``"xplor"``.
-
-        Type: `str`
     """
     _cpp_class_name = "PotentialPairYukawa"
+    __doc__ = __doc__.replace("{inherited}", Pair._doc_inherited)
 
     def __init__(self, nlist, default_r_cut=None, default_r_on=0., mode='none'):
         super().__init__(nlist, default_r_cut, default_r_on, mode)
@@ -484,6 +528,12 @@ class Ewald(Pair):
         ewald.params[('A', 'A')] = dict(kappa=1.0, alpha=1.5)
         ewald.r_cut[('A', 'B')] = 3.0
 
+    {inherited}
+
+    ----------
+
+    **Members defined in** `Ewald`:
+
     .. py:attribute:: params
 
         The Ewald potential parameters. The dictionary has the following keys:
@@ -495,14 +545,9 @@ class Ewald(Pair):
 
         Type: `TypeParameter` [`tuple` [``particle_type``, ``particle_type``],
         `dict`]
-
-    .. py:attribute:: mode
-
-        Energy shifting/smoothing mode: ``"none"``.
-
-        Type: `str`
     """
     _cpp_class_name = "PotentialPairEwald"
+    __doc__ = __doc__.replace("{inherited}", Pair._doc_inherited)
     _accepted_modes = ("none",)
 
     def __init__(self, nlist, default_r_cut=None):
@@ -559,7 +604,7 @@ class Table(Pair):
     evenly spaced grid points points between :math:`r_{\\mathrm{min}}` and
     :math:`r_{\\mathrm{cut}}`. `Table` linearly interpolates values when
     :math:`r` lies between grid points and between the last grid point and
-    :math:`r=r_{\\mathrm{cut}}`.  The force must be specificed commensurate with
+    :math:`r=r_{\\mathrm{cut}}`.  The force must be commensurate with
     the potential: :math:`F = -\\frac{\\partial U}{\\partial r}`.
 
     `Table` does not support energy shifting or smoothing modes.
@@ -581,6 +626,12 @@ class Table(Pair):
         There must be at least one element in U and F, and the ``r_cut`` value
         of 0 disables the interaction entirely.
 
+    {inherited}
+
+    ----------
+
+    **Members defined in** `Table`:
+
     Attributes:
         params (`TypeParameter` [\
           `tuple` [``particle_type``, ``particle_type``],\
@@ -597,10 +648,9 @@ class Table(Pair):
           * ``F`` ((*N*,) `numpy.ndarray` of `float`, **required**) -
             the tabulated force values :math:`[\\mathrm{force}]`. Must have the
             same length as ``U``.
-
-        mode (str): Energy shifting/smoothing mode: ``"none"``.
     """
     _cpp_class_name = "PotentialPairTable"
+    __doc__ = __doc__.replace("{inherited}", Pair._doc_inherited)
     _accepted_modes = ("none",)
 
     def __init__(self, nlist, default_r_cut=None):
@@ -642,6 +692,12 @@ class Morse(Pair):
         morse.params[('A', 'A')] = dict(D0=1.0, alpha=3.0, r0=1.0)
         morse.r_cut[('A', 'B')] = 3.0
 
+    {inherited}
+
+    ----------
+
+    **Members defined in** `Morse`:
+
     .. py:attribute:: params
 
         The potential parameters. The dictionary has the following keys:
@@ -655,15 +711,10 @@ class Morse(Pair):
 
         Type: `TypeParameter` [`tuple` [``particle_type``, ``particle_type``],
         `dict`]
-
-    .. py:attribute:: mode
-
-        Energy shifting/smoothing mode: ``"none"``, ``"shift"``, or ``"xplor"``.
-
-        Type: `str`
     """
 
     _cpp_class_name = "PotentialPairMorse"
+    __doc__ = __doc__.replace("{inherited}", Pair._doc_inherited)
 
     def __init__(self, nlist, default_r_cut=None, default_r_on=0., mode='none'):
         super().__init__(nlist, default_r_cut, default_r_on, mode)
@@ -735,6 +786,12 @@ class DPD(Pair):
         dpd.params[('B', 'B')] = dict(A=25.0, gamma=4.5)
         dpd.params[(['A', 'B'], ['C', 'D'])] = dict(A=40.0, gamma=4.5)
 
+    {inherited}
+
+    ----------
+
+    **Members defined in** `DPD`:
+
     .. py:attribute:: params
 
         The force parameters. The dictionary has the following keys:
@@ -745,14 +802,9 @@ class DPD(Pair):
 
         Type: `TypeParameter` [`tuple` [``particle_type``, ``particle_type``],
         `dict`]
-
-    .. py:attribute:: mode
-
-        Energy shifting/smoothing mode: ``"none"``.
-
-        Type: `str`
     """
     _cpp_class_name = "PotentialPairDPDThermoDPD"
+    __doc__ = __doc__.replace("{inherited}", Pair._doc_inherited)
     _accepted_modes = ("none",)
 
     def __init__(
@@ -805,6 +857,12 @@ class DPDConservative(Pair):
         dpdc.params[('A', 'B')] = dict(A=2.0, r_cut = 1.0)
         dpdc.params[(['A', 'B'], ['C', 'D'])] = dict(A=3.0)
 
+    {inherited}
+
+    ----------
+
+    **Members defined in** `DPDConservative`:
+
     .. py:attribute:: params
 
         The potential parameters. The dictionary has the following keys:
@@ -813,14 +871,9 @@ class DPDConservative(Pair):
 
         Type: `TypeParameter` [`tuple` [``particle_type``, ``particle_type``],
         `dict`]
-
-    .. py:attribute:: mode
-
-        Energy shifting/smoothing mode: ``"none"``.
-
-        Type: `str`
     """
     _cpp_class_name = "PotentialPairConservativeDPD"
+    __doc__ = __doc__.replace("{inherited}", Pair._doc_inherited)
     _accepted_modes = ("none",)
 
     def __init__(self, nlist, default_r_cut=None):
@@ -887,6 +940,12 @@ class DPDLJ(Pair):
             epsilon=3.0, sigma=1.0, gamma=1.2)
         dpdlj.r_cut[('B', 'B')] = 2.0**(1.0/6.0)
 
+    {inherited}
+
+    ----------
+
+    **Members defined in** `DPDLJ`:
+
     .. py:attribute:: params
 
         The DPDLJ potential parameters. The dictionary has the following keys:
@@ -900,14 +959,9 @@ class DPDLJ(Pair):
 
         Type: `TypeParameter` [`tuple` [``particle_type``, ``particle_type``],
         `dict`]
-
-    .. py:attribute:: mode
-
-        Energy shifting/smoothing mode: ``"none"`` or ``"shift"``.
-
-        Type: `str`
     """
     _cpp_class_name = "PotentialPairDPDThermoLJ"
+    __doc__ = __doc__.replace("{inherited}", Pair._doc_inherited)
     _accepted_modes = ("none", "shift")
 
     def __init__(self, nlist, kT, default_r_cut=None, mode='none'):
@@ -968,6 +1022,12 @@ class ForceShiftedLJ(Pair):
         fslj = pair.ForceShiftedLJ(nlist=nl, default_r_cut=1.5)
         fslj.params[('A', 'A')] = dict(epsilon=1.0, sigma=1.0)
 
+    {inherited}
+
+    ----------
+
+    **Members defined in** `ForceShiftedLJ`:
+
     .. py:attribute:: params
 
         The potential parameters. The dictionary has the following keys:
@@ -979,14 +1039,9 @@ class ForceShiftedLJ(Pair):
 
         Type: `TypeParameter` [`tuple` [``particle_type``, ``particle_type``],
         `dict`]
-
-    .. py:attribute:: mode
-
-        Energy shifting/smoothing mode: ``"none"``.
-
-        Type: `str`
     """
     _cpp_class_name = "PotentialPairForceShiftedLJ"
+    __doc__ = __doc__.replace("{inherited}", Pair._doc_inherited)
     _accepted_modes = ("none",)
 
     def __init__(self, nlist, default_r_cut=None):
@@ -1044,6 +1099,12 @@ class Moliere(Pair):
 
         moliere.params[('A', 'B')] = dict(qi=Zi*e, qj=Zj*e, aF=aF)
 
+    {inherited}
+
+    ----------
+
+    **Members defined in** `Moliere`:
+
     .. py:attribute:: params
 
         The potential parameters. The dictionary has the following keys:
@@ -1061,14 +1122,9 @@ class Moliere(Pair):
 
         Type: `TypeParameter` [`tuple` [``particle_type``, ``particle_type``],
         `dict`]
-
-    .. py:attribute:: mode
-
-        Energy shifting/smoothing mode: ``"none"``, ``"shift"``, or ``"xplor"``.
-
-        Type: `str`
     """
     _cpp_class_name = "PotentialPairMoliere"
+    __doc__ = __doc__.replace("{inherited}", Pair._doc_inherited)
 
     def __init__(self, nlist, default_r_cut=None, default_r_on=0., mode='none'):
         super().__init__(nlist, default_r_cut, default_r_on, mode)
@@ -1122,6 +1178,12 @@ class ZBL(Pair):
 
         zbl.params[('A', 'B')] = dict(qi=Zi*e, qj=Zj*e, aF=aF)
 
+    {inherited}
+
+    ----------
+
+    **Members defined in** `ZBL`:
+
     .. py:attribute:: params
 
         The ZBL potential parameters. The dictionary has the following keys:
@@ -1136,14 +1198,9 @@ class ZBL(Pair):
 
         Type: `TypeParameter` [`tuple` [``particle_type``, ``particle_type``],
         `dict`]
-
-    .. py:attribute:: mode
-
-        Energy shifting/smoothing mode: ``"none"``.
-
-        Type: `str`
     """
     _cpp_class_name = "PotentialPairZBL"
+    __doc__ = __doc__.replace("{inherited}", Pair._doc_inherited)
     _accepted_modes = ("none",)
 
     def __init__(self, nlist, default_r_cut=None, default_r_on=0.):
@@ -1181,6 +1238,12 @@ class Mie(Pair):
         mie.r_on[('A', 'A')] = 2.0
         mie.params[(['A', 'B'], ['C', 'D'])] = dict(epsilon=1.5, sigma=2.0)
 
+    {inherited}
+
+    ----------
+
+    **Members defined in** `Mie`:
+
     .. py:attribute:: params
 
         The potential parameters. The dictionary has the following keys:
@@ -1196,14 +1259,9 @@ class Mie(Pair):
 
         Type: `TypeParameter` [`tuple` [``particle_type``, ``particle_type``],
         `dict`]
-
-    .. py:attribute:: mode
-
-        Energy shifting/smoothing mode: ``"none"``, ``"shift"``, or ``"xplor"``.
-
-        Type: `str`
     """
     _cpp_class_name = "PotentialPairMie"
+    __doc__ = __doc__.replace("{inherited}", Pair._doc_inherited)
 
     def __init__(self, nlist, default_r_cut=None, default_r_on=0., mode='none'):
 
@@ -1250,6 +1308,12 @@ class ExpandedMie(Pair):
             "epsilon": 1.5, "sigma": 2.0, "n": 12, "m": 6,
             "delta": 0.5}
 
+    {inherited}
+
+    ----------
+
+    **Members defined in** `ExpandedMie`:
+
     .. py:attribute:: params
 
         The Expanded Mie potential parameters.
@@ -1268,14 +1332,9 @@ class ExpandedMie(Pair):
 
         Type: `TypeParameter` [ `tuple` [``particle_type``, ``particle_type``],
         `dict`]
-
-    .. py:attribute:: mode
-
-        Energy shifting/smoothing mode: ``"none"``, ``"shift"``, or ``"xplor"``.
-
-        Type: `str`
     """
     _cpp_class_name = "PotentialPairExpandedMie"
+    __doc__ = __doc__.replace("{inherited}", Pair._doc_inherited)
 
     def __init__(self, nlist, default_r_cut=None, default_r_on=0., mode='none'):
 
@@ -1338,6 +1397,12 @@ class ReactionField(Pair):
         reaction_field.params[('B', 'B')] = dict(
             epsilon=1.0, eps_rf=0.0, use_charge=True)
 
+    {inherited}
+
+    ----------
+
+    **Members defined in** `ReactionField`:
+
     .. py:attribute:: params
 
         The potential parameters. The dictionary has the following keys:
@@ -1351,14 +1416,9 @@ class ReactionField(Pair):
 
         Type: `TypeParameter` [`tuple` [``particle_type``, ``particle_type``],
         `dict`]
-
-    .. py:attribute:: mode
-
-        Energy shifting/smoothing mode: ``"none"``, ``"shift"``, or ``"xplor"``.
-
-        Type: `str`
     """
     _cpp_class_name = "PotentialPairReactionField"
+    __doc__ = __doc__.replace("{inherited}", Pair._doc_inherited)
 
     def __init__(self, nlist, default_r_cut=None, default_r_on=0., mode='none'):
         super().__init__(nlist, default_r_cut, default_r_on, mode)
@@ -1411,6 +1471,12 @@ class DLVO(Pair):
         dlvo.params[('A', 'B')] = dict(A=2.0, kappa=0.5, Z=3, a1=1, a2=3)
         dlvo.params[('B', 'B')] = dict(A=2.0, kappa=0.5, Z=3, a1=3, a2=3)
 
+    {inherited}
+
+    ----------
+
+    **Members defined in** `DLVO`:
+
     .. py:attribute:: params
 
         The potential parameters. The dictionary has the following keys:
@@ -1428,14 +1494,9 @@ class DLVO(Pair):
 
         Type: `TypeParameter` [`tuple` [``particle_type``, ``particle_type``],
         `dict`]
-
-    .. py:attribute:: mode
-
-        Energy shifting/smoothing mode: ``"none"`` or ``"shift"``.
-
-        Type: `str`
     """
     _cpp_class_name = "PotentialPairDLVO"
+    __doc__ = __doc__.replace("{inherited}", Pair._doc_inherited)
     _accepted_modes = ("none", "shift")
 
     def __init__(self, nlist, default_r_cut=None, default_r_on=0., mode='none'):
@@ -1479,6 +1540,12 @@ class Buckingham(Pair):
         buck.params[('A', 'B')] = dict(A=1.0, rho=1.0, C=1.0)
         buck.params[('B', 'B')] = dict(A=2.0, rho=2.0, C=2.0)
 
+    {inherited}
+
+    ----------
+
+    **Members defined in** `Buckingham`:
+
     .. py:attribute:: params
 
         The potential parameters. The dictionary has the following keys:
@@ -1490,15 +1557,10 @@ class Buckingham(Pair):
 
         Type: `TypeParameter` [`tuple` [``particle_type``, ``particle_type``],
         `dict`]
-
-    .. py:attribute:: mode
-
-        Energy shifting/smoothing mode: ``"none"``, ``"shift"``, or ``"xplor"``.
-
-        Type: `str`
     """
 
     _cpp_class_name = "PotentialPairBuckingham"
+    __doc__ = __doc__.replace("{inherited}", Pair._doc_inherited)
 
     def __init__(self, nlist, default_r_cut=None, default_r_on=0., mode='none'):
         super().__init__(nlist, default_r_cut, default_r_on, mode)
@@ -1531,6 +1593,12 @@ class LJ1208(Pair):
         U(r) = 4 \varepsilon \left[ \left( \frac{\sigma}{r} \right)^{12} -
           \left( \frac{\sigma}{r} \right)^{8} \right]
 
+    {inherited}
+
+    ----------
+
+    **Members defined in** `LJ1208`:
+
     .. py:attribute:: params
 
         The potential parameters. The dictionary has the following keys:
@@ -1542,14 +1610,9 @@ class LJ1208(Pair):
 
         Type: `TypeParameter` [`tuple` [``particle_type``, ``particle_type``],
         `dict`]
-
-    .. py:attribute:: mode
-
-        Energy shifting/smoothing mode: ``"none"``, ``"shift"``, or ``"xplor"``.
-
-        Type: `str`
     """
     _cpp_class_name = "PotentialPairLJ1208"
+    __doc__ = __doc__.replace("{inherited}", Pair._doc_inherited)
 
     def __init__(self, nlist, default_r_cut=None, default_r_on=0., mode='none'):
         super().__init__(nlist, default_r_cut, default_r_on, mode)
@@ -1583,6 +1646,12 @@ class LJ0804(Pair):
         lj0804.params[('A', 'B')] = dict(epsilon=2.0, sigma=1.0)
         lj0804.r_cut[('A', 'B')] = 3.0
 
+    {inherited}
+
+    ----------
+
+    **Members defined in** `LJ0804`:
+
     .. py:attribute:: params
 
         The LJ potential parameters. The dictionary has the following keys:
@@ -1594,14 +1663,9 @@ class LJ0804(Pair):
 
         Type: `TypeParameter` [`tuple` [``particle_type``, ``particle_type``],
         `dict`]
-
-    .. py:attribute:: mode
-
-        Energy shifting/smoothing mode: ``"none"``, ``"shift"``, or ``"xplor"``.
-
-        Type: `str`
     """
     _cpp_class_name = "PotentialPairLJ0804"
+    __doc__ = __doc__.replace("{inherited}", Pair._doc_inherited)
 
     def __init__(self, nlist, default_r_cut=None, default_r_on=0., mode='none'):
         super().__init__(nlist, default_r_cut, default_r_on, mode)
@@ -1643,6 +1707,12 @@ class Fourier(Pair):
         fourier = pair.Fourier(default_r_cut=3.0, nlist=nl)
         fourier.params[('A', 'A')] = dict(a=[a2,a3,a4], b=[b2,b3,b4])
 
+    {inherited}
+
+    ----------
+
+    **Members defined in** `Fourier`:
+
     .. py:attribute:: params
 
         The Fourier potential parameters. The dictionary has the following
@@ -1655,14 +1725,9 @@ class Fourier(Pair):
 
         Type: `TypeParameter` [`tuple` [``particle_type``, ``particle_type``],
         `dict`]
-
-    .. py:attribute:: mode
-
-        Energy shifting/smoothing mode: ``"none"`` or ``"xplor"``.
-
-        Type: `str`
     """
     _cpp_class_name = "PotentialPairFourier"
+    __doc__ = __doc__.replace("{inherited}", Pair._doc_inherited)
     _accepted_modes = ("none", "xplor")
 
     def __init__(self, nlist, default_r_cut=None, default_r_on=0., mode='none'):
@@ -1705,6 +1770,12 @@ class OPP(Pair):
             'eta2': 3, 'k': 1.0, 'phi': 3.14}
         opp.r_cut[('A', 'B')] = 3.0
 
+    {inherited}
+
+    ----------
+
+    **Members defined in** `OPP`:
+
     .. py:attribute:: params
 
         The OPP potential parameters. The dictionary has the following keys:
@@ -1728,14 +1799,9 @@ class OPP(Pair):
 
         Type: `TypeParameter` [`tuple` [``particle_type``, ``particle_type``],
         `dict`]
-
-    .. py:attribute:: mode
-
-        Energy shifting/smoothing mode: ``"none"``, ``"shift"``, or ``"xplor"``.
-
-        Type: `str`
     """
     _cpp_class_name = "PotentialPairOPP"
+    __doc__ = __doc__.replace("{inherited}", Pair._doc_inherited)
 
     def __init__(self, nlist, default_r_cut=None, default_r_on=0., mode='none'):
         super().__init__(nlist, default_r_cut, default_r_on, mode)
@@ -1781,6 +1847,12 @@ class TWF(Pair):
         twf.params[('A', 'A')] = {'sigma': 1.0, 'epsilon': 1.0, 'alpha': 50.0}
         twf.r_cut[('A', 'B')] = 3.0
 
+    {inherited}
+
+    ----------
+
+    **Members defined in** `TWF`:
+
     .. py:attribute:: params
 
         The LJ potential parameters. The dictionary has the following keys:
@@ -1794,14 +1866,9 @@ class TWF(Pair):
 
         Type: `TypeParameter` [`tuple` [``particle_type``, ``particle_type``],
         `dict`]
-
-    .. py:attribute:: mode
-
-        Energy shifting/smoothing mode: ``"none"``, ``"shift"``, or ``"xplor"``.
-
-        Type: `str`
     """
     _cpp_class_name = "PotentialPairTWF"
+    __doc__ = __doc__.replace("{inherited}", Pair._doc_inherited)
 
     def __init__(self,
                  nlist,
@@ -1837,6 +1904,20 @@ class LJGauss(Pair):
             \epsilon
             \exp \left[- \frac{\left(r - r_{0}\right)^{2}}{2 \sigma^{2}} \right]
 
+    Example::
+
+        nl = hoomd.md.nlist.Cell()
+        ljg = pair.LJGauss(nl)
+        ljg.params[('A', 'A')] = dict(epsilon=1.0, sigma=0.02, r0=1.6)
+        ljg.params[('A', 'B')] = {'epsilon' : 2.0, 'sigma' : 0.02, 'r0' : 1.6}
+        ljg.params[('A', 'B')] = {'epsilon' : 2.0, 'sigma' : 0.02, 'r0' : 1.6}
+
+    {inherited}
+
+    ----------
+
+    **Members defined in** `TWF`:
+
     .. py:attribute:: params
 
         The potential parameters. The dictionary has the following keys:
@@ -1847,18 +1928,9 @@ class LJGauss(Pair):
           Gaussian width :math:`\sigma > 0` :math:`[\mathrm{length}]`
         * ``r0`` (`float`, **required**) -
           Gaussian center :math:`r_0` :math:`[\mathrm{length}]`
-
-    Example::
-
-        nl = hoomd.md.nlist.Cell()
-        ljg = pair.LJGauss(nl)
-        ljg.params[('A', 'A')] = dict(epsilon=1.0, sigma=0.02, r0=1.6)
-        ljg.params[('A', 'B')] = {'epsilon' : 2.0, 'sigma' : 0.02, 'r0' : 1.6}
-        ljg.params[('A', 'B')] = {'epsilon' : 2.0, 'sigma' : 0.02, 'r0' : 1.6}
-
-    .. versionadded:: 3.1.0
     """
     _cpp_class_name = "PotentialPairLJGauss"
+    __doc__ = __doc__.replace("{inherited}", Pair._doc_inherited)
 
     def __init__(self,
                  nlist,

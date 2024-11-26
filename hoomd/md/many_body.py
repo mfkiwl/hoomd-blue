@@ -1,9 +1,7 @@
 # Copyright (c) 2009-2024 The Regents of the University of Michigan.
 # Part of HOOMD-blue, released under the BSD 3-Clause License.
 
-r"""Implement many body potentials.
-
-Triplet force classes apply a force and virial on every particle in the
+r"""Triplet force classes apply a force and virial on every particle in the
 simulation state commensurate with the potential energy:
 
 .. math::
@@ -57,10 +55,22 @@ class Triplet(Force):
         This class should not be instantiated by users. The class can be used
         for `isinstance` or `issubclass` checks.
 
+    Warning:
+        Currently HOOMD-blue does not support reverse force communication
+        between MPI domains on the GPU. Since reverse force communication is
+        required for the calculation of three-body forces, attempting to use
+        this potential on the GPU with MPI will result in an error.
+
+    {inherited}
+
+    ----------
+
+    **Members defined in** `Triplet`:
+
     .. py:attribute:: r_cut
 
-        *r_cut* :math:`[\\mathrm{length}]`, *optional*: defaults to the value
-        ``default_r_cut`` specified on construction.
+        *r_cut* :math:`[\\mathrm{length}]`, Cuttoff radius beyond which the energy and
+            force are 0.
 
         Type: `TypeParameter` [`tuple` [``particle_type``, ``particle_type``],
         `float`])
@@ -70,12 +80,24 @@ class Triplet(Force):
         Neighbor list used to compute the triplet potential.
 
         Type: `hoomd.md.nlist.NeighborList`
+    """
 
-    Warning:
-        Currently HOOMD-blue does not support reverse force communication
-        between MPI domains on the GPU. Since reverse force communication is
-        required for the calculation of three-body forces, attempting to use
-        this potential on the GPU with MPI will result in an error.
+    __doc__ = __doc__.replace("{inherited}", Force._doc_inherited)
+    _doc_inherited = Force._doc_inherited + """
+    ----------
+
+    **Members inherited from**
+    `Triplet <hoomd.md.many_body.Triplet>`:
+
+    .. py:attribute:: r_cut
+
+        Cuttoff radius beyond which the energy and force are 0.
+        `Read more... <hoomd.md.many_body.Triplet.r_cut>`
+
+    .. py:attribute:: nlist
+
+        Neighbor list used to compute the triplet potential.
+        `Read more... <hoomd.md.many_body.Triplet.nlist>`
     """
 
     def __init__(self, nlist, default_r_cut=None):
@@ -189,6 +211,19 @@ class Tersoff(Triplet):
         g(\theta_{ijk}) = 1 + \frac{c^2}{d^2}
                            - \frac{c^2}{d^2 + |m - \cos(\theta_{ijk})|^2}
 
+
+    Example::
+
+        nl = md.nlist.Cell()
+        tersoff = md.many_body.Tersoff(default_r_cut=1.3, nlist=nl)
+        tersoff.params[('A', 'B')] = dict(magnitudes=(2.0, 1.0), lambda3=5.0)
+
+    {inherited}
+
+    ----------
+
+    **Members defined in** `Tersoff`:
+
     .. py:attribute:: params
 
         The Tersoff potential parameters. The dictionary has the following
@@ -224,14 +259,9 @@ class Tersoff(Triplet):
 
         Type: `TypeParameter` [`tuple` [``particle_type``, ``particle_type``],
         `dict`]
-
-    Example::
-
-        nl = md.nlist.Cell()
-        tersoff = md.many_body.Tersoff(default_r_cut=1.3, nlist=nl)
-        tersoff.params[('A', 'B')] = dict(magnitudes=(2.0, 1.0), lambda3=5.0)
     """
     _cpp_class_name = "PotentialTersoff"
+    __doc__ = __doc__.replace("{inherited}", Triplet._doc_inherited)
 
     def __init__(self, nlist, default_r_cut=None):
         super().__init__(nlist, default_r_cut)
@@ -332,6 +362,22 @@ class RevCross(Triplet):
         three-body term is not enough to compensate the energy of multiple
         bonds, so it may cause nonphysical situations.
 
+    Example::
+
+        nl = md.nlist.Cell()
+        bond_swap = md.many_body.RevCross(default_r_cut=1.3,nlist=nl)
+        bond_swap.params[('A', 'A'), ('B', 'B')] = {
+            "sigma":0,"n": 0, "epsilon": 0, "lambda3": 0}
+        # a bond can be made only between A-B and not A-A or B-B
+        bond_swap.params[('A','B')] = {
+            "sigma": 1, "n": 100, "epsilon": 10, "lambda3": 1}
+
+    {inherited}
+
+    ----------
+
+    **Members defined in** `RevCross`:
+
     .. py:attribute:: params
 
         The revcross potential parameters. The dictionary has the following
@@ -351,18 +397,9 @@ class RevCross(Triplet):
 
         Type: `TypeParameter` [`tuple` [``particle_type``, ``particle_type``],
         `dict`]
-
-    Example::
-
-        nl = md.nlist.Cell()
-        bond_swap = md.many_body.RevCross(default_r_cut=1.3,nlist=nl)
-        bond_swap.params[('A', 'A'), ('B', 'B')] = {
-            "sigma":0,"n": 0, "epsilon": 0, "lambda3": 0}
-        # a bond can be made only between A-B and not A-A or B-B
-        bond_swap.params[('A','B')] = {
-            "sigma": 1, "n": 100, "epsilon": 10, "lambda3": 1}
     """
     _cpp_class_name = "PotentialRevCross"
+    __doc__ = __doc__.replace("{inherited}", Triplet._doc_inherited)
 
     def __init__(self, nlist, default_r_cut=None):
         super().__init__(nlist, default_r_cut)
@@ -413,6 +450,25 @@ class SquareDensity(Triplet):
         n_i = \sum\limits_{j\neq i} w_{ij}
               \left(\big| \vec r_i - \vec r_j \big|\right)
 
+    Example::
+
+        nl = nlist.Cell()
+        sqd = md.many_body.SquareDensity(nl, default_r_cut=3.0)
+        sqd.params[('A', 'B')] = dict(A=1.0, B=2.0)
+        sqd.params[('B', 'B')] = dict(A=2.0, B=2.0, default_r_on=1.0)
+
+    For further details regarding this multibody potential, see
+
+    [1] P. B. Warren, "Vapor-liquid coexistence in many-body dissipative
+    particle dynamics" Phys. Rev. E. Stat. Nonlin. Soft Matter Phys., vol. 68,
+    no. 6 Pt 2, p. 066702, 2003.
+
+    {inherited}
+
+    ----------
+
+    **Members defined in** `SquareDensity`:
+
     .. py:attribute:: params
 
         The SquareDensity potential parameters. The dictionary has the
@@ -428,24 +484,20 @@ class SquareDensity(Triplet):
 
         Type: `TypeParameter` [`tuple` [``particle_type``, ``particle_type``],
         `dict`]
-
-    Example::
-
-        nl = nlist.Cell()
-        sqd = md.many_body.SquareDensity(nl, default_r_cut=3.0)
-        sqd.params[('A', 'B')] = dict(A=1.0, B=2.0)
-        sqd.params[('B', 'B')] = dict(A=2.0, B=2.0, default_r_on=1.0)
-
-    For further details regarding this multibody potential, see
-
-    [1] P. B. Warren, "Vapor-liquid coexistence in many-body dissipative
-    particle dynamics" Phys. Rev. E. Stat. Nonlin. Soft Matter Phys., vol. 68,
-    no. 6 Pt 2, p. 066702, 2003.
     """
     _cpp_class_name = "PotentialSquareDensity"
+    __doc__ = __doc__.replace("{inherited}", Triplet._doc_inherited)
 
     def __init__(self, nlist, default_r_cut=None):
         super().__init__(nlist, default_r_cut)
         params = TypeParameter('params', 'particle_types',
                                TypeParameterDict(A=0.0, B=float, len_keys=2))
         self._add_typeparam(params)
+
+
+__all__ = [
+    'Triplet',
+    'Tersoff',
+    'RevCross',
+    'SquareDensity',
+]

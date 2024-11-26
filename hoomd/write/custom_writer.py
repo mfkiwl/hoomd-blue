@@ -65,6 +65,7 @@ class CustomWriter(CustomOperation, _WriterProperty, Writer):
     """
     _cpp_list_name = 'analyzers'
     _cpp_class_name = 'PythonAnalyzer'
+    __doc__ += CustomOperation._doc_inherited
 
 
 class _InternalCustomWriter(_InternalCustomOperation, Writer):

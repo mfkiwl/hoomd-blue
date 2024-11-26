@@ -1,9 +1,7 @@
 # Copyright (c) 2009-2024 The Regents of the University of Michigan.
 # Part of HOOMD-blue, released under the BSD 3-Clause License.
 
-"""Pair Potentials for Monte Carlo.
-
-Define :math:`U_{\\mathrm{pair},ij}` for use with `HPMCIntegrator
+"""Define :math:`U_{\\mathrm{pair},ij}` for use with `HPMCIntegrator
 <hoomd.hpmc.integrate.HPMCIntegrator>`, which will sum all the energy from all
 `Pair` potential instances in the
 `pair_potentials <hpmc.integrate.HPMCIntegrator.pair_potentials>` list.
@@ -35,3 +33,14 @@ from .opp import OPP
 from .union import Union
 from .angular_step import AngularStep
 from .step import Step
+
+__all__ = [
+    'Pair',
+    'LennardJones',
+    'ExpandedGaussian',
+    'LJGauss',
+    'OPP',
+    'Union',
+    'AngularStep',
+    'Step',
+]

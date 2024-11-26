@@ -21,8 +21,42 @@ class HPMCNECIntegrator(HPMCIntegrator):
     Warning:
         This class should not be instantiated by users. The class can be used
         for `isinstance` or `issubclass` checks.
+
+    {inherited}
+
+    ----------
+
+    **Members defined in** `HPMCNECIntegrator`:
     """
     _cpp_cls = None
+    _doc_inherited = HPMCIntegrator._doc_inherited + """
+    ----------
+
+    **Members inherited from**
+    `HPMCNECIntegrator <hoomd.hpmc.nec.integrate.HPMCNECIntegrator>`:
+
+    .. py:attribute:: chains_in_space
+
+        Rate of chain events that did neither collide nor end.
+        `Read more... <hoomd.hpmc.nec.integrate.HPMCNECIntegrator.chains_in_space>`
+
+    .. py:attribute:: nec_counters
+
+        Trial move counters
+        `Read more... <hoomd.hpmc.nec.integrate.HPMCNECIntegrator.nec_counters>`
+
+    .. py:attribute:: particles_per_chain
+
+        Particles per chain.
+        `Read more... <hoomd.hpmc.nec.integrate.HPMCNECIntegrator.particles_per_chain>`
+
+    .. py:attribute:: virial_pressure
+
+        Virial pressure.
+        `Read more... <hoomd.hpmc.nec.integrate.HPMCNECIntegrator.virial_pressure>`
+    """
+
+    __doc__ = __doc__.replace("{inherited}", HPMCIntegrator._doc_inherited)
 
     def __init__(self,
                  default_d=0.1,
@@ -133,7 +167,7 @@ class Sphere(HPMCNECIntegrator):
     """HPMC chain integration for spheres (2D/3D).
 
     Args:
-        default_d (`float`, optional): Default colission search distance
+        default_d (`float`, optional): Default collision search distance
             :math:`[\\mathrm{length}]`, defaults to 0.1.
         chain_time (`float`, optional): Length of a chain
             :math:`[\\mathrm{time}]`, defaults to 0.5.
@@ -163,6 +197,12 @@ class Sphere(HPMCNECIntegrator):
         mc = hoomd.hpmc.integrate.nec.Sphere(d=0.05, update_fraction=0.05)
         mc.chain_time = 0.05
 
+    {inherited}
+
+    ----------
+
+    **Members defined in** `Sphere`:
+
     Attributes:
         chain_time (float): Length of a chain :math:`[\\mathrm{time}]`.
 
@@ -181,6 +221,7 @@ class Sphere(HPMCNECIntegrator):
     """
 
     _cpp_cls = 'IntegratorHPMCMonoNECSphere'
+    __doc__ = __doc__.replace("{inherited}", HPMCNECIntegrator._doc_inherited)
 
     def __init__(self,
                  default_d=0.1,
@@ -222,7 +263,7 @@ class ConvexPolyhedron(HPMCNECIntegrator):
     """HPMC integration for convex polyhedra (3D) with nec.
 
     Args:
-        default_d (`float`, optional): Default colission search distance
+        default_d (`float`, optional): Default collision search distance
             :math:`[\\mathrm{length}]`, defaults to 0.1.
         default_a (`float`, optional): Default maximum size of rotation trial
             moves :math:`[\\mathrm{dimensionless}]`, defaults to 0.1.
@@ -259,6 +300,12 @@ class ConvexPolyhedron(HPMCNECIntegrator):
         mc.shape['A'] = dict(vertices=[[1,1,1], [1,1,-1], [1,-1,1], [1,-1,-1],
             [-1,1,1], [-1,1,-1], [-1,-1,1], [-1,-1,-1]])
 
+    {inherited}
+
+    ----------
+
+    **Members defined in** `ConvexPolyhedron`:
+
     Attributes:
         chain_probability (float): Probability of making a chain move instead
             of a rotation move.
@@ -290,6 +337,7 @@ class ConvexPolyhedron(HPMCNECIntegrator):
                 Undefined behavior will result when they are violated.
     """
     _cpp_cls = 'IntegratorHPMCMonoNECConvexPolyhedron'
+    __doc__ = __doc__.replace("{inherited}", HPMCNECIntegrator._doc_inherited)
 
     def __init__(self,
                  default_d=0.1,
@@ -326,3 +374,10 @@ class ConvexPolyhedron(HPMCNECIntegrator):
                            [-0.5, 0.5, -0.5], [-0.5, -0.5, 0.5]]}]
         """
         return super(ConvexPolyhedron, self)._return_type_shapes()
+
+
+__all__ = [
+    'HPMCNECIntegrator',
+    'Sphere',
+    'ConvexPolyhedron',
+]

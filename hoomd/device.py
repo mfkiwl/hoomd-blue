@@ -1,9 +1,7 @@
 # Copyright (c) 2009-2024 The Regents of the University of Michigan.
 # Part of HOOMD-blue, released under the BSD 3-Clause License.
 
-"""Devices.
-
-Use a `Device` class to choose which hardware device(s) should execute the
+"""Use a `Device` class to choose which hardware device should execute the
 simulation. `Device` also sets where to write log messages and how verbose
 the message output should be. Pass a `Device` object to `hoomd.Simulation`
 on instantiation to set the options for that simulation.
@@ -97,7 +95,7 @@ class NoticeFile:
 
 
 class Device:
-    """Base class device object.
+    """Base class device.
 
     Provides methods and properties common to `CPU` and `GPU`, including those
     that control where status messages are stored (`message_filename`) how many
@@ -105,7 +103,38 @@ class Device:
     provided status messages (`notice`).
 
     Warning:
-        `Device` cannot be used directly. Instantate a `CPU` or `GPU` object.
+        `Device` cannot be used directly. Instiatate a `CPU` or `GPU` object.
+    """
+
+    _doc_inherited = """
+    ----------
+
+    **Members inherited from** `Device <hoomd.device.Device>`:
+
+    .. py:attribute:: communicator
+
+        The MPI Communicator.
+        `Read more... <hoomd.device.Device.communicator>`
+
+    .. py:property:: notice_level
+
+        Minimum level of messages to print.
+        `Read more... <hoomd.device.Device.notice_level>`
+
+    .. py:property:: message_filename
+
+        Filename to write messages to.
+        `Read more... <hoomd.device.Device.message_filename>`
+
+    .. py:property:: device
+
+        Descriptions of the active hardware device.
+        `Read more... <hoomd.device.Device.device>`
+
+    .. py:method:: notice
+
+        Write a notice message.
+        `Read more... <hoomd.device.Device.notice>`
     """
 
     def __init__(self, communicator, notice_level, message_filename):
@@ -251,7 +280,7 @@ def _create_messenger(mpi_config, notice_level, message_filename):
 
 
 class GPU(Device):
-    """Select a GPU or GPU(s) to execute simulations.
+    """Select a GPU to execute simulations.
 
     Args:
         communicator (hoomd.communicator.Communicator): MPI communicator object.
@@ -301,7 +330,14 @@ class GPU(Device):
 
         gpu = hoomd.device.GPU()
 
+    {inherited}
+
+    ----------
+
+    **Members defined in** `GPU`:
     """
+
+    __doc__ = __doc__.replace("{inherited}", Device._doc_inherited)
 
     def __init__(
         self,
@@ -431,6 +467,8 @@ class CPU(Device):
         cpu = hoomd.device.CPU()
     """
 
+    __doc__ += Device._doc_inherited
+
     def __init__(
         self,
         communicator=None,
@@ -464,7 +502,7 @@ def auto_select(
         notice_level (int): Minimum level of messages to print.
 
     Returns:
-        Instance of `GPU` if availabile, otherwise `CPU`.
+        Instance of `GPU` if available, otherwise `CPU`.
 
     .. rubric:: Example:
 
@@ -477,3 +515,12 @@ def auto_select(
         return GPU(communicator, message_filename, notice_level)
     else:
         return CPU(communicator, message_filename, notice_level)
+
+
+__all__ = [
+    'NoticeFile',
+    'Device',
+    'GPU',
+    'CPU',
+    'auto_select',
+]

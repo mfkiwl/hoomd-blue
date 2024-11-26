@@ -4,3 +4,7 @@
 """Long-range potentials for molecular dynamics."""
 
 from . import pppm
+
+__all__ = [
+    'pppm',
+]

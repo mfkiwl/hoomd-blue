@@ -1,9 +1,7 @@
 # Copyright (c) 2009-2024 The Regents of the University of Michigan.
 # Part of HOOMD-blue, released under the BSD 3-Clause License.
 
-"""Manifolds.
-
-A `Manifold` defines a lower dimensional manifold embedded in 3D space with an
+"""A `Manifold` defines a lower dimensional manifold embedded in 3D space with an
 implicit function :math:`F(x,y,z) = 0`. Use `Manifold` classes to define
 positional constraints to a given set of particles with:
 
@@ -372,3 +370,15 @@ class Sphere(Manifold):
             self.r, _hoomd.make_scalar3(self.P[0], self.P[1], self.P[2]))
 
         super()._attach(self._simulation)
+
+
+__all__ = [
+    'Manifold',
+    'Cylinder',
+    'Diamond',
+    'Ellipsoid',
+    'Gyroid',
+    'Plane',
+    'Primitive',
+    'Sphere',
+]
