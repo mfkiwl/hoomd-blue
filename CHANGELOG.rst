@@ -21,6 +21,8 @@ Change Log
 * Read after write hazard in the GPU implementation of ``Dipole``, ``ALJ``, and all ``Patchy``
   potentials in ``hoomd.md.pair.ansiso``
   (`#1944 <https://github.com/glotzerlab/hoomd-blue/pull/1944>`__).
+* Read after write hazard in the GPU implementation of ``hoomd.md.mesh.conservation.Volume``
+  (`#1953 <https://github.com/glotzerlab/hoomd-blue/pull/1953>`__).
 
 *Added*
 
