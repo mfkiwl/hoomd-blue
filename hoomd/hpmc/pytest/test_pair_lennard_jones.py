@@ -205,6 +205,13 @@ def test_multiple_pair_potentials(mc_simulation_factory):
     assert simulation.operations.integrator.pair_energy == pytest.approx(
         expected=-3.0, rel=1e-5)
 
+    # check that individual energies are computed correctly with varying r_cut
+    lennard_jones_2.params[('A', 'A')] = dict(epsilon=2.0, sigma=1.0, r_cut=0)
+    assert simulation.operations.integrator.pair_energy == pytest.approx(
+        expected=-1.0, rel=1e-5)
+    assert lennard_jones_1.energy == pytest.approx(expected=-1.0, rel=1e-5)
+    assert lennard_jones_2.energy == pytest.approx(expected=0.0, abs=1e-5)
+
 
 def test_logging():
     hoomd.conftest.logging_check(

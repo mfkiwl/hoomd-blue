@@ -26,6 +26,9 @@ Change Log
   (`#1944 <https://github.com/glotzerlab/hoomd-blue/pull/1944>`__).
 * Read after write hazard in the GPU implementation of ``hoomd.md.mesh.conservation.Volume``
   (`#1953 <https://github.com/glotzerlab/hoomd-blue/pull/1953>`__).
+* ``hoomd.hpmc.pair.Pair.energy`` now computes the correct energy when there are multiple pair
+  potentials with different ``r_cut`` values
+  (`#1955 <https://github.com/glotzerlab/hoomd-blue/pull/1955>`__).
 
 *Added*
 
