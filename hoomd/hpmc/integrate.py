@@ -334,7 +334,7 @@ class HPMCIntegrator(Integrator):
             :math:`[\\mathrm{energy}]`.
     """
     _ext_module = _hpmc
-    _remove_for_pickling = Integrator._remove_for_pickling + ('_cpp_cell',)
+    _remove_for_pickling = (*Integrator._remove_for_pickling, '_cpp_cell')
     _skip_for_equality = Integrator._skip_for_equality | {'_cpp_cell'}
     _cpp_cls = None
     __doc__ = __doc__.replace("{inherited}", Integrator._doc_inherited)

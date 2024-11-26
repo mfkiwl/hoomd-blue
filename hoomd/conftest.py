@@ -432,7 +432,7 @@ def logging_check(cls, expected_namespace, expected_loggables):
             expected value of each for the loggable.
     """
     # Check namespace
-    assert all(log_quantity.namespace == expected_namespace + (cls.__name__,)
+    assert all(log_quantity.namespace == (*expected_namespace, cls.__name__)
                for log_quantity in cls._export_dict.values())
 
     # Check specific loggables
@@ -1279,7 +1279,7 @@ class BaseMappingTest(BaseCollectionsTest):
         # Test that non-existent keys error appropriately.
         expected_error = (KeyError,)
         if self._deletion_error is not None:
-            expected_error = expected_error + (self._deletion_error,)
+            expected_error = (*expected_error, self._deletion_error)
         with pytest.raises(expected_error):
             for key in self.random_keys():
                 if key not in test_mapping:
@@ -1343,7 +1343,7 @@ class BaseMappingTest(BaseCollectionsTest):
         # Test for error with non-existent keys.
         expected_error = (KeyError,)
         if self._deletion_error is not None:
-            expected_error = expected_error + (self._deletion_error,)
+            expected_error = (*expected_error, self._deletion_error)
         with pytest.raises(expected_error):
             for key in self.random_keys():
                 if key not in test_mapping:

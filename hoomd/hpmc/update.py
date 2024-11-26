@@ -698,7 +698,7 @@ class GCA(Updater):
         pivot_move_probability (float): Set the probability for attempting a
                                         pivot move.
     """
-    _remove_for_pickling = Updater._remove_for_pickling + ('_cpp_cell',)
+    _remove_for_pickling = (*Updater._remove_for_pickling, "_cpp_cell")
     _skip_for_equality = Updater._skip_for_equality | {'_cpp_cell'}
     __doc__ = __doc__.replace("{inherited}", Updater._doc_inherited)
 

@@ -36,7 +36,7 @@ def _proper_type_return(val):
     if len(val) == 0:
         return None
     elif len(val) == 1:
-        return list(val.values())[0]
+        return next(iter(val.values()))
     else:
         return val
 
@@ -60,7 +60,7 @@ def _raise_if_required_arg(value, current_context=()):
 
     if isinstance(value, Mapping):
         for key, item in value.items():
-            _raise_if_required_arg(item, current_context + (key,))
+            _raise_if_required_arg(item, (*current_context, key))
     # _is_iterable is required over isinstance(value, Sequence) because a
     # str of 1 character is still a sequence and results in infinite recursion.
     elif _is_iterable(value):
@@ -68,7 +68,7 @@ def _raise_if_required_arg(value, current_context=()):
         if len(value) == 1 and value[0] is RequiredArg:
             _raise_error_with_context(current_context)
         for index, item in enumerate(value):
-            _raise_if_required_arg(item, current_context + (index,))
+            _raise_if_required_arg(item, (*current_context, index))
 
 
 class _SmartTypeIndexer:

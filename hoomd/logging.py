@@ -262,7 +262,7 @@ class _LoggerQuantity:
             namespace = self.namespace
         else:
             namespace = self.namespace[:-1] + (user_name,)
-        yield namespace + (self.name,)
+        yield (*namespace, self.name)
         for i in count(start=1, step=1):
             yield namespace[:-1] + (namespace[-1] + '_' + str(i), self.name)
 
@@ -291,7 +291,7 @@ class _LoggerQuantity:
         ns = tuple(loggable_cls.__module__.split('.'))
         cls_name = loggable_cls.__name__
         # Only filter namespaces of objects in the hoomd package
-        return tuple(cls.namespace_filter(ns, ns[0] == "hoomd")) + (cls_name,)
+        return (*tuple(cls.namespace_filter(ns, ns[0] == "hoomd")), cls_name)
 
 
 class Loggable(type):

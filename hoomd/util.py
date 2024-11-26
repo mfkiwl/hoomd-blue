@@ -116,7 +116,7 @@ def _dict_flatten_implementation(value, key):
     else:
         new_dict = dict()
         for k, val in value.items():
-            new_dict.update(_dict_flatten_implementation(val, key + (k,)))
+            new_dict.update(_dict_flatten_implementation(val, (*key, k)))
         return new_dict
 
 
@@ -153,9 +153,9 @@ def _dict_filter(dict_, filter_):
 def _keys_helper(dict_, key=()):
     for k in dict_:
         if isinstance(dict_[k], dict):
-            yield from _keys_helper(dict_[k], key + (k,))
+            yield from _keys_helper(dict_[k], (*key, k))
             continue
-        yield key + (k,)
+        yield (*key, k)
 
 
 class _NamespaceDict(MutableMapping):

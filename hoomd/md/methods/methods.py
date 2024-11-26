@@ -80,7 +80,7 @@ class Thermostatted(Method):
 
                 nvt.thermostat = hoomd.md.methods.thermostats.Bussi(kT=0.5)
     """
-    _remove_for_pickling = AutotunedObject._remove_for_pickling + ("_thermo",)
+    _remove_for_pickling = (*AutotunedObject._remove_for_pickling, "_thermo")
     _skip_for_equality = AutotunedObject._skip_for_equality | {
         "_thermo",
     }
