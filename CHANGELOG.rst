@@ -40,6 +40,8 @@ Change Log
 * ``hoomd.hpmc.external.field.Harmonic`` is now ``hoomd.hpmc.external.Harmonic`` and works
   with ``IntegratorHPMC.external_potentials``
   (`#1941 <https://github.com/glotzerlab/hoomd-blue/pull/1941>`__).
+* Document one class per html page and show inherited members in class documentation
+  (`#1952 <https://github.com/glotzerlab/hoomd-blue/pull/1952>`__).
 
 *Removed*
 
