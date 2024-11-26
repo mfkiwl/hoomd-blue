@@ -21,6 +21,8 @@ Change Log
   (`#1934 <https://github.com/glotzerlab/hoomd-blue/pull/1934>`__).
 * Correctly apply ``HPMCIntegrator.external_potentials`` in ``hoomd.hpmc.update.MuVT``
   (`#1941 <https://github.com/glotzerlab/hoomd-blue/pull/1941>`__).
+* Read after write hazard in the GPU implementation of ``Dipole`` and ``ALJ``
+  (`#1944 <https://github.com/glotzerlab/hoomd-blue/pull/1944>`__).
 
 *Added*
 
