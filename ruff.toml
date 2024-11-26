@@ -28,7 +28,7 @@ ignore = [
   "D105", # Magic methods don't require documentation
   "D107", # do not document __init__ separately from the class
   "D301", # Allow backslashes in docstrings
-  "D205", "D415", # Allow no summary line. The rendered Sphinx documentation is cleaner without them. 
+  "D205", "D415", # Allow no summary line. The rendered Sphinx documentation is cleaner without them.
   "N816", "N806","N803", # allow occasional use of uppercase variable and argument names
   "D214", # ignore overindented sections in Trigger - this is Google napoleon formatting
   "RUF012", # hoomd does not use typing annotations
