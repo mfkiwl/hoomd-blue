@@ -42,7 +42,7 @@ problems should be solvable for a `CustomTuner`. To create a tuner define all
 
 from hoomd.tune.sorter import ParticleSorter
 from hoomd.tune.balance import LoadBalancer
-from hoomd.tune.custom_tuner import CustomTuner, _InternalCustomTuner
+from hoomd.tune.custom_tuner import CustomTuner
 from hoomd.tune.attr_tuner import ManualTuneDefinition
 from hoomd.tune.solve import (GridOptimizer, GradientDescent, Optimizer,
                               RootSolver, ScaleSolver, SecantSolver, SolverStep)

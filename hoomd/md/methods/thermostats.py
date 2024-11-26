@@ -49,7 +49,8 @@ class Thermostat(_HOOMDBaseObject):
         Users should use the subclasses and not instantiate `Thermostat`
         directly.
     """
-    _remove_for_pickling = (*_HOOMDBaseObject._remove_for_pickling, "_thermo", "_filter")
+    _remove_for_pickling = (*_HOOMDBaseObject._remove_for_pickling, "_thermo",
+                            "_filter")
     _skip_for_equality = _HOOMDBaseObject._skip_for_equality | {
         "_thermo", "_filter"
     }

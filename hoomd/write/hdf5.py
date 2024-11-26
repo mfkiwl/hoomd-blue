@@ -38,6 +38,7 @@ from hoomd.operation import Writer
 
 from hoomd.write.custom_writer import _InternalCustomWriter
 from hoomd.data.parameterdicts import ParameterDict
+from hoomd.custom.custom_action import _InternalAction
 
 try:
     import h5py
@@ -64,10 +65,10 @@ class _SkipIfNone:
 _skip_fh = _SkipIfNone("_fh")
 
 
-class _HDF5LogInternal(custom._InternalAction):
+class _HDF5LogInternal(_InternalAction):
     """A HDF5 HOOMD logging backend."""
 
-    _skip_for_equality = custom._InternalAction._skip_for_equality | {
+    _skip_for_equality = _InternalAction._skip_for_equality | {
         "_fh", "_attached_"
     }
 
@@ -90,7 +91,7 @@ class _HDF5LogInternal(custom._InternalAction):
 
     def __init__(self, filename, logger, mode="a"):
         if h5py is None:
-            raise ImportError(f"{type(self)} requires the h5py pacakge.")
+            raise ImportError(f"{type(self)} requires the h5py package.")
         param_dict = ParameterDict(filename=typeconverter.OnlyTypes(
             (str, PurePath)),
                                    logger=logging.Logger,

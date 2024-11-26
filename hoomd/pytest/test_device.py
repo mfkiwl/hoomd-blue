@@ -62,7 +62,7 @@ def test_gpu_specific_properties(device):
 def test_other_gpu_specifics(device):
     # make sure GPU is available and auto-select gives a GPU
     assert hoomd.device.GPU.is_available()
-    assert type(hoomd.device.auto_select()) == hoomd.device.GPU
+    assert isinstance(hoomd.device.auto_select(), hoomd.device.GPU)
 
     # make sure we can still make a CPU
     hoomd.device.CPU()
@@ -88,7 +88,7 @@ def test_cpu_build_specifics():
     if hoomd.version.gpu_enabled:
         pytest.skip("Don't run CPU-build specific tests when GPU is available")
     assert not hoomd.device.GPU.is_available()
-    assert type(hoomd.device.auto_select()) == hoomd.device.CPU
+    assert isinstance(hoomd.device.auto_select(), hoomd.device.CPU)
 
 
 def test_device_notice(device, tmp_path):

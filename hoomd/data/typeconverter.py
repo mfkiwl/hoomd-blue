@@ -586,8 +586,7 @@ class TypeConverterMapping(TypeConverter, MutableMapping):
                 try:
                     new_mapping[key] = self.converter[key](value)
                 except (ValueError, TypeError) as err:
-                    raise TypeConversionError(
-                        f"In key {key}: {err!s}") from err
+                    raise TypeConversionError(f"In key {key}: {err!s}") from err
             else:
                 new_mapping[key] = value
         return new_mapping

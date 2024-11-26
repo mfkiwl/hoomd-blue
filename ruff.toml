@@ -42,8 +42,6 @@ convention = "google"
 # do not require docstrings in unit test or documentation example files
 "**/pytest/*" = ["D", "F811", "N999"]
 "sphinx-doc/howto/*.py" = ["D"]
-# D214 
-# "hoomd/trigger.py" = ["D214"]
 
 [format]
 indent-style = "space"

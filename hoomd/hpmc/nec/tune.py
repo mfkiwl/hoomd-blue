@@ -3,10 +3,10 @@
 
 """Tune Newtonian event chain parameters."""
 
-from hoomd.custom import _InternalAction
+from hoomd.custom.custom_action import _InternalAction
 from hoomd.data.parameterdicts import ParameterDict
 from hoomd.data.typeconverter import OnlyTypes
-from hoomd.tune import _InternalCustomTuner
+from hoomd.tune.custom_tuner import _InternalCustomTuner
 from hoomd.tune.attr_tuner import _TuneDefinition
 from hoomd.tune import RootSolver, ScaleSolver, SecantSolver
 from hoomd.hpmc.nec.integrate import HPMCNECIntegrator

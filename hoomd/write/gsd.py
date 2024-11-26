@@ -461,7 +461,9 @@ class _GSDLogWriter:
                     # log/particles/{remaining namespace}. This preserves OVITO
                     # intergration.
                     if type_category in self._per_categories:
-                        log['/'.join((self._global_prepend, type_category.name + 's', *key))] = log_value
+                        log['/'.join(
+                            (self._global_prepend, type_category.name + 's',
+                             *key))] = log_value
                     elif type_category in self._convert_categories:
                         self._log_convert_value(
                             log, '/'.join((self._global_prepend, *key)),

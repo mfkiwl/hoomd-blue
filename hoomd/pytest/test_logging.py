@@ -370,11 +370,9 @@ class TestLogger:
             blank_logger.add(logged_obj)
             log_filter = self.get_filter(blank_logger)
 
-        expected_namespaces = [
-            (*base_namespace, loggable.name)
-            for loggable in logged_obj._export_dict.values()
-            if log_filter(loggable)
-        ]
+        expected_namespaces = [(*base_namespace, loggable.name)
+                               for loggable in logged_obj._export_dict.values()
+                               if log_filter(loggable)]
         if len(quantities) != 0:
             expected_namespaces = [
                 name for name in expected_namespaces
