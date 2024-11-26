@@ -496,8 +496,8 @@ class SquareDensity(Triplet):
 
 
 __all__ = [
-    'Triplet',
-    'Tersoff',
     'RevCross',
     'SquareDensity',
+    'Tersoff',
+    'Triplet',
 ]

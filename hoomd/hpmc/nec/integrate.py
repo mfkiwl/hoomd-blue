@@ -377,7 +377,7 @@ class ConvexPolyhedron(HPMCNECIntegrator):
 
 
 __all__ = [
+    'ConvexPolyhedron',
     'HPMCNECIntegrator',
     'Sphere',
-    'ConvexPolyhedron',
 ]

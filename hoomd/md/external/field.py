@@ -209,8 +209,8 @@ class Magnetic(Field):
 
 
 __all__ = [
-    'Field',
-    'Periodic',
     'Electric',
+    'Field',
     'Magnetic',
+    'Periodic',
 ]

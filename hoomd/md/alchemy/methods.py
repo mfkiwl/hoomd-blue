@@ -56,7 +56,8 @@ class Alchemostat(Method):
     @property
     def alchemical_dof(self):
         """`list` [`hoomd.md.alchemy.pair.AlchemicalDOF` ]: List of \
-                alchemical degrees of freedom."""
+                alchemical degrees of freedom.
+        """
         return self._alchemical_dof
 
     @alchemical_dof.setter
@@ -130,6 +131,6 @@ class NVT(Alchemostat):
 
 
 __all__ = [
-    'Alchemostat',
     'NVT',
+    'Alchemostat',
 ]

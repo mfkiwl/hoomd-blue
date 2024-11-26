@@ -237,7 +237,7 @@ class Table(Angle):
 
 __all__ = [
     'Angle',
-    'Harmonic',
     'CosineSquared',
+    'Harmonic',
     'Table',
 ]

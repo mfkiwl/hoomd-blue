@@ -7,11 +7,11 @@ from hoomd.data.parameterdicts import ParameterDict, TypeParameterDict
 from hoomd.data.typeparam import TypeParameter
 from hoomd.data.typeconverter import (OnlyFrom, OnlyTypes, OnlyIf,
                                       to_type_converter)
-from hoomd.tune import _InternalCustomTuner
 from hoomd.tune import ScaleSolver, SecantSolver
 from hoomd.hpmc.integrate import HPMCIntegrator
 from hoomd.hpmc.tune import mc_move_tune
 from hoomd.operation import Tuner
+from hoomd.tune.custom_tuner import _InternalCustomTuner
 
 
 class _MoveSizeTuneDefinition(mc_move_tune._MCTuneDefinition):

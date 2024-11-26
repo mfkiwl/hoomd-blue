@@ -3,10 +3,18 @@ ci:
   autoupdate_branch: 'trunk-patch'
   autofix_prs: false
 
-exclude: (?x)(
-        ^hoomd/extern/|
-        ^sphinx-doc/tutorial/
-        )
+# these exclusions must be synced with ruff-format agove and the file ruff.toml.
+exclude: |
+  (?x)(
+    ^hoomd/_hoomd.py|
+    ^hoomd/version_config.py|
+    ^hoomd/md/_md.py|
+    ^hoomd/hpmc/_hpmc.py|
+    ^hoomd/mpcd/_mpcd.py|
+    ^hoomd/extern/|
+    ^sphinx-doc/tutorial/
+    ^hoomd/metal/
+  )
 
 repos:
 - repo: local
@@ -36,7 +44,6 @@ repos:
     exclude_types: [svg]
   - id: check-json
   - id: check-yaml
-    exclude: (?:^.github/workflows/templates) # templates are not properly formatted yaml
   - id: check-case-conflict
   - id: mixed-line-ending
 - repo: https://github.com/glotzerlab/fix-license-header
@@ -64,28 +71,13 @@ repos:
   rev: 'v0.40.2'
   hooks:
   - id: yapf
-- repo: https://github.com/PyCQA/flake8
-  rev: '7.1.1'
+- repo: https://github.com/astral-sh/ruff-pre-commit
+  rev: 'v0.8.0'
   hooks:
-  - id: flake8
-    additional_dependencies:
-    - pep8-naming==0.13.3
-    - pydocstyle==6.3.0
-    - flake8-docstrings==1.7.0
-    - flake8-rst-docstrings==0.3.0
-    # Exclude components not yet ported to hoomd v3
-    # TODO: Remove these exclusions as components are ported
-    # These also need to be removed in setup.cfg
-    exclude: |
-      (?x)(
-        ^hoomd/_hoomd.py|
-        ^hoomd/version_config.py|
-        ^hoomd/md/_md.py|
-        ^hoomd/hpmc/_hpmc.py|
-        ^hoomd/mpcd/_mpcd.py|
-        ^hoomd/extern/|
-        ^hoomd/metal/
-      )
+  # - id: ruff-format  # TODO: enable formatting after all other v5 PRs are merged
+  #   types_or: [python]
+  - id: ruff
+    types_or: [python]
 - repo: https://github.com/pre-commit/mirrors-clang-format
   rev: v19.1.1
   hooks:

@@ -15,7 +15,7 @@ from .wall import WallPotential
 
 __all__ = [
     'External',
-    'Linear',
     'Harmonic',
+    'Linear',
     'WallPotential',
 ]

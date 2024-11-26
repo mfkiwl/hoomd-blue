@@ -50,7 +50,6 @@ Attributes:
 
     version (str): HOOMD-blue package version, following semantic versioning.
 """
-import os
 from hoomd import _hoomd
 
 from hoomd.version_config import (
@@ -78,20 +77,20 @@ floating_point_precision = _hoomd.BuildInfo.getFloatingPointPrecision()
 __all__ = [
     'build_dir',
     'compile_date',
+    'compile_flags',
+    'cxx_compiler',
+    'floating_point_precision',
     'git_branch',
     'git_sha1',
+    'gpu_api_version',
+    'gpu_enabled',
+    'gpu_platform',
     'hpmc_built',
+    'install_dir',
     'md_built',
     'metal_built',
     'mpcd_built',
-    'version',
-    'compile_flags',
-    'gpu_enabled',
-    'gpu_api_version',
-    'gpu_platform',
-    'cxx_compiler',
     'mpi_enabled',
     'source_dir',
-    'install_dir',
-    'floating_point_precision',
+    'version',
 ]

@@ -209,6 +209,6 @@ GeometryFiller._register_cpp_class(ParallelPlates, _mpcd,
                                    "ParallelPlateGeometryFiller")
 
 __all__ = [
-    'VirtualParticleFiller',
     'GeometryFiller',
+    'VirtualParticleFiller',
 ]

@@ -16,9 +16,7 @@ See Also:
     `hoomd.md.force.Custom`
 """
 
-from hoomd.custom.custom_action import Action, _InternalAction
-from hoomd.custom.custom_operation import (CustomOperation,
-                                           _InternalCustomOperation)
+from hoomd.custom.custom_operation import (Action, CustomOperation)
 
 __all__ = [
     'Action',

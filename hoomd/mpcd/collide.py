@@ -388,8 +388,8 @@ class StochasticRotationDynamics(CollisionMethod):
 
 
 __all__ = [
+    'AndersenThermostat',
     'CellList',
     'CollisionMethod',
-    'AndersenThermostat',
     'StochasticRotationDynamics',
 ]

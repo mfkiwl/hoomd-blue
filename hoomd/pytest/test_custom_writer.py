@@ -78,8 +78,8 @@ class TestCustomWriter:
         writer = hoomd.write.CustomWriter(2, WriteTimestep())
         # Check namespace
         log_quantity = writer._export_dict["fourty_two"]
-        assert log_quantity.namespace == expected_namespace + (
-            WriteTimestep.__name__,)
+        assert log_quantity.namespace == (*expected_namespace,
+                                          WriteTimestep.__name__)
         assert log_quantity.default
         assert log_quantity.category == hoomd.logging.LoggerCategories.scalar
 

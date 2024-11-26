@@ -379,9 +379,9 @@ class Tether(Bond):
 
 
 __all__ = [
+    'FENEWCA',
     'Bond',
     'Harmonic',
-    'FENEWCA',
     'Table',
     'Tether',
 ]

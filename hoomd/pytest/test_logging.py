@@ -32,7 +32,7 @@ class TestLoggerQuantity:
         quantity = _LoggerQuantity(name=name, cls=DummyNamespace)
         for i, given_namespace in enumerate(quantity.yield_names()):
             if i == 0:
-                assert given_namespace == dummy_namespace + (name,)
+                assert given_namespace == (*dummy_namespace, name)
             elif i < 100:
                 assert given_namespace[-2].endswith('_' + str(i)) and \
                     given_namespace[:-2] == dummy_namespace[:-1] and \
@@ -310,7 +310,7 @@ class TestLogger:
     def test_add_single_quantity(self, blank_logger, log_quantity):
         # Assumes "scalar" is always accepted
         blank_logger._add_single_quantity(None, log_quantity, None)
-        namespace = log_quantity.namespace + (log_quantity.name,)
+        namespace = (*log_quantity.namespace, log_quantity.name)
         assert namespace in blank_logger
         log_value = blank_logger[namespace]
         assert log_value.obj is None
@@ -370,11 +370,9 @@ class TestLogger:
             blank_logger.add(logged_obj)
             log_filter = self.get_filter(blank_logger)
 
-        expected_namespaces = [
-            base_namespace + (loggable.name,)
-            for loggable in logged_obj._export_dict.values()
-            if log_filter(loggable)
-        ]
+        expected_namespaces = [(*base_namespace, loggable.name)
+                               for loggable in logged_obj._export_dict.values()
+                               if log_filter(loggable)]
         if len(quantities) != 0:
             expected_namespaces = [
                 name for name in expected_namespaces
@@ -394,8 +392,8 @@ class TestLogger:
     def test_remove(self, logged_obj, base_namespace):
 
         # Test removing all properties
-        prop_namespace = base_namespace + ('prop',)
-        list_namespace = base_namespace + ('proplist',)
+        prop_namespace = (*base_namespace, 'prop')
+        list_namespace = (*base_namespace, 'proplist')
         log = Logger()
         log.add(logged_obj)
         log.remove(logged_obj)
@@ -419,7 +417,7 @@ class TestLogger:
         assert list_namespace not in log
 
         # Test remove just given namespaces
-        prop_namespace = base_namespace + ('prop',)
+        prop_namespace = (*base_namespace, 'prop')
         log = Logger()
         log.add(logged_obj)
         log.remove(quantities=[prop_namespace])
@@ -473,13 +471,13 @@ class TestLogger:
         assert len(log) == 2
 
         # Test when given a namespace
-        log -= base_namespace + ('prop',)
-        assert base_namespace + ('prop',) not in log
+        log -= (*base_namespace, 'prop')
+        assert (*base_namespace, 'prop') not in log
         assert len(log) == 1
 
         # Test with list of namespaces
         log += logged_obj
-        rm_nsp = [base_namespace + (name,) for name in ['prop', 'proplist']]
+        rm_nsp = [(*base_namespace, name) for name in ['prop', 'proplist']]
         log -= rm_nsp
         for nsp in rm_nsp:
             assert nsp not in log

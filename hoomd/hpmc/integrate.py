@@ -334,7 +334,7 @@ class HPMCIntegrator(Integrator):
             :math:`[\\mathrm{energy}]`.
     """
     _ext_module = _hpmc
-    _remove_for_pickling = Integrator._remove_for_pickling + ('_cpp_cell',)
+    _remove_for_pickling = (*Integrator._remove_for_pickling, '_cpp_cell')
     _skip_for_equality = Integrator._skip_for_equality | {'_cpp_cell'}
     _cpp_cls = None
     __doc__ = __doc__.replace("{inherited}", Integrator._doc_inherited)
@@ -634,14 +634,16 @@ class HPMCIntegrator(Integrator):
     @log(requires_run=True)
     def pair_energy(self):
         """float: Total potential energy contributed by all pair potentials \
-        :math:`[\\mathrm{energy}]`."""
+        :math:`[\\mathrm{energy}]`.
+        """
         timestep = self._simulation.timestep
         return self._cpp_obj.computeTotalPairEnergy(timestep)
 
     @log(requires_run=True)
     def external_energy(self):
         """float: Total external energy contributed by all external potentials \
-        :math:`[\\mathrm{energy}]`."""
+        :math:`[\\mathrm{energy}]`.
+        """
         return self._cpp_obj.computeTotalExternalEnergy(
             self._simulation.timestep)
 
@@ -2205,18 +2207,18 @@ class FacetedEllipsoidUnion(HPMCIntegrator):
 
 
 __all__ = [
-    'HPMCIntegrator',
-    'Sphere',
     'ConvexPolygon',
-    'ConvexSpheropolygon',
-    'SimplePolygon',
-    'Polyhedron',
     'ConvexPolyhedron',
-    'FacetedEllipsoid',
-    'Sphinx',
+    'ConvexSpheropolygon',
     'ConvexSpheropolyhedron',
-    'Ellipsoid',
-    'SphereUnion',
     'ConvexSpheropolyhedronUnion',
+    'Ellipsoid',
+    'FacetedEllipsoid',
     'FacetedEllipsoidUnion',
+    'HPMCIntegrator',
+    'Polyhedron',
+    'SimplePolygon',
+    'Sphere',
+    'SphereUnion',
+    'Sphinx',
 ]

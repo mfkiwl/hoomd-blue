@@ -4,3 +4,5 @@
 """Example MC shape plugin."""
 
 from . import integrate
+
+__all__ = ['integrate']

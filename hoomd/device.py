@@ -491,7 +491,6 @@ def auto_select(
     """Automatically select the hardware device.
 
     Args:
-
         communicator (hoomd.communicator.Communicator): MPI communicator object.
             When `None`, create a default communicator that uses all MPI ranks.
 
@@ -518,9 +517,9 @@ def auto_select(
 
 
 __all__ = [
-    'NoticeFile',
-    'Device',
-    'GPU',
     'CPU',
+    'GPU',
+    'Device',
+    'NoticeFile',
     'auto_select',
 ]

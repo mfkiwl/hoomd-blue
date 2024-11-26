@@ -42,6 +42,8 @@ from hoomd.md import tune
 from hoomd.md.half_step_hook import HalfStepHook
 
 __all__ = [
+    'HalfStepHook',
+    'Integrator',
     'alchemy',
     'angle',
     'bond',
@@ -52,17 +54,15 @@ __all__ = [
     'external',
     'force',
     'improper',
-    'Integrator',
     'long_range',
     'manifold',
+    'many_body',
+    'mesh',
+    'methods',
     'minimize',
     'nlist',
     'pair',
-    'update',
     'special_pair',
-    'methods',
-    'mesh',
-    'many_body',
     'tune',
-    'HalfStepHook',
+    'update',
 ]

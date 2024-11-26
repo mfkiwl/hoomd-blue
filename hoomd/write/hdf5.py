@@ -38,6 +38,7 @@ from hoomd.operation import Writer
 
 from hoomd.write.custom_writer import _InternalCustomWriter
 from hoomd.data.parameterdicts import ParameterDict
+from hoomd.custom.custom_action import _InternalAction
 
 try:
     import h5py
@@ -64,10 +65,10 @@ class _SkipIfNone:
 _skip_fh = _SkipIfNone("_fh")
 
 
-class _HDF5LogInternal(custom._InternalAction):
+class _HDF5LogInternal(_InternalAction):
     """A HDF5 HOOMD logging backend."""
 
-    _skip_for_equality = custom._InternalAction._skip_for_equality | {
+    _skip_for_equality = _InternalAction._skip_for_equality | {
         "_fh", "_attached_"
     }
 
@@ -90,7 +91,7 @@ class _HDF5LogInternal(custom._InternalAction):
 
     def __init__(self, filename, logger, mode="a"):
         if h5py is None:
-            raise ImportError(f"{type(self)} requires the h5py pacakge.")
+            raise ImportError(f"{type(self)} requires the h5py package.")
         param_dict = ParameterDict(filename=typeconverter.OnlyTypes(
             (str, PurePath)),
                                    logger=logging.Logger,
@@ -149,7 +150,7 @@ class _HDF5LogInternal(custom._InternalAction):
                 continue
             if value is None:
                 continue
-            str_key = "/".join(("hoomd-data",) + key)
+            str_key = "/".join(("hoomd-data", *key))
             if str_key not in self._fh:
                 raise RuntimeError(
                     "The logged quantities cannot change within a file.")
@@ -217,12 +218,12 @@ class _HDF5LogInternal(custom._InternalAction):
             else:
                 if not isinstance(value, np.ndarray):
                     value = np.asarray(value)
-                data_shape = (1,) + value.shape
+                data_shape = (1, *value.shape)
                 dtype = value.dtype
                 chunk_size = (max(
                     self._MULTIFRAME_ARRAY_CHUNK_MAXIMUM // value.nbytes,
                     1),) + data_shape[1:]
-            self._create_dataset("/".join(("hoomd-data",) + key), data_shape,
+            self._create_dataset("/".join(("hoomd-data", *key)), data_shape,
                                  dtype, chunk_size)
 
     @_skip_fh

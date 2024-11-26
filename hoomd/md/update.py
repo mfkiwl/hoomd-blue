@@ -319,7 +319,7 @@ class ActiveRotationalDiffusion(Updater):
 
 
 __all__ = [
-    'ZeroMomentum',
-    'ReversePerturbationFlow',
     'ActiveRotationalDiffusion',
+    'ReversePerturbationFlow',
+    'ZeroMomentum',
 ]

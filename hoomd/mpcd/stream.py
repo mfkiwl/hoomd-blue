@@ -334,7 +334,7 @@ class BounceBack(StreamingMethod):
 
 
 __all__ = [
-    'StreamingMethod',
-    'Bulk',
     'BounceBack',
+    'Bulk',
+    'StreamingMethod',
 ]

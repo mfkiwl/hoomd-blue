@@ -13,7 +13,8 @@
     custom_action = ExampleAction()
 """
 
-from hoomd.custom import (CustomOperation, _InternalCustomOperation, Action)
+from hoomd.custom import (Action, CustomOperation)
+from hoomd.custom.custom_operation import _InternalCustomOperation
 from hoomd.operation import Writer
 
 

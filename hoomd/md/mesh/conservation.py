@@ -209,7 +209,7 @@ class Volume(MeshConservationPotential):
 
 __all__ = [
     'Area',
+    'MeshConservationPotential',
     'TriangleArea',
     'Volume',
-    'MeshConservationPotential',
 ]

@@ -373,11 +373,11 @@ class Sphere(Manifold):
 
 
 __all__ = [
-    'Manifold',
     'Cylinder',
     'Diamond',
     'Ellipsoid',
     'Gyroid',
+    'Manifold',
     'Plane',
     'Primitive',
     'Sphere',

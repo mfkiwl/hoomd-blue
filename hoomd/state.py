@@ -802,7 +802,8 @@ class State:
     @property
     def domain_decomposition_split_fractions(self):
         """tuple(list[float], list[float], list[float]): Box fractions of the \
-        domain split planes in the x, y, and z directions."""
+        domain split planes in the x, y, and z directions.
+        """
         particle_data = self._cpp_sys_def.getParticleData()
 
         if (not hoomd.version.mpi_enabled
@@ -817,7 +818,8 @@ class State:
     @property
     def domain_decomposition(self):
         """tuple(int, int, int): Number of domains in the x, y, and z \
-        directions."""
+        directions.
+        """
         particle_data = self._cpp_sys_def.getParticleData()
 
         if (not hoomd.version.mpi_enabled

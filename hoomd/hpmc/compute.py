@@ -69,7 +69,6 @@ class FreeVolume(Compute):
     2D).
 
     Note:
-
         `FreeVolume` respects the HPMC integrator's ``interaction_matrix``.
 
     .. rubric:: Mixed precision
@@ -137,7 +136,8 @@ class FreeVolume(Compute):
     def free_volume(self):
         """Free volume available to the test particle \
         :math:`[\\mathrm{length}^{2}]` in 2D and \
-        :math:`[\\mathrm{length}^{3}]` in 3D."""
+        :math:`[\\mathrm{length}^{3}]` in 3D.
+        """
         self._cpp_obj.compute(self._simulation.timestep)
         return self._cpp_obj.free_volume
 
@@ -402,7 +402,8 @@ class SDF(Compute):
         """(*N_bins*,) `numpy.ndarray` of `float`): The x \
         values at the center of each bin corresponding to the scale \
         distribution function for the compressive perturbations \
-        :math:`[\\mathrm{length}]`."""
+        :math:`[\\mathrm{length}]`.
+        """
         # Ensure that num_bins is up to date.
         self._cpp_obj.compute(self._simulation.timestep)
 
@@ -414,7 +415,8 @@ class SDF(Compute):
         """(*N_bins*,) `numpy.ndarray` of `float`): The x \
         values at the center of each bin corresponding to the scale \
         distribution function for the expansion moves \
-        :math:`[\\mathrm{length}]`."""
+        :math:`[\\mathrm{length}]`.
+        """
         # Ensure that num_bins is up to date.
         self._cpp_obj.compute(self._simulation.timestep)
 
@@ -497,6 +499,6 @@ class SDF(Compute):
 
 
 __all__ = [
-    'FreeVolume',
     'SDF',
+    'FreeVolume',
 ]

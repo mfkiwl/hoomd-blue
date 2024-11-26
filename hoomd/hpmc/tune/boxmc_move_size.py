@@ -8,7 +8,7 @@ from hoomd.data.parameterdicts import ParameterDict
 from hoomd.data.typeconverter import (OnlyFrom, OnlyTypes, OnlyIf,
                                       to_type_converter)
 
-from hoomd.tune import _InternalCustomTuner
+from hoomd.tune.custom_tuner import _InternalCustomTuner
 from hoomd.tune import ScaleSolver, SecantSolver
 
 from hoomd.hpmc.integrate import HPMCIntegrator

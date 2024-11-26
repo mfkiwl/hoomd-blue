@@ -232,8 +232,8 @@ class SineForce(BodyForce):
 
 
 __all__ = [
-    'BodyForce',
     'BlockForce',
+    'BodyForce',
     'ConstantForce',
     'SineForce',
 ]

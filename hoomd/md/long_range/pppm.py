@@ -335,6 +335,6 @@ def _rms(h, prd, N, order, kappa, q2):
 
 
 __all__ = [
-    'make_pppm_coulomb_forces',
     'Coulomb',
+    'make_pppm_coulomb_forces',
 ]

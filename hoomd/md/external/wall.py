@@ -227,7 +227,8 @@ class WallPotential(force.Force):
     @property
     def walls(self):
         """`list` [`hoomd.wall.WallGeometry`]: \
-            The walls associated with this wall potential."""
+            The walls associated with this wall potential.
+        """
         return self._walls
 
     @walls.setter
@@ -622,11 +623,11 @@ class Mie(WallPotential):
 
 
 __all__ = [
-    'WallPotential',
     'LJ',
-    'Gaussian',
-    'Yukawa',
-    'Morse',
     'ForceShiftedLJ',
+    'Gaussian',
     'Mie',
+    'Morse',
+    'WallPotential',
+    'Yukawa',
 ]

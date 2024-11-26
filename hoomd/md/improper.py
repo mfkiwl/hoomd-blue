@@ -181,7 +181,7 @@ class Periodic(Improper):
 
 
 __all__ = [
-    'Improper',
     'Harmonic',
+    'Improper',
     'Periodic',
 ]

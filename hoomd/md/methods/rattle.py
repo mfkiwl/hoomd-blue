@@ -626,10 +626,10 @@ class OverdampedViscous(MethodRATTLE):
 
 
 __all__ = [
-    'MethodRATTLE',
     'NVE',
+    'Brownian',
     'DisplacementCapped',
     'Langevin',
-    'Brownian',
+    'MethodRATTLE',
     'OverdampedViscous',
 ]

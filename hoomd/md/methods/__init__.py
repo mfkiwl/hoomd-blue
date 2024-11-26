@@ -21,14 +21,14 @@ from .methods import (Method, Langevin, Brownian, Thermostatted, ConstantVolume,
 from . import thermostats
 
 __all__ = [
+    'Brownian',
+    'ConstantPressure',
+    'ConstantVolume',
+    'DisplacementCapped',
+    'Langevin',
+    'Method',
+    'OverdampedViscous',
+    'Thermostatted',
     'rattle',
     'thermostats',
-    'Method',
-    'Langevin',
-    'Brownian',
-    'Thermostatted',
-    'ConstantVolume',
-    'ConstantPressure',
-    'DisplacementCapped',
-    'OverdampedViscous',
 ]

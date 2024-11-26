@@ -75,7 +75,7 @@ class MeshPotential(Force):
             except ValueError as err:
                 raise err.__class__(
                     f"For {type(self)} in TypeParameter {typeparam.name} "
-                    f"{str(err)}")
+                    f"{err!s}")
 
     @property
     def mesh(self):

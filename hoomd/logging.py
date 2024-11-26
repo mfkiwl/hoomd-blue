@@ -262,7 +262,7 @@ class _LoggerQuantity:
             namespace = self.namespace
         else:
             namespace = self.namespace[:-1] + (user_name,)
-        yield namespace + (self.name,)
+        yield (*namespace, self.name)
         for i in count(start=1, step=1):
             yield namespace[:-1] + (namespace[-1] + '_' + str(i), self.name)
 
@@ -291,7 +291,7 @@ class _LoggerQuantity:
         ns = tuple(loggable_cls.__module__.split('.'))
         cls_name = loggable_cls.__name__
         # Only filter namespaces of objects in the hoomd package
-        return tuple(cls.namespace_filter(ns, ns[0] == "hoomd")) + (cls_name,)
+        return (*tuple(cls.namespace_filter(ns, ns[0] == "hoomd")), cls_name)
 
 
 class Loggable(type):
@@ -666,19 +666,22 @@ class Logger(_SafeNamespaceDict):
     @property
     def categories(self):
         """`LoggerCategories`: The enum representing the \
-        acceptable categories for the `Logger` object."""
+        acceptable categories for the `Logger` object.
+        """
         return self._categories
 
     @property
     def string_categories(self):
         """list[str]: A list of the string names of the allowed \
-        categories for logging."""
+        categories for logging.
+        """
         return LoggerCategories._get_string_list(self._categories)
 
     @property
     def only_default(self):
         """`bool`: Whether the logger object should only add default loggable \
-        quantities."""
+        quantities.
+        """
         return self._only_default
 
     def _filter_quantities(self, quantities, force_quantities=False):
@@ -946,8 +949,8 @@ def modify_namespace(cls, namespace=None):
 
 
 __all__ = [
+    'Logger',
     'LoggerCategories',
     'log',
-    'Logger',
     'modify_namespace',
 ]
