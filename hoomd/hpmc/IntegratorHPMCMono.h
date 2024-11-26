@@ -1147,8 +1147,9 @@ double IntegratorHPMCMono<Shape>::computePairEnergy(uint64_t timestep,
                                 LongReal r_squared = dot(r_ij, r_ij);
                                 if (selected_pair)
                                     {
-                                    if (r_squared < selected_pair->getRCutSquaredTotal(typ_i, typ_j))
-                                    {
+                                    if (r_squared
+                                        < selected_pair->getRCutSquaredTotal(typ_i, typ_j))
+                                        {
                                         energy += selected_pair->energy(r_squared,
                                                                         r_ij,
                                                                         typ_i,
@@ -1157,7 +1158,7 @@ double IntegratorHPMCMono<Shape>::computePairEnergy(uint64_t timestep,
                                                                         typ_j,
                                                                         orientation_j,
                                                                         h_charge.data[j]);
-                                    }
+                                        }
                                     }
                                 else
                                     {
