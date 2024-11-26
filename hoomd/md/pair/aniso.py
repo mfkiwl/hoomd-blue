@@ -901,7 +901,7 @@ class PatchyExpandedLJ(Patchy):
         patchylj.params[('A', 'A')] = dict(pair_params=lj_params,
                                            envelope_params=envelope_params)
         patchylj.directors['A'] = [(1,0,0)]
-        simulation.operation.integrator.forces = [patchylj]
+        simulation.operations.integrator.forces = [patchylj]
 
     {inherited}
 
@@ -955,7 +955,7 @@ class PatchyExpandedMie(Patchy):
         patchy_expanded_mie = hoomd.md.pair.aniso.PatchyExpandedMie(
             nlist=neighbor_list, default_r_cut=3.0)
         patchy_expanded_mie.params[('A', 'A')] = dict(
-            pair_params=expanded_mie_params
+            pair_params=expanded_mie_params,
             envelope_params=envelope_params)
         patchy_expanded_mie.directors['A'] = [(1,0,0)]
         simulation.operations.integrator.forces = [patchy_expanded_mie]
@@ -1079,7 +1079,7 @@ class PatchyMie(Patchy):
 
         patchy_mie = hoomd.md.pair.aniso.PatchyMie(nlist=neighbor_list,
                                                    default_r_cut=3.0)
-        patchy_mie.params[('A', 'A')] = dict(pair_params=mie_params
+        patchy_mie.params[('A', 'A')] = dict(pair_params=mie_params,
                                              envelope_params = envelope_params)
         patchy_mie.directors['A'] = [(1,0,0)]
         simulation.operations.integrator.forces = [patchy_mie]
@@ -1136,7 +1136,7 @@ class PatchyYukawa(Patchy):
 
         patchy_yukawa = hoomd.md.pair.aniso.PatchyYukawa(nlist=neighbor_list,
                                                          default_r_cut=5.0)
-        patchy_yukawa.params[('A', 'A')] = dict(pair_params=yukawa_params
+        patchy_yukawa.params[('A', 'A')] = dict(pair_params=yukawa_params,
                                                 envelope_params=envelope_params)
         patchy_yukawa.directors['A'] = [(1,0,0)]
         simulation.operations.integrator.forces = [patchy_yukawa]
