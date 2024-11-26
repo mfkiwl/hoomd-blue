@@ -93,9 +93,9 @@ def random_inds(n):
 
 def test_initialization(simulation_factory):
     with pytest.raises(TypeError):
-        sim = hoomd.Simulation()
+        _ = hoomd.Simulation()
 
-    sim = simulation_factory()  # noqa
+    _ = simulation_factory()
 
 
 def test_device_property(device):
@@ -370,7 +370,7 @@ def test_writer_order_initial(simulation_factory,
 
 
 def test_large_timestep(simulation_factory, lattice_snapshot_factory):
-    """Test that simluations suport large timestep values."""
+    """Test that simulations support large timestep values."""
     sim = simulation_factory()
     sim.timestep = 2**64 - 100
     sim.create_state_from_snapshot(lattice_snapshot_factory())

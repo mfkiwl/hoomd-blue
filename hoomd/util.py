@@ -32,7 +32,7 @@ def _dict_map(dict_, func):
     r"""Perform a recursive map on a nested mapping.
 
     Args:
-        dict\_ (dict): The nested mapping to perform the map on.
+        dict_ (dict): The nested mapping to perform the map on.
         func (``callable``): A callable taking in one value use to map over
             dictionary values.
 
@@ -67,7 +67,7 @@ def _dict_fold(dict_, func, init_value, use_keys=False):
             accumulated_value = func(accumulated_value, value)
 
     Args:
-        dict\_ (dict): The nested mapping to perform the map on.
+        dict_ (dict): The nested mapping to perform the map on.
         func (``callable``): A callable taking in one value use to fold over
             dictionary values or keys if ``use_keys`` is set.
         init_value: An initial value to use for the fold.
@@ -93,7 +93,7 @@ def _dict_flatten(dict_):
     r"""Flattens a nested mapping into a flat mapping.
 
     Args:
-        dict\_ (dict): The nested mapping to flatten.
+        dict_ (dict): The nested mapping to flatten.
 
     Returns:
         dict: The flattened mapping as a `dict`.
@@ -124,8 +124,8 @@ def _dict_filter(dict_, filter_):
     r"""Perform a recursive filter on a nested mapping.
 
     Args:
-        dict\_ (dict): The nested mapping to perform the filter on.
-        func (``callable``): A callable taking in one value use to filter over
+        dict_ (dict): The nested mapping to perform the filter on.
+        filter_ (``callable``): A callable taking in one value use to filter over
             mapping values.
 
     Returns:

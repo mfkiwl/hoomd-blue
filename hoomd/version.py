@@ -50,7 +50,6 @@ Attributes:
 
     version (str): HOOMD-blue package version, following semantic versioning.
 """
-import os
 from hoomd import _hoomd
 
 from hoomd.version_config import (
