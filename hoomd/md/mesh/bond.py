@@ -179,7 +179,7 @@ class Tether(MeshPotential):
 
     ----------
 
-    **Members defined in** `FENEWCA`:
+    **Members defined in** `Tether`:
 
     Attributes:
         params (TypeParameter[``mesh name``,dict]):

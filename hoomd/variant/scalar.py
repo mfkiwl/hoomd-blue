@@ -50,7 +50,7 @@ class Variant(_hoomd.Variant):
     ----------
 
     **Members inherited from**
-    `BoxVariant <hoomd.variant.box.BoxVariant>`:
+    `Variant <hoomd.variant.Variant>`:
 
     .. py:method:: __call__
 

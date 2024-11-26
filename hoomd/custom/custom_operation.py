@@ -47,15 +47,17 @@ class CustomOperation(TriggeredOperation, metaclass=_AbstractLoggable):
     ----------
 
     **Members inherited from**
-    `CustomOperation <hoomd.operation.TriggeredOperation>`:
+    `CustomOperation <hoomd.custom.CustomOperation>`:
 
     .. py:method:: act
 
         Perform the action of the custom action if attached
+        `Read more... <hoomd.custom.CustomOperation.act>`
 
     .. py:property:: action
 
         Action that this operation wraps.
+        `Read more... <hoomd.custom.CustomOperation.action>`
     """
 
     _override_setattr = {'_action', "_export_dict", "_simulation"}
@@ -117,7 +119,7 @@ class CustomOperation(TriggeredOperation, metaclass=_AbstractLoggable):
 
     @property
     def action(self):
-        """:hoomd.custom.Action: Action that this operation wraps."""
+        """hoomd.custom.Action: Action that this operation wraps."""
         return self._action
 
     def __setstate__(self, state):

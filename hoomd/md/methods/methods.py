@@ -775,7 +775,7 @@ class Langevin(Method):
 
     ----------
 
-    **Members defined in** `TriggeredOperation`:
+    **Members defined in** `Langevin`:
 
     Attributes:
         filter (hoomd.filter.filter_like): Subset of particles to

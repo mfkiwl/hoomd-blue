@@ -917,7 +917,7 @@ class ConvexSpheropolygon(HPMCIntegrator):
 
     ----------
 
-    **Members defined in** `Sphere`:
+    **Members defined in** `ConvexSpheropolygon`:
 
     Attributes:
         shape (`TypeParameter` [``particle type``, `dict`]):
@@ -1024,7 +1024,7 @@ class SimplePolygon(HPMCIntegrator):
 
     ----------
 
-    **Members defined in** `ConvexPolygon`:
+    **Members defined in** `SimplePolygon`:
 
     Attributes:
         shape (`TypeParameter` [``particle type``, `dict`]):

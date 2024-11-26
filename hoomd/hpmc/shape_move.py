@@ -243,7 +243,7 @@ class ShapeSpace(ShapeMove):
 
     ----------
 
-    **Members defined in** `Elastic`:
+    **Members defined in** `ShapeSpace`:
 
     Attributes:
         callback (``callable`` [`str`, `list`], `dict` ]): The python function
@@ -329,7 +329,7 @@ class Vertex(ShapeMove):
 
     ----------
 
-    **Members defined in** `Elastic`:
+    **Members defined in** `Vertex`:
 
     Attributes:
         vertex_move_probability (`float`): Average fraction of vertices to

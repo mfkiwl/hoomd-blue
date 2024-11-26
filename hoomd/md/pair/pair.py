@@ -87,7 +87,7 @@ class Pair(force.Force):
     .. py:attribute:: r_on
 
         Radius at which the XPLOR smoothing function starts.
-        `Read more... <hoomd.md.pair.Pair.r_cut>`
+        `Read more... <hoomd.md.pair.Pair.r_on>`
 
     .. py:method:: compute_energy
 
