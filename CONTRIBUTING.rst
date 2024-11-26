@@ -88,7 +88,9 @@ User documentation
 Write user documentation
 ________________________
 
-Document public-facing API with Python docstrings in Google style.
+Document public-facing API with Python docstrings in Google style, use the ``_doc_inherited``
+member as documented in ``ARCHITECTURE.md`` and list new public classes and functions in
+``__all__``.
 
 Add developer to the credits
 ____________________________
