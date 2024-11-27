@@ -624,7 +624,9 @@ def to_type_converter(value):
     Example::
 
         # list take a list of tuples of 3 floats each
-        validation = to_type_converter({"str": str, "list": [(float, float, float)]})
+        validation = to_type_converter(
+            {"str": str, "list": [(float, float, float)]}
+        )
     """
     if isinstance(value, tuple):
         return TypeConverterFixedLengthSequence(value)

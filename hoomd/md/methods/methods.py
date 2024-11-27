@@ -823,7 +823,9 @@ class Langevin(Method):
 
             .. code-block:: python
 
-                langevin.kT = hoomd.variant.Ramp(A=2.0, B=1.0, t_start=0, t_ramp=1_000_000)
+                langevin.kT = hoomd.variant.Ramp(
+                    A=2.0, B=1.0, t_start=0, t_ramp=1_000_000
+                )
 
         tally_reservoir_energy (bool): When True, track the energy exchange
             between the thermal reservoir and the particles.
@@ -1050,7 +1052,9 @@ class Brownian(Method):
 
             .. code-block:: python
 
-                brownian.kT = hoomd.variant.Ramp(A=2.0, B=1.0, t_start=0, t_ramp=1_000_000)
+                brownian.kT = hoomd.variant.Ramp(
+                    A=2.0, B=1.0, t_start=0, t_ramp=1_000_000
+                )
 
         gamma (TypeParameter[ ``particle type``, `float` ]): The drag
             coefficient for each particle type
@@ -1193,7 +1197,9 @@ class OverdampedViscous(Method):
 
     .. code-block:: python
 
-        overdamped_viscous = hoomd.md.methods.OverdampedViscous(filter=hoomd.filter.All())
+        overdamped_viscous = hoomd.md.methods.OverdampedViscous(
+            filter=hoomd.filter.All()
+        )
         simulation.operations.integrator.methods = [overdamped_viscous]
 
     {inherited}

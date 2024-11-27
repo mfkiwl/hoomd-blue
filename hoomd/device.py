@@ -217,7 +217,9 @@ class Device:
 
                 communicator = hoomd.communicator.Communicator(ranks_per_partition=2)
                 filename = f"messages.{communicator.partition}"
-                device = hoomd.device.CPU(communicator=communicator, message_filename=filename)
+                device = hoomd.device.CPU(
+                    communicator=communicator, message_filename=filename
+                )
         """
         return self._message_filename
 

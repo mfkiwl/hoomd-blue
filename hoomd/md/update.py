@@ -41,7 +41,9 @@ class ZeroMomentum(Updater):
 
     Examples::
 
-        zero_momentum = hoomd.md.update.ZeroMomentum(hoomd.trigger.Periodic(100))
+        zero_momentum = hoomd.md.update.ZeroMomentum(
+            hoomd.trigger.Periodic(100)
+        )
     """
 
     __doc__ += Updater._doc_inherited

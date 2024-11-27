@@ -46,4 +46,5 @@ convention = "google"
 [format]
 indent-style = "space"
 line-ending = "auto"
+docstring-code-line-length = 72
 docstring-code-format = true

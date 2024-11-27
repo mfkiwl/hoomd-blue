@@ -922,7 +922,9 @@ class ConvexSpheropolygon(HPMCIntegrator):
 
     Examples::
 
-        mc = hoomd.hpmc.integrate.ConvexSpheropolygon(default_d=0.3, default_a=0.4)
+        mc = hoomd.hpmc.integrate.ConvexSpheropolygon(
+            default_d=0.3, default_a=0.4
+        )
         mc.shape["A"] = dict(
             vertices=[
                 (-0.5, -0.5),
@@ -1592,7 +1594,9 @@ class Sphinx(HPMCIntegrator):
     Example::
 
         mc = hpmc.integrate.Sphinx(default_d=0.3, default_a=0.4)
-        mc.shape["A"] = dict(centers=[(0, 0, 0), (1, 0, 0)], diameters=[1, 0.25])
+        mc.shape["A"] = dict(
+            centers=[(0, 0, 0), (1, 0, 0)], diameters=[1, 0.25]
+        )
         print("diameters = ", mc.shape["A"]["diameters"])
 
     {inherited}

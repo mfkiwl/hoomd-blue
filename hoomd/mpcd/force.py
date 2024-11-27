@@ -193,7 +193,9 @@ class SineForce(BodyForce):
     .. code-block:: python
 
         Ly = simulation.state.box.Ly
-        force = hoomd.mpcd.force.SineForce(amplitude=1.0, wavenumber=2 * numpy.pi / Ly)
+        force = hoomd.mpcd.force.SineForce(
+            amplitude=1.0, wavenumber=2 * numpy.pi / Ly
+        )
         stream = hoomd.mpcd.stream.Bulk(period=1, mpcd_particle_force=force)
         simulation.operations.integrator.streaming_method = stream
 

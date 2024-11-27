@@ -48,7 +48,9 @@ class CustomFilter(Hashable, Callable):
             def __call__(self, state):
                 with state.cpu_local_snapshot as snap:
                     masses = snap.particles.mass
-                    indices = (masses > self.min_mass) & (masses < self.max_mass)
+                    indices = (masses > self.min_mass) & (
+                        masses < self.max_mass
+                    )
                     return numpy.copy(snap.particles.tag[indices])
 
 

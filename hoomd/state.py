@@ -806,7 +806,9 @@ class State:
 
         .. code-block:: python
 
-            simulation.state.thermalize_particle_momenta(filter=hoomd.filter.All(), kT=1.5)
+            simulation.state.thermalize_particle_momenta(
+                filter=hoomd.filter.All(), kT=1.5
+            )
         """
         self._simulation._warn_if_seed_unset()
         group = self._get_group(filter)

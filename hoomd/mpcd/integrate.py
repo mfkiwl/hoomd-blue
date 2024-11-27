@@ -89,7 +89,9 @@ class Integrator(_MDIntegrator):
     .. code-block:: python
 
         stream = hoomd.mpcd.stream.Bulk(period=1)
-        collide = hoomd.mpcd.collide.StochasticRotationDynamics(period=1, angle=130)
+        collide = hoomd.mpcd.collide.StochasticRotationDynamics(
+            period=1, angle=130
+        )
         integrator = hoomd.mpcd.Integrator(
             dt=0.1,
             streaming_method=stream,
@@ -111,7 +113,9 @@ class Integrator(_MDIntegrator):
             angle=130,
             embedded_particles=hoomd.filter.All(),
         )
-        solute_method = hoomd.md.methods.ConstantVolume(filter=collide.embedded_particles)
+        solute_method = hoomd.md.methods.ConstantVolume(
+            filter=collide.embedded_particles
+        )
 
         integrator = hoomd.mpcd.Integrator(
             dt=dt_md,
@@ -130,7 +134,9 @@ class Integrator(_MDIntegrator):
 
         plates = hoomd.mpcd.geometry.ParallelPlates(separation=6.0)
         stream = hoomd.mpcd.stream.BounceBack(period=1, geometry=plates)
-        collide = hoomd.mpcd.collide.StochasticRotationDynamics(period=1, angle=130, kT=1.0)
+        collide = hoomd.mpcd.collide.StochasticRotationDynamics(
+            period=1, angle=130, kT=1.0
+        )
         filler = hoomd.mpcd.fill.GeometryFiller(
             type="A", density=5.0, kT=1.0, geometry=plates
         )

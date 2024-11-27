@@ -322,7 +322,9 @@ class ParallelPlates(Geometry):
 
     .. code-block:: python
 
-        plates = hoomd.mpcd.geometry.ParallelPlates(separation=6.0, no_slip=False)
+        plates = hoomd.mpcd.geometry.ParallelPlates(
+            separation=6.0, no_slip=False
+        )
         stream = hoomd.mpcd.stream.BounceBack(period=1, geometry=plates)
         simulation.operations.integrator.streaming_method = stream
 
@@ -330,7 +332,9 @@ class ParallelPlates(Geometry):
 
     .. code-block:: python
 
-        plates = hoomd.mpcd.geometry.ParallelPlates(separation=6.0, speed=1.0, no_slip=True)
+        plates = hoomd.mpcd.geometry.ParallelPlates(
+            separation=6.0, speed=1.0, no_slip=True
+        )
         stream = hoomd.mpcd.stream.BounceBack(period=1, geometry=plates)
         simulation.operations.integrator.streaming_method = stream
 

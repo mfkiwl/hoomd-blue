@@ -151,7 +151,9 @@ class Ramp(_hoomd.VariantRamp, Variant):
 
     .. code-block:: python
 
-            variant = hoomd.variant.Ramp(A=1.0, B=2.0, t_start=10_000, t_ramp=100_000)
+            variant = hoomd.variant.Ramp(
+                A=1.0, B=2.0, t_start=10_000, t_ramp=100_000
+            )
 
     {inherited}
 
@@ -258,7 +260,9 @@ class Power(_hoomd.VariantPower, Variant):
 
     .. code-block:: python
 
-        variant = hoomd.variant.Power(A=2, B=8, power=1 / 10, t_start=10, t_ramp=20)
+        variant = hoomd.variant.Power(
+            A=2, B=8, power=1 / 10, t_start=10, t_ramp=20
+        )
 
     {inherited}
 

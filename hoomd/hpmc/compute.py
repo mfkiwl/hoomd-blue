@@ -85,7 +85,9 @@ class FreeVolume(Compute):
 
     Examples::
 
-        fv = hoomd.hpmc.compute.FreeVolume(test_particle_type="B", num_samples=1000)
+        fv = hoomd.hpmc.compute.FreeVolume(
+            test_particle_type="B", num_samples=1000
+        )
 
 
     {inherited}

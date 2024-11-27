@@ -49,7 +49,9 @@ class RemoveDrift(Updater):
 
     .. code-block:: python
 
-        remove_drift = hoomd.update.RemoveDrift(reference_positions=[(0, 0, 0), (1, 0, 0)])
+        remove_drift = hoomd.update.RemoveDrift(
+            reference_positions=[(0, 0, 0), (1, 0, 0)]
+        )
         simulation.operations.updaters.append(remove_drift)
 
     {inherited}

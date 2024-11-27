@@ -125,7 +125,9 @@ class FIRE(_DynamicIntegrator):
 
         fire = md.minimize.FIRE(dt=0.05)
         fire.methods.append(
-            md.methods.ConstantPressure(hoomd.filter.All(), S=1, tauS=1, couple="none")
+            md.methods.ConstantPressure(
+                hoomd.filter.All(), S=1, tauS=1, couple="none"
+            )
         )
         sim.operations.integrator = fire
         while not (fire.converged):

@@ -809,7 +809,9 @@ class PatchyLJ(Patchy):
         lj_params = dict(epsilon=1, sigma=1)
         envelope_params = dict(alpha=math.pi / 2, omega=20)
 
-        patchylj = hoomd.md.pair.aniso.PatchyLJ(nlist=neighbor_list, default_r_cut=3.0)
+        patchylj = hoomd.md.pair.aniso.PatchyLJ(
+            nlist=neighbor_list, default_r_cut=3.0
+        )
         patchylj.params[("A", "A")] = dict(
             pair_params=lj_params,
             envelope_params=envelope_params,
@@ -925,7 +927,9 @@ class PatchyExpandedLJ(Patchy):
         lj_params = dict(epsilon=1, sigma=1)
         envelope_params = dict(alpha=math.pi / 2, omega=20)
 
-        patchylj = hoomd.md.pair.aniso.PatchyLJ(nlist=neighbor_list, default_r_cut=3.0)
+        patchylj = hoomd.md.pair.aniso.PatchyLJ(
+            nlist=neighbor_list, default_r_cut=3.0
+        )
         patchylj.params[("A", "A")] = dict(
             pair_params=lj_params,
             envelope_params=envelope_params,
@@ -1114,7 +1118,9 @@ class PatchyMie(Patchy):
         mie_params = dict(epsilon=1, sigma=1, n=15, m=10)
         envelope_params = dict(alpha=math.pi / 3, omega=20)
 
-        patchy_mie = hoomd.md.pair.aniso.PatchyMie(nlist=neighbor_list, default_r_cut=3.0)
+        patchy_mie = hoomd.md.pair.aniso.PatchyMie(
+            nlist=neighbor_list, default_r_cut=3.0
+        )
         patchy_mie.params[("A", "A")] = dict(
             pair_params=mie_params,
             envelope_params=envelope_params,

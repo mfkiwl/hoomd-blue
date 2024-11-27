@@ -42,7 +42,9 @@ class LJGauss(Pair):
     .. code-block:: python
 
         lj_gauss = hoomd.hpmc.pair.LJGauss()
-        lj_gauss.params[("A", "A")] = dict(epsilon=1.0, sigma=0.02, r0=1.6, r_cut=2.5)
+        lj_gauss.params[("A", "A")] = dict(
+            epsilon=1.0, sigma=0.02, r0=1.6, r_cut=2.5
+        )
         simulation.operations.integrator.pair_potentials = [lj_gauss]
 
     {inherited}

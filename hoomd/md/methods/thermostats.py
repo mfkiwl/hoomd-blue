@@ -23,7 +23,9 @@ Important:
 
     .. code-block:: python
 
-        simulation.state.thermalize_particle_momenta(filter=hoomd.filter.All(), kT=1.5)
+        simulation.state.thermalize_particle_momenta(
+            filter=hoomd.filter.All(), kT=1.5
+        )
 
 .. invisible-code-block: python
 
@@ -382,7 +384,9 @@ class Berendsen(Thermostat):
 
             .. code-block:: python
 
-                berendsen.kT = hoomd.variant.Ramp(A=1.0, B=2.0, t_start=0, t_ramp=1_000_000)
+                berendsen.kT = hoomd.variant.Ramp(
+                    A=1.0, B=2.0, t_start=0, t_ramp=1_000_000
+                )
 
         tau (float): Time constant of thermostat. :math:`[time]`
     """

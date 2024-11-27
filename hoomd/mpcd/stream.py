@@ -237,7 +237,9 @@ class BounceBack(StreamingMethod):
 
         stream = hoomd.mpcd.stream.BounceBack(
             period=1,
-            geometry=hoomd.mpcd.geometry.ParallelPlates(separation=6.0, no_slip=True),
+            geometry=hoomd.mpcd.geometry.ParallelPlates(
+                separation=6.0, no_slip=True
+            ),
             mpcd_particle_force=hoomd.mpcd.force.ConstantForce((1, 0, 0)),
         )
         simulation.operations.integrator.streaming_method = stream

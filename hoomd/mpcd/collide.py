@@ -198,7 +198,9 @@ class AndersenThermostat(CollisionMethod):
 
     .. code-block:: python
 
-        andersen_thermostat = hoomd.mpcd.collide.AndersenThermostat(period=1, kT=1.0)
+        andersen_thermostat = hoomd.mpcd.collide.AndersenThermostat(
+            period=1, kT=1.0
+        )
         simulation.operations.integrator.collision_method = andersen_thermostat
 
     Collision including embedded particles.
@@ -315,7 +317,9 @@ class StochasticRotationDynamics(CollisionMethod):
 
     .. code-block:: python
 
-        srd = hoomd.mpcd.collide.StochasticRotationDynamics(period=1, angle=130, kT=1.0)
+        srd = hoomd.mpcd.collide.StochasticRotationDynamics(
+            period=1, angle=130, kT=1.0
+        )
         simulation.operations.integrator.collision_method = srd
 
     Collision including embedded particles.

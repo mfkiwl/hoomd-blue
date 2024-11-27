@@ -353,7 +353,9 @@ class ExpandedGaussian(Pair):
 
         nl = nlist.Cell()
         expanded_gauss = pair.ExpandedGaussian(default_r_cut=3.0, nlist=nl)
-        expanded_gauss.params[("A", "A")] = dict(epsilon=1.0, sigma=1.0, delta=0.5)
+        expanded_gauss.params[("A", "A")] = dict(
+            epsilon=1.0, sigma=1.0, delta=0.5
+        )
         expanded_gauss.r_cut[("A", "B")] = 3.0
 
     {inherited}
@@ -417,7 +419,9 @@ class ExpandedLJ(Pair):
         nl = nlist.Cell()
         expanded_lj = pair.ExpandedLJ(default_r_cut=3.0, nlist=nl)
         expanded_lj.params[("A", "A")] = dict(epsilon=1.0, sigma=1.0, delta=1.0)
-        expanded_lj.params[("A", "B")] = dict(epsilon=2.0, sigma=1.0, delta=0.75)
+        expanded_lj.params[("A", "B")] = dict(
+            epsilon=2.0, sigma=1.0, delta=0.75
+        )
         expanded_lj.params[("B", "B")] = dict(epsilon=1.0, sigma=1.0, delta=0.5)
 
     {inherited}
@@ -1428,7 +1432,9 @@ class ReactionField(Pair):
         nl = nlist.Cell()
         reaction_field = pair.reaction_field(nl, default_r_cut=3.0)
         reaction_field.params[("A", "B")] = dict(epsilon=1.0, eps_rf=1.0)
-        reaction_field.params[("B", "B")] = dict(epsilon=1.0, eps_rf=0.0, use_charge=True)
+        reaction_field.params[("B", "B")] = dict(
+            epsilon=1.0, eps_rf=0.0, use_charge=True
+        )
 
     {inherited}
 
