@@ -20,8 +20,7 @@ Minor and major releases:
 
 All releases:
 
-- [ ] Update change log.
-  - ``git log --format=oneline --first-parent $(git log -n 1 --pretty=format:%H -- CHANGELOG.rst)...``
+- [ ] Review change log.
 - [ ] Check readthedocs build, especially change log formatting.
 - [ ] Run *bumpversion*.
 - [ ] Tag and push.
