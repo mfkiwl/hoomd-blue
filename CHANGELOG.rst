@@ -38,6 +38,9 @@ Change Log
   (`#1869 <https://github.com/glotzerlab/hoomd-blue/pull/1869>`__).
 * ``P`` property of ``hoomd.hpmc.compute.SDF``
   (`#1869 <https://github.com/glotzerlab/hoomd-blue/pull/1869>`__).
+* MPCD supports non-cubic collision cells, including both orthorhombic and triclinic cell shapes.
+  The cell size is controlled by the number of cells along each lattice vector that defines the
+  simulation box (`#1950 <https://github.com/glotzerlab/hoomd-blue/pull/1950>`__).
 
 *Changed*
 
