@@ -20,9 +20,11 @@ class ExamplePair(pair.Pair):
     _cpp_class_name = "PotentialPairExample"
     _accepted_modes = ("none", "shift", "xplor")
 
-    def __init__(self, nlist, default_r_cut=None, default_r_on=0., mode='none'):
+    def __init__(self, nlist, default_r_cut=None, default_r_on=0.0, mode="none"):
         super().__init__(nlist, default_r_cut, default_r_on, mode)
         params = TypeParameter(
-            'params', 'particle_types',
-            TypeParameterDict(k=float, sigma=float, len_keys=2))
+            "params",
+            "particle_types",
+            TypeParameterDict(k=float, sigma=float, len_keys=2),
+        )
         self._add_typeparam(params)

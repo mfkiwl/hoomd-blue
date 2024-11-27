@@ -31,7 +31,9 @@ class MeshPotential(Force):
     """
 
     __doc__ = __doc__.replace("{inherited}", Force._doc_inherited)
-    _doc_inherited = Force._doc_inherited + """
+    _doc_inherited = (
+        Force._doc_inherited
+        + """
     ----------
 
     **Members inherited from**
@@ -42,6 +44,7 @@ class MeshPotential(Force):
         Mesh data structure used to compute the bond potential.
         `Read more... <hoomd.md.mesh.MeshPotential.mesh>`
     """
+    )
 
     def __init__(self, mesh):
         self._mesh = validate_mesh(mesh)
@@ -53,7 +56,8 @@ class MeshPotential(Force):
                 f"{self} object is creating a new equivalent mesh structure."
                 f" This is happending since the force is moving to a new "
                 f"simulation. To suppress the warning explicitly set new mesh.",
-                RuntimeWarning)
+                RuntimeWarning,
+            )
             self._mesh = copy.deepcopy(self._mesh)
         self.mesh._attach(self._simulation)
 
@@ -62,8 +66,9 @@ class MeshPotential(Force):
         else:
             cpp_cls = getattr(_md, self._cpp_class_name + "GPU")
 
-        self._cpp_obj = cpp_cls(self._simulation.state._cpp_sys_def,
-                                self._mesh._cpp_obj)
+        self._cpp_obj = cpp_cls(
+            self._simulation.state._cpp_sys_def, self._mesh._cpp_obj
+        )
 
     def _detach_hook(self):
         self._mesh._detach()
@@ -74,8 +79,8 @@ class MeshPotential(Force):
                 typeparam._attach(cpp_obj, self.mesh)
             except ValueError as err:
                 raise err.__class__(
-                    f"For {type(self)} in TypeParameter {typeparam.name} "
-                    f"{err!s}")
+                    f"For {type(self)} in TypeParameter {typeparam.name} " f"{err!s}"
+                )
 
     @property
     def mesh(self):
@@ -85,8 +90,7 @@ class MeshPotential(Force):
     @mesh.setter
     def mesh(self, value):
         if self._attached:
-            raise RuntimeError(
-                "mesh cannot be set after calling Simulation.run().")
+            raise RuntimeError("mesh cannot be set after calling Simulation.run().")
         mesh = validate_mesh(value)
         self._mesh = mesh
 
@@ -115,7 +119,8 @@ class MeshConservationPotential(MeshPotential):
                 f"{self} object is creating a new equivalent mesh structure."
                 f" This is happending since the force is moving to a new "
                 f"simulation. To suppress the warning explicitly set new mesh.",
-                RuntimeWarning)
+                RuntimeWarning,
+            )
             self._mesh = copy.deepcopy(self._mesh)
         self.mesh._attach(self._simulation)
 
@@ -124,5 +129,6 @@ class MeshConservationPotential(MeshPotential):
         else:
             cpp_cls = getattr(_md, self._cpp_class_name + "GPU")
 
-        self._cpp_obj = cpp_cls(self._simulation.state._cpp_sys_def,
-                                self._mesh._cpp_obj, self._ignore_type)
+        self._cpp_obj = cpp_cls(
+            self._simulation.state._cpp_sys_def, self._mesh._cpp_obj, self._ignore_type
+        )

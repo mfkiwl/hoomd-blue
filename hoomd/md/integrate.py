@@ -20,21 +20,23 @@ def _set_synced_list(old_list, new_list):
 
 
 class _DynamicIntegrator(BaseIntegrator):
-
     def __init__(self, forces, constraints, methods, rigid):
         forces = [] if forces is None else forces
         constraints = [] if constraints is None else constraints
         methods = [] if methods is None else methods
         self._forces = syncedlist.SyncedList(
-            Force, syncedlist._PartialGetAttr('_cpp_obj'), iterable=forces)
+            Force, syncedlist._PartialGetAttr("_cpp_obj"), iterable=forces
+        )
 
         self._constraints = syncedlist.SyncedList(
             OnlyTypes(Constraint, disallow_types=(Rigid,)),
-            syncedlist._PartialGetAttr('_cpp_obj'),
-            iterable=constraints)
+            syncedlist._PartialGetAttr("_cpp_obj"),
+            iterable=constraints,
+        )
 
         self._methods = syncedlist.SyncedList(
-            Method, syncedlist._PartialGetAttr('_cpp_obj'), iterable=methods)
+            Method, syncedlist._PartialGetAttr("_cpp_obj"), iterable=methods
+        )
 
         param_dict = ParameterDict(rigid=OnlyTypes(Rigid, allow_none=True))
         if rigid is not None and rigid._attached:
@@ -270,9 +272,10 @@ class Integrator(_DynamicIntegrator):
             simulation associated with the integrator.
     """
 
-    __doc__ = __doc__.replace("{inherited}",
-                              hoomd.operation.Integrator._doc_inherited)
-    _doc_inherited = hoomd.operation.Integrator._doc_inherited + """
+    __doc__ = __doc__.replace("{inherited}", hoomd.operation.Integrator._doc_inherited)
+    _doc_inherited = (
+        hoomd.operation.Integrator._doc_inherited
+        + """
     ----------
 
     **Members inherited from** `Integrator <hoomd.md.Integrator>`:
@@ -318,31 +321,35 @@ class Integrator(_DynamicIntegrator):
         `Read more... <hoomd.md.Integrator.linear_momentum>`
 
     """
+    )
 
-    def __init__(self,
-                 dt,
-                 integrate_rotational_dof=False,
-                 forces=None,
-                 constraints=None,
-                 methods=None,
-                 rigid=None,
-                 half_step_hook=None):
-
+    def __init__(
+        self,
+        dt,
+        integrate_rotational_dof=False,
+        forces=None,
+        constraints=None,
+        methods=None,
+        rigid=None,
+        half_step_hook=None,
+    ):
         super().__init__(forces, constraints, methods, rigid)
 
         self._param_dict.update(
             ParameterDict(
                 dt=float(dt),
                 integrate_rotational_dof=bool(integrate_rotational_dof),
-                half_step_hook=OnlyTypes(hoomd.md.HalfStepHook,
-                                         allow_none=True)))
+                half_step_hook=OnlyTypes(hoomd.md.HalfStepHook, allow_none=True),
+            )
+        )
 
         self.half_step_hook = half_step_hook
 
     def _attach_hook(self):
         # initialize the reflected c++ class
         self._cpp_obj = _md.IntegratorTwoStep(
-            self._simulation.state._cpp_sys_def, self.dt)
+            self._simulation.state._cpp_sys_def, self.dt
+        )
         # Call attach from DynamicIntegrator which attaches forces,
         # constraint_forces, and methods, and calls super()._attach() itself.
         super()._attach_hook()
@@ -350,8 +357,11 @@ class Integrator(_DynamicIntegrator):
     def __setattr__(self, attr, value):
         """Handle group DOF update when setting integrate_rotational_dof."""
         super().__setattr__(attr, value)
-        if (attr == 'integrate_rotational_dof' and self._simulation is not None
-                and self._simulation.state is not None):
+        if (
+            attr == "integrate_rotational_dof"
+            and self._simulation is not None
+            and self._simulation.state is not None
+        ):
             self._simulation.state.update_group_dof()
 
     @hoomd.logging.log(category="sequence", requires_run=True)

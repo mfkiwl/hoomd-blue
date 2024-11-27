@@ -21,16 +21,15 @@ provided subclasses.
    object.
 """
 
-from hoomd.variant.scalar import (Variant, Constant, Ramp, Cycle, Power,
-                                  variant_like)
+from hoomd.variant.scalar import Variant, Constant, Ramp, Cycle, Power, variant_like
 from hoomd.variant import box
 
 __all__ = [
-    'Constant',
-    'Cycle',
-    'Power',
-    'Ramp',
-    'Variant',
-    'box',
-    'variant_like',
+    "Constant",
+    "Cycle",
+    "Power",
+    "Ramp",
+    "Variant",
+    "box",
+    "variant_like",
 ]

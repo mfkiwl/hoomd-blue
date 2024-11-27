@@ -285,8 +285,8 @@ class BoxMC(Updater):
         _default_dict = dict(weight=0.0, delta=0.0)
         param_dict = ParameterDict(
             volume={
-                "mode": hoomd.data.typeconverter.OnlyFrom(['standard', 'ln']),
-                **_default_dict
+                "mode": hoomd.data.typeconverter.OnlyFrom(["standard", "ln"]),
+                **_default_dict,
             },
             aspect=_default_dict,
             length=dict(weight=0.0, delta=(0.0,) * 3),
@@ -309,9 +309,12 @@ class BoxMC(Updater):
         if not integrator._attached:
             raise RuntimeError("Integrator is not attached yet.")
 
-        self._cpp_obj = _hpmc.UpdaterBoxMC(self._simulation.state._cpp_sys_def,
-                                           self.trigger, integrator._cpp_obj,
-                                           self.P)
+        self._cpp_obj = _hpmc.UpdaterBoxMC(
+            self._simulation.state._cpp_sys_def,
+            self.trigger,
+            integrator._cpp_obj,
+            self.P,
+        )
 
     @property
     def counter(self):
@@ -430,12 +433,14 @@ class MuVT(Updater):
 
     __doc__ = __doc__.replace("{inherited}", Updater._doc_inherited)
 
-    def __init__(self,
-                 transfer_types,
-                 ngibbs=1,
-                 max_volume_rescale=0.1,
-                 volume_move_probability=0.5,
-                 trigger=1):
+    def __init__(
+        self,
+        transfer_types,
+        ngibbs=1,
+        max_volume_rescale=0.1,
+        volume_move_probability=0.5,
+        trigger=1,
+    ):
         super().__init__(trigger)
 
         self.ngibbs = int(ngibbs)
@@ -448,11 +453,12 @@ class MuVT(Updater):
         self._param_dict.update(param_dict)
 
         typeparam_fugacity = TypeParameter(
-            'fugacity',
-            type_kind='particle_types',
-            param_dict=TypeParameterDict(hoomd.variant.Variant,
-                                         len_keys=1,
-                                         _defaults=hoomd.variant.Constant(0.0)))
+            "fugacity",
+            type_kind="particle_types",
+            param_dict=TypeParameterDict(
+                hoomd.variant.Variant, len_keys=1, _defaults=hoomd.variant.Constant(0.0)
+            ),
+        )
         self._append_typeparam(typeparam_fugacity)
 
     def _attach_hook(self):
@@ -464,10 +470,14 @@ class MuVT(Updater):
         cpp_cls_name += integrator.__class__.__name__
         cpp_cls = getattr(_hpmc, cpp_cls_name)
 
-        self._cpp_obj = cpp_cls(self._simulation.state._cpp_sys_def,
-                                self.trigger, integrator._cpp_obj, self.ngibbs)
+        self._cpp_obj = cpp_cls(
+            self._simulation.state._cpp_sys_def,
+            self.trigger,
+            integrator._cpp_obj,
+            self.ngibbs,
+        )
 
-    @log(category='sequence', requires_run=True)
+    @log(category="sequence", requires_run=True)
     def insert_moves(self):
         """tuple[int, int]: Count of the accepted and rejected particle \
         insertion moves.
@@ -477,7 +487,7 @@ class MuVT(Updater):
         counter = self._cpp_obj.getCounters(1)
         return counter.insert
 
-    @log(category='sequence', requires_run=True)
+    @log(category="sequence", requires_run=True)
     def remove_moves(self):
         """tuple[int, int]: Count of the accepted and rejected particle \
         removal moves.
@@ -487,7 +497,7 @@ class MuVT(Updater):
         counter = self._cpp_obj.getCounters(1)
         return counter.remove
 
-    @log(category='sequence', requires_run=True)
+    @log(category="sequence", requires_run=True)
     def exchange_moves(self):
         """tuple[int, int]: Count of the accepted and rejected particle \
         exchange moves.
@@ -497,7 +507,7 @@ class MuVT(Updater):
         counter = self._cpp_obj.getCounters(1)
         return counter.exchange
 
-    @log(category='sequence', requires_run=True)
+    @log(category="sequence", requires_run=True)
     def volume_moves(self):
         """tuple[int, int]: Count of the accepted and rejected particle volume \
         moves.
@@ -507,7 +517,7 @@ class MuVT(Updater):
         counter = self._cpp_obj.getCounters(1)
         return counter.volume
 
-    @log(category='object')
+    @log(category="object")
     def N(self):  # noqa: N802 - allow N as a function name
         """dict: Map of number of particles per type.
 
@@ -551,15 +561,25 @@ class Shape(Updater):
     Example::
 
         mc = hoomd.hpmc.integrate.ConvexPolyhedron()
-        mc.shape["A"] = dict(vertices=numpy.asarray([(1, 1, 1), (-1, -1, 1),
-                                                    (1, -1, -1), (-1, 1, -1)]))
-        vertex_move = hoomd.hpmc.shape_move.Vertex(stepsize={'A': 0.01},
-                                                   param_ratio=0.2,
-                                                   volume=1.0)
-        updater = hoomd.hpmc.update.Shape(shape_move=vertex_move,
-                                          trigger=hoomd.trigger.Periodic(1),
-                                          type_select=1,
-                                          nsweeps=1)
+        mc.shape["A"] = dict(
+            vertices=numpy.asarray(
+                [
+                    (1, 1, 1),
+                    (-1, -1, 1),
+                    (1, -1, -1),
+                    (-1, 1, -1),
+                ]
+            )
+        )
+        vertex_move = hoomd.hpmc.shape_move.Vertex(
+            stepsize={"A": 0.01}, param_ratio=0.2, volume=1.0
+        )
+        updater = hoomd.hpmc.update.Shape(
+            shape_move=vertex_move,
+            trigger=hoomd.trigger.Periodic(1),
+            type_select=1,
+            nsweeps=1,
+        )
 
     {inherited}
 
@@ -584,17 +604,14 @@ class Shape(Updater):
 
     __doc__ = __doc__.replace("{inherited}", Updater._doc_inherited)
 
-    def __init__(self,
-                 trigger,
-                 shape_move,
-                 pretend=False,
-                 type_select=1,
-                 nsweeps=1):
+    def __init__(self, trigger, shape_move, pretend=False, type_select=1, nsweeps=1):
         super().__init__(trigger)
-        param_dict = ParameterDict(shape_move=hoomd.hpmc.shape_move.ShapeMove,
-                                   pretend=bool(pretend),
-                                   type_select=int(type_select),
-                                   nsweeps=int(nsweeps))
+        param_dict = ParameterDict(
+            shape_move=hoomd.hpmc.shape_move.ShapeMove,
+            pretend=bool(pretend),
+            type_select=int(type_select),
+            nsweeps=int(nsweeps),
+        )
         param_dict["shape_move"] = shape_move
         self._param_dict.update(param_dict)
 
@@ -632,19 +649,22 @@ class Shape(Updater):
 
         # check for supported shapes is done in the shape move classes
         integrator_name = integrator.__class__.__name__
-        updater_cls = getattr(_hpmc, 'UpdaterShape' + integrator_name)
+        updater_cls = getattr(_hpmc, "UpdaterShape" + integrator_name)
 
         self.shape_move._attach(self._simulation)
-        self._cpp_obj = updater_cls(self._simulation.state._cpp_sys_def,
-                                    self.trigger, integrator._cpp_obj,
-                                    self.shape_move._cpp_obj)
+        self._cpp_obj = updater_cls(
+            self._simulation.state._cpp_sys_def,
+            self.trigger,
+            integrator._cpp_obj,
+            self.shape_move._cpp_obj,
+        )
 
-    @log(category='sequence', requires_run=True)
+    @log(category="sequence", requires_run=True)
     def shape_moves(self):
         """tuple[int, int]: Count of the accepted and rejected shape moves."""
         return self._cpp_obj.getShapeMovesCount()
 
-    @log(category='scalar', requires_run=True)
+    @log(category="scalar", requires_run=True)
     def particle_volumes(self):
         """list[float]: Volume of a single particle for each type."""
         return self._cpp_obj.particle_volumes
@@ -698,19 +718,18 @@ class GCA(Updater):
         pivot_move_probability (float): Set the probability for attempting a
                                         pivot move.
     """
+
     _remove_for_pickling = (*Updater._remove_for_pickling, "_cpp_cell")
-    _skip_for_equality = Updater._skip_for_equality | {'_cpp_cell'}
+    _skip_for_equality = Updater._skip_for_equality | {"_cpp_cell"}
     __doc__ = __doc__.replace("{inherited}", Updater._doc_inherited)
 
-    def __init__(self,
-                 pivot_move_probability=0.5,
-                 flip_probability=0.5,
-                 trigger=1):
+    def __init__(self, pivot_move_probability=0.5, flip_probability=0.5, trigger=1):
         super().__init__(trigger)
 
         param_dict = ParameterDict(
             pivot_move_probability=float(pivot_move_probability),
-            flip_probability=float(flip_probability))
+            flip_probability=float(flip_probability),
+        )
 
         self._param_dict.update(param_dict)
         self.instance = 0
@@ -725,8 +744,10 @@ class GCA(Updater):
         cpp_cls_name = "UpdaterGCA"
         cpp_cls_name += integrator.__class__.__name__
         cpp_cls = getattr(_hpmc, cpp_cls_name)
-        use_gpu = (isinstance(self._simulation.device, hoomd.device.GPU)
-                   and (cpp_cls_name + 'GPU') in _hpmc.__dict__)
+        use_gpu = (
+            isinstance(self._simulation.device, hoomd.device.GPU)
+            and (cpp_cls_name + "GPU") in _hpmc.__dict__
+        )
         if use_gpu:
             cpp_cls_name += "GPU"
         cpp_cls = getattr(_hpmc, cpp_cls_name)
@@ -737,12 +758,16 @@ class GCA(Updater):
         if use_gpu:
             sys_def = self._simulation.state._cpp_sys_def
             self._cpp_cell = _hoomd.CellListGPU(sys_def)
-            self._cpp_obj = cpp_cls(self._simulation.state._cpp_sys_def,
-                                    self.trigger, integrator._cpp_obj,
-                                    self._cpp_cell)
+            self._cpp_obj = cpp_cls(
+                self._simulation.state._cpp_sys_def,
+                self.trigger,
+                integrator._cpp_obj,
+                self._cpp_cell,
+            )
         else:
-            self._cpp_obj = cpp_cls(self._simulation.state._cpp_sys_def,
-                                    self.trigger, integrator._cpp_obj)
+            self._cpp_obj = cpp_cls(
+                self._simulation.state._cpp_sys_def, self.trigger, integrator._cpp_obj
+            )
 
     @log(requires_run=True)
     def avg_cluster_size(self):
@@ -936,25 +961,29 @@ class QuickCompress(Updater):
 
     __doc__ = __doc__.replace("{inherited}", Updater._doc_inherited)
 
-    def __init__(self,
-                 trigger,
-                 target_box,
-                 max_overlaps_per_particle=0.25,
-                 min_scale=0.99,
-                 allow_unsafe_resize=False):
+    def __init__(
+        self,
+        trigger,
+        target_box,
+        max_overlaps_per_particle=0.25,
+        min_scale=0.99,
+        allow_unsafe_resize=False,
+    ):
         super().__init__(trigger)
 
-        param_dict = ParameterDict(max_overlaps_per_particle=float,
-                                   min_scale=float,
-                                   target_box=hoomd.variant.box.BoxVariant,
-                                   instance=int,
-                                   allow_unsafe_resize=bool)
+        param_dict = ParameterDict(
+            max_overlaps_per_particle=float,
+            min_scale=float,
+            target_box=hoomd.variant.box.BoxVariant,
+            instance=int,
+            allow_unsafe_resize=bool,
+        )
         if isinstance(target_box, hoomd.Box):
             target_box = hoomd.variant.box.Constant(target_box)
-        param_dict['max_overlaps_per_particle'] = max_overlaps_per_particle
-        param_dict['min_scale'] = min_scale
-        param_dict['target_box'] = target_box
-        param_dict['allow_unsafe_resize'] = allow_unsafe_resize
+        param_dict["max_overlaps_per_particle"] = max_overlaps_per_particle
+        param_dict["min_scale"] = min_scale
+        param_dict["target_box"] = target_box
+        param_dict["allow_unsafe_resize"] = allow_unsafe_resize
 
         self._param_dict.update(param_dict)
 
@@ -971,9 +1000,13 @@ class QuickCompress(Updater):
             raise RuntimeError("Integrator is not attached yet.")
 
         self._cpp_obj = _hpmc.UpdaterQuickCompress(
-            self._simulation.state._cpp_sys_def, self.trigger,
-            integrator._cpp_obj, self.max_overlaps_per_particle, self.min_scale,
-            self.target_box)
+            self._simulation.state._cpp_sys_def,
+            self.trigger,
+            integrator._cpp_obj,
+            self.max_overlaps_per_particle,
+            self.min_scale,
+            self.target_box,
+        )
 
     @property
     def complete(self):
@@ -985,9 +1018,9 @@ class QuickCompress(Updater):
 
 
 __all__ = [
-    'GCA',
-    'BoxMC',
-    'MuVT',
-    'QuickCompress',
-    'Shape',
+    "GCA",
+    "BoxMC",
+    "MuVT",
+    "QuickCompress",
+    "Shape",
 ]

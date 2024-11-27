@@ -48,8 +48,8 @@ class _HOOMDGetSetAttrBase:
             that exist due to ``__getattr__`` such as those from ``_param_dict``
             or ``_typeparam_dict``.
     """
-    _reserved_default_attrs = dict(_param_dict=ParameterDict,
-                                   _typeparam_dict=dict)
+
+    _reserved_default_attrs = dict(_param_dict=ParameterDict, _typeparam_dict=dict)
     _override_setattr = set()
 
     _skip_for_equality = set()
@@ -103,8 +103,11 @@ class _HOOMDGetSetAttrBase:
             for k, v in value.items():
                 self._typeparam_dict[attr][k] = v
         except TypeError:
-            raise ValueError("To set {}, you must use a dictionary "
-                             "with types as keys.".format(attr))
+            raise ValueError(
+                "To set {}, you must use a dictionary " "with types as keys.".format(
+                    attr
+                )
+            )
 
     def __dir__(self):
         """Expose all attributes for dynamic querying in notebooks and IDEs."""
@@ -179,9 +182,7 @@ class _DependencyRelation:
             pass
 
 
-class _HOOMDBaseObject(_HOOMDGetSetAttrBase,
-                       _DependencyRelation,
-                       metaclass=Loggable):
+class _HOOMDBaseObject(_HOOMDGetSetAttrBase, _DependencyRelation, metaclass=Loggable):
     """Handles attaching/detaching to a simulation.
 
     ``_StatefulAttrBase`` handles getting and setting attributes as well as
@@ -208,23 +209,28 @@ class _HOOMDBaseObject(_HOOMDGetSetAttrBase,
     its consumers. This does allow for simple dependency handling outside of the
     features of `_DependencyRelation`.
     """
+
     _reserved_default_attrs = {
         **_HOOMDGetSetAttrBase._reserved_default_attrs,
-        '_cpp_obj': None,
-        '_simulation_': None,
-        '_dependents': list,
-        '_dependencies': list,
+        "_cpp_obj": None,
+        "_simulation_": None,
+        "_dependents": list,
+        "_dependencies": list,
         # Keeps track of the number of times _attach is called to avoid
         # premature detaching.
         "_use_count": int,
     }
 
     _skip_for_equality = {
-        '_cpp_obj', '_dependents', '_dependencies', '_simulation_', "_use_count"
+        "_cpp_obj",
+        "_dependents",
+        "_dependencies",
+        "_simulation_",
+        "_use_count",
     }
     # _use_count must be included or attaching and detaching won't work as
     # expected as _use_count may not equal 0.
-    _remove_for_pickling = ('_simulation_', '_cpp_obj', "_use_count")
+    _remove_for_pickling = ("_simulation_", "_cpp_obj", "_use_count")
 
     def _detach(self, force=False):
         """Decrement attach count and destroy C++ object if count == 0.
@@ -353,8 +359,8 @@ class _HOOMDBaseObject(_HOOMDGetSetAttrBase,
                 typeparam._attach(cpp_obj, simulation.state)
             except ValueError as err:
                 raise err.__class__(
-                    f"For {type(self)} in TypeParameter {typeparam.name} "
-                    f"{err!s}")
+                    f"For {type(self)} in TypeParameter {typeparam.name} " f"{err!s}"
+                )
 
     def _unapply_typeparam_dict(self):
         for typeparam in self._typeparam_dict.values():
@@ -496,7 +502,7 @@ class AutotunedObject(_HOOMDBaseObject):
 
         .. code-block:: python
 
-            while (not operation.is_tuning_complete):
+            while not operation.is_tuning_complete:
                 simulation.run(1000)
         """
         if not self._attached:
@@ -518,8 +524,9 @@ class AutotunedObject(_HOOMDBaseObject):
             operation.tune_kernel_parameters()
         """
         if not self._attached:
-            raise RuntimeError("Call Simulation.run() before "
-                               "tune_kernel_parameters.")
+            raise RuntimeError(
+                "Call Simulation.run() before " "tune_kernel_parameters."
+            )
         self._cpp_obj.startAutotuning()
 
 
@@ -565,7 +572,9 @@ class TriggeredOperation(Operation):
 
     __doc__ = __doc__.replace("{inherited}", Operation._doc_inherited)
 
-    _doc_inherited = Operation._doc_inherited + """
+    _doc_inherited = (
+        Operation._doc_inherited
+        + """
     ----------
 
     **Members inherited from**
@@ -576,6 +585,7 @@ class TriggeredOperation(Operation):
         The trigger to activate this operation.
         `Read more... <hoomd.operation.TriggeredOperation.trigger>`
     """
+    )
 
     def __init__(self, trigger):
         trigger_param = ParameterDict(trigger=hoomd.trigger.Trigger)
@@ -592,7 +602,8 @@ class Updater(TriggeredOperation):
         This class should not be instantiated by users. The class can be used
         for `isinstance` or `issubclass` checks.
     """
-    _cpp_list_name = 'updaters'
+
+    _cpp_list_name = "updaters"
 
     __doc__ += TriggeredOperation._doc_inherited
 
@@ -606,7 +617,8 @@ class Writer(TriggeredOperation):
         This class should not be instantiated by users. The class can be used
         for `isinstance` or `issubclass` checks.
     """
-    _cpp_list_name = 'analyzers'
+
+    _cpp_list_name = "analyzers"
 
     __doc__ += TriggeredOperation._doc_inherited
 
@@ -621,6 +633,7 @@ class Compute(Operation):
         This class should not be instantiated by users. The class can be used
         for `isinstance` or `issubclass` checks.
     """
+
     __doc__ += Operation._doc_inherited
 
 
@@ -636,6 +649,7 @@ class Tuner(TriggeredOperation):
         This class should not be instantiated by users. The class can be used
         for `isinstance` or `issubclass` checks.
     """
+
     __doc__ += TriggeredOperation._doc_inherited
 
 
@@ -651,6 +665,7 @@ class Integrator(Operation):
         This class should not be instantiated by users. The class can be used
         for `isinstance` or `issubclass` checks.
     """
+
     __doc__ += Operation._doc_inherited
 
     def _attach_hook(self):
@@ -661,12 +676,12 @@ class Integrator(Operation):
 
 
 __all__ = [
-    'AutotunedObject',
-    'Compute',
-    'Integrator',
-    'Operation',
-    'TriggeredOperation',
-    'Tuner',
-    'Updater',
-    'Writer',
+    "AutotunedObject",
+    "Compute",
+    "Integrator",
+    "Operation",
+    "TriggeredOperation",
+    "Tuner",
+    "Updater",
+    "Writer",
 ]

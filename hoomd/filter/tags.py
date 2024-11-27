@@ -42,14 +42,13 @@ class Tags(ParticleFilter, ParticleFilterTags):
 
     def __hash__(self):
         """Return a hash of the filter parameters."""
-        if not hasattr(self, '_id'):
+        if not hasattr(self, "_id"):
             self._id = hash(self._tags.tobytes())
         return self._id
 
     def __eq__(self, other):
         """Test for equality between two particle filters."""
-        return type(self) is type(other) and np.array_equal(
-            self.tags, other.tags)
+        return type(self) is type(other) and np.array_equal(self.tags, other.tags)
 
     @property
     def tags(self):

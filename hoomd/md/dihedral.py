@@ -69,10 +69,8 @@ class Dihedral(Force):
 
     def _attach_hook(self):
         # check that some dihedrals are defined
-        if self._simulation.state._cpp_sys_def.getDihedralData().getNGlobal(
-        ) == 0:
-            self._simulation.device._cpp_msg.warning(
-                "No dihedrals are defined.\n")
+        if self._simulation.state._cpp_sys_def.getDihedralData().getNGlobal() == 0:
+            self._simulation.device._cpp_msg.warning("No dihedrals are defined.\n")
 
         # create the c++ mirror class
         if isinstance(self._simulation.device, hoomd.device.CPU):
@@ -97,8 +95,8 @@ class Periodic(Dihedral):
     Examples::
 
         harmonic = dihedral.Periodic()
-        harmonic.params['A-A-A-A'] = dict(k=3.0, d=-1, n=3, phi0=0)
-        harmonic.params['A-B-C-D'] = dict(k=100.0, d=1, n=4, phi0=math.pi/2)
+        harmonic.params["A-A-A-A"] = dict(k=3.0, d=-1, n=3, phi0=0)
+        harmonic.params["A-B-C-D"] = dict(k=100.0, d=1, n=4, phi0=math.pi / 2)
 
     {inherited}
 
@@ -118,14 +116,17 @@ class Periodic(Dihedral):
             * ``phi0`` (`float`, **required**) - phase shift :math:`\phi_0`
               :math:`[\mathrm{radians}]`
     """
+
     _cpp_class_name = "HarmonicDihedralForceCompute"
     __doc__ = __doc__.replace("{inherited}", Dihedral._doc_inherited)
 
     def __init__(self):
         super().__init__()
         params = TypeParameter(
-            'params', 'dihedral_types',
-            TypeParameterDict(k=float, d=float, n=int, phi0=float, len_keys=1))
+            "params",
+            "dihedral_types",
+            TypeParameterDict(k=float, d=float, n=int, phi0=float, len_keys=1),
+        )
         self._add_typeparam(params)
 
 
@@ -181,15 +182,18 @@ class Table(Dihedral):
     def __init__(self, width):
         super().__init__()
         param_dict = hoomd.data.parameterdicts.ParameterDict(width=int)
-        param_dict['width'] = width
+        param_dict["width"] = width
         self._param_dict = param_dict
 
         params = TypeParameter(
-            "params", "dihedral_types",
+            "params",
+            "dihedral_types",
             TypeParameterDict(
                 U=hoomd.data.typeconverter.NDArrayValidator(numpy.float64),
                 tau=hoomd.data.typeconverter.NDArrayValidator(numpy.float64),
-                len_keys=1))
+                len_keys=1,
+            ),
+        )
         self._add_typeparam(params)
 
     def _attach_hook(self):
@@ -220,7 +224,7 @@ class OPLS(Dihedral):
     Examples::
 
         opls = dihedral.OPLS()
-        opls.params['A-A-A-A'] = dict(k1=1.0, k2=1.0, k3=1.0, k4=1.0)
+        opls.params["A-A-A-A"] = dict(k1=1.0, k2=1.0, k3=1.0, k4=1.0)
 
     {inherited}
 
@@ -245,6 +249,7 @@ class OPLS(Dihedral):
             * ``k4`` (`float`, **required**) -  force constant of the
               fourth term :math:`[\mathrm{energy}]`
     """
+
     _cpp_class_name = "OPLSDihedralForceCompute"
     __doc__ = __doc__.replace("{inherited}", Dihedral._doc_inherited)
 
@@ -252,18 +257,16 @@ class OPLS(Dihedral):
         super().__init__()
         # check that some dihedrals are defined
         params = TypeParameter(
-            'params', 'dihedral_types',
-            TypeParameterDict(k1=float,
-                              k2=float,
-                              k3=float,
-                              k4=float,
-                              len_keys=1))
+            "params",
+            "dihedral_types",
+            TypeParameterDict(k1=float, k2=float, k3=float, k4=float, len_keys=1),
+        )
         self._add_typeparam(params)
 
 
 __all__ = [
-    'OPLS',
-    'Dihedral',
-    'Periodic',
-    'Table',
+    "OPLS",
+    "Dihedral",
+    "Periodic",
+    "Table",
 ]

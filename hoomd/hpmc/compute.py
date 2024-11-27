@@ -85,8 +85,9 @@ class FreeVolume(Compute):
 
     Examples::
 
-        fv = hoomd.hpmc.compute.FreeVolume(test_particle_type='B',
-                                           num_samples=1000)
+        fv = hoomd.hpmc.compute.FreeVolume(
+            test_particle_type="B", num_samples=1000
+        )
 
 
     {inherited}
@@ -108,8 +109,8 @@ class FreeVolume(Compute):
         # store metadata
         param_dict = ParameterDict(test_particle_type=str, num_samples=int)
         param_dict.update(
-            dict(test_particle_type=test_particle_type,
-                 num_samples=num_samples))
+            dict(test_particle_type=test_particle_type, num_samples=num_samples)
+        )
         self._param_dict.update(param_dict)
 
     def _attach_hook(self):
@@ -121,16 +122,16 @@ class FreeVolume(Compute):
         integrator_name = integrator.__class__.__name__
         try:
             if isinstance(self._simulation.device, hoomd.device.CPU):
-                cpp_cls = getattr(_hpmc, 'ComputeFreeVolume' + integrator_name)
+                cpp_cls = getattr(_hpmc, "ComputeFreeVolume" + integrator_name)
             else:
-                cpp_cls = getattr(_hpmc,
-                                  'ComputeFreeVolume' + integrator_name + 'GPU')
+                cpp_cls = getattr(_hpmc, "ComputeFreeVolume" + integrator_name + "GPU")
         except AttributeError:
             raise RuntimeError("Unsupported integrator.")
 
         cl = _hoomd.CellList(self._simulation.state._cpp_sys_def)
-        self._cpp_obj = cpp_cls(self._simulation.state._cpp_sys_def,
-                                integrator._cpp_obj, cl)
+        self._cpp_obj = cpp_cls(
+            self._simulation.state._cpp_sys_def, integrator._cpp_obj, cl
+        )
 
     @log(requires_run=True)
     def free_volume(self):
@@ -351,7 +352,7 @@ class SDF(Compute):
         # Extract 'Shape' from '<hoomd.hpmc.integrate.Shape object>'
         integrator_name = integrator.__class__.__name__
 
-        cpp_cls = getattr(_hpmc, 'ComputeSDF' + integrator_name)
+        cpp_cls = getattr(_hpmc, "ComputeSDF" + integrator_name)
 
         self._cpp_obj = cpp_cls(
             self._simulation.state._cpp_sys_def,
@@ -360,7 +361,7 @@ class SDF(Compute):
             self.dx,
         )
 
-    @log(category='sequence', requires_run=True)
+    @log(category="sequence", requires_run=True)
     def sdf_compression(self):
         """(*N_bins*,) `numpy.ndarray` of `float`): :math:`s_\\mathrm{comp}[k]`\
         - The scale distribution function for compression moves \
@@ -376,7 +377,7 @@ class SDF(Compute):
         self._cpp_obj.compute(self._simulation.timestep)
         return self._cpp_obj.sdf_compression
 
-    @log(category='sequence', requires_run=True)
+    @log(category="sequence", requires_run=True)
     def sdf_expansion(self):
         """(*N_bins*,) `numpy.ndarray` of `float`): :math:`s_\\mathrm{exp}[k]` \
         - The scale distribution function for the expansion moves \
@@ -397,7 +398,7 @@ class SDF(Compute):
         else:
             return None
 
-    @log(category='sequence', requires_run=True)
+    @log(category="sequence", requires_run=True)
     def x_compression(self):
         """(*N_bins*,) `numpy.ndarray` of `float`): The x \
         values at the center of each bin corresponding to the scale \
@@ -410,7 +411,7 @@ class SDF(Compute):
         x = numpy.arange(0, self._cpp_obj.num_bins, 1) * self.dx + self.dx / 2
         return x
 
-    @log(category='sequence', requires_run=True)
+    @log(category="sequence", requires_run=True)
     def x_expansion(self):
         """(*N_bins*,) `numpy.ndarray` of `float`): The x \
         values at the center of each bin corresponding to the scale \
@@ -461,8 +462,7 @@ class SDF(Compute):
             # perform the fit and extrapolation
             p = numpy.polyfit(x_fit_compression, sdf_fit_compression, 5)
             p0_compression = numpy.polyval(p, 0.0)
-            compression_contribution = rho * p0_compression / (2
-                                                               * box.dimensions)
+            compression_contribution = rho * p0_compression / (2 * box.dimensions)
 
             # expansive contribution
             # perform the fit and extrapolation
@@ -499,6 +499,6 @@ class SDF(Compute):
 
 
 __all__ = [
-    'SDF',
-    'FreeVolume',
+    "SDF",
+    "FreeVolume",
 ]

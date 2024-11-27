@@ -5,4 +5,4 @@
 
 from . import integrate
 
-__all__ = ['integrate']
+__all__ = ["integrate"]

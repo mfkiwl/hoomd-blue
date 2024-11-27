@@ -42,15 +42,15 @@ Either a subclass of `ParticleFilter` or `CustomFilter`.
 """
 
 __all__ = [
-    'All',
-    'CustomFilter',
-    'Intersection',
-    'Null',
-    'ParticleFilter',
-    'Rigid',
-    'SetDifference',
-    'Tags',
-    'Type',
-    'Union',
-    'filter_like',
+    "All",
+    "CustomFilter",
+    "Intersection",
+    "Null",
+    "ParticleFilter",
+    "Rigid",
+    "SetDifference",
+    "Tags",
+    "Type",
+    "Union",
+    "filter_like",
 ]

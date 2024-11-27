@@ -50,16 +50,19 @@ class ParticleSorter(Tuner):
     def __init__(self, trigger=200, grid=None):
         super().__init__(trigger)
         sorter_params = ParameterDict(
-            grid=OnlyTypes(int,
-                           postprocess=ParticleSorter._to_power_of_two,
-                           preprocess=ParticleSorter._natural_number,
-                           allow_none=True))
+            grid=OnlyTypes(
+                int,
+                postprocess=ParticleSorter._to_power_of_two,
+                preprocess=ParticleSorter._natural_number,
+                allow_none=True,
+            )
+        )
         self._param_dict.update(sorter_params)
         self.grid = grid
 
     @staticmethod
     def _to_power_of_two(value):
-        return int(2.**ceil(log2(value)))
+        return int(2.0 ** ceil(log2(value)))
 
     @staticmethod
     def _natural_number(value):
@@ -73,8 +76,7 @@ class ParticleSorter(Tuner):
 
     def _attach_hook(self):
         if isinstance(self._simulation.device, hoomd.device.GPU):
-            cpp_cls = getattr(_hoomd, 'SFCPackTunerGPU')
+            cpp_cls = getattr(_hoomd, "SFCPackTunerGPU")
         else:
-            cpp_cls = getattr(_hoomd, 'SFCPackTuner')
-        self._cpp_obj = cpp_cls(self._simulation.state._cpp_sys_def,
-                                self.trigger)
+            cpp_cls = getattr(_hoomd, "SFCPackTuner")
+        self._cpp_obj = cpp_cls(self._simulation.state._cpp_sys_def, self.trigger)

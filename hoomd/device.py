@@ -74,7 +74,7 @@ class NoticeFile:
 
         .. code-block:: python
 
-            notice_file.write('Message\\n')
+            notice_file.write("Message\\n")
         """
         self._buff += message
 
@@ -145,8 +145,9 @@ class Device:
             self._comm = communicator
 
         # c++ messenger object
-        self._cpp_msg = _create_messenger(self.communicator.cpp_mpi_conf,
-                                          notice_level, message_filename)
+        self._cpp_msg = _create_messenger(
+            self.communicator.cpp_mpi_conf, notice_level, message_filename
+        )
 
         # c++ execution configuration mirror class
         self._cpp_exec_conf = None
@@ -198,7 +199,7 @@ class Device:
 
         .. code-block:: python
 
-            device.message_filename = str(path / 'messages.log')
+            device.message_filename = str(path / "messages.log")
 
         .. code-block:: python
 
@@ -214,11 +215,11 @@ class Device:
 
             .. code-block:: python
 
-                communicator = hoomd.communicator.Communicator(
-                    ranks_per_partition=2)
-                filename = f'messages.{communicator.partition}'
-                device = hoomd.device.CPU(communicator=communicator,
-                                          message_filename=filename)
+                communicator = hoomd.communicator.Communicator(ranks_per_partition=2)
+                filename = f"messages.{communicator.partition}"
+                device = hoomd.device.CPU(
+                    communicator=communicator, message_filename=filename
+                )
         """
         return self._message_filename
 
@@ -249,7 +250,7 @@ class Device:
 
         .. code-block:: python
 
-            device.notice('Message')
+            device.notice("Message")
 
         Hint:
             Use `notice` instead of `print` to write status messages and your
@@ -346,7 +347,6 @@ class GPU(Device):
         notice_level=2,
         gpu_id=None,
     ):
-
         super().__init__(communicator, notice_level, message_filename)
 
         if gpu_id is None:
@@ -354,8 +354,11 @@ class GPU(Device):
 
         # convert None options to defaults
         self._cpp_exec_conf = _hoomd.ExecutionConfiguration(
-            _hoomd.ExecutionConfiguration.executionMode.GPU, gpu_id,
-            self.communicator.cpp_mpi_conf, self._cpp_msg)
+            _hoomd.ExecutionConfiguration.executionMode.GPU,
+            gpu_id,
+            self.communicator.cpp_mpi_conf,
+            self._cpp_msg,
+        )
 
     @property
     def gpu_error_checking(self):
@@ -475,12 +478,14 @@ class CPU(Device):
         message_filename=None,
         notice_level=2,
     ):
-
         super().__init__(communicator, notice_level, message_filename)
 
         self._cpp_exec_conf = _hoomd.ExecutionConfiguration(
-            _hoomd.ExecutionConfiguration.executionMode.CPU, -1,
-            self.communicator.cpp_mpi_conf, self._cpp_msg)
+            _hoomd.ExecutionConfiguration.executionMode.CPU,
+            -1,
+            self.communicator.cpp_mpi_conf,
+            self._cpp_msg,
+        )
 
 
 def auto_select(
@@ -517,9 +522,9 @@ def auto_select(
 
 
 __all__ = [
-    'CPU',
-    'GPU',
-    'Device',
-    'NoticeFile',
-    'auto_select',
+    "CPU",
+    "GPU",
+    "Device",
+    "NoticeFile",
+    "auto_select",
 ]

@@ -82,8 +82,8 @@ class Harmonic(Bond):
     Examples::
 
         harmonic = bond.Harmonic()
-        harmonic.params['A-A'] = dict(k=3.0, r0=2.38)
-        harmonic.params['A-B'] = dict(k=10.0, r0=1.0)
+        harmonic.params["A-A"] = dict(k=3.0, r0=2.38)
+        harmonic.params["A-B"] = dict(k=10.0, r0=1.0)
 
     {inherited}
 
@@ -102,13 +102,15 @@ class Harmonic(Bond):
             * ``r0`` (`float`, **required**) - rest length
               :math:`[\mathrm{length}]`
     """
+
     _cpp_class_name = "PotentialBondHarmonic"
     __doc__ = __doc__.replace("{inherited}", Bond._doc_inherited)
 
     def __init__(self):
         super().__init__()
-        params = TypeParameter("params", "bond_types",
-                               TypeParameterDict(k=float, r0=float, len_keys=1))
+        params = TypeParameter(
+            "params", "bond_types", TypeParameterDict(k=float, r0=float, len_keys=1)
+        )
         self._add_typeparam(params)
 
 
@@ -172,19 +174,19 @@ class FENEWCA(Bond):
             * ``delta`` (`float`, **required**) - radial shift :math:`\Delta`
               :math:`[\mathrm{length}]`.
     """
+
     _cpp_class_name = "PotentialBondFENE"
     __doc__ = __doc__.replace("{inherited}", Bond._doc_inherited)
 
     def __init__(self):
         super().__init__()
         params = TypeParameter(
-            "params", "bond_types",
-            TypeParameterDict(k=float,
-                              r0=float,
-                              epsilon=float,
-                              sigma=float,
-                              delta=float,
-                              len_keys=1))
+            "params",
+            "bond_types",
+            TypeParameterDict(
+                k=float, r0=float, epsilon=float, sigma=float, delta=float, len_keys=1
+            ),
+        )
         self._add_typeparam(params)
 
 
@@ -271,17 +273,20 @@ class Table(Bond):
     def __init__(self, width):
         super().__init__()
         param_dict = hoomd.data.parameterdicts.ParameterDict(width=int)
-        param_dict['width'] = width
+        param_dict["width"] = width
         self._param_dict = param_dict
 
         params = TypeParameter(
-            "params", "bond_types",
+            "params",
+            "bond_types",
             TypeParameterDict(
                 r_min=float,
                 r_max=float,
                 U=hoomd.data.typeconverter.NDArrayValidator(numpy.float64),
                 F=hoomd.data.typeconverter.NDArrayValidator(numpy.float64),
-                len_keys=1))
+                len_keys=1,
+            ),
+        )
         self._add_typeparam(params)
 
     def _attach_hook(self):
@@ -362,26 +367,26 @@ class Tether(Bond):
             * ``l_max`` (`float`, **required**) - maximum bond length
               :math:`[\mathrm{length}]`
     """
+
     _cpp_class_name = "PotentialBondTether"
     __doc__ = __doc__.replace("{inherited}", Bond._doc_inherited)
 
     def __init__(self):
         super().__init__()
         params = TypeParameter(
-            "params", "bond_types",
-            TypeParameterDict(k_b=float,
-                              l_min=float,
-                              l_c1=float,
-                              l_c0=float,
-                              l_max=float,
-                              len_keys=1))
+            "params",
+            "bond_types",
+            TypeParameterDict(
+                k_b=float, l_min=float, l_c1=float, l_c0=float, l_max=float, len_keys=1
+            ),
+        )
         self._add_typeparam(params)
 
 
 __all__ = [
-    'FENEWCA',
-    'Bond',
-    'Harmonic',
-    'Table',
-    'Tether',
+    "FENEWCA",
+    "Bond",
+    "Harmonic",
+    "Table",
+    "Tether",
 ]

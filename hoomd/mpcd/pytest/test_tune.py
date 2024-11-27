@@ -20,7 +20,6 @@ def snap():
 
 
 class TestParticleSorter:
-
     def test_create(self, simulation_factory, snap):
         sim = simulation_factory(snap)
 
@@ -45,6 +44,7 @@ class TestParticleSorter:
 
         sim = simulation_factory(snap)
         sim.operations.integrator = hoomd.mpcd.Integrator(
-            dt=0.02, mpcd_particle_sorter=sorter)
+            dt=0.02, mpcd_particle_sorter=sorter
+        )
         sim.run(0)
         pickling_check(sorter)

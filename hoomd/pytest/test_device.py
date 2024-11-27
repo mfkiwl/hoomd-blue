@@ -7,7 +7,6 @@ import pytest
 
 @pytest.mark.gpu
 def test_gpu_profile(device):
-
     print(device)
 
     with device.enable_profiling():
@@ -32,11 +31,10 @@ def test_common_properties(device, tmp_path):
 
     # now make a device with non-default arguments
     device_type = type(device)
-    dev = device_type(message_filename=str(tmp_path / "example2.txt"),
-                      notice_level=10)
-    _assert_common_properties(dev,
-                              notice_level=10,
-                              message_filename=str(tmp_path / "example2.txt"))
+    dev = device_type(message_filename=str(tmp_path / "example2.txt"), notice_level=10)
+    _assert_common_properties(
+        dev, notice_level=10, message_filename=str(tmp_path / "example2.txt")
+    )
 
 
 @pytest.mark.gpu
@@ -122,7 +120,6 @@ def test_device_notice(device, tmp_path):
 
 
 def test_noticefile(device, tmp_path):
-
     # Message file declared. Should output in specified file.
     device.message_filename = str(tmp_path / "str_message")
     msg = "This message should output.\n"

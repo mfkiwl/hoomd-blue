@@ -43,8 +43,10 @@ class WallGeometry(ABC, _HOOMDGetSetAttrBase):
 
     def _setattr_param(self, attr, value):
         """Make WallGeometry objects effectively immutable."""
-        raise ValueError(f"Cannot set {attr} after construction as "
-                         f"{self.__class__} objects are immutable")
+        raise ValueError(
+            f"Cannot set {attr} after construction as "
+            f"{self.__class__} objects are immutable"
+        )
 
 
 class Sphere(WallGeometry):
@@ -101,10 +103,9 @@ class Sphere(WallGeometry):
     """
 
     def __init__(self, radius, origin=(0.0, 0.0, 0.0), inside=True, open=True):
-        param_dict = ParameterDict(radius=float,
-                                   origin=(float, float, float),
-                                   inside=bool,
-                                   open=bool)
+        param_dict = ParameterDict(
+            radius=float, origin=(float, float, float), inside=bool, open=bool
+        )
         param_dict["radius"] = radius
         param_dict["origin"] = origin
         param_dict["inside"] = inside
@@ -130,7 +131,7 @@ class Sphere(WallGeometry):
             "radius": self.radius,
             "origin": self.origin,
             "inside": self.inside,
-            "open": self.open
+            "open": self.open,
         }
 
 
@@ -181,7 +182,7 @@ class Cylinder(WallGeometry):
 
     .. code-block:: python
 
-            cylinder = hoomd.wall.Cylinder(radius=10.0, axis=(0,0,1))
+            cylinder = hoomd.wall.Cylinder(radius=10.0, axis=(0, 0, 1))
 
     Attributes:
         radius (float):
@@ -200,17 +201,14 @@ class Cylinder(WallGeometry):
             ``True`` means do not include the surface.
     """
 
-    def __init__(self,
-                 radius,
-                 axis,
-                 origin=(0.0, 0.0, 0.0),
-                 inside=True,
-                 open=True):
-        param_dict = ParameterDict(radius=float,
-                                   origin=(float, float, float),
-                                   axis=(float, float, float),
-                                   inside=bool,
-                                   open=bool)
+    def __init__(self, radius, axis, origin=(0.0, 0.0, 0.0), inside=True, open=True):
+        param_dict = ParameterDict(
+            radius=float,
+            origin=(float, float, float),
+            axis=(float, float, float),
+            inside=bool,
+            open=bool,
+        )
         param_dict["radius"] = radius
         param_dict["origin"] = origin
         param_dict["axis"] = axis
@@ -238,7 +236,7 @@ class Cylinder(WallGeometry):
             "origin": self.origin,
             "axis": self.axis,
             "inside": self.inside,
-            "open": self.open
+            "open": self.open,
         }
 
 
@@ -291,9 +289,9 @@ class Plane(WallGeometry):
     """
 
     def __init__(self, origin, normal, open=True):
-        param_dict = ParameterDict(origin=(float, float, float),
-                                   normal=(float, float, float),
-                                   open=bool)
+        param_dict = ParameterDict(
+            origin=(float, float, float), normal=(float, float, float), open=bool
+        )
         param_dict["origin"] = origin
         param_dict["normal"] = normal
         param_dict["open"] = open
@@ -374,14 +372,9 @@ class _WallsMetaList(MutableSequence):
         self._walls = []
         self._backend_list_index = []
         self._backend_lists = {
-            Sphere:
-                SyncedList(Sphere, to_synced_list=to_cpp, attach_members=False),
-            Cylinder:
-                SyncedList(Cylinder,
-                           to_synced_list=to_cpp,
-                           attach_members=False),
-            Plane:
-                SyncedList(Plane, to_synced_list=to_cpp, attach_members=False)
+            Sphere: SyncedList(Sphere, to_synced_list=to_cpp, attach_members=False),
+            Cylinder: SyncedList(Cylinder, to_synced_list=to_cpp, attach_members=False),
+            Plane: SyncedList(Plane, to_synced_list=to_cpp, attach_members=False),
         }
 
         if walls is None:
@@ -406,8 +399,7 @@ class _WallsMetaList(MutableSequence):
             self._backend_lists[new_type][old_backend_index.index] = wall
             return
 
-        new_backend_index = self._get_obj_backend_index(index + 1, new_type,
-                                                        old_type)
+        new_backend_index = self._get_obj_backend_index(index + 1, new_type, old_type)
         self._backend_list_index[index] = new_backend_index
 
         # Add/remove the new/old walls from their respective backend lists
@@ -499,7 +491,7 @@ class _WallsMetaList(MutableSequence):
         if backend_index is not None:
             return backend_index
 
-        for bi in self._backend_list_index[frontend_index - 1::-1]:
+        for bi in self._backend_list_index[frontend_index - 1 :: -1]:
             if bi.type == new_type:
                 backend_index = copy(bi)
                 backend_index.index += 1
@@ -511,8 +503,8 @@ class _WallsMetaList(MutableSequence):
 
 
 __all__ = [
-    'Cylinder',
-    'Plane',
-    'Sphere',
-    'WallGeometry',
+    "Cylinder",
+    "Plane",
+    "Sphere",
+    "WallGeometry",
 ]

@@ -23,7 +23,6 @@ velocities = list(itertools.product(v_comp, v_comp, v_comp))
 # Use pytest decorator to automate testing over the sequence of parameters.
 @pytest.mark.parametrize("vel", velocities)
 def test_updater(simulation_factory, one_particle_snapshot_factory, vel):
-
     # `one_particle_snapshot_factory` and `simulation_factory` are pytest
     # fixtures defined in hoomd/conftest.py. These factories automatically
     # handle iterating tests over different CPU and GPU devices.
@@ -34,7 +33,8 @@ def test_updater(simulation_factory, one_particle_snapshot_factory, vel):
 
     # Add our plugin to the simulation.
     updater: operation.Updater = updater_plugin.update.ExampleUpdater(
-        hoomd.trigger.On(sim.timestep))
+        hoomd.trigger.On(sim.timestep)
+    )
     sim.operations.updaters.append(updater)
 
     # Test that the initial velocity matches our input.
@@ -49,6 +49,6 @@ def test_updater(simulation_factory, one_particle_snapshot_factory, vel):
     snap = sim.state.get_snapshot()
     if snap.communicator.rank == 0:
         velocity = snap.particles.velocity[0]
-        np.testing.assert_array_almost_equal(velocity,
-                                             np.array([0.0, 0.0, 0.0]),
-                                             decimal=6)
+        np.testing.assert_array_almost_equal(
+            velocity, np.array([0.0, 0.0, 0.0]), decimal=6
+        )

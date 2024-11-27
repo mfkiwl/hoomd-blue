@@ -64,7 +64,6 @@ class Communicator(object):
     """
 
     def __init__(self, mpi_comm=None, ranks_per_partition=None):
-
         # check ranks_per_partition
         if ranks_per_partition is not None:
             if not hoomd.version.mpi_enabled:
@@ -88,10 +87,12 @@ class Communicator(object):
             # pass in pointer to MPI_Comm object provided by mpi4py
             try:
                 import mpi4py
+
                 if isinstance(mpi_comm, mpi4py.MPI.Comm):
                     addr = mpi4py.MPI._addressof(mpi_comm)
-                    self.cpp_mpi_conf = \
-                        _hoomd.MPIConfiguration._make_mpi_conf_mpi_comm(addr)
+                    self.cpp_mpi_conf = _hoomd.MPIConfiguration._make_mpi_conf_mpi_comm(
+                        addr
+                    )
                     handled = True
             except ImportError:
                 # silently ignore when mpi4py is missing
@@ -100,19 +101,20 @@ class Communicator(object):
             # undocumented case: handle plain integers as pointers to MPI_Comm
             # objects
             if not handled and isinstance(mpi_comm, int):
-                self.cpp_mpi_conf = \
-                    _hoomd.MPIConfiguration._make_mpi_conf_mpi_comm(mpi_comm)
+                self.cpp_mpi_conf = _hoomd.MPIConfiguration._make_mpi_conf_mpi_comm(
+                    mpi_comm
+                )
                 handled = True
 
             if not handled:
-                raise RuntimeError(
-                    "Invalid mpi_comm object: {}".format(mpi_comm))
+                raise RuntimeError("Invalid mpi_comm object: {}".format(mpi_comm))
 
         if ranks_per_partition is not None:
             # check validity
-            if (self.cpp_mpi_conf.getNRanksGlobal() % ranks_per_partition):
-                raise RuntimeError('Total number of ranks is not a multiple of '
-                                   'ranks_per_partition.')
+            if self.cpp_mpi_conf.getNRanksGlobal() % ranks_per_partition:
+                raise RuntimeError(
+                    "Total number of ranks is not a multiple of " "ranks_per_partition."
+                )
 
             # split the communicator into partitions
             self.cpp_mpi_conf.splitPartitions(ranks_per_partition)
@@ -276,5 +278,5 @@ class Communicator(object):
 _current_communicator = Communicator()
 
 __all__ = [
-    'Communicator',
+    "Communicator",
 ]

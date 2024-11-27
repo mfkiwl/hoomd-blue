@@ -42,7 +42,8 @@ class ZeroMomentum(Updater):
     Examples::
 
         zero_momentum = hoomd.md.update.ZeroMomentum(
-            hoomd.trigger.Periodic(100))
+            hoomd.trigger.Periodic(100)
+        )
     """
 
     __doc__ += Updater._doc_inherited
@@ -54,7 +55,8 @@ class ZeroMomentum(Updater):
     def _attach_hook(self):
         # create the c++ mirror class
         self._cpp_obj = _md.ZeroMomentumUpdater(
-            self._simulation.state._cpp_sys_def, self.trigger)
+            self._simulation.state._cpp_sys_def, self.trigger
+        )
 
 
 class ReversePerturbationFlow(Updater):
@@ -117,11 +119,13 @@ class ReversePerturbationFlow(Updater):
         # const integrated flow with 0.1 slope for max 1e8 timesteps
         ramp = hoomd.variant.Ramp(0.0, 0.1e8, 0, int(1e8))
         # velocity gradient in z direction and shear flow in x direction.
-        mpf = hoomd.md.update.ReversePerturbationFlow(filter=hoomd.filter.All(),
-                                                      flow_target=ramp,
-                                                      slab_direction="Z",
-                                                      flow_direction="X",
-                                                      n_slabs=20)
+        mpf = hoomd.md.update.ReversePerturbationFlow(
+            filter=hoomd.filter.All(),
+            flow_target=ramp,
+            slab_direction="Z",
+            flow_direction="X",
+            n_slabs=20,
+        )
 
     {inherited}
 
@@ -152,34 +156,35 @@ class ReversePerturbationFlow(Updater):
 
     __doc__ = __doc__.replace("{inherited}", Updater._doc_inherited)
 
-    def __init__(self,
-                 filter,
-                 flow_target,
-                 slab_direction,
-                 flow_direction,
-                 n_slabs,
-                 max_slab=-1,
-                 min_slab=-1):
-
+    def __init__(
+        self,
+        filter,
+        flow_target,
+        slab_direction,
+        flow_direction,
+        n_slabs,
+        max_slab=-1,
+        min_slab=-1,
+    ):
         params = ParameterDict(
             filter=hoomd.filter.ParticleFilter,
             flow_target=hoomd.variant.Variant,
-            slab_direction=OnlyTypes(str,
-                                     strict=True,
-                                     postprocess=self._to_lowercase),
-            flow_direction=OnlyTypes(str,
-                                     strict=True,
-                                     postprocess=self._to_lowercase),
+            slab_direction=OnlyTypes(str, strict=True, postprocess=self._to_lowercase),
+            flow_direction=OnlyTypes(str, strict=True, postprocess=self._to_lowercase),
             n_slabs=OnlyTypes(int, preprocess=self._preprocess_n_slabs),
             max_slab=OnlyTypes(int, preprocess=self._preprocess_max_slab),
             min_slab=OnlyTypes(int, preprocess=self._preprocess_min_slab),
-            flow_epsilon=float(1e-2))
+            flow_epsilon=float(1e-2),
+        )
         params.update(
-            dict(filter=filter,
-                 flow_target=flow_target,
-                 slab_direction=slab_direction,
-                 flow_direction=flow_direction,
-                 n_slabs=n_slabs))
+            dict(
+                filter=filter,
+                flow_target=flow_target,
+                slab_direction=slab_direction,
+                flow_direction=flow_direction,
+                n_slabs=n_slabs,
+            )
+        )
         self._param_dict.update(params)
         self._param_dict.update(dict(max_slab=max_slab))
         self._param_dict.update(dict(min_slab=min_slab))
@@ -218,14 +223,30 @@ class ReversePerturbationFlow(Updater):
         sys_def = self._simulation.state._cpp_sys_def
         if isinstance(self._simulation.device, hoomd.device.CPU):
             self._cpp_obj = _md.MuellerPlatheFlow(
-                sys_def, self.trigger, group, self.flow_target,
-                self.slab_direction, self.flow_direction, self.n_slabs,
-                self.min_slab, self.max_slab, self.flow_epsilon)
+                sys_def,
+                self.trigger,
+                group,
+                self.flow_target,
+                self.slab_direction,
+                self.flow_direction,
+                self.n_slabs,
+                self.min_slab,
+                self.max_slab,
+                self.flow_epsilon,
+            )
         else:
             self._cpp_obj = _md.MuellerPlatheFlowGPU(
-                sys_def, self.trigger, group, self.flow_target,
-                self.slab_direction, self.flow_direction, self.n_slabs,
-                self.min_slab, self.max_slab, self.flow_epsilon)
+                sys_def,
+                self.trigger,
+                group,
+                self.flow_target,
+                self.slab_direction,
+                self.flow_direction,
+                self.n_slabs,
+                self.min_slab,
+                self.max_slab,
+                self.flow_epsilon,
+            )
 
     @log(category="scalar", requires_run=True)
     def summed_exchanged_momentum(self):
@@ -283,8 +304,10 @@ class ActiveRotationalDiffusion(Updater):
 
     def __init__(self, trigger, active_force, rotational_diffusion):
         super().__init__(trigger)
-        param_dict = ParameterDict(rotational_diffusion=hoomd.variant.Variant,
-                                   active_force=hoomd.md.force.Active)
+        param_dict = ParameterDict(
+            rotational_diffusion=hoomd.variant.Variant,
+            active_force=hoomd.md.force.Active,
+        )
         param_dict["rotational_diffusion"] = rotational_diffusion
         param_dict["active_force"] = active_force
         self._add_dependency(active_force)
@@ -297,14 +320,19 @@ class ActiveRotationalDiffusion(Updater):
         if not self.active_force._attached:
             raise SimulationDefinitionError(
                 "Active force for ActiveRotationalDiffusion object does not "
-                "belong to the simulation integrator.")
+                "belong to the simulation integrator."
+            )
         if self.active_force._simulation is not self._simulation:
             raise SimulationDefinitionError(
                 "Active force for ActiveRotationalDiffusion object belongs to "
-                "another simulation.")
+                "another simulation."
+            )
         self._cpp_obj = _md.ActiveRotationalDiffusionUpdater(
-            self._simulation.state._cpp_sys_def, self.trigger,
-            self.rotational_diffusion, self.active_force._cpp_obj)
+            self._simulation.state._cpp_sys_def,
+            self.trigger,
+            self.rotational_diffusion,
+            self.active_force._cpp_obj,
+        )
 
     def _handle_removed_dependency(self, active_force):
         sim = self._simulation
@@ -319,7 +347,7 @@ class ActiveRotationalDiffusion(Updater):
 
 
 __all__ = [
-    'ActiveRotationalDiffusion',
-    'ReversePerturbationFlow',
-    'ZeroMomentum',
+    "ActiveRotationalDiffusion",
+    "ReversePerturbationFlow",
+    "ZeroMomentum",
 ]

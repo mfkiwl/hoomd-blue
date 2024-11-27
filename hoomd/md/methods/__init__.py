@@ -16,19 +16,27 @@ For methods that constrain motion to a manifold see `hoomd.md.methods.rattle`.
 """
 
 from . import rattle
-from .methods import (Method, Langevin, Brownian, Thermostatted, ConstantVolume,
-                      ConstantPressure, DisplacementCapped, OverdampedViscous)
+from .methods import (
+    Method,
+    Langevin,
+    Brownian,
+    Thermostatted,
+    ConstantVolume,
+    ConstantPressure,
+    DisplacementCapped,
+    OverdampedViscous,
+)
 from . import thermostats
 
 __all__ = [
-    'Brownian',
-    'ConstantPressure',
-    'ConstantVolume',
-    'DisplacementCapped',
-    'Langevin',
-    'Method',
-    'OverdampedViscous',
-    'Thermostatted',
-    'rattle',
-    'thermostats',
+    "Brownian",
+    "ConstantPressure",
+    "ConstantVolume",
+    "DisplacementCapped",
+    "Langevin",
+    "Method",
+    "OverdampedViscous",
+    "Thermostatted",
+    "rattle",
+    "thermostats",
 ]

@@ -70,13 +70,14 @@ class Area(MeshConservationPotential):
             * ``A0`` (`float`, **required**) - targeted global surface area
               :math:`[\mathrm{length}]^2]`
     """
+
     _cpp_class_name = "AreaConservationMeshForceCompute"
-    __doc__ = __doc__.replace("{inherited}",
-                              MeshConservationPotential._doc_inherited)
+    __doc__ = __doc__.replace("{inherited}", MeshConservationPotential._doc_inherited)
 
     def __init__(self, mesh, ignore_type=False):
-        params = TypeParameter("params", "types",
-                               TypeParameterDict(k=float, A0=float, len_keys=1))
+        params = TypeParameter(
+            "params", "types", TypeParameterDict(k=float, A0=float, len_keys=1)
+        )
         self._add_typeparam(params)
 
         super().__init__(mesh, ignore_type)
@@ -133,13 +134,14 @@ class TriangleArea(MeshPotential):
               of a single triangle in the mesh
               :math:`[\mathrm{length}]^2`
     """
+
     _cpp_class_name = "TriangleAreaConservationMeshForceCompute"
-    __doc__ = __doc__.replace("{inherited}",
-                              MeshConservationPotential._doc_inherited)
+    __doc__ = __doc__.replace("{inherited}", MeshConservationPotential._doc_inherited)
 
     def __init__(self, mesh):
-        params = TypeParameter("params", "types",
-                               TypeParameterDict(k=float, A0=float, len_keys=1))
+        params = TypeParameter(
+            "params", "types", TypeParameterDict(k=float, A0=float, len_keys=1)
+        )
         self._add_typeparam(params)
 
         super().__init__(mesh)
@@ -190,13 +192,14 @@ class Volume(MeshConservationPotential):
             * ``V0`` (`float`, **required**) - target volume
               :math:`[\mathrm{length}^{3}]`
     """
+
     _cpp_class_name = "VolumeConservationMeshForceCompute"
-    __doc__ = __doc__.replace("{inherited}",
-                              MeshConservationPotential._doc_inherited)
+    __doc__ = __doc__.replace("{inherited}", MeshConservationPotential._doc_inherited)
 
     def __init__(self, mesh, ignore_type=False):
-        params = TypeParameter("params", "types",
-                               TypeParameterDict(k=float, V0=float, len_keys=1))
+        params = TypeParameter(
+            "params", "types", TypeParameterDict(k=float, V0=float, len_keys=1)
+        )
         self._add_typeparam(params)
 
         super().__init__(mesh, ignore_type)
@@ -208,8 +211,8 @@ class Volume(MeshConservationPotential):
 
 
 __all__ = [
-    'Area',
-    'MeshConservationPotential',
-    'TriangleArea',
-    'Volume',
+    "Area",
+    "MeshConservationPotential",
+    "TriangleArea",
+    "Volume",
 ]

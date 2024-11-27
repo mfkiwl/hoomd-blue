@@ -85,8 +85,8 @@ class Harmonic(Angle):
     Examples::
 
         harmonic = angle.Harmonic()
-        harmonic.params['A-A-A'] = dict(k=3.0, t0=0.7851)
-        harmonic.params['A-B-A'] = dict(k=100.0, t0=1.0)
+        harmonic.params["A-A-A"] = dict(k=3.0, t0=0.7851)
+        harmonic.params["A-B-A"] = dict(k=100.0, t0=1.0)
 
     {inherited}
 
@@ -106,13 +106,14 @@ class Harmonic(Angle):
               :math:`[\mathrm{radians}]`
     """
 
-    _cpp_class_name = 'HarmonicAngleForceCompute'
+    _cpp_class_name = "HarmonicAngleForceCompute"
     __doc__ = __doc__.replace("{inherited}", Angle._doc_inherited)
 
     def __init__(self):
         super().__init__()
-        params = TypeParameter('params', 'angle_types',
-                               TypeParameterDict(t0=float, k=float, len_keys=1))
+        params = TypeParameter(
+            "params", "angle_types", TypeParameterDict(t0=float, k=float, len_keys=1)
+        )
         self._add_typeparam(params)
 
 
@@ -131,8 +132,8 @@ class CosineSquared(Angle):
     Examples::
 
         cosinesq = angle.CosineSquared()
-        cosinesq.params['A-A-A'] = dict(k=3.0, t0=0.7851)
-        cosinesq.params['A-B-A'] = dict(k=100.0, t0=1.0)
+        cosinesq.params["A-A-A"] = dict(k=3.0, t0=0.7851)
+        cosinesq.params["A-B-A"] = dict(k=100.0, t0=1.0)
 
     {inherited}
 
@@ -152,13 +153,14 @@ class CosineSquared(Angle):
               :math:`[\mathrm{radians}]`
     """
 
-    _cpp_class_name = 'CosineSqAngleForceCompute'
+    _cpp_class_name = "CosineSqAngleForceCompute"
     __doc__ = __doc__.replace("{inherited}", Angle._doc_inherited)
 
     def __init__(self):
         super().__init__()
-        params = TypeParameter('params', 'angle_types',
-                               TypeParameterDict(t0=float, k=float, len_keys=1))
+        params = TypeParameter(
+            "params", "angle_types", TypeParameterDict(t0=float, k=float, len_keys=1)
+        )
         self._add_typeparam(params)
 
 
@@ -214,15 +216,18 @@ class Table(Angle):
     def __init__(self, width):
         super().__init__()
         param_dict = hoomd.data.parameterdicts.ParameterDict(width=int)
-        param_dict['width'] = width
+        param_dict["width"] = width
         self._param_dict = param_dict
 
         params = TypeParameter(
-            "params", "angle_types",
+            "params",
+            "angle_types",
             TypeParameterDict(
                 U=hoomd.data.typeconverter.NDArrayValidator(numpy.float64),
                 tau=hoomd.data.typeconverter.NDArrayValidator(numpy.float64),
-                len_keys=1))
+                len_keys=1,
+            ),
+        )
         self._add_typeparam(params)
 
     def _attach_hook(self):
@@ -236,8 +241,8 @@ class Table(Angle):
 
 
 __all__ = [
-    'Angle',
-    'CosineSquared',
-    'Harmonic',
-    'Table',
+    "Angle",
+    "CosineSquared",
+    "Harmonic",
+    "Table",
 ]

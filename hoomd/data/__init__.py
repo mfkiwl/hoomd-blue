@@ -9,25 +9,30 @@ See Also:
 """
 
 from .array import HOOMDArray, HOOMDGPUArray
-from .local_access import (AngleLocalAccessBase, BondLocalAccessBase,
-                           ConstraintLocalAccessBase, DihedralLocalAccessBase,
-                           ImproperLocalAccessBase, PairLocalAccessBase,
-                           ParticleLocalAccessBase)
+from .local_access import (
+    AngleLocalAccessBase,
+    BondLocalAccessBase,
+    ConstraintLocalAccessBase,
+    DihedralLocalAccessBase,
+    ImproperLocalAccessBase,
+    PairLocalAccessBase,
+    ParticleLocalAccessBase,
+)
 from .local_access_cpu import LocalSnapshot
 from .local_access_gpu import LocalSnapshotGPU
 from .typeparam import TypeParameter
 
 __all__ = [
-    'AngleLocalAccessBase',
-    'BondLocalAccessBase',
-    'ConstraintLocalAccessBase',
-    'DihedralLocalAccessBase',
-    'HOOMDArray',
-    'HOOMDGPUArray',
-    'ImproperLocalAccessBase',
-    'LocalSnapshot',
-    'LocalSnapshotGPU',
-    'PairLocalAccessBase',
-    'ParticleLocalAccessBase',
-    'TypeParameter',
+    "AngleLocalAccessBase",
+    "BondLocalAccessBase",
+    "ConstraintLocalAccessBase",
+    "DihedralLocalAccessBase",
+    "HOOMDArray",
+    "HOOMDGPUArray",
+    "ImproperLocalAccessBase",
+    "LocalSnapshot",
+    "LocalSnapshotGPU",
+    "PairLocalAccessBase",
+    "ParticleLocalAccessBase",
+    "TypeParameter",
 ]

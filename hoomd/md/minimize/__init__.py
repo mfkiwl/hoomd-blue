@@ -6,5 +6,5 @@
 from hoomd.md.minimize.fire import FIRE
 
 __all__ = [
-    'FIRE',
+    "FIRE",
 ]

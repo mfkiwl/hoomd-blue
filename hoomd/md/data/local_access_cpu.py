@@ -3,8 +3,10 @@
 
 """Implement local access classes for the CPU."""
 
-from hoomd.md.data.local_access import _ForceLocalAccessBase, \
-    _NeighborListLocalAccessBase
+from hoomd.md.data.local_access import (
+    _ForceLocalAccessBase,
+    _NeighborListLocalAccessBase,
+)
 from hoomd.data.array import HOOMDArray
 from hoomd import _hoomd
 from hoomd.md import _md

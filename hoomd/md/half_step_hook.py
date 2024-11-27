@@ -28,4 +28,5 @@ class HalfStepHook(_md.HalfStepHook):
         """
         raise TypeError(
             "Use a hoomd.md.HalfStepHook derived class implementing the "
-            "corresponding update method.")
+            "corresponding update method."
+        )

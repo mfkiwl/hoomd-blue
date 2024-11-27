@@ -128,12 +128,14 @@ def make_pppm_coulomb_forces(nlist, resolution, order, r_cut, alpha=0):
     real_space_force.params.default = dict(kappa=0, alpha=0)
     real_space_force.r_cut.default = r_cut
 
-    reciprocal_space_force = Coulomb(nlist=nlist,
-                                     resolution=resolution,
-                                     order=order,
-                                     r_cut=r_cut,
-                                     alpha=0,
-                                     pair_force=real_space_force)
+    reciprocal_space_force = Coulomb(
+        nlist=nlist,
+        resolution=resolution,
+        order=order,
+        r_cut=r_cut,
+        alpha=0,
+        pair_force=real_space_force,
+    )
 
     return real_space_force, reciprocal_space_force
 
@@ -167,13 +169,14 @@ class Coulomb(Force):
 
     def __init__(self, nlist, resolution, order, r_cut, alpha, pair_force):
         super().__init__()
-        self._nlist = hoomd.data.typeconverter.OnlyTypes(
-            hoomd.md.nlist.NeighborList)(nlist)
+        self._nlist = hoomd.data.typeconverter.OnlyTypes(hoomd.md.nlist.NeighborList)(
+            nlist
+        )
         self._param_dict.update(
-            hoomd.data.parameterdicts.ParameterDict(resolution=(int, int, int),
-                                                    order=int,
-                                                    r_cut=float,
-                                                    alpha=float))
+            hoomd.data.parameterdicts.ParameterDict(
+                resolution=(int, int, int), order=int, r_cut=float, alpha=float
+            )
+        )
 
         self.resolution = resolution
         self.order = order
@@ -198,8 +201,9 @@ class Coulomb(Force):
         alpha = self.alpha
 
         group = self._simulation.state._get_group(hoomd.filter.All())
-        self._cpp_obj = cls(self._simulation.state._cpp_sys_def,
-                            self.nlist._cpp_obj, group)
+        self._cpp_obj = cls(
+            self._simulation.state._cpp_sys_def, self.nlist._cpp_obj, group
+        )
 
         # compute the kappa parameter
         q2 = self._cpp_obj.getQ2Sum()
@@ -222,8 +226,7 @@ class Coulomb(Force):
         fmid = _diffpr(hx, hy, hz, Lx, Ly, Lz, N, order, kappa, q2, rcut)
 
         if f * fmid >= 0.0:
-            raise RuntimeError("Cannot compute PPPM Coloumb forces,\n"
-                               "f*fmid >= 0.0")
+            raise RuntimeError("Cannot compute PPPM Coloumb forces,\n" "f*fmid >= 0.0")
 
         if f < 0.0:
             dgew = gew2 - gew1
@@ -243,8 +246,7 @@ class Coulomb(Force):
                 rtb = kappa
             ncount += 1
             if ncount > 10000.0:
-                raise RuntimeError("Cannot compute PPPM\n"
-                                   "kappa is not converging")
+                raise RuntimeError("Cannot compute PPPM\n" "kappa is not converging")
 
         # set parameters
         particle_types = self._simulation.state.particle_types
@@ -274,7 +276,8 @@ class Coulomb(Force):
             raise RuntimeError("nlist cannot be set after scheduling.")
         else:
             self._nlist = hoomd.data.typeconverter.OnlyTypes(
-                hoomd.md.nlist.NeighborList)(value)
+                hoomd.md.nlist.NeighborList
+            )(value)
 
             # ensure that the pair force uses the same neighbor list
             self._pair_force.nlist = value
@@ -285,10 +288,13 @@ def _diffpr(hx, hy, hz, xprd, yprd, zprd, N, order, kappa, q2, rcut):
     lprx = _rms(hx, xprd, N, order, kappa, q2)
     lpry = _rms(hy, yprd, N, order, kappa, q2)
     lprz = _rms(hz, zprd, N, order, kappa, q2)
-    kspace_prec = math.sqrt(lprx * lprx + lpry * lpry
-                            + lprz * lprz) / math.sqrt(3.0)
-    real_prec = 2.0 * q2 * math.exp(-kappa * kappa * rcut * rcut) / math.sqrt(
-        N * rcut * xprd * yprd * zprd)
+    kspace_prec = math.sqrt(lprx * lprx + lpry * lpry + lprz * lprz) / math.sqrt(3.0)
+    real_prec = (
+        2.0
+        * q2
+        * math.exp(-kappa * kappa * rcut * rcut)
+        / math.sqrt(N * rcut * xprd * yprd * zprd)
+    )
     value = kspace_prec - real_prec
     return value
 
@@ -329,12 +335,17 @@ def _rms(h, prd, N, order, kappa, q2):
     sum = 0.0
     for m in range(0, order):
         sum += acons[order][m] * pow(h * kappa, 2.0 * m)
-    value = q2 * pow(h * kappa, order) * math.sqrt(
-        kappa * prd * math.sqrt(2.0 * math.pi) * sum / N) / prd / prd
+    value = (
+        q2
+        * pow(h * kappa, order)
+        * math.sqrt(kappa * prd * math.sqrt(2.0 * math.pi) * sum / N)
+        / prd
+        / prd
+    )
     return value
 
 
 __all__ = [
-    'Coulomb',
-    'make_pppm_coulomb_forces',
+    "Coulomb",
+    "make_pppm_coulomb_forces",
 ]

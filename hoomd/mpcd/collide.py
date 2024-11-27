@@ -71,7 +71,9 @@ class CellList(Compute):
     def __init__(self, shift=True):
         super().__init__()
 
-        param_dict = ParameterDict(shift=bool(shift),)
+        param_dict = ParameterDict(
+            shift=bool(shift),
+        )
         self._param_dict.update(param_dict)
 
     def _attach_hook(self):
@@ -138,7 +140,9 @@ class CollisionMethod(Operation):
     """
 
     __doc__ = __doc__.replace("{inherited}", Operation._doc_inherited)
-    _doc_inherited = Operation._doc_inherited + """
+    _doc_inherited = (
+        Operation._doc_inherited
+        + """
     ----------
 
     **Members inherited from**
@@ -154,14 +158,14 @@ class CollisionMethod(Operation):
         Number of integration steps between collisions.
         `Read more... <hoomd.mpcd.collide.CollisionMethod.period>`
     """
+    )
 
     def __init__(self, period, embedded_particles=None):
         super().__init__()
 
         param_dict = ParameterDict(
             period=int(period),
-            embedded_particles=OnlyTypes(hoomd.filter.ParticleFilter,
-                                         allow_none=True),
+            embedded_particles=OnlyTypes(hoomd.filter.ParticleFilter, allow_none=True),
         )
         param_dict["embedded_particles"] = embedded_particles
         self._param_dict.update(param_dict)
@@ -195,8 +199,8 @@ class AndersenThermostat(CollisionMethod):
     .. code-block:: python
 
         andersen_thermostat = hoomd.mpcd.collide.AndersenThermostat(
-            period=1,
-            kT=1.0)
+            period=1, kT=1.0
+        )
         simulation.operations.integrator.collision_method = andersen_thermostat
 
     Collision including embedded particles.
@@ -206,7 +210,8 @@ class AndersenThermostat(CollisionMethod):
         andersen_thermostat = hoomd.mpcd.collide.AndersenThermostat(
             period=20,
             kT=1.0,
-            embedded_particles=hoomd.filter.All())
+            embedded_particles=hoomd.filter.All(),
+        )
         simulation.operations.integrator.collision_method = andersen_thermostat
 
     {inherited}
@@ -256,12 +261,14 @@ class AndersenThermostat(CollisionMethod):
         else:
             cpp_class = _mpcd.ATCollisionMethod
 
-        self._cpp_obj = cpp_class(sim.state._cpp_sys_def, sim.timestep,
-                                  self.period, 0, self.kT)
+        self._cpp_obj = cpp_class(
+            sim.state._cpp_sys_def, sim.timestep, self.period, 0, self.kT
+        )
 
         if self.embedded_particles is not None:
             self._cpp_obj.setEmbeddedGroup(
-                sim.state._get_group(self.embedded_particles))
+                sim.state._get_group(self.embedded_particles)
+            )
 
         super()._attach_hook()
 
@@ -311,9 +318,8 @@ class StochasticRotationDynamics(CollisionMethod):
     .. code-block:: python
 
         srd = hoomd.mpcd.collide.StochasticRotationDynamics(
-            period=1,
-            angle=130,
-            kT=1.0)
+            period=1, angle=130, kT=1.0
+        )
         simulation.operations.integrator.collision_method = srd
 
     Collision including embedded particles.
@@ -324,7 +330,8 @@ class StochasticRotationDynamics(CollisionMethod):
             period=20,
             angle=130,
             kT=1.0,
-            embedded_particles=hoomd.filter.All())
+            embedded_particles=hoomd.filter.All(),
+        )
         simulation.operations.integrator.collision_method = srd
 
     {inherited}
@@ -368,9 +375,9 @@ class StochasticRotationDynamics(CollisionMethod):
 
         param_dict = ParameterDict(
             angle=float(angle),
-            kT=OnlyTypes(hoomd.variant.Variant,
-                         allow_none=True,
-                         preprocess=variant_preprocessing),
+            kT=OnlyTypes(
+                hoomd.variant.Variant, allow_none=True, preprocess=variant_preprocessing
+            ),
         )
         param_dict["kT"] = kT
         self._param_dict.update(param_dict)
@@ -384,19 +391,21 @@ class StochasticRotationDynamics(CollisionMethod):
         else:
             cpp_class = _mpcd.SRDCollisionMethod
 
-        self._cpp_obj = cpp_class(sim.state._cpp_sys_def, sim.timestep,
-                                  self.period, 0, self.angle)
+        self._cpp_obj = cpp_class(
+            sim.state._cpp_sys_def, sim.timestep, self.period, 0, self.angle
+        )
 
         if self.embedded_particles is not None:
             self._cpp_obj.setEmbeddedGroup(
-                sim.state._get_group(self.embedded_particles))
+                sim.state._get_group(self.embedded_particles)
+            )
 
         super()._attach_hook()
 
 
 __all__ = [
-    'AndersenThermostat',
-    'CellList',
-    'CollisionMethod',
-    'StochasticRotationDynamics',
+    "AndersenThermostat",
+    "CellList",
+    "CollisionMethod",
+    "StochasticRotationDynamics",
 ]

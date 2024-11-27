@@ -25,7 +25,7 @@ from hoomd.data.typeconverter import OnlyIf, OnlyTypes, to_type_converter
 from .pair import Pair
 
 
-@hoomd.logging.modify_namespace(('hpmc', 'pair', 'Union'))
+@hoomd.logging.modify_namespace(("hpmc", "pair", "Union"))
 class Union(Pair):
     r"""Treat particles as extended bodies.
 
@@ -81,9 +81,11 @@ class Union(Pair):
     .. code-block:: python
 
         union = hoomd.hpmc.pair.Union(constituent_potential=lennard_jones)
-        union.body['R'] = dict(types=['A', 'A', 'A'],
-                               positions=[(-1,0,0), (0,0,0), (1,0,0)])
-        union.body['A'] = None
+        union.body["R"] = dict(
+            types=["A", "A", "A"],
+            positions=[(-1, 0, 0), (0, 0, 0), (1, 0, 0)],
+        )
+        union.body["A"] = None
 
         simulation.operations.integrator.pair_potentials = [union]
 
@@ -134,35 +136,40 @@ class Union(Pair):
 
                 union.leaf_capacity = 4
     """
+
     _cpp_class_name = "PairPotentialUnion"
     __doc__ = __doc__.replace("{inherited}", Pair._doc_inherited)
 
     def __init__(self, constituent_potential, leaf_capacity=0):
         body = TypeParameter(
-            'body', 'particle_types',
-            TypeParameterDict(OnlyIf(to_type_converter(
-                dict(types=[str],
-                     positions=[(float,) * 3],
-                     orientations=OnlyIf(to_type_converter([(float,) * 4]),
-                                         allow_none=True),
-                     charges=OnlyIf(to_type_converter([float]),
-                                    allow_none=True))),
-                                     allow_none=True),
-                              len_keys=1,
-                              _defaults={
-                                  'orientations': None,
-                                  'charges': None
-                              }))
+            "body",
+            "particle_types",
+            TypeParameterDict(
+                OnlyIf(
+                    to_type_converter(
+                        dict(
+                            types=[str],
+                            positions=[(float,) * 3],
+                            orientations=OnlyIf(
+                                to_type_converter([(float,) * 4]), allow_none=True
+                            ),
+                            charges=OnlyIf(to_type_converter([float]), allow_none=True),
+                        )
+                    ),
+                    allow_none=True,
+                ),
+                len_keys=1,
+                _defaults={"orientations": None, "charges": None},
+            ),
+        )
         self._add_typeparam(body)
 
-        param_dict = ParameterDict(
-            leaf_capacity=OnlyTypes(int, allow_none=True))
+        param_dict = ParameterDict(leaf_capacity=OnlyTypes(int, allow_none=True))
         param_dict.update(dict(leaf_capacity=leaf_capacity))
         self._param_dict.update(param_dict)
 
         if not isinstance(constituent_potential, hoomd.hpmc.pair.Pair):
-            raise TypeError(
-                "constituent_potential must subclass hoomd.hpmc.pair.Pair")
+            raise TypeError("constituent_potential must subclass hoomd.hpmc.pair.Pair")
         self._constituent_potential = constituent_potential
 
     @property

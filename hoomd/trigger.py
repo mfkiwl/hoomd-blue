@@ -49,12 +49,11 @@ class Trigger(_hoomd.Trigger):
     .. code-block:: python
 
         class CustomTrigger(hoomd.trigger.Trigger):
-
             def __init__(self):
                 hoomd.trigger.Trigger.__init__(self)
 
             def compute(self, timestep):
-                return (timestep**(1 / 2)).is_integer()
+                return (timestep ** (1 / 2)).is_integer()
 
     Methods:
         __call__(timestep):
@@ -143,13 +142,15 @@ class Periodic(_hoomd.PeriodicTrigger, Trigger):
 
     def __str__(self):
         """Human readable representation of the trigger as a string."""
-        return f"hoomd.trigger.Periodic(period={self.period}, " \
-               f"phase={self.phase})"
+        return f"hoomd.trigger.Periodic(period={self.period}, " f"phase={self.phase})"
 
     def __eq__(self, other):
         """Test for equivalent triggers."""
-        return (isinstance(other, Periodic) and self.period == other.period
-                and self.phase == other.phase)
+        return (
+            isinstance(other, Periodic)
+            and self.period == other.period
+            and self.phase == other.phase
+        )
 
 
 class Before(_hoomd.BeforeTrigger, Trigger):
@@ -460,13 +461,13 @@ Note:
 """
 
 __all__ = [
-    'After',
-    'And',
-    'Before',
-    'Not',
-    'On',
-    'Or',
-    'Periodic',
-    'Trigger',
-    'trigger_like',
+    "After",
+    "And",
+    "Before",
+    "Not",
+    "On",
+    "Or",
+    "Periodic",
+    "Trigger",
+    "trigger_like",
 ]

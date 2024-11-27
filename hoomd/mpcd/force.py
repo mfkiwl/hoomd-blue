@@ -119,8 +119,7 @@ class BlockForce(BodyForce):
         self._param_dict.update(param_dict)
 
     def _attach_hook(self):
-        self._cpp_obj = _mpcd.BlockForce(self.force, self.separation,
-                                         self.width)
+        self._cpp_obj = _mpcd.BlockForce(self.force, self.separation, self.width)
         super()._attach_hook()
 
 
@@ -164,7 +163,8 @@ class ConstantForce(BodyForce):
 
     def _attach_hook(self):
         self._cpp_obj = _mpcd.ConstantForce(
-            _hoomd.make_scalar3(self.force[0], self.force[1], self.force[2]))
+            _hoomd.make_scalar3(self.force[0], self.force[1], self.force[2])
+        )
         super()._attach_hook()
 
 
@@ -194,8 +194,8 @@ class SineForce(BodyForce):
 
         Ly = simulation.state.box.Ly
         force = hoomd.mpcd.force.SineForce(
-            amplitude=1.0,
-            wavenumber=2 * numpy.pi / Ly)
+            amplitude=1.0, wavenumber=2 * numpy.pi / Ly
+        )
         stream = hoomd.mpcd.stream.Bulk(period=1, mpcd_particle_force=force)
         simulation.operations.integrator.streaming_method = stream
 
@@ -222,8 +222,9 @@ class SineForce(BodyForce):
     def __init__(self, amplitude, wavenumber):
         super().__init__()
 
-        param_dict = ParameterDict(amplitude=float(amplitude),
-                                   wavenumber=float(wavenumber))
+        param_dict = ParameterDict(
+            amplitude=float(amplitude), wavenumber=float(wavenumber)
+        )
         self._param_dict.update(param_dict)
 
     def _attach_hook(self):
@@ -232,8 +233,8 @@ class SineForce(BodyForce):
 
 
 __all__ = [
-    'BlockForce',
-    'BodyForce',
-    'ConstantForce',
-    'SineForce',
+    "BlockForce",
+    "BodyForce",
+    "ConstantForce",
+    "SineForce",
 ]

@@ -22,7 +22,7 @@ from hoomd.data.typeconverter import OnlyIf, to_type_converter
 from .pair import Pair
 
 
-@hoomd.logging.modify_namespace(('hpmc', 'pair', 'AngularStep'))
+@hoomd.logging.modify_namespace(("hpmc", "pair", "AngularStep"))
 class AngularStep(Pair):
     r"""Angular-step pair potential (HPMC).
 
@@ -99,21 +99,28 @@ class AngularStep(Pair):
 
         Type: `TypeParameter` [``particle_type``, `dict`]
     """
+
     _cpp_class_name = "PairPotentialAngularStep"
     __doc__ = __doc__.replace("{inherited}", Pair._doc_inherited)
 
     def __init__(self, isotropic_potential):
         mask = TypeParameter(
-            'mask', 'particle_types',
-            TypeParameterDict(OnlyIf(to_type_converter(
-                dict(directors=[(float,) * 3], deltas=[float])),
-                                     allow_none=True),
-                              len_keys=1))
+            "mask",
+            "particle_types",
+            TypeParameterDict(
+                OnlyIf(
+                    to_type_converter(dict(directors=[(float,) * 3], deltas=[float])),
+                    allow_none=True,
+                ),
+                len_keys=1,
+            ),
+        )
         self._add_typeparam(mask)
 
         if not isinstance(isotropic_potential, hoomd.hpmc.pair.Pair):
             raise TypeError(
-                "isotropic_potential must be subclass of hoomd.hpmc.pair.Pair")
+                "isotropic_potential must be subclass of hoomd.hpmc.pair.Pair"
+            )
         self._isotropic_potential = isotropic_potential
 
     @property

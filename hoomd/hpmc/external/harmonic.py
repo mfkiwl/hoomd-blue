@@ -12,7 +12,7 @@ import numpy as np
 from .external import External
 
 
-@hoomd.logging.modify_namespace(('hpmc', 'external', 'Harmonic'))
+@hoomd.logging.modify_namespace(("hpmc", "external", "Harmonic"))
 class Harmonic(External):
     r"""Restrain particle positions and orientations with harmonic springs.
 
@@ -83,22 +83,26 @@ class Harmonic(External):
 
     __doc__ = __doc__.replace("{inherited}", External._doc_inherited)
 
-    def __init__(self, reference_positions, reference_orientations,
-                 k_translational, k_rotational, symmetries):
+    def __init__(
+        self,
+        reference_positions,
+        reference_orientations,
+        k_translational,
+        k_rotational,
+        symmetries,
+    ):
         param_dict = ParameterDict(
-            reference_positions=NDArrayValidator(dtype=np.double,
-                                                 shape=(None, 3)),
-            reference_orientations=NDArrayValidator(dtype=np.double,
-                                                    shape=(None, 4)),
+            reference_positions=NDArrayValidator(dtype=np.double, shape=(None, 3)),
+            reference_orientations=NDArrayValidator(dtype=np.double, shape=(None, 4)),
             k_translational=hoomd.variant.Variant,
             k_rotational=hoomd.variant.Variant,
             symmetries=NDArrayValidator(dtype=np.double, shape=(None, 4)),
         )
-        param_dict['k_translational'] = k_translational
-        param_dict['k_rotational'] = k_rotational
-        param_dict['reference_positions'] = reference_positions
-        param_dict['reference_orientations'] = reference_orientations
-        param_dict['symmetries'] = symmetries
+        param_dict["k_translational"] = k_translational
+        param_dict["k_rotational"] = k_rotational
+        param_dict["reference_positions"] = reference_positions
+        param_dict["reference_orientations"] = reference_orientations
+        param_dict["symmetries"] = symmetries
         self._param_dict.update(param_dict)
 
     def _make_cpp_obj(self):

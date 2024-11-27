@@ -84,7 +84,9 @@ class VirtualParticleFiller(Operation):
     """
 
     __doc__ = __doc__.replace("{inherited}", Operation._doc_inherited)
-    _doc_inherited = Operation._doc_inherited + """
+    _doc_inherited = (
+        Operation._doc_inherited
+        + """
     ----------
 
     **Members inherited from**
@@ -105,6 +107,7 @@ class VirtualParticleFiller(Operation):
         Type of particles to fill.
         `Read more... <hoomd.mpcd.fill.VirtualParticleFiller.type>`
     """
+    )
 
     def __init__(self, type, density, kT):
         super().__init__()
@@ -146,10 +149,8 @@ class GeometryFiller(VirtualParticleFiller):
 
         plates = hoomd.mpcd.geometry.ParallelPlates(separation=6.0)
         filler = hoomd.mpcd.fill.GeometryFiller(
-            type="A",
-            density=5.0,
-            kT=1.0,
-            geometry=plates)
+            type="A", density=5.0, kT=1.0, geometry=plates
+        )
         simulation.operations.integrator.virtual_particle_fillers = [filler]
 
     {inherited}
@@ -163,14 +164,15 @@ class GeometryFiller(VirtualParticleFiller):
             (*read only*).
     """
 
-    __doc__ = __doc__.replace("{inherited}",
-                              VirtualParticleFiller._doc_inherited)
+    __doc__ = __doc__.replace("{inherited}", VirtualParticleFiller._doc_inherited)
     _cpp_class_map = {}
 
     def __init__(self, type, density, kT, geometry):
         super().__init__(type, density, kT)
 
-        param_dict = ParameterDict(geometry=Geometry,)
+        param_dict = ParameterDict(
+            geometry=Geometry,
+        )
         param_dict["geometry"] = geometry
         self._param_dict.update(param_dict)
 
@@ -190,8 +192,7 @@ class GeometryFiller(VirtualParticleFiller):
         if isinstance(sim.device, hoomd.device.GPU):
             class_info[1] += "GPU"
         class_ = getattr(*class_info, None)
-        assert class_ is not None, ("Virtual particle filler for geometry "
-                                    "not found")
+        assert class_ is not None, "Virtual particle filler for geometry " "not found"
 
         self._cpp_obj = class_(
             sim.state._cpp_sys_def,
@@ -212,10 +213,9 @@ class GeometryFiller(VirtualParticleFiller):
         cls._cpp_class_map[geometry] = (module, cpp_class_name)
 
 
-GeometryFiller._register_cpp_class(ParallelPlates, _mpcd,
-                                   "ParallelPlateGeometryFiller")
+GeometryFiller._register_cpp_class(ParallelPlates, _mpcd, "ParallelPlateGeometryFiller")
 
 __all__ = [
-    'GeometryFiller',
-    'VirtualParticleFiller',
+    "GeometryFiller",
+    "VirtualParticleFiller",
 ]

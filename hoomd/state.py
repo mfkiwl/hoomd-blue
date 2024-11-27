@@ -10,6 +10,7 @@ particle positions, system bonds).
 
     simulation = hoomd.util.make_example_simulation()
 """
+
 import weakref
 from collections import defaultdict
 
@@ -31,8 +32,10 @@ def _create_domain_decomposition(device, box, domain_decomposition):
         domain_decomposition: See Simulation.create_state_from_* for a
           description.
     """
-    if (not isinstance(domain_decomposition, collections.abc.Sequence)
-            or len(domain_decomposition) != 3):
+    if (
+        not isinstance(domain_decomposition, collections.abc.Sequence)
+        or len(domain_decomposition) != 3
+    ):
         raise TypeError("domain_decomposition must be a length 3 sequence")
 
     initialize_grid = False
@@ -61,15 +64,15 @@ def _create_domain_decomposition(device, box, domain_decomposition):
         return None
 
     if initialize_fractions:
-        fractions = [
-            v[:-1] if v is not None else [] for v in domain_decomposition
-        ]
-        result = _hoomd.DomainDecomposition(device._cpp_exec_conf, box.getL(),
-                                            *fractions)
+        fractions = [v[:-1] if v is not None else [] for v in domain_decomposition]
+        result = _hoomd.DomainDecomposition(
+            device._cpp_exec_conf, box.getL(), *fractions
+        )
     else:
         grid = [v if v is not None else 0 for v in domain_decomposition]
-        result = _hoomd.DomainDecomposition(device._cpp_exec_conf, box.getL(),
-                                            *grid, False)
+        result = _hoomd.DomainDecomposition(
+            device._cpp_exec_conf, box.getL(), *grid, False
+        )
 
     return result
 
@@ -252,16 +255,17 @@ class State:
         self._simulation = simulation
         snapshot._broadcast_box()
         decomposition = _create_domain_decomposition(
-            simulation.device, snapshot._cpp_obj._global_box,
-            domain_decomposition)
+            simulation.device, snapshot._cpp_obj._global_box, domain_decomposition
+        )
 
         if decomposition is not None:
             self._cpp_sys_def = _hoomd.SystemDefinition(
-                snapshot._cpp_obj, simulation.device._cpp_exec_conf,
-                decomposition)
+                snapshot._cpp_obj, simulation.device._cpp_exec_conf, decomposition
+            )
         else:
             self._cpp_sys_def = _hoomd.SystemDefinition(
-                snapshot._cpp_obj, simulation.device._cpp_exec_conf)
+                snapshot._cpp_obj, simulation.device._cpp_exec_conf
+            )
 
         # Necessary for local snapshot API. This is used to ensure two local
         # snapshots are not contexted at once.
@@ -306,8 +310,9 @@ class State:
             snapshot = simulation.state.get_snapshot()
         """
         cpp_snapshot = self._cpp_sys_def.takeSnapshot_double()
-        return Snapshot._from_cpp_snapshot(cpp_snapshot,
-                                           self._simulation.device.communicator)
+        return Snapshot._from_cpp_snapshot(
+            cpp_snapshot, self._simulation.device.communicator
+        )
 
     def set_snapshot(self, snapshot):
         """Restore the state of the simulation from a snapshot.
@@ -343,7 +348,8 @@ class State:
         """
         if self._in_context_manager:
             raise RuntimeError(
-                "Cannot set state to new snapshot inside local snapshot.")
+                "Cannot set state to new snapshot inside local snapshot."
+            )
         if self._simulation.device.communicator.rank == 0:
             if snapshot.particles.types != self.particle_types:
                 raise RuntimeError("Particle types must remain the same")
@@ -441,12 +447,14 @@ class State:
         `dihedral_types`, `improper_types`, and `special_pair_types` into a
         dictionary with keys matching the property names.
         """
-        return dict(particle_types=self.particle_types,
-                    bond_types=self.bond_types,
-                    angle_types=self.angle_types,
-                    dihedral_types=self.dihedral_types,
-                    improper_types=self.improper_types,
-                    special_pair_types=self.special_pair_types)
+        return dict(
+            particle_types=self.particle_types,
+            bond_types=self.bond_types,
+            angle_types=self.angle_types,
+            dihedral_types=self.dihedral_types,
+            improper_types=self.improper_types,
+            special_pair_types=self.special_pair_types,
+        )
 
     @property
     def N_particles(self):  # noqa: N802 - allow N in name
@@ -563,17 +571,23 @@ class State:
         """
         if self._in_context_manager:
             raise RuntimeError(
-                "Cannot set system box within local snapshot context manager.")
+                "Cannot set system box within local snapshot context manager."
+            )
         try:
             box = Box.from_box(box)
         except Exception:
-            raise ValueError('{} is not convertible to hoomd.Box using '
-                             'hoomd.Box.from_box'.format(box))
+            raise ValueError(
+                "{} is not convertible to hoomd.Box using " "hoomd.Box.from_box".format(
+                    box
+                )
+            )
 
         if box.dimensions != self._cpp_sys_def.getNDimensions():
             self._simulation.device._cpp_msg.warning(
-                "Box changing dimensions from {} to {}."
-                "".format(self._cpp_sys_def.getNDimensions(), box.dimensions))
+                "Box changing dimensions from {} to {}." "".format(
+                    self._cpp_sys_def.getNDimensions(), box.dimensions
+                )
+            )
             self._cpp_sys_def.setNDimensions(box.dimensions)
         self._cpp_sys_def.getParticleData().setGlobalBox(box._cpp_obj)
 
@@ -616,8 +630,8 @@ class State:
         else:
             if isinstance(filter_, hoomd.filter.CustomFilter):
                 group = _hoomd.ParticleGroup(
-                    self._cpp_sys_def,
-                    _hoomd.ParticleFilterCustom(filter_, self))
+                    self._cpp_sys_def, _hoomd.ParticleFilterCustom(filter_, self)
+                )
             else:
                 group = _hoomd.ParticleGroup(self._cpp_sys_def, filter_)
             group_cache[cls][filter_] = group
@@ -694,7 +708,8 @@ class State:
         if self._in_context_manager:
             raise RuntimeError(
                 "Cannot enter cpu_local_snapshot context manager inside "
-                "another local_snapshot context manager.")
+                "another local_snapshot context manager."
+            )
         return LocalSnapshot(self)
 
     @property
@@ -747,12 +762,12 @@ class State:
             single value is of order :math:`O(1)`.
         """
         if not isinstance(self._simulation.device, hoomd.device.GPU):
-            raise RuntimeError(
-                "Cannot access gpu_snapshot with a non GPU device.")
+            raise RuntimeError("Cannot access gpu_snapshot with a non GPU device.")
         elif self._in_context_manager:
             raise RuntimeError(
                 "Cannot enter gpu_local_snapshot context manager inside "
-                "another local_snapshot context manager.")
+                "another local_snapshot context manager."
+            )
         else:
             return LocalSnapshotGPU(self)
 
@@ -792,8 +807,8 @@ class State:
         .. code-block:: python
 
             simulation.state.thermalize_particle_momenta(
-                filter=hoomd.filter.All(),
-                kT=1.5)
+                filter=hoomd.filter.All(), kT=1.5
+            )
         """
         self._simulation._warn_if_seed_unset()
         group = self._get_group(filter)
@@ -806,14 +821,20 @@ class State:
         """
         particle_data = self._cpp_sys_def.getParticleData()
 
-        if (not hoomd.version.mpi_enabled
-                or particle_data.getDomainDecomposition() is None):
+        if (
+            not hoomd.version.mpi_enabled
+            or particle_data.getDomainDecomposition() is None
+        ):
             return ([], [], [])
 
-        return tuple([
-            list(particle_data.getDomainDecomposition().getCumulativeFractions(
-                dir))[1:-1] for dir in range(3)
-        ])
+        return tuple(
+            [
+                list(
+                    particle_data.getDomainDecomposition().getCumulativeFractions(dir)
+                )[1:-1]
+                for dir in range(3)
+            ]
+        )
 
     @property
     def domain_decomposition(self):
@@ -822,14 +843,19 @@ class State:
         """
         particle_data = self._cpp_sys_def.getParticleData()
 
-        if (not hoomd.version.mpi_enabled
-                or particle_data.getDomainDecomposition() is None):
+        if (
+            not hoomd.version.mpi_enabled
+            or particle_data.getDomainDecomposition() is None
+        ):
             return (1, 1, 1)
 
-        return tuple([
-            len(particle_data.getDomainDecomposition().getCumulativeFractions(
-                dir)) - 1 for dir in range(3)
-        ])
+        return tuple(
+            [
+                len(particle_data.getDomainDecomposition().getCumulativeFractions(dir))
+                - 1
+                for dir in range(3)
+            ]
+        )
 
     @property
     def _simulation(self):

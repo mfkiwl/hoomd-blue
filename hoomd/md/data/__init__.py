@@ -16,8 +16,8 @@ from .local_access_cpu import ForceLocalAccess, NeighborListLocalAccess
 from .local_access_gpu import ForceLocalAccessGPU, NeighborListLocalAccessGPU
 
 __all__ = [
-    'ForceLocalAccess',
-    'ForceLocalAccessGPU',
-    'NeighborListLocalAccess',
-    'NeighborListLocalAccessGPU',
+    "ForceLocalAccess",
+    "ForceLocalAccessGPU",
+    "NeighborListLocalAccess",
+    "NeighborListLocalAccessGPU",
 ]

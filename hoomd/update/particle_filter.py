@@ -72,7 +72,8 @@ class FilterUpdater(hoomd.operation.Updater):
 
         filter_updater = hoomd.update.FilterUpdater(
             trigger=hoomd.trigger.Periodic(1_000),
-            filters=[filter1, filter2])
+            filters=[filter1, filter2],
+        )
 
     {inherited}
 
@@ -81,8 +82,7 @@ class FilterUpdater(hoomd.operation.Updater):
     **Members defined in** `FilterUpdater`:
     """
 
-    __doc__ = __doc__.replace("{inherited}",
-                              hoomd.operation.Updater._doc_inherited)
+    __doc__ = __doc__.replace("{inherited}", hoomd.operation.Updater._doc_inherited)
 
     def __init__(self, trigger, filters):
         super().__init__(trigger)
@@ -90,7 +90,8 @@ class FilterUpdater(hoomd.operation.Updater):
             hoomd.filter.ParticleFilter,
             iterable=filters,
             to_synced_list=_GroupConverter(),
-            attach_members=False)
+            attach_members=False,
+        )
 
     @property
     def filters(self):
@@ -115,7 +116,8 @@ class FilterUpdater(hoomd.operation.Updater):
         # query groups from filters.
         self._filters._to_synced_list_conversion._attach(self._simulation)
         self._cpp_obj = hoomd._hoomd.ParticleFilterUpdater(
-            self._simulation.state._cpp_sys_def, self.trigger)
+            self._simulation.state._cpp_sys_def, self.trigger
+        )
         self._filters._sync(self._simulation, self._cpp_obj.groups)
 
     def __eq__(self, other):

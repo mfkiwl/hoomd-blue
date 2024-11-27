@@ -94,13 +94,16 @@ class Periodic(Field):
 
         Type: `TypeParameter` [``particle_type``, `dict`]
     """
+
     _cpp_class_name = "PotentialExternalPeriodic"
     __doc__ = __doc__.replace("{inherited}", Field._doc_inherited)
 
     def __init__(self):
         params = TypeParameter(
-            'params', 'particle_types',
-            TypeParameterDict(i=int, A=float, w=float, p=int, len_keys=1))
+            "params",
+            "particle_types",
+            TypeParameterDict(i=int, A=float, w=float, p=int, len_keys=1),
+        )
         self._add_typeparam(params)
 
 
@@ -124,7 +127,7 @@ class Electric(Field):
     .. code-block:: python
 
         electric = hoomd.md.external.field.Electric()
-        electric.E['A'] = (1, 0, 0)
+        electric.E["A"] = (1, 0, 0)
         simulation.operations.integrator.forces = [electric]
 
     {inherited}
@@ -142,13 +145,14 @@ class Electric(Field):
         Type: `TypeParameter` [``particle_type``, `tuple` [`float`, `float`,
         `float`]]
     """
+
     _cpp_class_name = "PotentialExternalElectricField"
     __doc__ = __doc__.replace("{inherited}", Field._doc_inherited)
 
     def __init__(self):
         params = TypeParameter(
-            'E', 'particle_types',
-            TypeParameterDict((float, float, float), len_keys=1))
+            "E", "particle_types", TypeParameterDict((float, float, float), len_keys=1)
+        )
         self._add_typeparam(params)
 
 
@@ -171,7 +175,7 @@ class Magnetic(Field):
     .. code-block:: python
 
         magnetic = hoomd.md.external.field.Magnetic()
-        magnetic.params['A'] = dict(B=(1.0,0.0,0.0), mu=(1.0,0.0,0.0))
+        magnetic.params["A"] = dict(B=(1.0, 0.0, 0.0), mu=(1.0, 0.0, 0.0))
         simulation.operations.integrator.forces = [magnetic]
 
     {inherited}
@@ -196,21 +200,24 @@ class Magnetic(Field):
 
         Type: `TypeParameter` [``particle_type``, `dict`]
     """
+
     _cpp_class_name = "PotentialExternalMagneticField"
     __doc__ = __doc__.replace("{inherited}", Field._doc_inherited)
 
     def __init__(self):
         params = TypeParameter(
-            'params', 'particle_types',
-            TypeParameterDict(B=(float, float, float),
-                              mu=(float, float, float),
-                              len_keys=1))
+            "params",
+            "particle_types",
+            TypeParameterDict(
+                B=(float, float, float), mu=(float, float, float), len_keys=1
+            ),
+        )
         self._add_typeparam(params)
 
 
 __all__ = [
-    'Electric',
-    'Field',
-    'Magnetic',
-    'Periodic',
+    "Electric",
+    "Field",
+    "Magnetic",
+    "Periodic",
 ]

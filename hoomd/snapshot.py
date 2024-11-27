@@ -16,7 +16,6 @@ from hoomd import _hoomd
 
 
 class _ConfigurationData:
-
     def __init__(self, cpp_obj):
         self._cpp_obj = cpp_obj
 
@@ -28,8 +27,14 @@ class _ConfigurationData:
     def box(self):
         b = self._cpp_obj._global_box
         L = b.getL()
-        return (L.x, L.y, L.z, b.getTiltFactorXY(), b.getTiltFactorXZ(),
-                b.getTiltFactorYZ())
+        return (
+            L.x,
+            L.y,
+            L.z,
+            b.getTiltFactorXY(),
+            b.getTiltFactorXZ(),
+            b.getTiltFactorYZ(),
+        )
 
     @box.setter
     def box(self, box):
@@ -38,7 +43,8 @@ class _ConfigurationData:
         except Exception:
             raise ValueError(
                 f"{box} is not convertible to a hoomd.Box object using "
-                "hoomd.Box.from_box.")
+                "hoomd.Box.from_box."
+            )
         self._cpp_obj._dimensions = new_box.dimensions
         self._cpp_obj._global_box = new_box._cpp_obj
 
@@ -182,7 +188,7 @@ class Snapshot:
         if self.communicator.rank == 0:
             return self._cpp_obj.particles
         else:
-            raise RuntimeError('Snapshot data is only present on rank 0')
+            raise RuntimeError("Snapshot data is only present on rank 0")
 
     @property
     def bonds(self):
@@ -209,13 +215,13 @@ class Snapshot:
             if snapshot.communicator.rank == 0:
                 snapshot.bonds.N = 2
                 snapshot.bonds.group[:] = [[0, 1], [2, 3]]
-                snapshot.bonds.types = ['A-B']
+                snapshot.bonds.types = ["A-B"]
                 snapshot.bonds.typeid[:] = [0, 0]
         """
         if self.communicator.rank == 0:
             return self._cpp_obj.bonds
         else:
-            raise RuntimeError('Snapshot data is only present on rank 0')
+            raise RuntimeError("Snapshot data is only present on rank 0")
 
     @property
     def angles(self):
@@ -242,13 +248,13 @@ class Snapshot:
             if snapshot.communicator.rank == 0:
                 snapshot.angles.N = 1
                 snapshot.angles.group[:] = [[0, 1, 2]]
-                snapshot.angles.types = ['A-B-B']
+                snapshot.angles.types = ["A-B-B"]
                 snapshot.angles.typeid[:] = [0]
         """
         if self.communicator.rank == 0:
             return self._cpp_obj.angles
         else:
-            raise RuntimeError('Snapshot data is only present on rank 0')
+            raise RuntimeError("Snapshot data is only present on rank 0")
 
     @property
     def dihedrals(self):
@@ -275,13 +281,13 @@ class Snapshot:
             if snapshot.communicator.rank == 0:
                 snapshot.dihedrals.N = 1
                 snapshot.dihedrals.group[:] = [[0, 1, 2, 3]]
-                snapshot.dihedrals.types = ['A-B-B-A']
+                snapshot.dihedrals.types = ["A-B-B-A"]
                 snapshot.dihedrals.typeid[:] = [0]
         """
         if self.communicator.rank == 0:
             return self._cpp_obj.dihedrals
         else:
-            raise RuntimeError('Snapshot data is only present on rank 0')
+            raise RuntimeError("Snapshot data is only present on rank 0")
 
     @property
     def impropers(self):
@@ -306,13 +312,13 @@ class Snapshot:
             if snapshot.communicator.rank == 0:
                 snapshot.impropers.N = 1
                 snapshot.impropers.group[:] = [[0, 1, 2, 3]]
-                snapshot.impropers.types = ['A-B-B-A']
+                snapshot.impropers.types = ["A-B-B-A"]
                 snapshot.impropers.typeid[:] = [0]
         """
         if self.communicator.rank == 0:
             return self._cpp_obj.impropers
         else:
-            raise RuntimeError('Snapshot data is only present on rank 0')
+            raise RuntimeError("Snapshot data is only present on rank 0")
 
     @property
     def pairs(self):
@@ -339,13 +345,13 @@ class Snapshot:
             if snapshot.communicator.rank == 0:
                 snapshot.pairs.N = 2
                 snapshot.pairs.group[:] = [[0, 1], [2, 3]]
-                snapshot.pairs.types = ['A-B']
+                snapshot.pairs.types = ["A-B"]
                 snapshot.pairs.typeid[:] = [0, 0]
         """
         if self.communicator.rank == 0:
             return self._cpp_obj.pairs
         else:
-            raise RuntimeError('Snapshot data is only present on rank 0')
+            raise RuntimeError("Snapshot data is only present on rank 0")
 
     @property
     def constraints(self):
@@ -375,7 +381,7 @@ class Snapshot:
         if self.communicator.rank == 0:
             return self._cpp_obj.constraints
         else:
-            raise RuntimeError('Snapshot data is only present on rank 0')
+            raise RuntimeError("Snapshot data is only present on rank 0")
 
     @property
     def mpcd(self):
@@ -483,8 +489,9 @@ class Snapshot:
         """
         snap = cls(communicator=communicator)
 
-        def set_properties(snap_section, gsd_snap_section, properties,
-                           array_properties):
+        def set_properties(
+            snap_section, gsd_snap_section, properties, array_properties
+        ):
             for prop in properties:
                 gsd_prop = getattr(gsd_snap_section, prop, None)
                 if gsd_prop is not None:
@@ -495,22 +502,38 @@ class Snapshot:
                     getattr(snap_section, prop)[:] = gsd_prop
 
         if communicator.rank == 0:
-
             gsd_snap.validate()
 
-            set_properties(snap.particles, gsd_snap.particles, ('N', 'types'),
-                           ('angmom', 'body', 'charge', 'diameter', 'image',
-                            'mass', 'moment_inertia', 'orientation', 'position',
-                            'typeid', 'velocity'))
+            set_properties(
+                snap.particles,
+                gsd_snap.particles,
+                ("N", "types"),
+                (
+                    "angmom",
+                    "body",
+                    "charge",
+                    "diameter",
+                    "image",
+                    "mass",
+                    "moment_inertia",
+                    "orientation",
+                    "position",
+                    "typeid",
+                    "velocity",
+                ),
+            )
 
-            for section in ('angles', 'bonds', 'dihedrals', 'impropers',
-                            'pairs'):
-                set_properties(getattr(snap,
-                                       section), getattr(gsd_snap, section),
-                               ('N', 'types'), ('group', 'typeid'))
+            for section in ("angles", "bonds", "dihedrals", "impropers", "pairs"):
+                set_properties(
+                    getattr(snap, section),
+                    getattr(gsd_snap, section),
+                    ("N", "types"),
+                    ("group", "typeid"),
+                )
 
-            set_properties(snap.constraints, gsd_snap.constraints, ('N',),
-                           ('group', 'value'))
+            set_properties(
+                snap.constraints, gsd_snap.constraints, ("N",), ("group", "value")
+            )
 
             # Set box attribute
             if gsd_snap.configuration.box is not None:

@@ -44,19 +44,26 @@ from hoomd.tune.sorter import ParticleSorter
 from hoomd.tune.balance import LoadBalancer
 from hoomd.tune.custom_tuner import CustomTuner
 from hoomd.tune.attr_tuner import ManualTuneDefinition
-from hoomd.tune.solve import (GridOptimizer, GradientDescent, Optimizer,
-                              RootSolver, ScaleSolver, SecantSolver, SolverStep)
+from hoomd.tune.solve import (
+    GridOptimizer,
+    GradientDescent,
+    Optimizer,
+    RootSolver,
+    ScaleSolver,
+    SecantSolver,
+    SolverStep,
+)
 
 __all__ = [
-    'CustomTuner',
-    'GradientDescent',
-    'GridOptimizer',
-    'LoadBalancer',
-    'ManualTuneDefinition',
-    'Optimizer',
-    'ParticleSorter',
-    'RootSolver',
-    'ScaleSolver',
-    'SecantSolver',
-    'SolverStep',
+    "CustomTuner",
+    "GradientDescent",
+    "GridOptimizer",
+    "LoadBalancer",
+    "ManualTuneDefinition",
+    "Optimizer",
+    "ParticleSorter",
+    "RootSolver",
+    "ScaleSolver",
+    "SecantSolver",
+    "SolverStep",
 ]

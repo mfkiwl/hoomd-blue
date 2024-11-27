@@ -68,9 +68,12 @@ class StreamingMethod(Operation):
             `StreamingMethod` is constructed, but its attributes can be
             modified.
     """
+
     __doc__ = __doc__.replace("{inherited}", Operation._doc_inherited)
 
-    _doc_inherited = Operation._doc_inherited + """
+    _doc_inherited = (
+        Operation._doc_inherited
+        + """
     ----------
 
     **Members inherited from**
@@ -86,6 +89,7 @@ class StreamingMethod(Operation):
         Body force on MPCD particles.
         `Read more... <hoomd.mpcd.stream.StreamingMethod.mpcd_particle_force>`
     """
+    )
 
     def __init__(self, period, mpcd_particle_force=None):
         super().__init__()
@@ -124,7 +128,8 @@ class Bulk(StreamingMethod):
 
         stream = hoomd.mpcd.stream.Bulk(
             period=1,
-            mpcd_particle_force=hoomd.mpcd.force.ConstantForce((1, 0, 0)))
+            mpcd_particle_force=hoomd.mpcd.force.ConstantForce((1, 0, 0)),
+        )
         simulation.operations.integrator.streaming_method = stream
     """
 
@@ -157,8 +162,7 @@ class Bulk(StreamingMethod):
         if isinstance(sim.device, hoomd.device.GPU):
             class_info[1] += "GPU"
         class_ = getattr(*class_info, None)
-        assert class_ is not None, ("C++ streaming method could not be "
-                                    "determined")
+        assert class_ is not None, "C++ streaming method could not be " "determined"
 
         self._cpp_obj = class_(
             sim.state._cpp_sys_def,
@@ -222,7 +226,9 @@ class BounceBack(StreamingMethod):
         stream = hoomd.mpcd.stream.BounceBack(
             period=1,
             geometry=hoomd.mpcd.geometry.ParallelPlates(
-                separation=6.0, speed=1.0, no_slip=True))
+                separation=6.0, speed=1.0, no_slip=True
+            ),
+        )
         simulation.operations.integrator.streaming_method = stream
 
     Pressure driven flow between parallel plates.
@@ -232,8 +238,10 @@ class BounceBack(StreamingMethod):
         stream = hoomd.mpcd.stream.BounceBack(
             period=1,
             geometry=hoomd.mpcd.geometry.ParallelPlates(
-                separation=6.0, no_slip=True),
-            mpcd_particle_force=hoomd.mpcd.force.ConstantForce((1, 0, 0)))
+                separation=6.0, no_slip=True
+            ),
+            mpcd_particle_force=hoomd.mpcd.force.ConstantForce((1, 0, 0)),
+        )
         simulation.operations.integrator.streaming_method = stream
 
     {inherited}
@@ -334,7 +342,7 @@ class BounceBack(StreamingMethod):
 
 
 __all__ = [
-    'BounceBack',
-    'Bulk',
-    'StreamingMethod',
+    "BounceBack",
+    "Bulk",
+    "StreamingMethod",
 ]

@@ -57,8 +57,10 @@ class DCD(Writer):
 
     .. code-block:: python
 
-        dcd = hoomd.write.DCD(trigger=hoomd.trigger.Periodic(1_000_000),
-                              filename=dcd_filename)
+        dcd = hoomd.write.DCD(
+            trigger=hoomd.trigger.Periodic(1_000_000),
+            filename=dcd_filename,
+        )
         simulation.operations.writers.append(dcd)
 
     {inherited}
@@ -131,28 +133,37 @@ class DCD(Writer):
 
     __doc__ = __doc__.replace("{inherited}", Writer._doc_inherited)
 
-    def __init__(self,
-                 trigger,
-                 filename,
-                 filter=All(),
-                 overwrite=False,
-                 unwrap_full=False,
-                 unwrap_rigid=False,
-                 angle_z=False):
-
+    def __init__(
+        self,
+        trigger,
+        filename,
+        filter=All(),
+        overwrite=False,
+        unwrap_full=False,
+        unwrap_rigid=False,
+        angle_z=False,
+    ):
         # initialize base class
         super().__init__(trigger)
         self._param_dict.update(
-            ParameterDict(filename=str(filename),
-                          filter=ParticleFilter,
-                          overwrite=bool(overwrite),
-                          unwrap_full=bool(unwrap_full),
-                          unwrap_rigid=bool(unwrap_rigid),
-                          angle_z=bool(angle_z)))
+            ParameterDict(
+                filename=str(filename),
+                filter=ParticleFilter,
+                overwrite=bool(overwrite),
+                unwrap_full=bool(unwrap_full),
+                unwrap_rigid=bool(unwrap_rigid),
+                angle_z=bool(angle_z),
+            )
+        )
         self.filter = filter
 
     def _attach_hook(self):
         group = self._simulation.state._get_group(self.filter)
         self._cpp_obj = _hoomd.DCDDumpWriter(
-            self._simulation.state._cpp_sys_def, self.trigger, self.filename,
-            int(self.trigger.period), group, self.overwrite)
+            self._simulation.state._cpp_sys_def,
+            self.trigger,
+            self.filename,
+            int(self.trigger.period),
+            group,
+            self.overwrite,
+        )

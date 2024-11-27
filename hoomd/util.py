@@ -15,7 +15,7 @@ def _to_camel_case(string):
         This currently capitalizes the first word which is not correct
         camelcase.
     """
-    return string.replace('_', ' ').title().replace(' ', '')
+    return string.replace("_", " ").title().replace(" ", "")
 
 
 def _is_iterable(obj):
@@ -60,7 +60,7 @@ def _dict_fold(dict_, func, init_value, use_keys=False):
 
     .. code-block:: python
 
-        mapping = {'a': 0, 'b': 1, 'c': 2}
+        mapping = {"a": 0, "b": 1, "c": 2}
         accumulated_value = 0
         func = lambda x, y: x + y
         for value in mapping.values():
@@ -246,16 +246,18 @@ class _SafeNamespaceDict(_NamespaceDict):
 
     def __setitem__(self, namespace, value):
         if namespace in self:
-            raise KeyError("Namespace {} is being used. Remove before "
-                           "replacing.".format(namespace))
+            raise KeyError(
+                "Namespace {} is being used. Remove before " "replacing.".format(
+                    namespace
+                )
+            )
         else:
             super().__setitem__(namespace, value)
 
 
-def make_example_simulation(device=None,
-                            dimensions=3,
-                            particle_types=['A'],
-                            mpcd_types=None):
+def make_example_simulation(
+    device=None, dimensions=3, particle_types=["A"], mpcd_types=None
+):
     """Make an example Simulation object.
 
     The simulation state contains two particles at positions (-1, 0, 0) and
@@ -317,5 +319,5 @@ def make_example_simulation(device=None,
 
 
 __all__ = [
-    'make_example_simulation',
+    "make_example_simulation",
 ]

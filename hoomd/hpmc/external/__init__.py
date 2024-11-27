@@ -14,8 +14,8 @@ from .harmonic import Harmonic
 from .wall import WallPotential
 
 __all__ = [
-    'External',
-    'Harmonic',
-    'Linear',
-    'WallPotential',
+    "External",
+    "Harmonic",
+    "Linear",
+    "WallPotential",
 ]

@@ -7,8 +7,8 @@ from .potential import MeshPotential
 from . import bending, bond, conservation
 
 __all__ = [
-    'MeshPotential',
-    'bending',
-    'bond',
-    'conservation',
+    "MeshPotential",
+    "bending",
+    "bond",
+    "conservation",
 ]

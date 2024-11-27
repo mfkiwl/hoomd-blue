@@ -33,8 +33,9 @@ class _TuneDefinition(metaclass=ABCMeta):
             return True
         else:
             lower_bound, upper_bound = self.domain
-            return ((lower_bound is None or lower_bound <= value)
-                    and (upper_bound is None or value <= upper_bound))
+            return (lower_bound is None or lower_bound <= value) and (
+                upper_bound is None or value <= upper_bound
+            )
 
     def clamp_into_domain(self, value):
         """Return the closest value within the domain.
@@ -217,12 +218,15 @@ class ManualTuneDefinition(_TuneDefinition):
 
     def __hash__(self):
         """Compute a hash of the tune definition."""
-        return hash((self._user_get_x, self._user_set_x, self._user_get_y,
-                     self._target))
+        return hash(
+            (self._user_get_x, self._user_set_x, self._user_get_y, self._target)
+        )
 
     def __eq__(self, other):
         """Test for equality."""
-        return (self._user_get_x == other._user_get_x
-                and self._user_set_x == other._user_set_x
-                and self._user_get_y == other._user_get_y
-                and self._target == other._target)
+        return (
+            self._user_get_x == other._user_get_x
+            and self._user_set_x == other._user_set_x
+            and self._user_get_y == other._user_get_y
+            and self._target == other._target
+        )

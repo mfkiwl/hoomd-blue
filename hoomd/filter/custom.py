@@ -7,6 +7,7 @@
 
     simulation = hoomd.util.make_example_simulation()
 """
+
 from abc import abstractmethod
 from collections.abc import Hashable, Callable
 
@@ -38,16 +39,20 @@ class CustomFilter(Hashable, Callable):
                 return hash((self.min_mass, self.max_mass))
 
             def __eq__(self, other):
-                return (isinstance(other, MassRangeFilter)
-                        and self.min_mass == other.min_mass
-                        and self.max_mass == other.max_mass)
+                return (
+                    isinstance(other, MassRangeFilter)
+                    and self.min_mass == other.min_mass
+                    and self.max_mass == other.max_mass
+                )
 
             def __call__(self, state):
                 with state.cpu_local_snapshot as snap:
                     masses = snap.particles.mass
-                    indices = ((masses > self.min_mass)
-                               & (masses < self.max_mass))
+                    indices = (masses > self.min_mass) & (
+                        masses < self.max_mass
+                    )
                     return numpy.copy(snap.particles.tag[indices])
+
 
         mass_range_filter = MassRangeFilter(1.0, 5.0)
         print(mass_range_filter(simulation.state))

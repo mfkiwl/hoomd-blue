@@ -7,18 +7,22 @@ import hoomd
 from hoomd import _hoomd
 from hoomd.md import _md
 from hoomd.data.array import HOOMDGPUArray
-from hoomd.md.data.local_access import _ForceLocalAccessBase, \
-    _NeighborListLocalAccessBase
+from hoomd.md.data.local_access import (
+    _ForceLocalAccessBase,
+    _NeighborListLocalAccessBase,
+)
 
 if hoomd.version.gpu_enabled:
 
     class ForceLocalAccessGPU(_ForceLocalAccessBase):
         """Access force array data on the GPU."""
+
         _cpp_cls = _hoomd.LocalForceComputeDataDevice
         _array_cls = HOOMDGPUArray
 
     class NeighborListLocalAccessGPU(_NeighborListLocalAccessBase):
         """Access neighbor list array data on the GPU."""
+
         _cpp_cls = _md.LocalNeighborListDataDevice
         _array_cls = HOOMDGPUArray
 
@@ -27,10 +31,12 @@ else:
 
     class ForceLocalAccessGPU(_NoGPU):
         """GPU data access is not available in CPU builds."""
+
         pass
 
     class NeighborListLocalAccessGPU(_NoGPU):
         """GPU data access is not available in CPU builds."""
+
         pass
 
 

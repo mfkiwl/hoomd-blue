@@ -79,7 +79,9 @@ class Force(Compute):
 
     __doc__ = __doc__.replace("{inherited}", Compute._doc_inherited)
 
-    _doc_inherited = Compute._doc_inherited + """
+    _doc_inherited = (
+        Compute._doc_inherited
+        + """
     ----------
 
     **Members inherited from**
@@ -130,6 +132,7 @@ class Force(Compute):
         Virial tensor contribution :math:`W_i` from each particle.
         `Read more... <hoomd.md.force.Force.virials>`
     """
+    )
 
     def __init__(self):
         self._in_context_manager = False
@@ -243,9 +246,11 @@ class Force(Compute):
                 arrays.virial[:] = ...
         """
         if self._in_context_manager:
-            raise RuntimeError("Cannot enter cpu_local_force_arrays context "
-                               "manager inside another local_force_arrays "
-                               "context manager")
+            raise RuntimeError(
+                "Cannot enter cpu_local_force_arrays context "
+                "manager inside another local_force_arrays "
+                "context manager"
+            )
         if not self._attached:
             raise hoomd.error.DataAccessError("cpu_local_force_arrays")
         return hoomd.md.data.ForceLocalAccess(self, self._simulation.state)
@@ -279,11 +284,13 @@ class Force(Compute):
         """
         if not isinstance(self._simulation.device, hoomd.device.GPU):
             raise RuntimeError(
-                "Cannot access gpu_local_force_arrays without a GPU device")
+                "Cannot access gpu_local_force_arrays without a GPU device"
+            )
         if self._in_context_manager:
             raise RuntimeError(
                 "Cannot enter gpu_local_force_arrays context manager inside "
-                "another local_force_arrays context manager")
+                "another local_force_arrays context manager"
+            )
         if not self._attached:
             raise hoomd.error.DataAccessError("gpu_local_force_arrays")
         return hoomd.md.data.ForceLocalAccessGPU(self, self._simulation.state)
@@ -373,8 +380,9 @@ class Custom(Force):
 
     def _attach_hook(self):
         self._state = self._simulation.state
-        self._cpp_obj = _md.CustomForceCompute(self._state._cpp_sys_def,
-                                               self.set_forces, self._aniso)
+        self._cpp_obj = _md.CustomForceCompute(
+            self._state._cpp_sys_def, self.set_forces, self._aniso
+        )
 
     @abstractmethod
     def set_forces(self, timestep):
@@ -488,7 +496,6 @@ class Active(Force):
         self._set_cpp_obj()
 
     def _set_cpp_obj(self):
-
         # initialize the reflected c++ class
         sim = self._simulation
 
@@ -497,8 +504,9 @@ class Active(Force):
         else:
             my_class = _md.ActiveForceComputeGPU
 
-        self._cpp_obj = my_class(sim.state._cpp_sys_def,
-                                 sim.state._get_group(self.filter))
+        self._cpp_obj = my_class(
+            sim.state._cpp_sys_def, sim.state._get_group(self.filter)
+        )
 
     def create_diffusion_updater(self, trigger, rotational_diffusion):
         """Create a rotational diffusion updater for this active force.
@@ -514,7 +522,8 @@ class Active(Force):
                 The rotational diffusion updater.
         """
         return hoomd.md.update.ActiveRotationalDiffusion(
-            trigger, self, rotational_diffusion)
+            trigger, self, rotational_diffusion
+        )
 
 
 class ActiveOnManifold(Active):
@@ -548,11 +557,12 @@ class ActiveOnManifold(Active):
         all = filter.All()
         sphere = hoomd.md.manifold.Sphere(r=10)
         active = hoomd.md.force.ActiveOnManifold(
-            filter=hoomd.filter.All(), rotation_diff=0.01,
-            manifold_constraint = sphere
-            )
-        active.active_force['A','B'] = (1,0,0)
-        active.active_torque['A','B'] = (0,0,0)
+            filter=hoomd.filter.All(),
+            rotation_diff=0.01,
+            manifold_constraint=sphere,
+        )
+        active.active_force["A", "B"] = (1, 0, 0)
+        active.active_torque["A", "B"] = (0, 0, 0)
 
     {inherited}
 
@@ -590,32 +600,32 @@ class ActiveOnManifold(Active):
         # store metadata
         super().__init__(filter)
         param_dict = ParameterDict(
-            manifold_constraint=OnlyTypes(Manifold, allow_none=False))
+            manifold_constraint=OnlyTypes(Manifold, allow_none=False)
+        )
         param_dict["manifold_constraint"] = manifold_constraint
         self._param_dict.update(param_dict)
 
     def _setattr_param(self, attr, value):
         if attr == "manifold_constraint":
-            raise AttributeError(
-                "Cannot set manifold_constraint after construction.")
+            raise AttributeError("Cannot set manifold_constraint after construction.")
         super()._setattr_param(attr, value)
 
     def _set_cpp_obj(self):
-
         # initialize the reflected c++ class
         sim = self._simulation
 
         if not self.manifold_constraint._attached:
             self.manifold_constraint._attach(sim)
 
-        base_class_str = 'ActiveForceConstraintCompute'
+        base_class_str = "ActiveForceConstraintCompute"
         base_class_str += self.manifold_constraint.__class__.__name__
         if isinstance(sim.device, hoomd.device.GPU):
             base_class_str += "GPU"
-        self._cpp_obj = getattr(
-            _md, base_class_str)(sim.state._cpp_sys_def,
-                                 sim.state._get_group(self.filter),
-                                 self.manifold_constraint._cpp_obj)
+        self._cpp_obj = getattr(_md, base_class_str)(
+            sim.state._cpp_sys_def,
+            sim.state._get_group(self.filter),
+            self.manifold_constraint._cpp_obj,
+        )
 
 
 class Constant(Force):
@@ -631,11 +641,9 @@ class Constant(Force):
 
     Examples::
 
-        constant = hoomd.md.force.Constant(
-            filter=hoomd.filter.All()
-            )
-        constant.constant_force['A'] = (1,0,0)
-        constant.constant_torque['A'] = (0,0,0)
+        constant = hoomd.md.force.Constant(filter=hoomd.filter.All())
+        constant.constant_force["A"] = (1, 0, 0)
+        constant.constant_torque["A"] = (0, 0, 0)
 
     Note:
         The energy and virial associated with the constant force are 0.
@@ -701,14 +709,15 @@ class Constant(Force):
         else:
             my_class = _md.ConstantForceComputeGPU
 
-        self._cpp_obj = my_class(sim.state._cpp_sys_def,
-                                 sim.state._get_group(self.filter))
+        self._cpp_obj = my_class(
+            sim.state._cpp_sys_def, sim.state._get_group(self.filter)
+        )
 
 
 __all__ = [
-    'Active',
-    'ActiveOnManifold',
-    'Constant',
-    'Custom',
-    'Force',
+    "Active",
+    "ActiveOnManifold",
+    "Constant",
+    "Custom",
+    "Force",
 ]

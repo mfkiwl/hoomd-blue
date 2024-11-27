@@ -11,10 +11,10 @@ import hoomd.hpmc.pytest.conftest
 # here that require preprocessing
 
 valid_attrs = [
-    ('kT', hoomd.variant.Constant(10)),
-    ('kT', hoomd.variant.Ramp(1, 5, 0, 100)),
-    ('kT', hoomd.variant.Cycle(1, 5, 0, 10, 20, 10, 15)),
-    ('kT', hoomd.variant.Power(1, 5, 3, 0, 100)),
+    ("kT", hoomd.variant.Constant(10)),
+    ("kT", hoomd.variant.Ramp(1, 5, 0, 100)),
+    ("kT", hoomd.variant.Cycle(1, 5, 0, 10, 20, 10, 15)),
+    ("kT", hoomd.variant.Power(1, 5, 3, 0, 100)),
 ]
 
 
@@ -35,14 +35,15 @@ def test_valid_setattr(device, attr, value):
 @pytest.mark.serial
 @pytest.mark.cpu
 @pytest.mark.parametrize("attr,value", valid_attrs)
-def test_valid_setattr_attached(attr, value, simulation_factory,
-                                two_particle_snapshot_factory):
+def test_valid_setattr_attached(
+    attr, value, simulation_factory, two_particle_snapshot_factory
+):
     """Test that integrator can get and set attributes while attached."""
     sim = simulation_factory(two_particle_snapshot_factory())
 
     # BoxMC requires an HPMC integrator
     mc = hoomd.hpmc.integrate.Sphere()
-    mc.shape['A'] = dict(diameter=1)
+    mc.shape["A"] = dict(diameter=1)
     sim.operations.integrator = mc
 
     # create C++ mirror classes and set parameters
@@ -55,11 +56,11 @@ def test_valid_setattr_attached(attr, value, simulation_factory,
 @pytest.mark.serial
 @pytest.mark.cpu
 @pytest.mark.parametrize("attr,value", valid_attrs)
-def test_after_attaching(attr, value, valid_args, simulation_factory,
-                         lattice_snapshot_factory):
+def test_after_attaching(
+    attr, value, valid_args, simulation_factory, lattice_snapshot_factory
+):
     integrator, args, n_dimensions = valid_args
-    snap = lattice_snapshot_factory(particle_types=['A'],
-                                    dimensions=n_dimensions)
+    snap = lattice_snapshot_factory(particle_types=["A"], dimensions=n_dimensions)
     sim = simulation_factory(snap)
 
     # Need to unpack union integrators

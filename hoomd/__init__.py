@@ -37,6 +37,7 @@ so that open gsd files have a chance to flush write buffers
 (`hoomd.write.GSD.flush`) when a user's process is terminated. Use
 `signal.signal` to adjust this behavior as needed.
 """
+
 import sys
 import pathlib
 import os
@@ -46,15 +47,17 @@ __all__ = []
 
 # Work around /usr/lib64/slurm/auth_munge.so: undefined symbol: slurm_conf
 # error on Purdue Anvil.
-if os.environ.get('RCAC_CLUSTER') == 'anvil':
+if os.environ.get("RCAC_CLUSTER") == "anvil":
     sys.setdlopenflags(os.RTLD_NOW | os.RTLD_GLOBAL)
 
-if ((pathlib.Path(__file__).parent / 'CMakeLists.txt').exists()
-        and 'SPHINX' not in os.environ):
+if (
+    pathlib.Path(__file__).parent / "CMakeLists.txt"
+).exists() and "SPHINX" not in os.environ:
     print("It appears that hoomd is being imported from the source directory:")
     print(pathlib.Path(__file__).parent)
     print()
-    print("""Compile the package and import from the build directory or install
+    print(
+        """Compile the package and import from the build directory or install
 the package and import from the Python environment.
 
 To run pytest, either:
@@ -62,7 +65,8 @@ To run pytest, either:
 (2) compile and install. Then, ensuring your current working directory is
 outside the hoomd source directory, execute `python3 -m pytest --pyargs hoomd`.
 """,
-          file=sys.stderr)
+        file=sys.stderr,
+    )
 
 from hoomd import version
 from hoomd import trigger
@@ -85,6 +89,7 @@ from hoomd import _hoomd
 from hoomd import tune
 from hoomd import logging
 from hoomd import custom
+
 if version.md_built:
     from hoomd import md
 if version.hpmc_built:
@@ -122,30 +127,30 @@ except ValueError:
     pass
 
 __all__ = [
-    'Box',
-    'Operations',
-    'Simulation',
-    'Snapshot',
-    'State',
-    'box',
-    'communicator',
-    'custom',
-    'data',
-    'device',
-    'error',
-    'filter',
-    'hpmc',
-    'logging',
-    'md',
-    'mesh',
-    'mpcd',
-    'operation',
-    'trigger',
-    'tune',
-    'update',
-    'util',
-    'variant',
-    'version',
-    'wall',
-    'write',
+    "Box",
+    "Operations",
+    "Simulation",
+    "Snapshot",
+    "State",
+    "box",
+    "communicator",
+    "custom",
+    "data",
+    "device",
+    "error",
+    "filter",
+    "hpmc",
+    "logging",
+    "md",
+    "mesh",
+    "mpcd",
+    "operation",
+    "trigger",
+    "tune",
+    "update",
+    "util",
+    "variant",
+    "version",
+    "wall",
+    "write",
 ]

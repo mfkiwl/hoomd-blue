@@ -28,7 +28,9 @@ class Alchemostat(Method):
 
     __doc__ = __doc__.replace("{inherited}", Method._doc_inherited)
 
-    _doc_inherited = Method._doc_inherited + """
+    _doc_inherited = (
+        Method._doc_inherited
+        + """
     ----------
 
     **Members inherited from**
@@ -39,16 +41,17 @@ class Alchemostat(Method):
         List of alchemical degrees of freedom.
         `Read more... <hoomd.md.alchemy.methods.Alchemostat.alchemical_dof>`
     """
+    )
 
     def __init__(self, alchemical_dof):
         self._alchemical_dof = syncedlist.SyncedList(
-            AlchemicalDOF, syncedlist._PartialGetAttr("_cpp_obj"))
+            AlchemicalDOF, syncedlist._PartialGetAttr("_cpp_obj")
+        )
         if alchemical_dof is not None:
             self._alchemical_dof.extend(alchemical_dof)
 
     def _attach_hook(self):
-        self._alchemical_dof._sync(self._simulation,
-                                   self._cpp_obj.alchemical_dof)
+        self._alchemical_dof._sync(self._simulation, self._cpp_obj.alchemical_dof)
 
     def _detach_hook(self):
         self._alchemical_dof._unsync()
@@ -114,7 +117,6 @@ class NVT(Alchemostat):
     __doc__ = __doc__.replace("{inherited}", Alchemostat._doc_inherited)
 
     def __init__(self, alchemical_kT, alchemical_dof, period=1):
-
         # store metadata
         param_dict = ParameterDict(alchemical_kT=Variant, period=int)
         param_dict.update(dict(alchemical_kT=alchemical_kT, period=period))
@@ -131,6 +133,6 @@ class NVT(Alchemostat):
 
 
 __all__ = [
-    'NVT',
-    'Alchemostat',
+    "NVT",
+    "Alchemostat",
 ]
