@@ -60,10 +60,9 @@ class ParticleSorter(TriggeredOperation):
             class_ = _mpcd.SorterGPU
         else:
             class_ = _mpcd.Sorter
-        self._cpp_obj = class_(self._simulation.state._cpp_sys_def,
-                               self.trigger)
+        self._cpp_obj = class_(self._simulation.state._cpp_sys_def, self.trigger)
 
 
 __all__ = [
-    'ParticleSorter',
+    "ParticleSorter",
 ]

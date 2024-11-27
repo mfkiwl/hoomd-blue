@@ -19,7 +19,7 @@ class Type(ParticleFilter, ParticleFilterType):
 
     .. code-block:: python
 
-        type_A_B = hoomd.filter.Type(['A', 'B'])
+        type_A_B = hoomd.filter.Type(["A", "B"])
 
     {inherited}
 

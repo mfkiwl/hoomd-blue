@@ -17,7 +17,7 @@ from .pair import Pair
 from hoomd.data.typeconverter import OnlyIf, to_type_converter
 
 
-@hoomd.logging.modify_namespace(('hpmc', 'pair', 'Step'))
+@hoomd.logging.modify_namespace(("hpmc", "pair", "Step"))
 class Step(Pair):
     r"""Step function pair potential (HPMC).
 
@@ -64,17 +64,25 @@ class Step(Pair):
         Type: `TypeParameter` [`tuple` [``particle_type``, ``particle_type``],
         `dict`]
     """
+
     _cpp_class_name = "PairPotentialStep"
     __doc__ = __doc__.replace("{inherited}", Pair._doc_inherited)
 
     def __init__(self):
         params = hoomd.data.typeparam.TypeParameter(
-            'params', 'particle_types',
-            hoomd.data.parameterdicts.TypeParameterDict(OnlyIf(
-                to_type_converter({
-                    'epsilon': [float],
-                    'r': [float],
-                }),
-                allow_none=True),
-                                                        len_keys=2))
+            "params",
+            "particle_types",
+            hoomd.data.parameterdicts.TypeParameterDict(
+                OnlyIf(
+                    to_type_converter(
+                        {
+                            "epsilon": [float],
+                            "r": [float],
+                        }
+                    ),
+                    allow_none=True,
+                ),
+                len_keys=2,
+            ),
+        )
         self._add_typeparam(params)

@@ -5,4 +5,4 @@
 
 from hoomd.updater_plugin import update
 
-__all__ = ['update']
+__all__ = ["update"]

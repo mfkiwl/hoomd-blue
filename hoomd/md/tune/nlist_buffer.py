@@ -19,7 +19,6 @@ from hoomd.custom.custom_action import _InternalAction
 
 
 class _IntervalTPS:
-
     def __init__(self, simulation):
         self._simulation = simulation
         self._initial_timestep = None
@@ -72,13 +71,16 @@ class _NeighborListBufferInternal(_InternalAction):
             nlist=SetOnce(NeighborList),
             solver=SetOnce(hoomd.tune.solve.Optimizer),
             maximum_buffer=OnlyTypes(float, postprocess=self._buffer_post),
-            minimum_buffer=OnlyTypes(float, postprocess=self._buffer_post))
-        param_dict.update({
-            "nlist": nlist,
-            "solver": solver,
-            "maximum_buffer": maximum_buffer,
-            "minimum_buffer": minimum_buffer
-        })
+            minimum_buffer=OnlyTypes(float, postprocess=self._buffer_post),
+        )
+        param_dict.update(
+            {
+                "nlist": nlist,
+                "solver": solver,
+                "maximum_buffer": maximum_buffer,
+                "minimum_buffer": minimum_buffer,
+            }
+        )
         self._param_dict.update(param_dict)
 
         self._simulation = None
@@ -246,8 +248,7 @@ class NeighborListBuffer(hoomd.tune.custom_tuner._InternalCustomTuner):
         nlist: NeighborList,
         maximum_buffer: float,
         minimum_buffer: float = 0.0,
-        alpha: hoomd.variant.variant_like = hoomd.variant.Ramp(
-            1e-5, 1e-6, 0, 30),
+        alpha: hoomd.variant.variant_like = hoomd.variant.Ramp(1e-5, 1e-6, 0, 30),
         kappa: typing.Optional[np.ndarray] = (0.33, 0.165),
         tol: float = 1e-5,
         max_delta: "float | None" = None,
@@ -299,8 +300,7 @@ class NeighborListBuffer(hoomd.tune.custom_tuner._InternalCustomTuner):
         return cls(
             trigger,
             nlist,
-            hoomd.tune.solve.GradientDescent(alpha, kappa, tol, True,
-                                             max_delta),
+            hoomd.tune.solve.GradientDescent(alpha, kappa, tol, True, max_delta),
             maximum_buffer=maximum_buffer,
         )
 

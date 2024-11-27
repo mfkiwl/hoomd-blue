@@ -6,5 +6,5 @@
 from .nlist_buffer import NeighborListBuffer
 
 __all__ = [
-    'NeighborListBuffer',
+    "NeighborListBuffer",
 ]

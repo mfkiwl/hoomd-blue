@@ -131,10 +131,13 @@ class LJ(SpecialPair):
         super().__init__()
         # setup the coefficient options
         params = TypeParameter(
-            "params", "special_pair_types",
-            TypeParameterDict(epsilon=float, sigma=float, len_keys=1))
-        r_cut = TypeParameter("r_cut", "special_pair_types",
-                              TypeParameterDict(float, len_keys=1))
+            "params",
+            "special_pair_types",
+            TypeParameterDict(epsilon=float, sigma=float, len_keys=1),
+        )
+        r_cut = TypeParameter(
+            "r_cut", "special_pair_types", TypeParameterDict(float, len_keys=1)
+        )
 
         self._extend_typeparam([params, r_cut])
 
@@ -188,15 +191,17 @@ class Coulomb(SpecialPair):
 
     def __init__(self):
         super().__init__()
-        params = TypeParameter("params", "special_pair_types",
-                               TypeParameterDict(alpha=float, len_keys=1))
-        r_cut = TypeParameter("r_cut", "special_pair_types",
-                              TypeParameterDict(float, len_keys=1))
+        params = TypeParameter(
+            "params", "special_pair_types", TypeParameterDict(alpha=float, len_keys=1)
+        )
+        r_cut = TypeParameter(
+            "r_cut", "special_pair_types", TypeParameterDict(float, len_keys=1)
+        )
         self._extend_typeparam([params, r_cut])
 
 
 __all__ = [
-    'LJ',
-    'Coulomb',
-    'SpecialPair',
+    "LJ",
+    "Coulomb",
+    "SpecialPair",
 ]

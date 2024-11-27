@@ -13,7 +13,7 @@ import inspect
 import os
 from pathlib import Path
 
-TOPLEVEL = ['hpmc', 'mpcd', 'md']
+TOPLEVEL = ["hpmc", "mpcd", "md"]
 exit_value = 0
 
 
@@ -24,7 +24,7 @@ def generate_member_rst(path, full_module_name, name, type):
     and then customized as needed. 80+% of the files should not need customization.
     """
     # Generate the file {name}.rst
-    underline = '=' * len(name)
+    underline = "=" * len(name)
 
     member_rst = f"{name}\n{underline}\n\n"
     member_rst += f".. py:currentmodule:: {full_module_name}\n\n"
@@ -34,11 +34,11 @@ def generate_member_rst(path, full_module_name, name, type):
     # set :members: and :show-inheritance: for classes. Developers can remove these
     # individually when they are not appropriate. Unfortunately, we cannot make these
     # default in `conf.py` because there is no way to opt out of the default.
-    if type == 'class':
+    if type == "class":
         member_rst += "   :members:\n"
         member_rst += "   :show-inheritance:\n"
 
-    destination = (path / name.lower()).with_suffix('.rst')
+    destination = (path / name.lower()).with_suffix(".rst")
 
     if destination.exists():
         return
@@ -55,10 +55,10 @@ def generate_module_rst(path, module):
     global exit_value
 
     full_module_name = module.__name__
-    module_name = full_module_name.split('.')[-1]
+    module_name = full_module_name.split(".")[-1]
 
     # Alphabetize the items
-    module_all = getattr(module, '__all__', None)
+    module_all = getattr(module, "__all__", None)
     if module_all is None:
         exit_value = 1
         print(f"Warning: {full_module_name} is missing __all__")
@@ -83,17 +83,17 @@ def generate_module_rst(path, module):
 
         if inspect.isclass(member):
             classes.append(member_name)
-            generate_member_rst(path, full_module_name, member_name, 'class')
+            generate_member_rst(path, full_module_name, member_name, "class")
 
         if inspect.isfunction(member):
             functions.append(member_name)
-            generate_member_rst(path, full_module_name, member_name, 'function')
+            generate_member_rst(path, full_module_name, member_name, "function")
 
         # data members should be documented directly in the module's docstring, and
         # are ignored here.
 
     # Generate the file module-{module_name}.rst
-    module_underline = '=' * len(module_name)
+    module_underline = "=" * len(module_name)
 
     module_rst = f"{module_name}\n{module_underline}\n\n"
     module_rst += f".. automodule:: {full_module_name}\n"
@@ -102,39 +102,39 @@ def generate_module_rst(path, module):
         module_rst += f"   :exclude-members: {','.join(classes + functions)}\n\n"
 
     if len(submodules) > 0:
-        module_rst += '.. rubric:: Modules\n\n.. toctree::\n    :maxdepth: 1\n\n'
+        module_rst += ".. rubric:: Modules\n\n.. toctree::\n    :maxdepth: 1\n\n"
         for submodule in submodules:
             if submodule not in TOPLEVEL:
-                module_rst += f'    {module_name}/module-{submodule}\n'
-        module_rst += '\n'
+                module_rst += f"    {module_name}/module-{submodule}\n"
+        module_rst += "\n"
 
     if len(classes) > 0:
-        module_rst += '.. rubric:: Classes\n\n.. toctree::\n    :maxdepth: 1\n\n'
+        module_rst += ".. rubric:: Classes\n\n.. toctree::\n    :maxdepth: 1\n\n"
         for class_name in classes:
-            module_rst += f'    {module_name}/{class_name.lower()}\n'
-        module_rst += '\n'
+            module_rst += f"    {module_name}/{class_name.lower()}\n"
+        module_rst += "\n"
 
     if len(functions) > 0:
-        module_rst += '.. rubric:: Functions\n\n.. toctree::\n    :maxdepth: 1\n\n'
+        module_rst += ".. rubric:: Functions\n\n.. toctree::\n    :maxdepth: 1\n\n"
         for function_name in functions:
-            module_rst += f'    {module_name}/{function_name.lower()}\n'
-        module_rst += '\n'
+            module_rst += f"    {module_name}/{function_name.lower()}\n"
+        module_rst += "\n"
 
     # ensure there is only one newline at the end of the file
     module_rst = module_rst.rstrip()
-    module_rst += '\n'
-    file = (path.parent / ('module-' + module_name)).with_suffix('.rst')
+    module_rst += "\n"
+    file = (path.parent / ("module-" + module_name)).with_suffix(".rst")
     file.write_text(module_rst)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     doc_dir = Path(__file__).parent
     repository_dir = doc_dir.parent
     sys.path.insert(0, str(repository_dir))
 
-    os.environ['SPHINX'] = '1'
+    os.environ["SPHINX"] = "1"
 
     import hoomd
 
-    generate_module_rst(doc_dir / 'hoomd', hoomd)
+    generate_module_rst(doc_dir / "hoomd", hoomd)
     sys.exit(exit_value)

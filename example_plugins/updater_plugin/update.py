@@ -22,7 +22,9 @@ class ExampleUpdater(operation.Updater):
         # initialize the reflected c++ class
         if isinstance(self._simulation.device, hoomd.device.CPU):
             self._cpp_obj = _updater_plugin.ExampleUpdater(
-                self._simulation.state._cpp_sys_def, self.trigger)
+                self._simulation.state._cpp_sys_def, self.trigger
+            )
         else:
             self._cpp_obj = _updater_plugin.ExampleUpdaterGPU(
-                self._simulation.state._cpp_sys_def, self.trigger)
+                self._simulation.state._cpp_sys_def, self.trigger
+            )

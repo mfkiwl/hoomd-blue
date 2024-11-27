@@ -9,8 +9,8 @@ from hoomd import _hoomd
 
 
 class _LocalAccess(ABC):
-    __slots__ = ('_accessed_fields', '_cpp_obj', '_entered')
-    _global_fields = {'rtag': 'getRTags'}
+    __slots__ = ("_accessed_fields", "_cpp_obj", "_entered")
+    _global_fields = {"rtag": "getRTags"}
 
     @property
     @abstractmethod
@@ -36,11 +36,11 @@ class _LocalAccess(ABC):
             if raw_attr in self._fields:
                 buff = getattr(self._cpp_obj, self._fields[raw_attr])(flag)
             else:
-                raise AttributeError("{} object has no attribute {}".format(
-                    type(self), attr))
+                raise AttributeError(
+                    "{} object has no attribute {}".format(type(self), attr)
+                )
 
-        self._accessed_fields[attr] = arr = self._array_cls(
-            buff, lambda: self._entered)
+        self._accessed_fields[attr] = arr = self._array_cls(buff, lambda: self._entered)
         return arr
 
     def _get_raw_attr_and_flag(self, attr):
@@ -48,8 +48,10 @@ class _LocalAccess(ABC):
         with_ghosts = attr.endswith("_with_ghost")
         raw_attr = attr.replace("_with_ghost", "").replace("ghost_", "")
         if ghosts_only and with_ghosts:
-            raise ValueError("Attribute cannot be both prefixed with ghost_ "
-                             "and suffixed with _with_ghost")
+            raise ValueError(
+                "Attribute cannot be both prefixed with ghost_ "
+                "and suffixed with _with_ghost"
+            )
         elif ghosts_only:
             return raw_attr, _hoomd.GhostDataFlag.ghost
         elif with_ghosts:
@@ -64,8 +66,9 @@ class _LocalAccess(ABC):
         try:
             arr = getattr(self, attr)
         except AttributeError:
-            raise AttributeError("{} object has no attribute {}.".format(
-                self.__class__, attr))
+            raise AttributeError(
+                "{} object has no attribute {}.".format(self.__class__, attr)
+            )
         else:
             if arr.read_only:
                 raise RuntimeError("Attribute {} is not settable.".format(attr))
@@ -152,24 +155,24 @@ class ParticleLocalAccessBase(_LocalAccess):
         pass
 
     _fields = {
-        'position': 'getPosition',
-        'typeid': 'getTypes',
-        'velocity': 'getVelocities',
-        'mass': 'getMasses',
-        'acceleration': 'getAcceleration',
-        'orientation': 'getOrientation',
-        'angmom': 'getAngularMomentum',
-        'moment_inertia': 'getMomentsOfInertia',
-        'charge': 'getCharge',
-        'diameter': 'getDiameter',
-        'image': 'getImages',
-        'tag': 'getTags',
-        'rtag': 'getRTags',
-        'body': 'getBodies',
-        'net_force': 'getNetForce',
-        'net_torque': 'getNetTorque',
-        'net_virial': 'getNetVirial',
-        'net_energy': 'getNetEnergy'
+        "position": "getPosition",
+        "typeid": "getTypes",
+        "velocity": "getVelocities",
+        "mass": "getMasses",
+        "acceleration": "getAcceleration",
+        "orientation": "getOrientation",
+        "angmom": "getAngularMomentum",
+        "moment_inertia": "getMomentsOfInertia",
+        "charge": "getCharge",
+        "diameter": "getDiameter",
+        "image": "getImages",
+        "tag": "getTags",
+        "rtag": "getRTags",
+        "body": "getBodies",
+        "net_force": "getNetForce",
+        "net_torque": "getNetTorque",
+        "net_virial": "getNetVirial",
+        "net_energy": "getNetEnergy",
     }
 
     def __init__(self, state):
@@ -178,7 +181,6 @@ class ParticleLocalAccessBase(_LocalAccess):
 
 
 class _GroupLocalAccess(_LocalAccess):
-
     @property
     @abstractmethod
     def _cpp_cls(self):
@@ -190,16 +192,17 @@ class _GroupLocalAccess(_LocalAccess):
         pass
 
     _fields = {
-        'typeid': 'getTypeVal',
-        'group': 'getMembers',
-        'tag': 'getTags',
-        'rtag': 'getRTags'
+        "typeid": "getTypeVal",
+        "group": "getMembers",
+        "tag": "getTags",
+        "rtag": "getRTags",
     }
 
     def __init__(self, state):
         super().__init__()
         self._cpp_obj = self._cpp_cls(
-            getattr(state._cpp_sys_def, self._cpp_get_data_method_name)())
+            getattr(state._cpp_sys_def, self._cpp_get_data_method_name)()
+        )
 
 
 class BondLocalAccessBase(_GroupLocalAccess):
@@ -224,6 +227,7 @@ class BondLocalAccessBase(_GroupLocalAccess):
             ``i = bonds.rtag[tag]`` is the array index holding that
             bond.
     """
+
     _cpp_get_data_method_name = "getBondData"
 
 
@@ -248,6 +252,7 @@ class AngleLocalAccessBase(_GroupLocalAccess):
             The angle reverse tags. For a given angle tag ``tag``, ``i =
             angles.rtag[tag]`` is the array index holding that angle.
     """
+
     _cpp_get_data_method_name = "getAngleData"
 
 
@@ -272,6 +277,7 @@ class DihedralLocalAccessBase(_GroupLocalAccess):
             The dihedral reverse tags. For a given dihedral tag ``tag``, ``i
             = dihedrals.rtag[tag]`` is the array index holding that dihedral.
     """
+
     _cpp_get_data_method_name = "getDihedralData"
 
 
@@ -296,6 +302,7 @@ class ImproperLocalAccessBase(_GroupLocalAccess):
             The improper reverse tags. For a given improper tag ``tag``, ``i
             = impropers.rtag[tag]`` is the array index holding that improper.
     """
+
     _cpp_get_data_method_name = "getImproperData"
 
 
@@ -321,11 +328,12 @@ class ConstraintLocalAccessBase(_GroupLocalAccess):
             ``i = constraints.rtag[tag]`` is the array index holding that
             constraint.
     """
+
     _fields = {
-        'value': 'getTypeVal',
-        'group': 'getMembers',
-        'tag': 'getTags',
-        'rtag': 'getRTags'
+        "value": "getTypeVal",
+        "group": "getMembers",
+        "tag": "getTags",
+        "rtag": "getRTags",
     }
     _cpp_get_data_method_name = "getConstraintData"
 
@@ -352,11 +360,11 @@ class PairLocalAccessBase(_GroupLocalAccess):
             ``tag``, ``i = pairs.rtag[tag]`` is the array index holding that
             special pair.
     """
+
     _cpp_get_data_method_name = "getPairData"
 
 
 class _LocalSnapshot:
-
     def __init__(self, state):
         self._state = state
         self._box = state.box

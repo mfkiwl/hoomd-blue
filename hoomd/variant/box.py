@@ -26,7 +26,7 @@ class BoxVariant(_hoomd.VectorVariantBox):
                 hoomd.variant.box.BoxVariant.__init__(self)
 
             def __call__(self, timestep):
-                return [10 + timestep/1e6, 10, 10, 0, 0, 0]
+                return [10 + timestep / 1e6, 10, 10, 0, 0, 0]
 
     .. py:method:: __call__(timestep)
 
@@ -57,8 +57,8 @@ class BoxVariant(_hoomd.VectorVariantBox):
         if not isinstance(other, type(self)):
             return False
         return all(
-            getattr(self, attr) == getattr(other, attr)
-            for attr in self._eq_attrs)
+            getattr(self, attr) == getattr(other, attr) for attr in self._eq_attrs
+        )
 
 
 class Constant(_hoomd.VectorVariantBoxConstant, BoxVariant):
@@ -76,6 +76,7 @@ class Constant(_hoomd.VectorVariantBoxConstant, BoxVariant):
 
     **Members defined in** `Constant`:
     """
+
     _eq_attrs = ("box",)
     __eq__ = BoxVariant._private_eq
     __doc__ = __doc__.replace("{inherited}", BoxVariant._doc_inherited)
@@ -139,6 +140,7 @@ class Interpolate(_hoomd.VectorVariantBoxInterpolate, BoxVariant):
         variant (hoomd.variant.Variant): A variant used to interpolate between
             the two boxes.
     """
+
     _eq_attrs = (
         "initial_box",
         "final_box",
@@ -151,8 +153,9 @@ class Interpolate(_hoomd.VectorVariantBoxInterpolate, BoxVariant):
         box2 = hoomd.data.typeconverter.box_preprocessing(final_box)
         variant = hoomd.data.typeconverter.variant_preprocessing(variant)
         BoxVariant.__init__(self)
-        _hoomd.VectorVariantBoxInterpolate.__init__(self, box1._cpp_obj,
-                                                    box2._cpp_obj, variant)
+        _hoomd.VectorVariantBoxInterpolate.__init__(
+            self, box1._cpp_obj, box2._cpp_obj, variant
+        )
 
     def __reduce__(self):
         """Reduce values to picklable format."""
@@ -218,6 +221,7 @@ class InverseVolumeRamp(_hoomd.VectorVariantBoxInverseVolumeRamp, BoxVariant):
         t_start (int): The time step at the start of the ramp.
         t_ramp (int): The length of the ramp.
     """
+
     _eq_attrs = ("initial_box", "final_volume", "t_start", "t_ramp")
     __eq__ = BoxVariant._private_eq
     __doc__ = __doc__.replace("{inherited}", BoxVariant._doc_inherited)
@@ -226,12 +230,15 @@ class InverseVolumeRamp(_hoomd.VectorVariantBoxInverseVolumeRamp, BoxVariant):
         BoxVariant.__init__(self)
         box = hoomd.data.typeconverter.box_preprocessing(initial_box)
         _hoomd.VectorVariantBoxInverseVolumeRamp.__init__(
-            self, box._cpp_obj, final_volume, t_start, t_ramp)
+            self, box._cpp_obj, final_volume, t_start, t_ramp
+        )
 
     def __reduce__(self):
         """Reduce values to picklable format."""
-        return (type(self), (self.initial_box, self.final_volume, self.t_start,
-                             self.t_ramp))
+        return (
+            type(self),
+            (self.initial_box, self.final_volume, self.t_start, self.t_ramp),
+        )
 
     @property
     def initial_box(self):
@@ -245,8 +252,8 @@ class InverseVolumeRamp(_hoomd.VectorVariantBoxInverseVolumeRamp, BoxVariant):
 
 
 __all__ = [
-    'BoxVariant',
-    'Constant',
-    'Interpolate',
-    'InverseVolumeRamp',
+    "BoxVariant",
+    "Constant",
+    "Interpolate",
+    "InverseVolumeRamp",
 ]

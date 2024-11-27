@@ -69,12 +69,14 @@ class BendingRigidity(MeshPotential):
             * ``k`` (`float`, **required**) - bending stiffness
               :math:`[\mathrm{energy}]`
     """
+
     _cpp_class_name = "BendingRigidityMeshForceCompute"
     __doc__ = __doc__.replace("{inherited}", MeshPotential._doc_inherited)
 
     def __init__(self, mesh):
-        params = TypeParameter("params", "types",
-                               TypeParameterDict(k=float, len_keys=1))
+        params = TypeParameter(
+            "params", "types", TypeParameterDict(k=float, len_keys=1)
+        )
         self._add_typeparam(params)
 
         super().__init__(mesh)
@@ -134,19 +136,19 @@ class Helfrich(MeshPotential):
               :math:`[\mathrm{energy}]`
 
     """
+
     _cpp_class_name = "HelfrichMeshForceCompute"
     __doc__ = __doc__.replace("{inherited}", MeshPotential._doc_inherited)
 
     def __init__(self, mesh):
-
-        params = TypeParameter("params", "types",
-                               TypeParameterDict(k=float, len_keys=1))
+        params = TypeParameter(
+            "params", "types", TypeParameterDict(k=float, len_keys=1)
+        )
         self._add_typeparam(params)
 
         super().__init__(mesh)
 
     def _attach_hook(self):
-
         if self._simulation.device.communicator.num_ranks == 1:
             super()._attach_hook()
         else:
@@ -154,6 +156,6 @@ class Helfrich(MeshPotential):
 
 
 __all__ = [
-    'BendingRigidity',
-    'Helfrich',
+    "BendingRigidity",
+    "Helfrich",
 ]

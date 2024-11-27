@@ -65,6 +65,7 @@ class LoggerCategories(Flag):
 
         NONE: Represents no category.
     """
+
     NONE = 0
     scalar = auto()
     sequence = auto()
@@ -92,8 +93,7 @@ class LoggerCategories(Flag):
             `LoggerCategories`: the `LoggerCategories` object that represents
             any of the given categories.
         """
-        categories = cls.__members__.values(
-        ) if categories is None else categories
+        categories = cls.__members__.values() if categories is None else categories
 
         return reduce(cls._combine_flags, categories, LoggerCategories.NONE)
 
@@ -124,8 +124,7 @@ LoggerCategories.ALL = LoggerCategories.any()
 def _loggables(self):
     """dict[str, str]: Name, category mapping of loggable quantities."""
     return {
-        name: quantity.category.name
-        for name, quantity in self._export_dict.items()
+        name: quantity.category.name for name, quantity in self._export_dict.items()
     }
 
 
@@ -158,11 +157,13 @@ class _NamespaceFilter:
             pattern means that the inner module is imported into its parent.
     """
 
-    def __init__(self,
-                 remove_names=None,
-                 base_names=None,
-                 non_native_remove=None,
-                 skip_duplicates=True):
+    def __init__(
+        self,
+        remove_names=None,
+        base_names=None,
+        non_native_remove=None,
+        skip_duplicates=True,
+    ):
         self.remove_names = set() if remove_names is None else remove_names
         if non_native_remove is None:
             self.non_native_remove = set()
@@ -228,15 +229,16 @@ class _LoggerQuantity:
 
     namespace_filter = _NamespaceFilter(
         # Names that are imported directly into the hoomd namespace
-        remove_names={"hoomd", 'simulation', 'state', 'operations', 'snapshot'},
+        remove_names={"hoomd", "simulation", "state", "operations", "snapshot"},
         # Names that have their submodules' classes directly imported into them
         # (e.g. `hoomd.update.box_resize.BoxResize` gets used as
         # `hoomd.update.BoxResize`)
-        base_names={'update', 'tune', 'write'},
+        base_names={"update", "tune", "write"},
         non_native_remove={"__main__"},
-        skip_duplicates=True)
+        skip_duplicates=True,
+    )
 
-    def __init__(self, name, cls, category='scalar', default=True):
+    def __init__(self, name, cls, category="scalar", default=True):
         self.name = name
         self.update_cls(cls)
         if isinstance(category, str):
@@ -244,8 +246,10 @@ class _LoggerQuantity:
         elif isinstance(category, LoggerCategories):
             self.category = category
         else:
-            raise ValueError("Flag must be a string convertible into "
-                             "LoggerCategories or a LoggerCategories object.")
+            raise ValueError(
+                "Flag must be a string convertible into "
+                "LoggerCategories or a LoggerCategories object."
+            )
         self.default = bool(default)
 
     def yield_names(self, user_name=None):
@@ -264,7 +268,7 @@ class _LoggerQuantity:
             namespace = self.namespace[:-1] + (user_name,)
         yield (*namespace, self.name)
         for i in count(start=1, step=1):
-            yield namespace[:-1] + (namespace[-1] + '_' + str(i), self.name)
+            yield namespace[:-1] + (namespace[-1] + "_" + str(i), self.name)
 
     def update_cls(self, cls):
         """Allow updating the class/namespace of the object.
@@ -288,7 +292,7 @@ class _LoggerQuantity:
     @classmethod
     def _generate_namespace(cls, loggable_cls):
         """Generate the namespace of a class given its module hierarchy."""
-        ns = tuple(loggable_cls.__module__.split('.'))
+        ns = tuple(loggable_cls.__module__.split("."))
         cls_name = loggable_cls.__name__
         # Only filter namespaces of objects in the hoomd package
         return (*tuple(cls.namespace_filter(ns, ns[0] == "hoomd")), cls_name)
@@ -296,6 +300,7 @@ class _LoggerQuantity:
 
 class Loggable(type):
     """Loggable quantity."""
+
     _meta_export_dict = dict()
 
     def __init__(cls, name, bases, dct):
@@ -321,7 +326,8 @@ class Loggable(type):
         # overwriting the property every time, but lose the ability to error on
         # improper class definitions.
         if log_dict == {} and not any(
-                issubclass(type(c), Loggable) for c in cls.__mro__[1:]):
+            issubclass(type(c), Loggable) for c in cls.__mro__[1:]
+        ):
             Loggable._add_property_for_displaying_loggables(cls)
 
         # grab the current class's loggable quantities
@@ -331,9 +337,11 @@ class Loggable(type):
 
     @staticmethod
     def _add_property_for_displaying_loggables(new_cls):
-        if hasattr(new_cls, 'loggables'):
-            raise ValueError("classes of type Loggable cannot implement a "
-                             "loggables method, property, or attribute.")
+        if hasattr(new_cls, "loggables"):
+            raise ValueError(
+                "classes of type Loggable cannot implement a "
+                "loggables method, property, or attribute."
+            )
         else:
             new_cls.loggables = property(_loggables)
 
@@ -351,10 +359,12 @@ class Loggable(type):
             # new_cls has a metaclass (or type) which is a subclass of Loggable
             # or one of its subclasses.
             if issubclass(type(base_cls), Loggable):
-                inherited_loggables.update({
-                    name: copy.deepcopy(quantity).update_cls(new_cls)
-                    for name, quantity in base_cls._export_dict.items()
-                })
+                inherited_loggables.update(
+                    {
+                        name: copy.deepcopy(quantity).update_cls(new_cls)
+                        for name, quantity in base_cls._export_dict.items()
+                    }
+                )
         return inherited_loggables
 
     @classmethod
@@ -362,11 +372,12 @@ class Loggable(type):
         """Gets the current class's new loggables (not inherited)."""
         current_loggables = {}
         for name, entry in cls._meta_export_dict.items():
-            current_loggables[name] = _LoggerQuantity(name, new_cls,
-                                                      entry.category,
-                                                      entry.default)
-            cls._add_loggable_docstring_info(new_cls, name, entry.category,
-                                             entry.default)
+            current_loggables[name] = _LoggerQuantity(
+                name, new_cls, entry.category, entry.default
+            )
+            cls._add_loggable_docstring_info(
+                new_cls, name, entry.category, entry.default
+            )
         return current_loggables
 
     @classmethod
@@ -377,31 +388,28 @@ class Loggable(type):
         # the rendering of invalid docs since we need a non-empty docstring.
         if __doc__ == "":
             return
-        str_msg = '\n\n{}(`Loggable <hoomd.logging.Logger>`: '
+        str_msg = "\n\n{}(`Loggable <hoomd.logging.Logger>`: "
         str_msg += f'category="{str(category)[17:]}"'
         if default:
-            str_msg += ')'
+            str_msg += ")"
         else:
-            str_msg += ', default=False)'
+            str_msg += ", default=False)"
         if doc is None:
-            getattr(new_cls, attr).__doc__ = str_msg.format('')
+            getattr(new_cls, attr).__doc__ = str_msg.format("")
         else:
             indent = 0
-            lines = doc.split('\n')
+            lines = doc.split("\n")
             if len(lines) >= 3:
                 cnt = 2
-                while lines[cnt] == '':
+                while lines[cnt] == "":
                     cnt += 1
                 indent = len(lines[cnt]) - len(lines[cnt].lstrip())
-            getattr(new_cls, attr).__doc__ += str_msg.format(' ' * indent)
+            getattr(new_cls, attr).__doc__ += str_msg.format(" " * indent)
 
 
-def log(func=None,
-        *,
-        is_property=True,
-        category='scalar',
-        default=True,
-        requires_run=False):
+def log(
+    func=None, *, is_property=True, category="scalar", default=True, requires_run=False
+):
     """Creates loggable quantities for classes of type Loggable.
 
     Use :py:func:`log` with `hoomd.custom.Action` to expose loggable quantities from a
@@ -450,14 +458,13 @@ def log(func=None,
     def helper(func):
         name = func.__name__
         if name in Loggable._meta_export_dict:
-            raise KeyError(
-                "Multiple loggable quantities named {}.".format(name))
+            raise KeyError("Multiple loggable quantities named {}.".format(name))
         Loggable._meta_export_dict[name] = _LoggableEntry(
-            LoggerCategories[category], default)
+            LoggerCategories[category], default
+        )
         if requires_run:
 
             def wrap_with_exception(func):
-
                 @wraps(func)
                 def wrapped_func(self, *args, **kwargs):
                     if not self._attached:
@@ -478,7 +485,7 @@ def log(func=None,
         return helper(func)
 
 
-class _InvalidLogEntryType():
+class _InvalidLogEntryType:
     pass
 
 
@@ -512,8 +519,7 @@ class _LoggerEntry:
         err_msg = "Expected either (callable, category) or \
                    (obj, method/property, category)."
 
-        if (not isinstance(entry, Sequence) or len(entry) <= 1
-                or len(entry) > 3):
+        if not isinstance(entry, Sequence) or len(entry) <= 1 or len(entry) > 3:
             raise ValueError(err_msg)
 
         # Get the method and category from the passed entry. Also perform some
@@ -522,14 +528,13 @@ class _LoggerEntry:
             if not callable(entry[0]):
                 raise ValueError(err_msg)
             category = entry[1]
-            method = '__call__'
+            method = "__call__"
         elif len(entry) == 3:
             if not isinstance(entry[1], str):
                 raise ValueError(err_msg)
             method = entry[1]
             if not hasattr(entry[0], method):
-                raise ValueError(
-                    "Provided method/property must exist in given object.")
+                raise ValueError("Provided method/property must exist in given object.")
             category = entry[2]
 
         # Ensure category is valid and converted to LoggerCategories enum.
@@ -537,8 +542,8 @@ class _LoggerEntry:
             category = LoggerCategories[category]
         elif not isinstance(category, LoggerCategories):
             raise ValueError(
-                "category must be a string or hoomd.logging.LoggerCategories "
-                "object.")
+                "category must be a string or hoomd.logging.LoggerCategories " "object."
+            )
         return cls(entry[0], method, category)
 
     @property
@@ -552,8 +557,7 @@ class _LoggerEntry:
 
     @obj.setter
     def obj(self, new_obj):
-        if not isinstance(new_obj,
-                          (hoomd.operation.Operation, hoomd.Simulation)):
+        if not isinstance(new_obj, (hoomd.operation.Operation, hoomd.Simulation)):
             self._obj = new_obj
             return
         try:
@@ -576,11 +580,15 @@ class _LoggerEntry:
             return (attr, self.category.name)
 
     def __eq__(self, other):
-        return (self.obj == other.obj and self.attr == other.attr
-                and self.category == other.category)
+        return (
+            self.obj == other.obj
+            and self.attr == other.attr
+            and self.category == other.category
+        )
         return all(
             getattr(self, attr) == getattr(other, attr)
-            for attr in ['obj', 'attr', 'category'])
+            for attr in ["obj", "attr", "category"]
+        )
 
     def __getstate__(self):
         state = copy.copy(self.__dict__)
@@ -701,10 +709,11 @@ class Logger(_SafeNamespaceDict):
             # ensure all keys are valid
             if bad_keys != []:
                 raise ValueError(
-                    "object {} has not loggable quantities {}.".format(
-                        obj, bad_keys))
+                    "object {} has not loggable quantities {}.".format(obj, bad_keys)
+                )
             yield from self._filter_quantities(
-                map(lambda q: obj._export_dict[q], quantities), True)
+                map(lambda q: obj._export_dict[q], quantities), True
+            )
 
     def add(self, obj, quantities=None, user_name=None):
         """Add loggables.
@@ -727,7 +736,7 @@ class Logger(_SafeNamespaceDict):
 
         .. code-block:: python
 
-            logger.add(obj=lj, quantities=['energy'])
+            logger.add(obj=lj, quantities=["energy"])
         """
         for quantity in self._get_loggables_by_name(obj, quantities):
             self._add_single_quantity(obj, quantity, user_name)
@@ -756,11 +765,10 @@ class Logger(_SafeNamespaceDict):
 
         .. code-block:: python
 
-            logger.remove(obj=lj, quantities=['energy'])
+            logger.remove(obj=lj, quantities=["energy"])
         """
         if obj is None and quantities is None:
-            raise ValueError(
-                "Either obj, quantities, or both must be specified.")
+            raise ValueError("Either obj, quantities, or both must be specified.")
 
         if obj is None:
             for quantity in self._wrap_quantity(quantities):
@@ -787,8 +795,7 @@ class Logger(_SafeNamespaceDict):
                 if self._contains_obj(namespace, obj):
                     return None
             else:
-                self[namespace] = _LoggerEntry.from_logger_quantity(
-                    obj, quantity)
+                self[namespace] = _LoggerEntry.from_logger_quantity(obj, quantity)
                 return None
 
     def __setitem__(self, namespace, value):
@@ -812,13 +819,12 @@ class Logger(_SafeNamespaceDict):
 
         .. code-block:: python
 
-            logger[('custom', 'name')] = (lambda: 42, 'scalar')
+            logger[("custom", "name")] = (lambda: 42, "scalar")
         """
         if not isinstance(value, _LoggerEntry):
             value = _LoggerEntry.from_tuple(value)
         if value.category not in self.categories:
-            raise ValueError(
-                "User specified loggable is not of an accepted category.")
+            raise ValueError("User specified loggable is not of an accepted category.")
         super().__setitem__(namespace, value)
 
     def __iadd__(self, obj):
@@ -834,7 +840,7 @@ class Logger(_SafeNamespaceDict):
 
             logger += lj
         """
-        if hasattr(obj, '__iter__'):
+        if hasattr(obj, "__iter__"):
             for o in obj:
                 self.add(o)
         else:
@@ -854,7 +860,7 @@ class Logger(_SafeNamespaceDict):
         """
         if isinstance(value, str) or isinstance(value, tuple):
             self.remove(quantities=value)
-        elif hasattr(value, '__iter__'):
+        elif hasattr(value, "__iter__"):
             for v in value:
                 self.__isub__(v)
         else:
@@ -914,9 +920,11 @@ class Logger(_SafeNamespaceDict):
         """Check for equality."""
         if not isinstance(other, type(self)):
             return NotImplemented
-        return (self.categories == other.categories
-                and self.only_default == other.only_default
-                and self._dict == other._dict)
+        return (
+            self.categories == other.categories
+            and self.only_default == other.only_default
+            and self._dict == other._dict
+        )
 
 
 def modify_namespace(cls, namespace=None):
@@ -949,8 +957,8 @@ def modify_namespace(cls, namespace=None):
 
 
 __all__ = [
-    'Logger',
-    'LoggerCategories',
-    'log',
-    'modify_namespace',
+    "Logger",
+    "LoggerCategories",
+    "log",
+    "modify_namespace",
 ]

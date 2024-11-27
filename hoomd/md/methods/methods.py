@@ -80,13 +80,16 @@ class Thermostatted(Method):
 
                 nvt.thermostat = hoomd.md.methods.thermostats.Bussi(kT=0.5)
     """
+
     _remove_for_pickling = (*AutotunedObject._remove_for_pickling, "_thermo")
     _skip_for_equality = AutotunedObject._skip_for_equality | {
         "_thermo",
     }
     __doc__ = __doc__.replace("{inherited}", Method._doc_inherited)
 
-    _doc_inherited = Method._doc_inherited + """
+    _doc_inherited = (
+        Method._doc_inherited
+        + """
     ----------
 
     **Members inherited from**
@@ -97,6 +100,7 @@ class Thermostatted(Method):
         Temperature control for the integrator.
         `Read more... <hoomd.md.methods.Thermostatted.thermostat>`
     """
+    )
 
     def _setattr_param(self, attr, value):
         if attr == "thermostat":
@@ -115,8 +119,7 @@ class Thermostatted(Method):
             return
 
         if new_thermostat._attached:
-            raise RuntimeError("Trying to set a thermostat that is "
-                               "already attached")
+            raise RuntimeError("Trying to set a thermostat that is " "already attached")
         if self._attached:
             new_thermostat._set_thermo(self.filter, self._thermo)
             new_thermostat._attach(self._simulation)
@@ -161,7 +164,8 @@ class ConstantVolume(Thermostatted):
 
         nvt = hoomd.md.methods.ConstantVolume(
             filter=hoomd.filter.All(),
-            thermostat=hoomd.md.methods.thermostats.Bussi(kT=1.5))
+            thermostat=hoomd.md.methods.thermostats.Bussi(kT=1.5),
+        )
         simulation.operations.integrator.methods = [nvt]
 
     {inherited}
@@ -179,7 +183,9 @@ class ConstantVolume(Thermostatted):
 
     __doc__ = __doc__.replace("{inherited}", Thermostatted._doc_inherited)
 
-    _doc_inherited = Thermostatted._doc_inherited + """
+    _doc_inherited = (
+        Thermostatted._doc_inherited
+        + """
     ----------
 
     **Members inherited from**
@@ -190,13 +196,14 @@ class ConstantVolume(Thermostatted):
         Subset of particles on which to apply this method.
         `Read more... <hoomd.md.methods.ConstantVolume.filter>`
     """
+    )
 
     def __init__(self, filter, thermostat=None):
         super().__init__()
         # store metadata
-        param_dict = ParameterDict(filter=ParticleFilter,
-                                   thermostat=OnlyTypes(Thermostat,
-                                                        allow_none=True))
+        param_dict = ParameterDict(
+            filter=ParticleFilter, thermostat=OnlyTypes(Thermostat, allow_none=True)
+        )
         param_dict.update(dict(filter=filter, thermostat=thermostat))
         # set defaults
         self._param_dict.update(param_dict)
@@ -357,10 +364,12 @@ class ConstantPressure(Thermostatted):
 
     .. code-block:: python
 
-        nph = hoomd.md.methods.ConstantPressure(filter=hoomd.filter.All(),
-                                                tauS=1.0,
-                                                S=2.0,
-                                                couple="xyz")
+        nph = hoomd.md.methods.ConstantPressure(
+            filter=hoomd.filter.All(),
+            tauS=1.0,
+            S=2.0,
+            couple="xyz",
+        )
         simulation.operations.integrator.methods = [nph]
 
     NPT integrator with cubic symmetry:
@@ -372,7 +381,8 @@ class ConstantPressure(Thermostatted):
             tauS=1.0,
             S=2.0,
             couple="xyz",
-            thermostat=hoomd.md.methods.thermostats.Bussi(kT=1.5))
+            thermostat=hoomd.md.methods.thermostats.Bussi(kT=1.5),
+        )
         simulation.operations.integrator.methods = [npt]
 
     NPT integrator with tetragonal symmetry:
@@ -381,10 +391,11 @@ class ConstantPressure(Thermostatted):
 
         npt = hoomd.md.methods.ConstantPressure(
             filter=hoomd.filter.All(),
-            tauS = 1.0,
+            tauS=1.0,
             S=2.0,
             couple="xy",
-            thermostat=hoomd.md.methods.thermostats.Bussi(kT=1.5))
+            thermostat=hoomd.md.methods.thermostats.Bussi(kT=1.5),
+        )
         simulation.operations.integrator.methods = [npt]
 
     NPT integrator with orthorhombic symmetry:
@@ -393,10 +404,11 @@ class ConstantPressure(Thermostatted):
 
         npt = hoomd.md.methods.ConstantPressure(
             filter=hoomd.filter.All(),
-            tauS = 1.0,
+            tauS=1.0,
             S=2.0,
             couple="none",
-            thermostat=hoomd.md.methods.thermostats.Bussi(kT=1.5))
+            thermostat=hoomd.md.methods.thermostats.Bussi(kT=1.5),
+        )
         simulation.operations.integrator.methods = [npt]
 
 
@@ -406,11 +418,12 @@ class ConstantPressure(Thermostatted):
 
         npt = hoomd.md.methods.ConstantPressure(
             filter=hoomd.filter.All(),
-            tauS = 1.0,
+            tauS=1.0,
             S=2.0,
             couple="none",
             box_dof=[True, True, True, True, True, True],
-            thermostat=hoomd.md.methods.thermostats.Bussi(kT=1.5))
+            thermostat=hoomd.md.methods.thermostats.Bussi(kT=1.5),
+        )
         simulation.operations.integrator.methods = [npt]
 
     {inherited}
@@ -437,10 +450,7 @@ class ConstantPressure(Thermostatted):
 
             .. code-block:: python
 
-                npt.S = hoomd.variant.Ramp(A=1.0,
-                                           B=2.0,
-                                           t_start=0,
-                                           t_ramp=1_000_000)
+                npt.S = hoomd.variant.Ramp(A=1.0, B=2.0, t_start=0, t_ramp=1_000_000)
 
         tauS (float): Coupling constant for the barostat
             :math:`[\mathrm{time}]`.
@@ -458,7 +468,7 @@ class ConstantPressure(Thermostatted):
 
             .. code-block:: python
 
-                npt.couple = 'none'
+                npt.couple = "none"
 
         box_dof(list[bool]): Box degrees of freedom with six boolean elements in
             the order [x, y, z, xy, xz, yz].
@@ -495,8 +505,7 @@ class ConstantPressure(Thermostatted):
 
             .. code-block:: python
 
-                numpy.save(file=path / 'barostat_dof.npy',
-                           arr=npt.barostat_dof)
+                numpy.save(file=path / "barostat_dof.npy", arr=npt.barostat_dof)
 
             Load when continuing:
 
@@ -507,46 +516,54 @@ class ConstantPressure(Thermostatted):
                     tauS=1.0,
                     S=2.0,
                     couple="xyz",
-                    thermostat=hoomd.md.methods.thermostats.Bussi(kT=1.5))
+                    thermostat=hoomd.md.methods.thermostats.Bussi(kT=1.5),
+                )
                 simulation.operations.integrator.methods = [npt]
 
-                npt.barostat_dof = numpy.load(file=path / 'barostat_dof.npy')
+                npt.barostat_dof = numpy.load(file=path / "barostat_dof.npy")
     """
 
     __doc__ = __doc__.replace("{inherited}", Thermostatted._doc_inherited)
 
-    def __init__(self,
-                 filter,
-                 S,
-                 tauS,
-                 couple,
-                 thermostat=None,
-                 box_dof=[True, True, True, False, False, False],
-                 rescale_all=False,
-                 gamma=0.0):
+    def __init__(
+        self,
+        filter,
+        S,
+        tauS,
+        couple,
+        thermostat=None,
+        box_dof=[True, True, True, False, False, False],
+        rescale_all=False,
+        gamma=0.0,
+    ):
         super().__init__()
         # store metadata
-        param_dict = ParameterDict(filter=ParticleFilter,
-                                   thermostat=OnlyTypes(Thermostat,
-                                                        allow_none=True),
-                                   S=OnlyIf(to_type_converter((Variant,) * 6),
-                                            preprocess=self._preprocess_stress),
-                                   tauS=float(tauS),
-                                   couple=str(couple),
-                                   box_dof=[
-                                       bool,
-                                   ] * 6,
-                                   rescale_all=bool(rescale_all),
-                                   gamma=float(gamma),
-                                   barostat_dof=(float, float, float, float,
-                                                 float, float))
+        param_dict = ParameterDict(
+            filter=ParticleFilter,
+            thermostat=OnlyTypes(Thermostat, allow_none=True),
+            S=OnlyIf(
+                to_type_converter((Variant,) * 6), preprocess=self._preprocess_stress
+            ),
+            tauS=float(tauS),
+            couple=str(couple),
+            box_dof=[
+                bool,
+            ]
+            * 6,
+            rescale_all=bool(rescale_all),
+            gamma=float(gamma),
+            barostat_dof=(float, float, float, float, float, float),
+        )
         param_dict.update(
-            dict(filter=filter,
-                 thermostat=thermostat,
-                 S=S,
-                 couple=couple,
-                 box_dof=box_dof,
-                 barostat_dof=(0, 0, 0, 0, 0, 0)))
+            dict(
+                filter=filter,
+                thermostat=thermostat,
+                S=S,
+                couple=couple,
+                box_dof=box_dof,
+                barostat_dof=(0, 0, 0, 0, 0, 0),
+            )
+        )
 
         # set defaults
         self._param_dict.update(param_dict)
@@ -568,17 +585,32 @@ class ConstantPressure(Thermostatted):
         thermo_full_step = thermo_cls(cpp_sys_def, thermo_group)
 
         if self.thermostat is None:
-            self._cpp_obj = cpp_cls(cpp_sys_def, thermo_group, thermo_full_step,
-                                    self.tauS, self.S, self.couple,
-                                    self.box_dof, None, self.gamma)
+            self._cpp_obj = cpp_cls(
+                cpp_sys_def,
+                thermo_group,
+                thermo_full_step,
+                self.tauS,
+                self.S,
+                self.couple,
+                self.box_dof,
+                None,
+                self.gamma,
+            )
         else:
             self.thermostat._set_thermo(self.filter, self._thermo)
             self.thermostat._attach(self._simulation)
 
-            self._cpp_obj = cpp_cls(cpp_sys_def, thermo_group, thermo_full_step,
-                                    self.tauS, self.S, self.couple,
-                                    self.box_dof, self.thermostat._cpp_obj,
-                                    self.gamma)
+            self._cpp_obj = cpp_cls(
+                cpp_sys_def,
+                thermo_group,
+                thermo_full_step,
+                self.tauS,
+                self.S,
+                self.couple,
+                self.box_dof,
+                self.thermostat._cpp_obj,
+                self.gamma,
+            )
 
         # Attach param_dict and typeparam_dict
         super()._attach_hook()
@@ -586,8 +618,7 @@ class ConstantPressure(Thermostatted):
     def _preprocess_stress(self, value):
         if isinstance(value, Sequence):
             if len(value) != 6:
-                raise ValueError(
-                    "Expected a single hoomd.variant.variant_like or six.")
+                raise ValueError("Expected a single hoomd.variant.variant_like or six.")
             return tuple(value)
         else:
             return (value, value, value, 0, 0, 0)
@@ -613,8 +644,9 @@ class ConstantPressure(Thermostatted):
             `hoomd.md.methods.thermostats.MTTK.thermalize_dof`
         """
         if not self._attached:
-            raise RuntimeError("Call Simulation.run(0) before"
-                               "thermalize_barostat_dof")
+            raise RuntimeError(
+                "Call Simulation.run(0) before" "thermalize_barostat_dof"
+            )
 
         self._simulation._warn_if_seed_unset()
         self._cpp_obj.thermalizeBarostatDOF(self._simulation.timestep)
@@ -659,7 +691,8 @@ class DisplacementCapped(ConstantVolume):
 
         displacement_capped = hoomd.md.methods.DisplacementCapped(
             filter=hoomd.filter.All(),
-            maximum_displacement=1e-3)
+            maximum_displacement=1e-3,
+        )
         simulation.operations.integrator.methods = [displacement_capped]
 
     {inherited}
@@ -680,9 +713,7 @@ class DisplacementCapped(ConstantVolume):
 
     __doc__ = __doc__.replace("{inherited}", ConstantVolume._doc_inherited)
 
-    def __init__(self, filter,
-                 maximum_displacement: hoomd.variant.variant_like):
-
+    def __init__(self, filter, maximum_displacement: hoomd.variant.variant_like):
         # store metadata
         super().__init__(filter)
         param_dict = ParameterDict(maximum_displacement=hoomd.variant.Variant)
@@ -792,10 +823,7 @@ class Langevin(Method):
 
             .. code-block:: python
 
-                langevin.kT = hoomd.variant.Ramp(A=2.0,
-                                                 B=1.0,
-                                                 t_start=0,
-                                                 t_ramp=1_000_000)
+                langevin.kT = hoomd.variant.Ramp(A=2.0, B=1.0, t_start=0, t_ramp=1_000_000)
 
         tally_reservoir_energy (bool): When True, track the energy exchange
             between the thermal reservoir and the particles.
@@ -814,7 +842,7 @@ class Langevin(Method):
 
             .. code-block:: python
 
-                langevin.gamma['A'] = 0.5
+                langevin.gamma["A"] = 0.5
 
         gamma_r (TypeParameter[``particle type``,[`float`, `float` , `float`]]):
             The rotational drag coefficient tensor for each particle type
@@ -825,20 +853,19 @@ class Langevin(Method):
 
             .. code-block:: python
 
-                langevin.gamma_r['A'] = [1.0, 2.0, 3.0]
+                langevin.gamma_r["A"] = [1.0, 2.0, 3.0]
     """
 
     __doc__ = __doc__.replace("{inherited}", Method._doc_inherited)
 
     def __init__(
-            self,
-            filter,
-            kT,
-            tally_reservoir_energy=False,
-            default_gamma=1.0,
-            default_gamma_r=(1.0, 1.0, 1.0),
+        self,
+        filter,
+        kT,
+        tally_reservoir_energy=False,
+        default_gamma=1.0,
+        default_gamma_r=(1.0, 1.0, 1.0),
     ):
-
         # store metadata
         param_dict = ParameterDict(
             filter=ParticleFilter,
@@ -849,15 +876,18 @@ class Langevin(Method):
         # set defaults
         self._param_dict.update(param_dict)
 
-        gamma = TypeParameter('gamma',
-                              type_kind='particle_types',
-                              param_dict=TypeParameterDict(float, len_keys=1))
+        gamma = TypeParameter(
+            "gamma",
+            type_kind="particle_types",
+            param_dict=TypeParameterDict(float, len_keys=1),
+        )
         gamma.default = default_gamma
 
-        gamma_r = TypeParameter('gamma_r',
-                                type_kind='particle_types',
-                                param_dict=TypeParameterDict(
-                                    (float, float, float), len_keys=1))
+        gamma_r = TypeParameter(
+            "gamma_r",
+            type_kind="particle_types",
+            param_dict=TypeParameterDict((float, float, float), len_keys=1),
+        )
 
         gamma_r.default = default_gamma_r
 
@@ -872,8 +902,9 @@ class Langevin(Method):
         else:
             cls = _md.TwoStepLangevinGPU
 
-        self._cpp_obj = cls(sim.state._cpp_sys_def,
-                            sim.state._get_group(self.filter), self.kT)
+        self._cpp_obj = cls(
+            sim.state._cpp_sys_def, sim.state._get_group(self.filter), self.kT
+        )
 
         # Attach param_dict and typeparam_dict
         super()._attach_hook()
@@ -889,7 +920,7 @@ class Langevin(Method):
         .. code-block:: python
 
             langevin.tally_reservoir_energy = True
-            logger.add(obj=langevin, quantities=['reservoir_energy'])
+            logger.add(obj=langevin, quantities=["reservoir_energy"])
 
         Warning:
             When continuing a simulation, the energy of the reservoir will be
@@ -1019,10 +1050,7 @@ class Brownian(Method):
 
             .. code-block:: python
 
-                brownian.kT = hoomd.variant.Ramp(A=2.0,
-                                                 B=1.0,
-                                                 t_start=0,
-                                                 t_ramp=1_000_000)
+                brownian.kT = hoomd.variant.Ramp(A=2.0, B=1.0, t_start=0, t_ramp=1_000_000)
 
         gamma (TypeParameter[ ``particle type``, `float` ]): The drag
             coefficient for each particle type
@@ -1032,7 +1060,7 @@ class Brownian(Method):
 
             .. code-block:: python
 
-                brownian.gamma['A'] = 0.5
+                brownian.gamma["A"] = 0.5
 
         gamma_r (TypeParameter[``particle type``,[`float`, `float` , `float`]]):
             The rotational drag coefficient tensor for each particle type
@@ -1042,19 +1070,18 @@ class Brownian(Method):
 
             .. code-block:: python
 
-                brownian.gamma_r['A'] = [1.0, 2.0, 3.0]
+                brownian.gamma_r["A"] = [1.0, 2.0, 3.0]
     """
 
     __doc__ = __doc__.replace("{inherited}", Method._doc_inherited)
 
     def __init__(
-            self,
-            filter,
-            kT,
-            default_gamma=1.0,
-            default_gamma_r=(1.0, 1.0, 1.0),
+        self,
+        filter,
+        kT,
+        default_gamma=1.0,
+        default_gamma_r=(1.0, 1.0, 1.0),
     ):
-
         # store metadata
         param_dict = ParameterDict(
             filter=ParticleFilter,
@@ -1065,15 +1092,18 @@ class Brownian(Method):
         # set defaults
         self._param_dict.update(param_dict)
 
-        gamma = TypeParameter('gamma',
-                              type_kind='particle_types',
-                              param_dict=TypeParameterDict(float, len_keys=1))
+        gamma = TypeParameter(
+            "gamma",
+            type_kind="particle_types",
+            param_dict=TypeParameterDict(float, len_keys=1),
+        )
         gamma.default = default_gamma
 
-        gamma_r = TypeParameter('gamma_r',
-                                type_kind='particle_types',
-                                param_dict=TypeParameterDict(
-                                    (float, float, float), len_keys=1))
+        gamma_r = TypeParameter(
+            "gamma_r",
+            type_kind="particle_types",
+            param_dict=TypeParameterDict((float, float, float), len_keys=1),
+        )
 
         gamma_r.default = default_gamma_r
         self._extend_typeparam([gamma, gamma_r])
@@ -1083,13 +1113,21 @@ class Brownian(Method):
         self._simulation._warn_if_seed_unset()
         sim = self._simulation
         if isinstance(sim.device, hoomd.device.CPU):
-            self._cpp_obj = _md.TwoStepBD(sim.state._cpp_sys_def,
-                                          sim.state._get_group(self.filter),
-                                          self.kT, False, False)
+            self._cpp_obj = _md.TwoStepBD(
+                sim.state._cpp_sys_def,
+                sim.state._get_group(self.filter),
+                self.kT,
+                False,
+                False,
+            )
         else:
-            self._cpp_obj = _md.TwoStepBDGPU(sim.state._cpp_sys_def,
-                                             sim.state._get_group(self.filter),
-                                             self.kT, False, False)
+            self._cpp_obj = _md.TwoStepBDGPU(
+                sim.state._cpp_sys_def,
+                sim.state._get_group(self.filter),
+                self.kT,
+                False,
+                False,
+            )
 
         # Attach param_dict and typeparam_dict
         super()._attach_hook()
@@ -1155,8 +1193,7 @@ class OverdampedViscous(Method):
 
     .. code-block:: python
 
-        overdamped_viscous = hoomd.md.methods.OverdampedViscous(
-            filter=hoomd.filter.All())
+        overdamped_viscous = hoomd.md.methods.OverdampedViscous(filter=hoomd.filter.All())
         simulation.operations.integrator.methods = [overdamped_viscous]
 
     {inherited}
@@ -1177,7 +1214,7 @@ class OverdampedViscous(Method):
 
             .. code-block:: python
 
-                overdamped_viscous.gamma['A'] = 0.5
+                overdamped_viscous.gamma["A"] = 0.5
 
 
         gamma_r (TypeParameter[``particle type``,[`float`, `float` , `float`]]):
@@ -1188,34 +1225,38 @@ class OverdampedViscous(Method):
 
             .. code-block:: python
 
-                overdamped_viscous.gamma_r['A'] = [1.0, 2.0, 3.0]
+                overdamped_viscous.gamma_r["A"] = [1.0, 2.0, 3.0]
     """
 
     __doc__ = __doc__.replace("{inherited}", Method._doc_inherited)
 
     def __init__(
-            self,
-            filter,
-            default_gamma=1.0,
-            default_gamma_r=(1.0, 1.0, 1.0),
+        self,
+        filter,
+        default_gamma=1.0,
+        default_gamma_r=(1.0, 1.0, 1.0),
     ):
-
         # store metadata
-        param_dict = ParameterDict(filter=ParticleFilter,)
+        param_dict = ParameterDict(
+            filter=ParticleFilter,
+        )
         param_dict.update(dict(filter=filter))
 
         # set defaults
         self._param_dict.update(param_dict)
 
-        gamma = TypeParameter('gamma',
-                              type_kind='particle_types',
-                              param_dict=TypeParameterDict(float, len_keys=1))
+        gamma = TypeParameter(
+            "gamma",
+            type_kind="particle_types",
+            param_dict=TypeParameterDict(float, len_keys=1),
+        )
         gamma.default = default_gamma
 
-        gamma_r = TypeParameter('gamma_r',
-                                type_kind='particle_types',
-                                param_dict=TypeParameterDict(
-                                    (float, float, float), len_keys=1))
+        gamma_r = TypeParameter(
+            "gamma_r",
+            type_kind="particle_types",
+            param_dict=TypeParameterDict((float, float, float), len_keys=1),
+        )
 
         gamma_r.default = default_gamma_r
         self._extend_typeparam([gamma, gamma_r])
@@ -1225,15 +1266,21 @@ class OverdampedViscous(Method):
         self._simulation._warn_if_seed_unset()
         sim = self._simulation
         if isinstance(sim.device, hoomd.device.CPU):
-            self._cpp_obj = _md.TwoStepBD(sim.state._cpp_sys_def,
-                                          sim.state._get_group(self.filter),
-                                          hoomd.variant.Constant(0.0), True,
-                                          True)
+            self._cpp_obj = _md.TwoStepBD(
+                sim.state._cpp_sys_def,
+                sim.state._get_group(self.filter),
+                hoomd.variant.Constant(0.0),
+                True,
+                True,
+            )
         else:
-            self._cpp_obj = _md.TwoStepBDGPU(sim.state._cpp_sys_def,
-                                             sim.state._get_group(self.filter),
-                                             hoomd.variant.Constant(1.0), True,
-                                             True)
+            self._cpp_obj = _md.TwoStepBDGPU(
+                sim.state._cpp_sys_def,
+                sim.state._get_group(self.filter),
+                hoomd.variant.Constant(1.0),
+                True,
+                True,
+            )
 
         # Attach param_dict and typeparam_dict
         super()._attach_hook()

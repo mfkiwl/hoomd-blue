@@ -76,8 +76,10 @@ class BoxResize(Updater):
 
     .. code-block:: python
 
-        box_resize = hoomd.update.BoxResize(trigger=hoomd.trigger.Periodic(10),
-                                            box=inverse_volume_ramp)
+        box_resize = hoomd.update.BoxResize(
+            trigger=hoomd.trigger.Periodic(10),
+            box=inverse_volume_ramp,
+        )
         simulation.operations.updaters.append(box_resize)
 
     {inherited}
@@ -108,15 +110,14 @@ class BoxResize(Updater):
     __doc__ = __doc__.replace("{inherited}", Updater._doc_inherited)
 
     def __init__(
-            self,
-            trigger,
-            box,
-            filter=All(),
+        self,
+        trigger,
+        box,
+        filter=All(),
     ):
-        params = ParameterDict(box=hoomd.variant.box.BoxVariant,
-                               filter=ParticleFilter)
+        params = ParameterDict(box=hoomd.variant.box.BoxVariant, filter=ParticleFilter)
 
-        params.update({'box': box, 'filter': filter})
+        params.update({"box": box, "filter": filter})
         self._param_dict.update(params)
         super().__init__(trigger)
 
@@ -124,12 +125,12 @@ class BoxResize(Updater):
         group = self._simulation.state._get_group(self.filter)
         if isinstance(self._simulation.device, hoomd.device.CPU):
             self._cpp_obj = _hoomd.BoxResizeUpdater(
-                self._simulation.state._cpp_sys_def, self.trigger, self.box,
-                group)
+                self._simulation.state._cpp_sys_def, self.trigger, self.box, group
+            )
         else:
             self._cpp_obj = _hoomd.BoxResizeUpdaterGPU(
-                self._simulation.state._cpp_sys_def, self.trigger, self.box,
-                group)
+                self._simulation.state._cpp_sys_def, self.trigger, self.box, group
+            )
 
     def get_box(self, timestep):
         """Get the box for a given timestep.
@@ -170,18 +171,18 @@ class BoxResize(Updater):
 
         .. code-block:: python
 
-            hoomd.update.BoxResize.update(state=simulation.state,
-                                          box=box)
+            hoomd.update.BoxResize.update(state=simulation.state, box=box)
         """
         group = state._get_group(filter)
 
         box_variant = hoomd.variant.box.Constant(box)
 
         if isinstance(state._simulation.device, hoomd.device.CPU):
-            updater = _hoomd.BoxResizeUpdater(state._cpp_sys_def, Periodic(1),
-                                              box_variant, group)
+            updater = _hoomd.BoxResizeUpdater(
+                state._cpp_sys_def, Periodic(1), box_variant, group
+            )
         else:
-            updater = _hoomd.BoxResizeUpdaterGPU(state._cpp_sys_def,
-                                                 Periodic(1), box_variant,
-                                                 group)
+            updater = _hoomd.BoxResizeUpdaterGPU(
+                state._cpp_sys_def, Periodic(1), box_variant, group
+            )
         updater.update(state._simulation.timestep)

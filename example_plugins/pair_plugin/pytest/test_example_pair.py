@@ -14,16 +14,15 @@ import numpy as np
 
 # Python implementation of the pair force and energy.
 def harm_force_and_energy(dx, k, sigma, r_cut, shift=False):
-
     dr = np.linalg.norm(dx)
 
     if dr >= r_cut:
         return np.array([0.0, 0.0, 0.0], dtype=np.float64), 0.0
 
     f = k * (sigma - dr) * np.array(dx, dtype=np.float64) / dr
-    e = 0.5 * k * (sigma - dr)**2
+    e = 0.5 * k * (sigma - dr) ** 2
     if shift:
-        e -= 0.5 * k * (r_cut - sigma)**2
+        e -= 0.5 * k * (r_cut - sigma) ** 2
 
     return f, e
 
@@ -39,10 +38,9 @@ testdata = list(itertools.product(distances, ks, sigmas, modes))
 
 
 @pytest.mark.parametrize("distance, k, sigma, mode", testdata)
-def test_force_and_energy_eval(simulation_factory,
-                               two_particle_snapshot_factory, distance, k,
-                               sigma, mode):
-
+def test_force_and_energy_eval(
+    simulation_factory, two_particle_snapshot_factory, distance, k, sigma, mode
+):
     # Build the simulation from the factory fixtures defined in
     # hoomd/conftest.py.
     sim = simulation_factory(two_particle_snapshot_factory(d=distance))
@@ -53,7 +51,8 @@ def test_force_and_energy_eval(simulation_factory,
 
     cell = hoomd.md.nlist.Cell(buffer=0.4)
     example_pair: hoomd.md.pair.Pair = pair_plugin.pair.ExamplePair(
-        cell, default_r_cut=sigma, mode=mode)
+        cell, default_r_cut=sigma, mode=mode
+    )
     example_pair.params[("A", "A")] = dict(k=k, sigma=sigma)
     integrator.forces = [example_pair]
     integrator.methods = [nve]

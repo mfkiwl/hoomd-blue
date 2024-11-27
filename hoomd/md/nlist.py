@@ -120,7 +120,9 @@ class NeighborList(Compute):
 
     __doc__ = __doc__.replace("{inherited}", Compute._doc_inherited)
 
-    _doc_inherited = Compute._doc_inherited + """
+    _doc_inherited = (
+        Compute._doc_inherited
+        + """
     ----------
 
     **Members inherited from**
@@ -187,28 +189,40 @@ class NeighborList(Compute):
         `Read more... <hoomd.md.nlist.NeighborList.shortest_rebuild>`
 
     """
+    )
 
-    def __init__(self, buffer, exclusions, rebuild_check_delay, check_dist,
-                 mesh, default_r_cut):
-
-        validate_exclusions = OnlyFrom([
-            'bond', 'angle', 'constraint', 'dihedral', 'special_pair', 'body',
-            '1-3', '1-4', 'meshbond'
-        ])
+    def __init__(
+        self, buffer, exclusions, rebuild_check_delay, check_dist, mesh, default_r_cut
+    ):
+        validate_exclusions = OnlyFrom(
+            [
+                "bond",
+                "angle",
+                "constraint",
+                "dihedral",
+                "special_pair",
+                "body",
+                "1-3",
+                "1-4",
+                "meshbond",
+            ]
+        )
 
         validate_mesh = OnlyTypes(Mesh, allow_none=True)
 
         tp_r_cut = TypeParameter(
-            'r_cut', 'particle_types',
-            TypeParameterDict(nonnegative_real, len_keys=2))
+            "r_cut", "particle_types", TypeParameterDict(nonnegative_real, len_keys=2)
+        )
         tp_r_cut.default = default_r_cut
         self._add_typeparam(tp_r_cut)
 
         # default exclusions
-        params = ParameterDict(exclusions=[validate_exclusions],
-                               buffer=float(buffer),
-                               rebuild_check_delay=int(rebuild_check_delay),
-                               check_dist=bool(check_dist))
+        params = ParameterDict(
+            exclusions=[validate_exclusions],
+            buffer=float(buffer),
+            rebuild_check_delay=int(rebuild_check_delay),
+            check_dist=bool(check_dist),
+        )
         params["exclusions"] = exclusions
         self._param_dict.update(params)
 
@@ -250,12 +264,13 @@ class NeighborList(Compute):
         if not self._attached:
             raise hoomd.error.DataAccessError("cpu_local_nlist_arrays")
         if self._in_context_manager:
-            raise RuntimeError("Cannot enter cpu_local_nlist_arrays context "
-                               "manager inside another local_nlist_arrays "
-                               "context manager")
+            raise RuntimeError(
+                "Cannot enter cpu_local_nlist_arrays context "
+                "manager inside another local_nlist_arrays "
+                "context manager"
+            )
         self._cpp_obj.compute(self._simulation.timestep)
-        return hoomd.md.data.NeighborListLocalAccess(self,
-                                                     self._simulation.state)
+        return hoomd.md.data.NeighborListLocalAccess(self, self._simulation.state)
 
     @property
     def gpu_local_nlist_arrays(self):
@@ -341,16 +356,17 @@ class NeighborList(Compute):
         """
         if not isinstance(self._simulation.device, hoomd.device.GPU):
             raise RuntimeError(
-                "Cannot access gpu_local_nlist_arrays without a GPU device")
+                "Cannot access gpu_local_nlist_arrays without a GPU device"
+            )
         if not self._attached:
             raise hoomd.error.DataAccessError("gpu_local_nlist_arrays")
         if self._in_context_manager:
             raise RuntimeError(
                 "Cannot enter gpu_local_nlist_arrays context manager inside "
-                "another local_nlist_arrays context manager")
+                "another local_nlist_arrays context manager"
+            )
         self._cpp_obj.compute(self._simulation.timestep)
-        return hoomd.md.data.NeighborListLocalAccessGPU(self,
-                                                        self._simulation.state)
+        return hoomd.md.data.NeighborListLocalAccessGPU(self, self._simulation.state)
 
     @property
     def local_pair_list(self):
@@ -454,31 +470,31 @@ class Cell(NeighborList):
 
     __doc__ = __doc__.replace("{inherited}", NeighborList._doc_inherited)
 
-    def __init__(self,
-                 buffer,
-                 exclusions=('bond',),
-                 rebuild_check_delay=1,
-                 check_dist=True,
-                 deterministic=False,
-                 mesh=None,
-                 default_r_cut=0.0):
+    def __init__(
+        self,
+        buffer,
+        exclusions=("bond",),
+        rebuild_check_delay=1,
+        check_dist=True,
+        deterministic=False,
+        mesh=None,
+        default_r_cut=0.0,
+    ):
+        super().__init__(
+            buffer, exclusions, rebuild_check_delay, check_dist, mesh, default_r_cut
+        )
 
-        super().__init__(buffer, exclusions, rebuild_check_delay, check_dist,
-                         mesh, default_r_cut)
-
-        self._param_dict.update(
-            ParameterDict(deterministic=bool(deterministic)))
+        self._param_dict.update(ParameterDict(deterministic=bool(deterministic)))
 
     def _attach_hook(self):
         if isinstance(self._simulation.device, hoomd.device.CPU):
             nlist_cls = _md.NeighborListBinned
         else:
             nlist_cls = _md.NeighborListGPUBinned
-        self._cpp_obj = nlist_cls(self._simulation.state._cpp_sys_def,
-                                  self.buffer)
+        self._cpp_obj = nlist_cls(self._simulation.state._cpp_sys_def, self.buffer)
         super()._attach_hook()
 
-    @log(requires_run=True, default=False, category='sequence')
+    @log(requires_run=True, default=False, category="sequence")
     def dimensions(self):
         """tuple[int, int, int]: Cell list dimensions.
 
@@ -569,21 +585,24 @@ class Stencil(NeighborList):
 
     __doc__ = __doc__.replace("{inherited}", NeighborList._doc_inherited)
 
-    def __init__(self,
-                 cell_width,
-                 buffer,
-                 exclusions=('bond',),
-                 rebuild_check_delay=1,
-                 check_dist=True,
-                 deterministic=False,
-                 mesh=None,
-                 default_r_cut=0.0):
+    def __init__(
+        self,
+        cell_width,
+        buffer,
+        exclusions=("bond",),
+        rebuild_check_delay=1,
+        check_dist=True,
+        deterministic=False,
+        mesh=None,
+        default_r_cut=0.0,
+    ):
+        super().__init__(
+            buffer, exclusions, rebuild_check_delay, check_dist, mesh, default_r_cut
+        )
 
-        super().__init__(buffer, exclusions, rebuild_check_delay, check_dist,
-                         mesh, default_r_cut)
-
-        params = ParameterDict(deterministic=bool(deterministic),
-                               cell_width=float(cell_width))
+        params = ParameterDict(
+            deterministic=bool(deterministic), cell_width=float(cell_width)
+        )
 
         self._param_dict.update(params)
 
@@ -592,8 +611,7 @@ class Stencil(NeighborList):
             nlist_cls = _md.NeighborListStencil
         else:
             nlist_cls = _md.NeighborListGPUStencil
-        self._cpp_obj = nlist_cls(self._simulation.state._cpp_sys_def,
-                                  self.buffer)
+        self._cpp_obj = nlist_cls(self._simulation.state._cpp_sys_def, self.buffer)
         super()._attach_hook()
 
 
@@ -646,30 +664,31 @@ class Tree(NeighborList):
 
     __doc__ += NeighborList._doc_inherited
 
-    def __init__(self,
-                 buffer,
-                 exclusions=('bond',),
-                 rebuild_check_delay=1,
-                 check_dist=True,
-                 mesh=None,
-                 default_r_cut=0.0):
-
-        super().__init__(buffer, exclusions, rebuild_check_delay, check_dist,
-                         mesh, default_r_cut)
+    def __init__(
+        self,
+        buffer,
+        exclusions=("bond",),
+        rebuild_check_delay=1,
+        check_dist=True,
+        mesh=None,
+        default_r_cut=0.0,
+    ):
+        super().__init__(
+            buffer, exclusions, rebuild_check_delay, check_dist, mesh, default_r_cut
+        )
 
     def _attach_hook(self):
         if isinstance(self._simulation.device, hoomd.device.CPU):
             nlist_cls = _md.NeighborListTree
         else:
             nlist_cls = _md.NeighborListGPUTree
-        self._cpp_obj = nlist_cls(self._simulation.state._cpp_sys_def,
-                                  self.buffer)
+        self._cpp_obj = nlist_cls(self._simulation.state._cpp_sys_def, self.buffer)
         super()._attach_hook()
 
 
 __all__ = [
-    'Cell',
-    'NeighborList',
-    'Stencil',
-    'Tree',
+    "Cell",
+    "NeighborList",
+    "Stencil",
+    "Tree",
 ]

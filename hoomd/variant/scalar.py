@@ -24,13 +24,13 @@ class Variant(_hoomd.Variant):
                 hoomd.variant.Variant.__init__(self)
 
             def __call__(self, timestep):
-                return (float(timestep)**(1 / 2))
+                return float(timestep) ** (1 / 2)
 
             def _min(self):
                 return 0.0
 
             def _max(self):
-                return float('inf')
+                return float("inf")
 
     Note:
         Provide the minimum and maximum values in the ``_min`` and ``_max``
@@ -94,8 +94,8 @@ class Variant(_hoomd.Variant):
         if not isinstance(other, type(self)):
             return False
         return all(
-            getattr(self, attr) == getattr(other, attr)
-            for attr in self._eq_attrs)
+            getattr(self, attr) == getattr(other, attr) for attr in self._eq_attrs
+        )
 
 
 class Constant(_hoomd.VariantConstant, Variant):
@@ -121,6 +121,7 @@ class Constant(_hoomd.VariantConstant, Variant):
     Attributes:
         value (float): The value.
     """
+
     _eq_attrs = ("value",)
 
     def __init__(self, value):
@@ -150,10 +151,7 @@ class Ramp(_hoomd.VariantRamp, Variant):
 
     .. code-block:: python
 
-            variant = hoomd.variant.Ramp(A=1.0,
-                                         B=2.0,
-                                         t_start=10_000,
-                                         t_ramp=100_000)
+            variant = hoomd.variant.Ramp(A=1.0, B=2.0, t_start=10_000, t_ramp=100_000)
 
     {inherited}
 
@@ -167,6 +165,7 @@ class Ramp(_hoomd.VariantRamp, Variant):
         t_start (int): The start time step.
         t_ramp (int): The length of the ramp.
     """
+
     _eq_attrs = ("A", "B", "t_start", "t_ramp")
     __doc__ = __doc__.replace("{inherited}", Variant._doc_inherited)
 
@@ -202,13 +201,15 @@ class Cycle(_hoomd.VariantCycle, Variant):
 
     .. code-block:: python
 
-            variant = hoomd.variant.Cycle(A=1.0,
-                                          B=2.0,
-                                          t_start=10_000,
-                                          t_A=100_000,
-                                          t_AB=1_000_000,
-                                          t_B=200_000,
-                                          t_BA=2_000_000)
+            variant = hoomd.variant.Cycle(
+                A=1.0,
+                B=2.0,
+                t_start=10_000,
+                t_A=100_000,
+                t_AB=1_000_000,
+                t_B=200_000,
+                t_BA=2_000_000,
+            )
 
     {inherited}
 
@@ -225,6 +226,7 @@ class Cycle(_hoomd.VariantCycle, Variant):
         t_B (int): The holding time at B.
         t_BA (int): The time spent ramping from B to A.
     """
+
     _eq_attrs = ("A", "B", "t_start", "t_A", "t_AB", "t_B", "t_BA")
     __doc__ = __doc__.replace("{inherited}", Variant._doc_inherited)
 
@@ -256,10 +258,7 @@ class Power(_hoomd.VariantPower, Variant):
 
     .. code-block:: python
 
-        variant = hoomd.variant.Power(A=2,
-                                      B=8,
-                                      power=1 / 10,
-                                      t_start=10, t_ramp=20)
+        variant = hoomd.variant.Power(A=2, B=8, power=1 / 10, t_start=10, t_ramp=20)
 
     {inherited}
 
@@ -274,6 +273,7 @@ class Power(_hoomd.VariantPower, Variant):
         t_start (int): The start time step.
         t_ramp (int): The length of the ramp.
     """
+
     _eq_attrs = ("A", "B", "power", "t_start", "t_ramp")
     __doc__ = __doc__.replace("{inherited}", Variant._doc_inherited)
 

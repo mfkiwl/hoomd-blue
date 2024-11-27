@@ -86,12 +86,14 @@ class Harmonic(MeshPotential):
             * ``r0`` (`float`, **required**) - rest length
               :math:`[\mathrm{length}]`
     """
+
     _cpp_class_name = "PotentialMeshBondHarmonic"
     __doc__ = __doc__.replace("{inherited}", MeshPotential._doc_inherited)
 
     def __init__(self, mesh):
-        params = TypeParameter("params", "types",
-                               TypeParameterDict(k=float, r0=float, len_keys=1))
+        params = TypeParameter(
+            "params", "types", TypeParameterDict(k=float, r0=float, len_keys=1)
+        )
         self._add_typeparam(params)
 
         super().__init__(mesh)
@@ -111,8 +113,9 @@ class FENEWCA(MeshPotential):
     .. code-block:: python
 
         bond_potential = hoomd.md.mesh.bond.FENEWCA(mesh)
-        bond_potential.params["mesh"] = dict(k=10.0, r0=1.0,
-                                            epsilon=0.8, sigma=1.2, delta=0.0)
+        bond_potential.params["mesh"] = dict(
+            k=10.0, r0=1.0, epsilon=0.8, sigma=1.2, delta=0.0
+        )
 
     {inherited}
 
@@ -141,18 +144,18 @@ class FENEWCA(MeshPotential):
             * ``delta`` (`float`, **required**) - radial shift :math:`\Delta`
               :math:`[\mathrm{length}]`.
     """
+
     _cpp_class_name = "PotentialMeshBondFENE"
     __doc__ = __doc__.replace("{inherited}", MeshPotential._doc_inherited)
 
     def __init__(self, mesh):
         params = TypeParameter(
-            "params", "types",
-            TypeParameterDict(k=float,
-                              r0=float,
-                              epsilon=float,
-                              sigma=float,
-                              delta=float,
-                              len_keys=1))
+            "params",
+            "types",
+            TypeParameterDict(
+                k=float, r0=float, epsilon=float, sigma=float, delta=float, len_keys=1
+            ),
+        )
         self._add_typeparam(params)
 
         super().__init__(mesh)
@@ -172,8 +175,9 @@ class Tether(MeshPotential):
     .. code-block:: python
 
         bond_potential = hoomd.md.mesh.bond.Tether(mesh)
-        bond_potential.params["mesh"] = dict(k_b=10.0, l_min=0.9, l_c1=1.2,
-                                         l_c0=1.8, l_max=2.1)
+        bond_potential.params["mesh"] = dict(
+            k_b=10.0, l_min=0.9, l_c1=1.2, l_c0=1.8, l_max=2.1
+        )
 
     {inherited}
 
@@ -202,25 +206,25 @@ class Tether(MeshPotential):
             * ``l_max`` (`float`, **required**) - maximum bond length
               :math:`[\mathrm{length}]`
     """
+
     _cpp_class_name = "PotentialMeshBondTether"
     __doc__ = __doc__.replace("{inherited}", MeshPotential._doc_inherited)
 
     def __init__(self, mesh):
         params = TypeParameter(
-            "params", "types",
-            TypeParameterDict(k_b=float,
-                              l_min=float,
-                              l_c1=float,
-                              l_c0=float,
-                              l_max=float,
-                              len_keys=1))
+            "params",
+            "types",
+            TypeParameterDict(
+                k_b=float, l_min=float, l_c1=float, l_c0=float, l_max=float, len_keys=1
+            ),
+        )
         self._add_typeparam(params)
 
         super().__init__(mesh)
 
 
 __all__ = [
-    'FENEWCA',
-    'Harmonic',
-    'Tether',
+    "FENEWCA",
+    "Harmonic",
+    "Tether",
 ]

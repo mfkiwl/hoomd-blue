@@ -66,8 +66,7 @@ class BounceBack(Method):
     .. code-block:: python
 
         plates = hoomd.mpcd.geometry.ParallelPlates(separation=6.0)
-        nve = hoomd.mpcd.methods.BounceBack(
-            filter=hoomd.filter.All(), geometry=plates)
+        nve = hoomd.mpcd.methods.BounceBack(filter=hoomd.filter.All(), geometry=plates)
         simulation.operations.integrator.methods.append(nve)
 
     {inherited}
@@ -130,8 +129,7 @@ class BounceBack(Method):
         assert class_ is not None, "Bounce back method for geometry not found"
 
         group = sim.state._get_group(self.filter)
-        self._cpp_obj = class_(sim.state._cpp_sys_def, group,
-                               self.geometry._cpp_obj)
+        self._cpp_obj = class_(sim.state._cpp_sys_def, group, self.geometry._cpp_obj)
         super()._attach_hook()
 
     def _detach_hook(self):
@@ -144,5 +142,5 @@ class BounceBack(Method):
 
 
 __all__ = [
-    'BounceBack',
+    "BounceBack",
 ]

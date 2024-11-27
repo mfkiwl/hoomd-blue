@@ -11,7 +11,7 @@ Example::
     integrator.methods.append(nvt)
     ljg = hoomd.md.alchemy.pair.LJGauss(...)
     integrator.forces.append(ljg)
-    r0_alchemical_dof = ljg.r0[('A', 'A')]
+    r0_alchemical_dof = ljg.r0[("A", "A")]
     alchemostat = hoomd.md.alchemy.methods.NVT(
         period=period,
         alchemical_dof=[r0_alchemical_dof],
@@ -25,6 +25,6 @@ from . import methods
 from . import pair
 
 __all__ = [
-    'methods',
-    'pair',
+    "methods",
+    "pair",
 ]

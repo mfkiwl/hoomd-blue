@@ -57,10 +57,11 @@ class ShapeMove(_HOOMDBaseObject):
             step_size = float
         else:
             step_size = float(default_step_size)
-        typeparam_step_size = TypeParameter('step_size',
-                                            type_kind='particle_types',
-                                            param_dict=TypeParameterDict(
-                                                step_size, len_keys=1))
+        typeparam_step_size = TypeParameter(
+            "step_size",
+            type_kind="particle_types",
+            param_dict=TypeParameterDict(step_size, len_keys=1),
+        )
         self._add_typeparam(typeparam_step_size)
 
     def _attach_hook(self):
@@ -72,13 +73,13 @@ class ShapeMove(_HOOMDBaseObject):
 
         integrator_name = integrator.__class__.__name__
         if integrator_name in self._supported_shapes:
-            self._move_cls = getattr(_hpmc,
-                                     self.__class__.__name__ + integrator_name)
+            self._move_cls = getattr(_hpmc, self.__class__.__name__ + integrator_name)
         else:
             raise RuntimeError("Integrator not supported")
         self._cpp_obj = self._move_cls(
             self._simulation.state._cpp_sys_def,
-            self._simulation.operations.integrator._cpp_obj)
+            self._simulation.operations.integrator._cpp_obj,
+        )
 
 
 class Elastic(ShapeMove):
@@ -148,17 +149,15 @@ class Elastic(ShapeMove):
             deformation trial moves (**default**: 0.5).
     """
 
-    _supported_shapes = {'ConvexPolyhedron'}
+    _supported_shapes = {"ConvexPolyhedron"}
     __doc__ = __doc__.replace("{inherited}", ShapeMove._doc_inherited)
 
-    def __init__(self,
-                 stiffness,
-                 mc,
-                 default_step_size=None,
-                 normal_shear_ratio=0.5):
+    def __init__(self, stiffness, mc, default_step_size=None, normal_shear_ratio=0.5):
         super().__init__(default_step_size)
-        param_dict = ParameterDict(normal_shear_ratio=float(normal_shear_ratio),
-                                   stiffness=hoomd.variant.Variant)
+        param_dict = ParameterDict(
+            normal_shear_ratio=float(normal_shear_ratio),
+            stiffness=hoomd.variant.Variant,
+        )
         param_dict["stiffness"] = stiffness
         self._param_dict.update(param_dict)
         self._add_typeparam(self._get_shape_param(mc))
@@ -169,8 +168,10 @@ class Elastic(ShapeMove):
         else:
             cls = mc
         if cls.__name__ not in self._supported_shapes:
-            raise ValueError(f"Unsupported integrator type {cls}. Supported "
-                             f"types are {self._supported_shapes}")
+            raise ValueError(
+                f"Unsupported integrator type {cls}. Supported "
+                f"types are {self._supported_shapes}"
+            )
         # Class can only be used for this type of integrator now.
         self._supported_shapes = {cls.__name__}
         shape = cls().shape
@@ -181,8 +182,9 @@ class Elastic(ShapeMove):
         integrator = self._simulation.operations.integrator
         if isinstance(integrator, integrate.Ellipsoid):
             for shape in integrator.shape.values():
-                is_sphere = numpy.allclose((shape["a"], shape["b"], shape["c"]),
-                                           shape["a"])
+                is_sphere = numpy.allclose(
+                    (shape["a"], shape["b"], shape["c"]), shape["a"]
+                )
                 if not is_sphere:
                     raise ValueError("This updater only works when a=b=c.")
         super()._attach_hook()
@@ -261,26 +263,22 @@ class ShapeSpace(ShapeMove):
             parameters to change each timestep (**default**: 1).
     """
 
-    _supported_shapes = {
-        'ConvexPolyhedron', 'ConvexSpheropolyhedron', 'Ellipsoid'
-    }
+    _supported_shapes = {"ConvexPolyhedron", "ConvexSpheropolyhedron", "Ellipsoid"}
     __doc__ = __doc__.replace("{inherited}", ShapeMove._doc_inherited)
 
-    def __init__(self,
-                 callback,
-                 default_step_size=None,
-                 param_move_probability=1):
+    def __init__(self, callback, default_step_size=None, param_move_probability=1):
         super().__init__(default_step_size)
         param_dict = ParameterDict(
-            param_move_probability=float(param_move_probability),
-            callback=object)
+            param_move_probability=float(param_move_probability), callback=object
+        )
         param_dict["callback"] = callback
         self._param_dict.update(param_dict)
 
-        typeparam_shapeparams = TypeParameter('params',
-                                              type_kind='particle_types',
-                                              param_dict=TypeParameterDict(
-                                                  [float], len_keys=1))
+        typeparam_shapeparams = TypeParameter(
+            "params",
+            type_kind="particle_types",
+            param_dict=TypeParameterDict([float], len_keys=1),
+        )
         self._add_typeparam(typeparam_shapeparams)
 
 
@@ -340,24 +338,26 @@ class Vertex(ShapeMove):
             maintain this volume.
     """
 
-    _supported_shapes = {'ConvexPolyhedron'}
+    _supported_shapes = {"ConvexPolyhedron"}
     __doc__ = __doc__.replace("{inherited}", ShapeMove._doc_inherited)
 
     def __init__(self, default_step_size=None, vertex_move_probability=1):
         super().__init__(default_step_size)
         param_dict = ParameterDict(
-            vertex_move_probability=float(vertex_move_probability))
+            vertex_move_probability=float(vertex_move_probability)
+        )
         self._param_dict.update(param_dict)
-        typeparam_volume = TypeParameter('volume',
-                                         type_kind='particle_types',
-                                         param_dict=TypeParameterDict(
-                                             float, len_keys=1))
+        typeparam_volume = TypeParameter(
+            "volume",
+            type_kind="particle_types",
+            param_dict=TypeParameterDict(float, len_keys=1),
+        )
         self._add_typeparam(typeparam_volume)
 
 
 __all__ = [
-    'Elastic',
-    'ShapeMove',
-    'ShapeSpace',
-    'Vertex',
+    "Elastic",
+    "ShapeMove",
+    "ShapeSpace",
+    "Vertex",
 ]

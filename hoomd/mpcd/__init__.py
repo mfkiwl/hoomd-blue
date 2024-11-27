@@ -69,12 +69,12 @@ from hoomd.mpcd import stream
 from hoomd.mpcd import tune
 
 __all__ = [
-    'Integrator',
-    'collide',
-    'fill',
-    'force',
-    'geometry',
-    'methods',
-    'stream',
-    'tune',
+    "Integrator",
+    "collide",
+    "fill",
+    "force",
+    "geometry",
+    "methods",
+    "stream",
+    "tune",
 ]

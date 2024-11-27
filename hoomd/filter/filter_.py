@@ -69,8 +69,9 @@ class ParticleFilter(_hoomd.ParticleFilter):
             if filter == other:
                 pass
         """
-        raise NotImplementedError("Equality between {} is not defined.".format(
-            self.__class__))
+        raise NotImplementedError(
+            "Equality between {} is not defined.".format(self.__class__)
+        )
 
     def __str__(self):
         """Format a human readable string describing the filter.

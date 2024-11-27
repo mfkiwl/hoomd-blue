@@ -25,12 +25,13 @@ def skip_validate(request):
 
     Pass the command line option --validate to enable these tests.
     """
-    if request.node.get_closest_marker('validate'):
+    if request.node.get_closest_marker("validate"):
         if not request.config.getoption("validate"):
-            pytest.skip('Validation tests not requested.')
+            pytest.skip("Validation tests not requested.")
 
 
 def pytest_configure(config):
     """Define the ``validate`` marker."""
     config.addinivalue_line(
-        "markers", "validate: Tests that perform long-running validations.")
+        "markers", "validate: Tests that perform long-running validations."
+    )

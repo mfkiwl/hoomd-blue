@@ -303,14 +303,22 @@ class Rigid(Constraint):
 
     def __init__(self):
         body = TypeParameter(
-            "body", "particle_types",
-            TypeParameterDict(OnlyIf(to_type_converter({
-                'constituent_types': [str],
-                'positions': [(float,) * 3],
-                'orientations': [(float,) * 4],
-            }),
-                                     allow_none=True),
-                              len_keys=1))
+            "body",
+            "particle_types",
+            TypeParameterDict(
+                OnlyIf(
+                    to_type_converter(
+                        {
+                            "constituent_types": [str],
+                            "positions": [(float,) * 3],
+                            "orientations": [(float,) * 4],
+                        }
+                    ),
+                    allow_none=True,
+                ),
+                len_keys=1,
+            ),
+        )
         self._add_typeparam(body)
         self.body.default = None
 
@@ -328,8 +336,7 @@ class Rigid(Constraint):
         particle ``body`` tags in the state.
         """
         if self._attached:
-            raise RuntimeError(
-                "Cannot call create_bodies after running simulation.")
+            raise RuntimeError("Cannot call create_bodies after running simulation.")
         super()._attach(state._simulation)
         self._cpp_obj.createRigidBodies({} if charges is None else charges)
         # Restore previous state
@@ -344,7 +351,7 @@ class Rigid(Constraint):
 
 
 __all__ = [
-    'Constraint',
-    'Distance',
-    'Rigid',
+    "Constraint",
+    "Distance",
+    "Rigid",
 ]

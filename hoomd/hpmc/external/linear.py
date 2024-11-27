@@ -16,7 +16,7 @@ import hoomd
 from .external import External
 
 
-@hoomd.logging.modify_namespace(('hpmc', 'external', 'Linear'))
+@hoomd.logging.modify_namespace(("hpmc", "external", "Linear"))
 class Linear(External):
     """Linear external potential (HPMC).
 
@@ -46,7 +46,7 @@ class Linear(External):
     .. code-block:: python
 
         linear = hoomd.hpmc.external.Linear()
-        linear.alpha['A'] = 0.2
+        linear.alpha["A"] = 0.2
         simulation.operations.integrator.external_potentials = [linear]
 
     {inherited}
@@ -75,19 +75,21 @@ class Linear(External):
 
         Type: (`float`, `float`, `float`)
     """
+
     _cpp_class_name = "ExternalPotentialLinear"
     __doc__ = __doc__.replace("{inherited}", External._doc_inherited)
 
-    def __init__(self,
-                 default_alpha=None,
-                 plane_origin=(0, 0, 0),
-                 plane_normal=(0, 1, 0)):
+    def __init__(
+        self, default_alpha=None, plane_origin=(0, 0, 0), plane_normal=(0, 1, 0)
+    ):
         if default_alpha is not None:
             default_alpha = float(default_alpha)
 
         alpha = hoomd.data.typeparam.TypeParameter(
-            'alpha', 'particle_types',
-            hoomd.data.parameterdicts.TypeParameterDict(float, len_keys=1))
+            "alpha",
+            "particle_types",
+            hoomd.data.parameterdicts.TypeParameterDict(float, len_keys=1),
+        )
 
         if default_alpha is not None:
             alpha.default = default_alpha
@@ -95,9 +97,9 @@ class Linear(External):
         self._add_typeparam(alpha)
 
         self._param_dict.update(
-            hoomd.data.parameterdicts.ParameterDict(plane_origin=(float, float,
-                                                                  float),
-                                                    plane_normal=(float, float,
-                                                                  float)))
+            hoomd.data.parameterdicts.ParameterDict(
+                plane_origin=(float, float, float), plane_normal=(float, float, float)
+            )
+        )
         self.plane_origin = plane_origin
         self.plane_normal = plane_normal

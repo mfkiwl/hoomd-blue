@@ -66,7 +66,9 @@ class MethodRATTLE(Method):
 
     __doc__ = __doc__.replace("{inherited}", Method._doc_inherited)
 
-    _doc_inherited = Method._doc_inherited + """
+    _doc_inherited = (
+        Method._doc_inherited
+        + """
     ----------
 
     **Members inherited from**
@@ -83,13 +85,14 @@ class MethodRATTLE(Method):
         deviate from the manifold in terms of the implicit function.
         `Read more... <hoomd.md.methods.rattle.MethodRATTLE.tolerance>`
     """
+    )
 
     def __init__(self, manifold_constraint, tolerance):
-
-        param_dict = ParameterDict(manifold_constraint=OnlyTypes(
-            Manifold, allow_none=False),
-                                   tolerance=float(tolerance))
-        param_dict['manifold_constraint'] = manifold_constraint
+        param_dict = ParameterDict(
+            manifold_constraint=OnlyTypes(Manifold, allow_none=False),
+            tolerance=float(tolerance),
+        )
+        param_dict["manifold_constraint"] = manifold_constraint
         # set defaults
         self._param_dict.update(param_dict)
 
@@ -98,8 +101,7 @@ class MethodRATTLE(Method):
 
     def _setattr_param(self, attr, value):
         if attr == "manifold_constraint":
-            raise AttributeError(
-                "Cannot set manifold_constraint after construction.")
+            raise AttributeError("Cannot set manifold_constraint after construction.")
         super()._setattr_param(attr, value)
 
 
@@ -129,7 +131,8 @@ class NVE(MethodRATTLE):
         sphere = hoomd.md.manifold.Sphere(r=5)
         nve_rattle = hoomd.md.methods.rattle.NVE(
             filter=hoomd.filter.All(),
-            manifold_constraint=sphere)
+            manifold_constraint=sphere,
+        )
         simulation.operations.integrator.methods = [nve_rattle]
 
     {inherited}
@@ -144,7 +147,9 @@ class NVE(MethodRATTLE):
     """
 
     __doc__ = __doc__.replace("{inherited}", MethodRATTLE._doc_inherited)
-    _doc_inherited = MethodRATTLE._doc_inherited + """
+    _doc_inherited = (
+        MethodRATTLE._doc_inherited
+        + """
     ----------
 
     **Members inherited from**
@@ -155,9 +160,9 @@ class NVE(MethodRATTLE):
         Subset of particles on which to apply this method.
         `Read more... <hoomd.md.methods.ConstantVolume.filter>`
     """
+    )
 
     def __init__(self, filter, manifold_constraint, tolerance=0.000001):
-
         # store metadata
         param_dict = ParameterDict(
             filter=ParticleFilter,
@@ -176,17 +181,22 @@ class NVE(MethodRATTLE):
         # initialize the reflected c++ class
         if isinstance(self._simulation.device, hoomd.device.CPU):
             my_class = getattr(
-                _md, 'TwoStepRATTLENVE'
-                + self.manifold_constraint.__class__.__name__)
+                _md, "TwoStepRATTLENVE" + self.manifold_constraint.__class__.__name__
+            )
         else:
             my_class = getattr(
-                _md, 'TwoStepRATTLENVE'
-                + self.manifold_constraint.__class__.__name__ + 'GPU')
+                _md,
+                "TwoStepRATTLENVE"
+                + self.manifold_constraint.__class__.__name__
+                + "GPU",
+            )
 
-        self._cpp_obj = my_class(self._simulation.state._cpp_sys_def,
-                                 self._simulation.state._get_group(self.filter),
-                                 self.manifold_constraint._cpp_obj,
-                                 self.tolerance)
+        self._cpp_obj = my_class(
+            self._simulation.state._cpp_sys_def,
+            self._simulation.state._get_group(self.filter),
+            self.manifold_constraint._cpp_obj,
+            self.tolerance,
+        )
 
 
 class DisplacementCapped(NVE):
@@ -223,7 +233,8 @@ class DisplacementCapped(NVE):
         relax_rattle = hoomd.md.methods.rattle.DisplacementCapped(
             filter=hoomd.filter.All(),
             maximum_displacement=0.01,
-            manifold_constraint=sphere)
+            manifold_constraint=sphere,
+        )
         simulation.operations.integrator.methods = [relax_rattle]
 
     {inherited}
@@ -240,12 +251,13 @@ class DisplacementCapped(NVE):
 
     __doc__ = __doc__.replace("{inherited}", NVE._doc_inherited)
 
-    def __init__(self,
-                 filter: hoomd.filter.filter_like,
-                 maximum_displacement: hoomd.variant.variant_like,
-                 manifold_constraint: "hoomd.md.manifold.Manifold",
-                 tolerance: float = 1e-6):
-
+    def __init__(
+        self,
+        filter: hoomd.filter.filter_like,
+        maximum_displacement: hoomd.variant.variant_like,
+        manifold_constraint: "hoomd.md.manifold.Manifold",
+        tolerance: float = 1e-6,
+    ):
         # store metadata
         super().__init__(filter, manifold_constraint, tolerance)
         param_dict = ParameterDict(maximum_displacement=hoomd.variant.Variant)
@@ -306,7 +318,8 @@ class Langevin(MethodRATTLE):
             kT=1.5,
             manifold_constraint=sphere,
             default_gamma=1.0,
-            default_gamma_r=(1.0, 1.0, 1.0))
+            default_gamma_r=(1.0, 1.0, 1.0),
+        )
         simulation.operations.integrator.methods = [langevin_rattle]
 
     {inherited}
@@ -334,16 +347,15 @@ class Langevin(MethodRATTLE):
     __doc__ = __doc__.replace("{inherited}", MethodRATTLE._doc_inherited)
 
     def __init__(
-            self,
-            filter,
-            kT,
-            manifold_constraint,
-            tally_reservoir_energy=False,
-            tolerance=0.000001,
-            default_gamma=1.0,
-            default_gamma_r=(1.0, 1.0, 1.0),
+        self,
+        filter,
+        kT,
+        manifold_constraint,
+        tally_reservoir_energy=False,
+        tolerance=0.000001,
+        default_gamma=1.0,
+        default_gamma_r=(1.0, 1.0, 1.0),
     ):
-
         # store metadata
         param_dict = ParameterDict(
             filter=ParticleFilter,
@@ -354,15 +366,18 @@ class Langevin(MethodRATTLE):
         # set defaults
         self._param_dict.update(param_dict)
 
-        gamma = TypeParameter('gamma',
-                              type_kind='particle_types',
-                              param_dict=TypeParameterDict(1., len_keys=1))
+        gamma = TypeParameter(
+            "gamma",
+            type_kind="particle_types",
+            param_dict=TypeParameterDict(1.0, len_keys=1),
+        )
         gamma.default = default_gamma
 
-        gamma_r = TypeParameter('gamma_r',
-                                type_kind='particle_types',
-                                param_dict=TypeParameterDict((1., 1., 1.),
-                                                             len_keys=1))
+        gamma_r = TypeParameter(
+            "gamma_r",
+            type_kind="particle_types",
+            param_dict=TypeParameterDict((1.0, 1.0, 1.0), len_keys=1),
+        )
         gamma_r.default = default_gamma_r
 
         self._extend_typeparam([gamma, gamma_r])
@@ -377,17 +392,24 @@ class Langevin(MethodRATTLE):
 
         if isinstance(sim.device, hoomd.device.CPU):
             my_class = getattr(
-                _md, 'TwoStepRATTLELangevin'
-                + self.manifold_constraint.__class__.__name__)
+                _md,
+                "TwoStepRATTLELangevin" + self.manifold_constraint.__class__.__name__,
+            )
         else:
             my_class = getattr(
-                _md, 'TwoStepRATTLELangevin'
-                + self.manifold_constraint.__class__.__name__ + 'GPU')
+                _md,
+                "TwoStepRATTLELangevin"
+                + self.manifold_constraint.__class__.__name__
+                + "GPU",
+            )
 
-        self._cpp_obj = my_class(sim.state._cpp_sys_def,
-                                 sim.state._get_group(self.filter),
-                                 self.manifold_constraint._cpp_obj, self.kT,
-                                 self.tolerance)
+        self._cpp_obj = my_class(
+            sim.state._cpp_sys_def,
+            sim.state._get_group(self.filter),
+            self.manifold_constraint._cpp_obj,
+            self.kT,
+            self.tolerance,
+        )
 
 
 class Brownian(MethodRATTLE):
@@ -432,7 +454,8 @@ class Brownian(MethodRATTLE):
             kT=1.5,
             manifold_constraint=sphere,
             default_gamma=1.0,
-            default_gamma_r=(1.0, 1.0, 1.0))
+            default_gamma_r=(1.0, 1.0, 1.0),
+        )
         simulation.operations.integrator.methods = [brownian_rattle]
 
     {inherited}
@@ -459,14 +482,15 @@ class Brownian(MethodRATTLE):
 
     __doc__ = __doc__.replace("{inherited}", MethodRATTLE._doc_inherited)
 
-    def __init__(self,
-                 filter,
-                 kT,
-                 manifold_constraint,
-                 tolerance=1e-6,
-                 default_gamma=1.0,
-                 default_gamma_r=(1.0, 1.0, 1.0)):
-
+    def __init__(
+        self,
+        filter,
+        kT,
+        manifold_constraint,
+        tolerance=1e-6,
+        default_gamma=1.0,
+        default_gamma_r=(1.0, 1.0, 1.0),
+    ):
         # store metadata
         param_dict = ParameterDict(
             filter=ParticleFilter,
@@ -477,15 +501,18 @@ class Brownian(MethodRATTLE):
         # set defaults
         self._param_dict.update(param_dict)
 
-        gamma = TypeParameter('gamma',
-                              type_kind='particle_types',
-                              param_dict=TypeParameterDict(1., len_keys=1))
+        gamma = TypeParameter(
+            "gamma",
+            type_kind="particle_types",
+            param_dict=TypeParameterDict(1.0, len_keys=1),
+        )
         gamma.default = default_gamma
 
-        gamma_r = TypeParameter('gamma_r',
-                                type_kind='particle_types',
-                                param_dict=TypeParameterDict((1., 1., 1.),
-                                                             len_keys=1))
+        gamma_r = TypeParameter(
+            "gamma_r",
+            type_kind="particle_types",
+            param_dict=TypeParameterDict((1.0, 1.0, 1.0), len_keys=1),
+        )
         gamma_r.default = default_gamma_r
 
         self._extend_typeparam([gamma, gamma_r])
@@ -500,17 +527,23 @@ class Brownian(MethodRATTLE):
 
         if isinstance(sim.device, hoomd.device.CPU):
             my_class = getattr(
-                _md,
-                'TwoStepRATTLEBD' + self.manifold_constraint.__class__.__name__)
+                _md, "TwoStepRATTLEBD" + self.manifold_constraint.__class__.__name__
+            )
         else:
             my_class = getattr(
-                _md, 'TwoStepRATTLEBD'
-                + self.manifold_constraint.__class__.__name__ + 'GPU')
+                _md,
+                "TwoStepRATTLEBD" + self.manifold_constraint.__class__.__name__ + "GPU",
+            )
 
-        self._cpp_obj = my_class(sim.state._cpp_sys_def,
-                                 sim.state._get_group(self.filter),
-                                 self.manifold_constraint._cpp_obj, self.kT,
-                                 False, False, self.tolerance)
+        self._cpp_obj = my_class(
+            sim.state._cpp_sys_def,
+            sim.state._get_group(self.filter),
+            self.manifold_constraint._cpp_obj,
+            self.kT,
+            False,
+            False,
+            self.tolerance,
+        )
 
 
 class OverdampedViscous(MethodRATTLE):
@@ -550,7 +583,8 @@ class OverdampedViscous(MethodRATTLE):
             filter=hoomd.filter.All(),
             manifold_constraint=sphere,
             default_gamma=1.0,
-            default_gamma_r=(1.0, 1.0, 1.0))
+            default_gamma_r=(1.0, 1.0, 1.0),
+        )
         simulation.operations.integrator.methods = [odv_rattle]
 
     {inherited}
@@ -574,28 +608,35 @@ class OverdampedViscous(MethodRATTLE):
 
     __doc__ = __doc__.replace("{inherited}", MethodRATTLE._doc_inherited)
 
-    def __init__(self,
-                 filter,
-                 manifold_constraint,
-                 tolerance=1e-6,
-                 default_gamma=1.0,
-                 default_gamma_r=(1.0, 1.0, 1.0)):
+    def __init__(
+        self,
+        filter,
+        manifold_constraint,
+        tolerance=1e-6,
+        default_gamma=1.0,
+        default_gamma_r=(1.0, 1.0, 1.0),
+    ):
         # store metadata
-        param_dict = ParameterDict(filter=ParticleFilter,)
+        param_dict = ParameterDict(
+            filter=ParticleFilter,
+        )
         param_dict.update(dict(filter=filter))
 
         # set defaults
         self._param_dict.update(param_dict)
 
-        gamma = TypeParameter('gamma',
-                              type_kind='particle_types',
-                              param_dict=TypeParameterDict(1., len_keys=1))
+        gamma = TypeParameter(
+            "gamma",
+            type_kind="particle_types",
+            param_dict=TypeParameterDict(1.0, len_keys=1),
+        )
         gamma.default = default_gamma
 
-        gamma_r = TypeParameter('gamma_r',
-                                type_kind='particle_types',
-                                param_dict=TypeParameterDict((1., 1., 1.),
-                                                             len_keys=1))
+        gamma_r = TypeParameter(
+            "gamma_r",
+            type_kind="particle_types",
+            param_dict=TypeParameterDict((1.0, 1.0, 1.0), len_keys=1),
+        )
         gamma_r.default = default_gamma_r
 
         self._extend_typeparam([gamma, gamma_r])
@@ -611,25 +652,30 @@ class OverdampedViscous(MethodRATTLE):
 
         if isinstance(sim.device, hoomd.device.CPU):
             my_class = getattr(
-                _md,
-                'TwoStepRATTLEBD' + self.manifold_constraint.__class__.__name__)
+                _md, "TwoStepRATTLEBD" + self.manifold_constraint.__class__.__name__
+            )
         else:
             my_class = getattr(
-                _md, 'TwoStepRATTLEBD'
-                + self.manifold_constraint.__class__.__name__ + 'GPU')
+                _md,
+                "TwoStepRATTLEBD" + self.manifold_constraint.__class__.__name__ + "GPU",
+            )
 
-        self._cpp_obj = my_class(sim.state._cpp_sys_def,
-                                 sim.state._get_group(self.filter),
-                                 self.manifold_constraint._cpp_obj,
-                                 hoomd.variant.Constant(0.0), True, True,
-                                 self.tolerance)
+        self._cpp_obj = my_class(
+            sim.state._cpp_sys_def,
+            sim.state._get_group(self.filter),
+            self.manifold_constraint._cpp_obj,
+            hoomd.variant.Constant(0.0),
+            True,
+            True,
+            self.tolerance,
+        )
 
 
 __all__ = [
-    'NVE',
-    'Brownian',
-    'DisplacementCapped',
-    'Langevin',
-    'MethodRATTLE',
-    'OverdampedViscous',
+    "NVE",
+    "Brownian",
+    "DisplacementCapped",
+    "Langevin",
+    "MethodRATTLE",
+    "OverdampedViscous",
 ]

@@ -68,10 +68,8 @@ class Improper(md.force.Force):
 
     def _attach_hook(self):
         # check that some impropers are defined
-        if self._simulation.state._cpp_sys_def.getImproperData().getNGlobal(
-        ) == 0:
-            self._simulation.device._cpp_msg.warning(
-                "No impropers are defined.\n")
+        if self._simulation.state._cpp_sys_def.getImproperData().getNGlobal() == 0:
+            self._simulation.device._cpp_msg.warning("No impropers are defined.\n")
 
         # Instantiate the c++ implementation.
         if isinstance(self._simulation.device, hoomd.device.CPU):
@@ -95,7 +93,7 @@ class Harmonic(Improper):
     Example::
 
         harmonic = hoomd.md.improper.Harmonic()
-        harmonic.params['A-B-C-D'] = dict(k=1.0, chi0=0)
+        harmonic.params["A-B-C-D"] = dict(k=1.0, chi0=0)
 
     {inherited}
 
@@ -113,17 +111,19 @@ class Harmonic(Improper):
             * ``chi0`` (`float`, **required**), equilibrium angle
               :math:`\\chi_0` :math:`[\\mathrm{radian}]`.
     """
+
     _cpp_class_name = "HarmonicImproperForceCompute"
     __doc__ = __doc__.replace("{inherited}", Improper._doc_inherited)
 
     def __init__(self):
         super().__init__()
         params = hoomd.data.typeparam.TypeParameter(
-            'params', 'improper_types',
+            "params",
+            "improper_types",
             hoomd.data.parameterdicts.TypeParameterDict(
-                k=float,
-                chi0=hoomd.data.typeconverter.nonnegative_real,
-                len_keys=1))
+                k=float, chi0=hoomd.data.typeconverter.nonnegative_real, len_keys=1
+            ),
+        )
         self._add_typeparam(params)
 
 
@@ -142,7 +142,7 @@ class Periodic(Improper):
     .. code-block:: python
 
         periodic = hoomd.md.improper.Periodic()
-        periodic.params['A-B-C-D'] = dict(k=1.0, n = 1, chi0=0, d=1.0)
+        periodic.params["A-B-C-D"] = dict(k=1.0, n=1, chi0=0, d=1.0)
 
     {inherited}
 
@@ -164,24 +164,28 @@ class Periodic(Improper):
             * ``d`` (`float`, **required**), sign factor
               :math:`d` :math:`[\\mathrm{dimensionless}]`.
     """
+
     _cpp_class_name = "PeriodicImproperForceCompute"
     __doc__ = __doc__.replace("{inherited}", Improper._doc_inherited)
 
     def __init__(self):
         super().__init__()
         params = hoomd.data.typeparam.TypeParameter(
-            'params', 'improper_types',
+            "params",
+            "improper_types",
             hoomd.data.parameterdicts.TypeParameterDict(
                 k=float,
                 n=int,
                 d=int,
                 chi0=hoomd.data.typeconverter.nonnegative_real,
-                len_keys=1))
+                len_keys=1,
+            ),
+        )
         self._add_typeparam(params)
 
 
 __all__ = [
-    'Harmonic',
-    'Improper',
-    'Periodic',
+    "Harmonic",
+    "Improper",
+    "Periodic",
 ]

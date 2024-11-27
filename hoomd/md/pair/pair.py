@@ -63,7 +63,9 @@ class Pair(force.Force):
     """
 
     __doc__ = __doc__.replace("{inherited}", force.Force._doc_inherited)
-    _doc_inherited = force.Force._doc_inherited + """
+    _doc_inherited = (
+        force.Force._doc_inherited
+        + """
     ----------
 
     **Members inherited from**
@@ -94,6 +96,7 @@ class Pair(force.Force):
         Compute the energy between two sets of particles.
         `Read more... <hoomd.md.pair.Pair.compute_energy>`
     """
+    )
 
     # The accepted modes for the potential. Should be reset by subclasses with
     # restricted modes.
@@ -103,26 +106,29 @@ class Pair(force.Force):
     # external plugin.
     _ext_module = _md
 
-    def __init__(self, nlist, default_r_cut=None, default_r_on=0., mode='none'):
+    def __init__(self, nlist, default_r_cut=None, default_r_on=0.0, mode="none"):
         super().__init__()
         tp_r_cut = TypeParameter(
-            'r_cut', 'particle_types',
-            TypeParameterDict(nonnegative_real, len_keys=2))
+            "r_cut", "particle_types", TypeParameterDict(nonnegative_real, len_keys=2)
+        )
         if default_r_cut is not None:
             tp_r_cut.default = default_r_cut
-        tp_r_on = TypeParameter('r_on', 'particle_types',
-                                TypeParameterDict(nonnegative_real, len_keys=2))
+        tp_r_on = TypeParameter(
+            "r_on", "particle_types", TypeParameterDict(nonnegative_real, len_keys=2)
+        )
         if default_r_on is not None:
             tp_r_on.default = default_r_on
 
         type_params = [tp_r_cut]
-        if 'xplor' in self._accepted_modes:
+        if "xplor" in self._accepted_modes:
             type_params.append(tp_r_on)
 
         self._extend_typeparam(type_params)
         self._param_dict.update(
-            ParameterDict(mode=OnlyFrom(self._accepted_modes),
-                          nlist=hoomd.md.nlist.NeighborList))
+            ParameterDict(
+                mode=OnlyFrom(self._accepted_modes), nlist=hoomd.md.nlist.NeighborList
+            )
+        )
         self.mode = mode
         self.nlist = nlist
 
@@ -152,10 +158,12 @@ class Pair(force.Force):
 
         Examples::
 
-            tags=numpy.linspace(0,N-1,1, dtype=numpy.int32)
+            tags = numpy.linspace(0, N - 1, 1, dtype=numpy.int32)
             # computes the energy between even and odd particles
-            U = mypair.compute_energy(tags1=numpy.array(tags[0:N:2]),
-                                      tags2=numpy.array(tags[1:N:2]))
+            U = mypair.compute_energy(
+                tags1=numpy.array(tags[0:N:2]),
+                tags2=numpy.array(tags[1:N:2]),
+            )
 
         """
         # TODO future versions could use np functions to test the assumptions
@@ -168,19 +176,17 @@ class Pair(force.Force):
                 f"{self} object is creating a new equivalent neighbor list."
                 f" This is happending since the force is moving to a new "
                 f"simulation. Set a new nlist to suppress this warning.",
-                RuntimeWarning)
+                RuntimeWarning,
+            )
             self.nlist = copy.deepcopy(self.nlist)
         self.nlist._attach(self._simulation)
         if isinstance(self._simulation.device, hoomd.device.CPU):
             cls = getattr(self._ext_module, self._cpp_class_name)
-            self.nlist._cpp_obj.setStorageMode(
-                _md.NeighborList.storageMode.half)
+            self.nlist._cpp_obj.setStorageMode(_md.NeighborList.storageMode.half)
         else:
             cls = getattr(self._ext_module, self._cpp_class_name + "GPU")
-            self.nlist._cpp_obj.setStorageMode(
-                _md.NeighborList.storageMode.full)
-        self._cpp_obj = cls(self._simulation.state._cpp_sys_def,
-                            self.nlist._cpp_obj)
+            self.nlist._cpp_obj.setStorageMode(_md.NeighborList.storageMode.full)
+        self._cpp_obj = cls(self._simulation.state._cpp_sys_def, self.nlist._cpp_obj)
 
     def _detach_hook(self):
         self.nlist._detach()
@@ -222,8 +228,8 @@ class LJ(Pair):
 
         nl = nlist.Cell()
         lj = pair.LJ(nl, default_r_cut=3.0)
-        lj.params[('A', 'A')] = {'sigma': 1.0, 'epsilon': 1.0}
-        lj.r_cut[('A', 'B')] = 3.0
+        lj.params[("A", "A")] = {"sigma": 1.0, "epsilon": 1.0}
+        lj.r_cut[("A", "B")] = 3.0
 
     {inherited}
 
@@ -249,22 +255,26 @@ class LJ(Pair):
 
         Type: `bool`
     """
+
     _cpp_class_name = "PotentialPairLJ"
     __doc__ = __doc__.replace("{inherited}", Pair._doc_inherited)
 
-    def __init__(self,
-                 nlist,
-                 default_r_cut=None,
-                 default_r_on=0.,
-                 mode='none',
-                 tail_correction=False):
+    def __init__(
+        self,
+        nlist,
+        default_r_cut=None,
+        default_r_on=0.0,
+        mode="none",
+        tail_correction=False,
+    ):
         super().__init__(nlist, default_r_cut, default_r_on, mode)
         params = TypeParameter(
-            'params', 'particle_types',
-            TypeParameterDict(epsilon=float, sigma=float, len_keys=2))
+            "params",
+            "particle_types",
+            TypeParameterDict(epsilon=float, sigma=float, len_keys=2),
+        )
         self._add_typeparam(params)
-        self._param_dict.update(
-            ParameterDict(tail_correction=bool(tail_correction)))
+        self._param_dict.update(ParameterDict(tail_correction=bool(tail_correction)))
 
 
 class Gaussian(Pair):
@@ -287,8 +297,8 @@ class Gaussian(Pair):
 
         nl = nlist.Cell()
         gauss = pair.Gaussian(default_r_cut=3.0, nlist=nl)
-        gauss.params[('A', 'A')] = dict(epsilon=1.0, sigma=1.0)
-        gauss.r_cut[('A', 'B')] = 3.0
+        gauss.params[("A", "A")] = dict(epsilon=1.0, sigma=1.0)
+        gauss.r_cut[("A", "B")] = 3.0
 
     {inherited}
 
@@ -309,14 +319,17 @@ class Gaussian(Pair):
         Type: `TypeParameter` [`tuple` [``particle_type``, ``particle_type``],
         `dict`]
     """
+
     _cpp_class_name = "PotentialPairGauss"
     __doc__ = __doc__.replace("{inherited}", Pair._doc_inherited)
 
-    def __init__(self, nlist, default_r_cut=None, default_r_on=0., mode='none'):
+    def __init__(self, nlist, default_r_cut=None, default_r_on=0.0, mode="none"):
         super().__init__(nlist, default_r_cut, default_r_on, mode)
         params = TypeParameter(
-            'params', 'particle_types',
-            TypeParameterDict(epsilon=float, sigma=positive_real, len_keys=2))
+            "params",
+            "particle_types",
+            TypeParameterDict(epsilon=float, sigma=positive_real, len_keys=2),
+        )
         self._add_typeparam(params)
 
 
@@ -340,9 +353,8 @@ class ExpandedGaussian(Pair):
 
         nl = nlist.Cell()
         expanded_gauss = pair.ExpandedGaussian(default_r_cut=3.0, nlist=nl)
-        expanded_gauss.params[('A', 'A')] = dict(epsilon=1.0,
-        sigma=1.0, delta=0.5)
-        expanded_gauss.r_cut[('A', 'B')] = 3.0
+        expanded_gauss.params[("A", "A")] = dict(epsilon=1.0, sigma=1.0, delta=0.5)
+        expanded_gauss.r_cut[("A", "B")] = 3.0
 
     {inherited}
 
@@ -365,17 +377,19 @@ class ExpandedGaussian(Pair):
         Type: `TypeParameter` [`tuple` [``particle_type``, ``particle_type``],
         `dict`]
     """
+
     _cpp_class_name = "PotentialPairExpandedGaussian"
     __doc__ = __doc__.replace("{inherited}", Pair._doc_inherited)
 
-    def __init__(self, nlist, default_r_cut=None, default_r_on=0., mode='none'):
+    def __init__(self, nlist, default_r_cut=None, default_r_on=0.0, mode="none"):
         super().__init__(nlist, default_r_cut, default_r_on, mode)
         params = TypeParameter(
-            'params', 'particle_types',
-            TypeParameterDict(epsilon=float,
-                              sigma=positive_real,
-                              delta=float,
-                              len_keys=2))
+            "params",
+            "particle_types",
+            TypeParameterDict(
+                epsilon=float, sigma=positive_real, delta=float, len_keys=2
+            ),
+        )
         self._add_typeparam(params)
 
 
@@ -402,12 +416,9 @@ class ExpandedLJ(Pair):
 
         nl = nlist.Cell()
         expanded_lj = pair.ExpandedLJ(default_r_cut=3.0, nlist=nl)
-        expanded_lj.params[('A', 'A')] = dict(epsilon=1.0, sigma=1.0, delta=1.0)
-        expanded_lj.params[('A', 'B')] = dict(
-                                             epsilon=2.0,
-                                             sigma=1.0,
-                                             delta=0.75)
-        expanded_lj.params[('B', 'B')] = dict(epsilon=1.0, sigma=1.0, delta=0.5)
+        expanded_lj.params[("A", "A")] = dict(epsilon=1.0, sigma=1.0, delta=1.0)
+        expanded_lj.params[("A", "B")] = dict(epsilon=2.0, sigma=1.0, delta=0.75)
+        expanded_lj.params[("B", "B")] = dict(epsilon=1.0, sigma=1.0, delta=0.5)
 
     {inherited}
 
@@ -429,17 +440,17 @@ class ExpandedLJ(Pair):
         Type: `TypeParameter` [`tuple` [``particle_type``, ``particle_type``],
         `dict`]
     """
-    _cpp_class_name = 'PotentialPairExpandedLJ'
+
+    _cpp_class_name = "PotentialPairExpandedLJ"
     __doc__ = __doc__.replace("{inherited}", Pair._doc_inherited)
 
-    def __init__(self, nlist, default_r_cut=None, default_r_on=0., mode='none'):
+    def __init__(self, nlist, default_r_cut=None, default_r_on=0.0, mode="none"):
         super().__init__(nlist, default_r_cut, default_r_on, mode)
         params = TypeParameter(
-            'params', 'particle_types',
-            TypeParameterDict(epsilon=float,
-                              sigma=float,
-                              delta=float,
-                              len_keys=2))
+            "params",
+            "particle_types",
+            TypeParameterDict(epsilon=float, sigma=float, delta=float, len_keys=2),
+        )
         self._add_typeparam(params)
         self.mode = mode
 
@@ -465,8 +476,8 @@ class Yukawa(Pair):
 
         nl = nlist.Cell()
         yukawa = pair.Yukawa(default_r_cut=3.0, nlist=nl)
-        yukawa.params[('A', 'A')] = dict(epsilon=1.0, kappa=1.0)
-        yukawa.r_cut[('A', 'B')] = 3.0
+        yukawa.params[("A", "A")] = dict(epsilon=1.0, kappa=1.0)
+        yukawa.r_cut[("A", "B")] = 3.0
 
     {inherited}
 
@@ -487,14 +498,17 @@ class Yukawa(Pair):
         Type: `TypeParameter` [`tuple` [``particle_type``, ``particle_type``],
         `dict`]
     """
+
     _cpp_class_name = "PotentialPairYukawa"
     __doc__ = __doc__.replace("{inherited}", Pair._doc_inherited)
 
-    def __init__(self, nlist, default_r_cut=None, default_r_on=0., mode='none'):
+    def __init__(self, nlist, default_r_cut=None, default_r_on=0.0, mode="none"):
         super().__init__(nlist, default_r_cut, default_r_on, mode)
         params = TypeParameter(
-            'params', 'particle_types',
-            TypeParameterDict(kappa=float, epsilon=float, len_keys=2))
+            "params",
+            "particle_types",
+            TypeParameterDict(kappa=float, epsilon=float, len_keys=2),
+        )
         self._add_typeparam(params)
 
 
@@ -525,8 +539,8 @@ class Ewald(Pair):
 
         nl = nlist.Cell()
         ewald = pair.Ewald(default_r_cut=3.0, nlist=nl)
-        ewald.params[('A', 'A')] = dict(kappa=1.0, alpha=1.5)
-        ewald.r_cut[('A', 'B')] = 3.0
+        ewald.params[("A", "A")] = dict(kappa=1.0, alpha=1.5)
+        ewald.r_cut[("A", "B")] = 3.0
 
     {inherited}
 
@@ -546,18 +560,20 @@ class Ewald(Pair):
         Type: `TypeParameter` [`tuple` [``particle_type``, ``particle_type``],
         `dict`]
     """
+
     _cpp_class_name = "PotentialPairEwald"
     __doc__ = __doc__.replace("{inherited}", Pair._doc_inherited)
     _accepted_modes = ("none",)
 
     def __init__(self, nlist, default_r_cut=None):
-        super().__init__(nlist=nlist,
-                         default_r_cut=default_r_cut,
-                         default_r_on=0,
-                         mode='none')
+        super().__init__(
+            nlist=nlist, default_r_cut=default_r_cut, default_r_on=0, mode="none"
+        )
         params = TypeParameter(
-            'params', 'particle_types',
-            TypeParameterDict(kappa=float, alpha=0.0, len_keys=2))
+            "params",
+            "particle_types",
+            TypeParameterDict(kappa=float, alpha=0.0, len_keys=2),
+        )
 
         self._add_typeparam(params)
 
@@ -649,22 +665,25 @@ class Table(Pair):
             the tabulated force values :math:`[\\mathrm{force}]`. Must have the
             same length as ``U``.
     """
+
     _cpp_class_name = "PotentialPairTable"
     __doc__ = __doc__.replace("{inherited}", Pair._doc_inherited)
     _accepted_modes = ("none",)
 
     def __init__(self, nlist, default_r_cut=None):
-        super().__init__(nlist,
-                         default_r_cut=default_r_cut,
-                         default_r_on=0,
-                         mode='none')
+        super().__init__(
+            nlist, default_r_cut=default_r_cut, default_r_on=0, mode="none"
+        )
         params = TypeParameter(
-            'params', 'particle_types',
+            "params",
+            "particle_types",
             TypeParameterDict(
                 r_min=float,
                 U=hoomd.data.typeconverter.NDArrayValidator(np.float64),
                 F=hoomd.data.typeconverter.NDArrayValidator(np.float64),
-                len_keys=2))
+                len_keys=2,
+            ),
+        )
         self._add_typeparam(params)
 
 
@@ -689,8 +708,8 @@ class Morse(Pair):
 
         nl = nlist.Cell()
         morse = pair.Morse(default_r_cut=3.0, nlist=nl)
-        morse.params[('A', 'A')] = dict(D0=1.0, alpha=3.0, r0=1.0)
-        morse.r_cut[('A', 'B')] = 3.0
+        morse.params[("A", "A")] = dict(D0=1.0, alpha=3.0, r0=1.0)
+        morse.r_cut[("A", "B")] = 3.0
 
     {inherited}
 
@@ -716,11 +735,13 @@ class Morse(Pair):
     _cpp_class_name = "PotentialPairMorse"
     __doc__ = __doc__.replace("{inherited}", Pair._doc_inherited)
 
-    def __init__(self, nlist, default_r_cut=None, default_r_on=0., mode='none'):
+    def __init__(self, nlist, default_r_cut=None, default_r_on=0.0, mode="none"):
         super().__init__(nlist, default_r_cut, default_r_on, mode)
         params = TypeParameter(
-            'params', 'particle_types',
-            TypeParameterDict(D0=float, alpha=float, r0=float, len_keys=2))
+            "params",
+            "particle_types",
+            TypeParameterDict(D0=float, alpha=float, r0=float, len_keys=2),
+        )
         self._add_typeparam(params)
 
 
@@ -803,6 +824,7 @@ class DPD(Pair):
         Type: `TypeParameter` [`tuple` [``particle_type``, ``particle_type``],
         `dict`]
     """
+
     _cpp_class_name = "PotentialPairDPDThermoDPD"
     __doc__ = __doc__.replace("{inherited}", Pair._doc_inherited)
     _accepted_modes = ("none",)
@@ -813,13 +835,14 @@ class DPD(Pair):
         kT,
         default_r_cut=None,
     ):
-        super().__init__(nlist=nlist,
-                         default_r_cut=default_r_cut,
-                         default_r_on=0,
-                         mode='none')
+        super().__init__(
+            nlist=nlist, default_r_cut=default_r_cut, default_r_on=0, mode="none"
+        )
         params = TypeParameter(
-            'params', 'particle_types',
-            TypeParameterDict(A=float, gamma=float, len_keys=2))
+            "params",
+            "particle_types",
+            TypeParameterDict(A=float, gamma=float, len_keys=2),
+        )
         self._add_typeparam(params)
         param_dict = ParameterDict(kT=hoomd.variant.Variant)
         param_dict["kT"] = kT
@@ -853,9 +876,9 @@ class DPDConservative(Pair):
 
         nl = nlist.Cell()
         dpdc = pair.DPDConservative(nlist=nl, default_r_cut=3.0)
-        dpdc.params[('A', 'A')] = dict(A=1.0)
-        dpdc.params[('A', 'B')] = dict(A=2.0, r_cut = 1.0)
-        dpdc.params[(['A', 'B'], ['C', 'D'])] = dict(A=3.0)
+        dpdc.params[("A", "A")] = dict(A=1.0)
+        dpdc.params[("A", "B")] = dict(A=2.0, r_cut=1.0)
+        dpdc.params[(["A", "B"], ["C", "D"])] = dict(A=3.0)
 
     {inherited}
 
@@ -872,18 +895,19 @@ class DPDConservative(Pair):
         Type: `TypeParameter` [`tuple` [``particle_type``, ``particle_type``],
         `dict`]
     """
+
     _cpp_class_name = "PotentialPairConservativeDPD"
     __doc__ = __doc__.replace("{inherited}", Pair._doc_inherited)
     _accepted_modes = ("none",)
 
     def __init__(self, nlist, default_r_cut=None):
         # initialize the base class
-        super().__init__(nlist=nlist,
-                         default_r_cut=default_r_cut,
-                         default_r_on=0,
-                         mode='none')
-        params = TypeParameter('params', 'particle_types',
-                               TypeParameterDict(A=float, len_keys=2))
+        super().__init__(
+            nlist=nlist, default_r_cut=default_r_cut, default_r_on=0, mode="none"
+        )
+        params = TypeParameter(
+            "params", "particle_types", TypeParameterDict(A=float, len_keys=2)
+        )
         self._add_typeparam(params)
 
 
@@ -960,22 +984,20 @@ class DPDLJ(Pair):
         Type: `TypeParameter` [`tuple` [``particle_type``, ``particle_type``],
         `dict`]
     """
+
     _cpp_class_name = "PotentialPairDPDThermoLJ"
     __doc__ = __doc__.replace("{inherited}", Pair._doc_inherited)
     _accepted_modes = ("none", "shift")
 
-    def __init__(self, nlist, kT, default_r_cut=None, mode='none'):
-
-        super().__init__(nlist=nlist,
-                         default_r_cut=default_r_cut,
-                         default_r_on=0,
-                         mode=mode)
+    def __init__(self, nlist, kT, default_r_cut=None, mode="none"):
+        super().__init__(
+            nlist=nlist, default_r_cut=default_r_cut, default_r_on=0, mode=mode
+        )
         params = TypeParameter(
-            'params', 'particle_types',
-            TypeParameterDict(epsilon=float,
-                              sigma=float,
-                              gamma=float,
-                              len_keys=2))
+            "params",
+            "particle_types",
+            TypeParameterDict(epsilon=float, sigma=float, gamma=float, len_keys=2),
+        )
         self._add_typeparam(params)
 
         d = ParameterDict(kT=hoomd.variant.Variant)
@@ -1020,7 +1042,7 @@ class ForceShiftedLJ(Pair):
 
         nl = nlist.Cell()
         fslj = pair.ForceShiftedLJ(nlist=nl, default_r_cut=1.5)
-        fslj.params[('A', 'A')] = dict(epsilon=1.0, sigma=1.0)
+        fslj.params[("A", "A")] = dict(epsilon=1.0, sigma=1.0)
 
     {inherited}
 
@@ -1040,19 +1062,21 @@ class ForceShiftedLJ(Pair):
         Type: `TypeParameter` [`tuple` [``particle_type``, ``particle_type``],
         `dict`]
     """
+
     _cpp_class_name = "PotentialPairForceShiftedLJ"
     __doc__ = __doc__.replace("{inherited}", Pair._doc_inherited)
     _accepted_modes = ("none",)
 
     def __init__(self, nlist, default_r_cut=None):
-        super().__init__(nlist=nlist,
-                         default_r_cut=default_r_cut,
-                         default_r_on=0,
-                         mode='none')
+        super().__init__(
+            nlist=nlist, default_r_cut=default_r_cut, default_r_on=0, mode="none"
+        )
 
         params = TypeParameter(
-            'params', 'particle_types',
-            TypeParameterDict(epsilon=float, sigma=float, len_keys=2))
+            "params",
+            "particle_types",
+            TypeParameterDict(epsilon=float, sigma=float, len_keys=2),
+        )
         self._add_typeparam(params)
 
 
@@ -1123,14 +1147,17 @@ class Moliere(Pair):
         Type: `TypeParameter` [`tuple` [``particle_type``, ``particle_type``],
         `dict`]
     """
+
     _cpp_class_name = "PotentialPairMoliere"
     __doc__ = __doc__.replace("{inherited}", Pair._doc_inherited)
 
-    def __init__(self, nlist, default_r_cut=None, default_r_on=0., mode='none'):
+    def __init__(self, nlist, default_r_cut=None, default_r_on=0.0, mode="none"):
         super().__init__(nlist, default_r_cut, default_r_on, mode)
         params = TypeParameter(
-            'params', 'particle_types',
-            TypeParameterDict(qi=float, qj=float, aF=float, len_keys=2))
+            "params",
+            "particle_types",
+            TypeParameterDict(qi=float, qj=float, aF=float, len_keys=2),
+        )
         self._add_typeparam(params)
 
 
@@ -1199,16 +1226,18 @@ class ZBL(Pair):
         Type: `TypeParameter` [`tuple` [``particle_type``, ``particle_type``],
         `dict`]
     """
+
     _cpp_class_name = "PotentialPairZBL"
     __doc__ = __doc__.replace("{inherited}", Pair._doc_inherited)
     _accepted_modes = ("none",)
 
-    def __init__(self, nlist, default_r_cut=None, default_r_on=0.):
-
-        super().__init__(nlist, default_r_cut, default_r_on, 'none')
+    def __init__(self, nlist, default_r_cut=None, default_r_on=0.0):
+        super().__init__(nlist, default_r_cut, default_r_on, "none")
         params = TypeParameter(
-            'params', 'particle_types',
-            TypeParameterDict(qi=float, qj=float, aF=float, len_keys=2))
+            "params",
+            "particle_types",
+            TypeParameterDict(qi=float, qj=float, aF=float, len_keys=2),
+        )
         self._add_typeparam(params)
 
 
@@ -1233,10 +1262,10 @@ class Mie(Pair):
 
         nl = nlist.Cell()
         mie = pair.Mie(nlist=nl, default_r_cut=3.0)
-        mie.params[('A', 'A')] = dict(epsilon=1.0, sigma=1.0, n=12, m=6)
-        mie.r_cut[('A', 'A')] = 2**(1.0/6.0)
-        mie.r_on[('A', 'A')] = 2.0
-        mie.params[(['A', 'B'], ['C', 'D'])] = dict(epsilon=1.5, sigma=2.0)
+        mie.params[("A", "A")] = dict(epsilon=1.0, sigma=1.0, n=12, m=6)
+        mie.r_cut[("A", "A")] = 2 ** (1.0 / 6.0)
+        mie.r_on[("A", "A")] = 2.0
+        mie.params[(["A", "B"], ["C", "D"])] = dict(epsilon=1.5, sigma=2.0)
 
     {inherited}
 
@@ -1260,19 +1289,17 @@ class Mie(Pair):
         Type: `TypeParameter` [`tuple` [``particle_type``, ``particle_type``],
         `dict`]
     """
+
     _cpp_class_name = "PotentialPairMie"
     __doc__ = __doc__.replace("{inherited}", Pair._doc_inherited)
 
-    def __init__(self, nlist, default_r_cut=None, default_r_on=0., mode='none'):
-
+    def __init__(self, nlist, default_r_cut=None, default_r_on=0.0, mode="none"):
         super().__init__(nlist, default_r_cut, default_r_on, mode)
         params = TypeParameter(
-            'params', 'particle_types',
-            TypeParameterDict(epsilon=float,
-                              sigma=float,
-                              n=float,
-                              m=float,
-                              len_keys=2))
+            "params",
+            "particle_types",
+            TypeParameterDict(epsilon=float, sigma=float, n=float, m=float, len_keys=2),
+        )
 
         self._add_typeparam(params)
 
@@ -1300,13 +1327,21 @@ class ExpandedMie(Pair):
 
         nl = nlist.Cell()
         expanded_mie = pair.ExpandedMie(nlist=nl, default_r_cut=3.0)
-        mie.params[('A', 'B')] = {
-            "epsilon": 1.0, "sigma": 1.0, "n": 12, "m": 6,
-            "delta": 0.5}
-        expanded_mie.r_cut[('A', 'B')] = 2**(1.0 / 6.0)
-        expanded_mie.params[(['A', 'B'], ['C', 'D'])] = {
-            "epsilon": 1.5, "sigma": 2.0, "n": 12, "m": 6,
-            "delta": 0.5}
+        mie.params[("A", "B")] = {
+            "epsilon": 1.0,
+            "sigma": 1.0,
+            "n": 12,
+            "m": 6,
+            "delta": 0.5,
+        }
+        expanded_mie.r_cut[("A", "B")] = 2 ** (1.0 / 6.0)
+        expanded_mie.params[(["A", "B"], ["C", "D"])] = {
+            "epsilon": 1.5,
+            "sigma": 2.0,
+            "n": 12,
+            "m": 6,
+            "delta": 0.5,
+        }
 
     {inherited}
 
@@ -1333,20 +1368,19 @@ class ExpandedMie(Pair):
         Type: `TypeParameter` [ `tuple` [``particle_type``, ``particle_type``],
         `dict`]
     """
+
     _cpp_class_name = "PotentialPairExpandedMie"
     __doc__ = __doc__.replace("{inherited}", Pair._doc_inherited)
 
-    def __init__(self, nlist, default_r_cut=None, default_r_on=0., mode='none'):
-
+    def __init__(self, nlist, default_r_cut=None, default_r_on=0.0, mode="none"):
         super().__init__(nlist, default_r_cut, default_r_on, mode)
         params = TypeParameter(
-            'params', 'particle_types',
-            TypeParameterDict(epsilon=float,
-                              sigma=float,
-                              n=float,
-                              m=float,
-                              delta=float,
-                              len_keys=2))
+            "params",
+            "particle_types",
+            TypeParameterDict(
+                epsilon=float, sigma=float, n=float, m=float, delta=float, len_keys=2
+            ),
+        )
 
         self._add_typeparam(params)
 
@@ -1393,9 +1427,8 @@ class ReactionField(Pair):
 
         nl = nlist.Cell()
         reaction_field = pair.reaction_field(nl, default_r_cut=3.0)
-        reaction_field.params[('A', 'B')] = dict(epsilon=1.0, eps_rf=1.0)
-        reaction_field.params[('B', 'B')] = dict(
-            epsilon=1.0, eps_rf=0.0, use_charge=True)
+        reaction_field.params[("A", "B")] = dict(epsilon=1.0, eps_rf=1.0)
+        reaction_field.params[("B", "B")] = dict(epsilon=1.0, eps_rf=0.0, use_charge=True)
 
     {inherited}
 
@@ -1417,17 +1450,19 @@ class ReactionField(Pair):
         Type: `TypeParameter` [`tuple` [``particle_type``, ``particle_type``],
         `dict`]
     """
+
     _cpp_class_name = "PotentialPairReactionField"
     __doc__ = __doc__.replace("{inherited}", Pair._doc_inherited)
 
-    def __init__(self, nlist, default_r_cut=None, default_r_on=0., mode='none'):
+    def __init__(self, nlist, default_r_cut=None, default_r_on=0.0, mode="none"):
         super().__init__(nlist, default_r_cut, default_r_on, mode)
         params = TypeParameter(
-            'params', 'particle_types',
-            TypeParameterDict(epsilon=float,
-                              eps_rf=float,
-                              use_charge=False,
-                              len_keys=2))
+            "params",
+            "particle_types",
+            TypeParameterDict(
+                epsilon=float, eps_rf=float, use_charge=False, len_keys=2
+            ),
+        )
 
         self._add_typeparam(params)
 
@@ -1495,17 +1530,19 @@ class DLVO(Pair):
         Type: `TypeParameter` [`tuple` [``particle_type``, ``particle_type``],
         `dict`]
     """
+
     _cpp_class_name = "PotentialPairDLVO"
     __doc__ = __doc__.replace("{inherited}", Pair._doc_inherited)
     _accepted_modes = ("none", "shift")
 
-    def __init__(self, nlist, default_r_cut=None, default_r_on=0., mode='none'):
-        if mode == 'xplor':
+    def __init__(self, nlist, default_r_cut=None, default_r_on=0.0, mode="none"):
+        if mode == "xplor":
             raise ValueError("xplor is not a valid mode for the DLVO potential")
 
         super().__init__(nlist, default_r_cut, default_r_on, mode)
         params = TypeParameter(
-            'params', 'particle_types',
+            "params",
+            "particle_types",
             TypeParameterDict(
                 kappa=float,
                 Z=float,
@@ -1513,7 +1550,8 @@ class DLVO(Pair):
                 a1=float,
                 a2=float,
                 len_keys=2,
-            ))
+            ),
+        )
         self._add_typeparam(params)
 
 
@@ -1562,11 +1600,13 @@ class Buckingham(Pair):
     _cpp_class_name = "PotentialPairBuckingham"
     __doc__ = __doc__.replace("{inherited}", Pair._doc_inherited)
 
-    def __init__(self, nlist, default_r_cut=None, default_r_on=0., mode='none'):
+    def __init__(self, nlist, default_r_cut=None, default_r_on=0.0, mode="none"):
         super().__init__(nlist, default_r_cut, default_r_on, mode)
         params = TypeParameter(
-            'params', 'particle_types',
-            TypeParameterDict(A=float, rho=float, C=float, len_keys=2))
+            "params",
+            "particle_types",
+            TypeParameterDict(A=float, rho=float, C=float, len_keys=2),
+        )
         self._add_typeparam(params)
 
 
@@ -1586,8 +1626,11 @@ class LJ1208(Pair):
 
         nl = nlist.Cell()
         lj1208 = pair.LJ1208(nl, default_r_cut=3.0)
-        lj1208.params[('A', 'A')] = {'sigma': 1.0, 'epsilon': 1.0}
-        lj1208.params[('A', 'B')] = dict(epsilon=2.0, sigma=1.0)
+        lj1208.params[("A", "A")] = {
+            "sigma": 1.0,
+            "epsilon": 1.0,
+        }
+        lj1208.params[("A", "B")] = dict(epsilon=2.0, sigma=1.0)
 
     .. math::
         U(r) = 4 \varepsilon \left[ \left( \frac{\sigma}{r} \right)^{12} -
@@ -1611,14 +1654,17 @@ class LJ1208(Pair):
         Type: `TypeParameter` [`tuple` [``particle_type``, ``particle_type``],
         `dict`]
     """
+
     _cpp_class_name = "PotentialPairLJ1208"
     __doc__ = __doc__.replace("{inherited}", Pair._doc_inherited)
 
-    def __init__(self, nlist, default_r_cut=None, default_r_on=0., mode='none'):
+    def __init__(self, nlist, default_r_cut=None, default_r_on=0.0, mode="none"):
         super().__init__(nlist, default_r_cut, default_r_on, mode)
         params = TypeParameter(
-            'params', 'particle_types',
-            TypeParameterDict(epsilon=float, sigma=float, len_keys=2))
+            "params",
+            "particle_types",
+            TypeParameterDict(epsilon=float, sigma=float, len_keys=2),
+        )
         self._add_typeparam(params)
 
 
@@ -1642,9 +1688,12 @@ class LJ0804(Pair):
 
         nl = nlist.Cell()
         lj0804 = pair.LJ0804(nl, default_r_cut=3.0)
-        lj0804.params[('A', 'A')] = {'sigma': 1.0, 'epsilon': 1.0}
-        lj0804.params[('A', 'B')] = dict(epsilon=2.0, sigma=1.0)
-        lj0804.r_cut[('A', 'B')] = 3.0
+        lj0804.params[("A", "A")] = {
+            "sigma": 1.0,
+            "epsilon": 1.0,
+        }
+        lj0804.params[("A", "B")] = dict(epsilon=2.0, sigma=1.0)
+        lj0804.r_cut[("A", "B")] = 3.0
 
     {inherited}
 
@@ -1664,14 +1713,17 @@ class LJ0804(Pair):
         Type: `TypeParameter` [`tuple` [``particle_type``, ``particle_type``],
         `dict`]
     """
+
     _cpp_class_name = "PotentialPairLJ0804"
     __doc__ = __doc__.replace("{inherited}", Pair._doc_inherited)
 
-    def __init__(self, nlist, default_r_cut=None, default_r_on=0., mode='none'):
+    def __init__(self, nlist, default_r_cut=None, default_r_on=0.0, mode="none"):
         super().__init__(nlist, default_r_cut, default_r_on, mode)
         params = TypeParameter(
-            'params', 'particle_types',
-            TypeParameterDict(epsilon=float, sigma=float, len_keys=2))
+            "params",
+            "particle_types",
+            TypeParameterDict(epsilon=float, sigma=float, len_keys=2),
+        )
         self._add_typeparam(params)
 
 
@@ -1726,17 +1778,20 @@ class Fourier(Pair):
         Type: `TypeParameter` [`tuple` [``particle_type``, ``particle_type``],
         `dict`]
     """
+
     _cpp_class_name = "PotentialPairFourier"
     __doc__ = __doc__.replace("{inherited}", Pair._doc_inherited)
     _accepted_modes = ("none", "xplor")
 
-    def __init__(self, nlist, default_r_cut=None, default_r_on=0., mode='none'):
+    def __init__(self, nlist, default_r_cut=None, default_r_on=0.0, mode="none"):
         super().__init__(nlist, default_r_cut, default_r_on, mode)
         params = TypeParameter(
-            'params', 'particle_types',
-            TypeParameterDict(a=(float, float, float),
-                              b=(float, float, float),
-                              len_keys=2))
+            "params",
+            "particle_types",
+            TypeParameterDict(
+                a=(float, float, float), b=(float, float, float), len_keys=2
+            ),
+        )
         self._add_typeparam(params)
 
 
@@ -1765,10 +1820,15 @@ class OPP(Pair):
 
         nl = nlist.Cell()
         opp = pair.OPP(nl, default_r_cut=3.0)
-        opp.params[('A', 'A')] = {
-            'C1': 1., 'C2': 1., 'eta1': 15,
-            'eta2': 3, 'k': 1.0, 'phi': 3.14}
-        opp.r_cut[('A', 'B')] = 3.0
+        opp.params[("A", "A")] = {
+            "C1": 1.0,
+            "C2": 1.0,
+            "eta1": 15,
+            "eta2": 3,
+            "k": 1.0,
+            "phi": 3.14,
+        }
+        opp.r_cut[("A", "B")] = 3.0
 
     {inherited}
 
@@ -1800,20 +1860,25 @@ class OPP(Pair):
         Type: `TypeParameter` [`tuple` [``particle_type``, ``particle_type``],
         `dict`]
     """
+
     _cpp_class_name = "PotentialPairOPP"
     __doc__ = __doc__.replace("{inherited}", Pair._doc_inherited)
 
-    def __init__(self, nlist, default_r_cut=None, default_r_on=0., mode='none'):
+    def __init__(self, nlist, default_r_cut=None, default_r_on=0.0, mode="none"):
         super().__init__(nlist, default_r_cut, default_r_on, mode)
         params = TypeParameter(
-            'params', 'particle_types',
-            TypeParameterDict(C1=float,
-                              C2=float,
-                              eta1=float,
-                              eta2=float,
-                              k=float,
-                              phi=float,
-                              len_keys=2))
+            "params",
+            "particle_types",
+            TypeParameterDict(
+                C1=float,
+                C2=float,
+                eta1=float,
+                eta2=float,
+                k=float,
+                phi=float,
+                len_keys=2,
+            ),
+        )
         self._add_typeparam(params)
 
 
@@ -1844,8 +1909,12 @@ class TWF(Pair):
 
         nl = nlist.Cell()
         twf = hoomd.md.pair.TWF(nl, default_r_cut=3.0)
-        twf.params[('A', 'A')] = {'sigma': 1.0, 'epsilon': 1.0, 'alpha': 50.0}
-        twf.r_cut[('A', 'B')] = 3.0
+        twf.params[("A", "A")] = {
+            "sigma": 1.0,
+            "epsilon": 1.0,
+            "alpha": 50.0,
+        }
+        twf.r_cut[("A", "B")] = 3.0
 
     {inherited}
 
@@ -1867,21 +1936,17 @@ class TWF(Pair):
         Type: `TypeParameter` [`tuple` [``particle_type``, ``particle_type``],
         `dict`]
     """
+
     _cpp_class_name = "PotentialPairTWF"
     __doc__ = __doc__.replace("{inherited}", Pair._doc_inherited)
 
-    def __init__(self,
-                 nlist,
-                 default_r_cut=None,
-                 default_r_on=0.0,
-                 mode='none'):
+    def __init__(self, nlist, default_r_cut=None, default_r_on=0.0, mode="none"):
         super().__init__(nlist, default_r_cut, default_r_on, mode)
         params = TypeParameter(
-            'params', 'particle_types',
-            TypeParameterDict(epsilon=float,
-                              sigma=float,
-                              alpha=float,
-                              len_keys=2))
+            "params",
+            "particle_types",
+            TypeParameterDict(epsilon=float, sigma=float, alpha=float, len_keys=2),
+        )
         self._add_typeparam(params)
 
 
@@ -1908,9 +1973,17 @@ class LJGauss(Pair):
 
         nl = hoomd.md.nlist.Cell()
         ljg = pair.LJGauss(nl)
-        ljg.params[('A', 'A')] = dict(epsilon=1.0, sigma=0.02, r0=1.6)
-        ljg.params[('A', 'B')] = {'epsilon' : 2.0, 'sigma' : 0.02, 'r0' : 1.6}
-        ljg.params[('A', 'B')] = {'epsilon' : 2.0, 'sigma' : 0.02, 'r0' : 1.6}
+        ljg.params[("A", "A")] = dict(epsilon=1.0, sigma=0.02, r0=1.6)
+        ljg.params[("A", "B")] = {
+            "epsilon": 2.0,
+            "sigma": 0.02,
+            "r0": 1.6,
+        }
+        ljg.params[("A", "B")] = {
+            "epsilon": 2.0,
+            "sigma": 0.02,
+            "r0": 1.6,
+        }
 
     {inherited}
 
@@ -1929,19 +2002,15 @@ class LJGauss(Pair):
         * ``r0`` (`float`, **required**) -
           Gaussian center :math:`r_0` :math:`[\mathrm{length}]`
     """
+
     _cpp_class_name = "PotentialPairLJGauss"
     __doc__ = __doc__.replace("{inherited}", Pair._doc_inherited)
 
-    def __init__(self,
-                 nlist,
-                 default_r_cut=None,
-                 default_r_on=0.0,
-                 mode='none'):
+    def __init__(self, nlist, default_r_cut=None, default_r_on=0.0, mode="none"):
         super().__init__(nlist, default_r_cut, default_r_on, mode)
         params = TypeParameter(
-            'params', 'particle_types',
-            TypeParameterDict(epsilon=float,
-                              sigma=positive_real,
-                              r0=float,
-                              len_keys=2))
+            "params",
+            "particle_types",
+            TypeParameterDict(epsilon=float, sigma=positive_real, r0=float, len_keys=2),
+        )
         self._add_typeparam(params)

@@ -34,7 +34,7 @@ class ThermodynamicQuantities(Compute):
 
     Examples::
 
-        f = filter.Type('A')
+        f = filter.Type("A")
         compute.ThermodynamicQuantities(filter=f)
 
     {inherited}
@@ -103,7 +103,7 @@ class ThermodynamicQuantities(Compute):
         self._cpp_obj.compute(self._simulation.timestep)
         return self._cpp_obj.pressure
 
-    @log(category='sequence', requires_run=True)
+    @log(category="sequence", requires_run=True)
     def pressure_tensor(self):
         """Instantaneous pressure tensor of the subset \
         :math:`[\\mathrm{pressure}]`.
@@ -342,7 +342,8 @@ class HarmonicAveragedThermodynamicQuantities(Compute):
     Examples::
 
         hma = hoomd.compute.HarmonicAveragedThermodynamicQuantities(
-            filter=hoomd.filter.Type('A'), kT=1.0)
+            filter=hoomd.filter.Type("A"), kT=1.0
+        )
 
     {inherited}
 
@@ -364,10 +365,10 @@ class HarmonicAveragedThermodynamicQuantities(Compute):
     __doc__ = __doc__.replace("{inherited}", Compute._doc_inherited)
 
     def __init__(self, filter, kT, harmonic_pressure=0):
-
         # store metadata
-        param_dict = ParameterDict(kT=float(kT),
-                                   harmonic_pressure=float(harmonic_pressure))
+        param_dict = ParameterDict(
+            kT=float(kT), harmonic_pressure=float(harmonic_pressure)
+        )
         # set defaults
         self._param_dict.update(param_dict)
 
@@ -381,8 +382,9 @@ class HarmonicAveragedThermodynamicQuantities(Compute):
         else:
             thermoHMA_cls = _md.ComputeThermoHMAGPU
         group = self._simulation.state._get_group(self._filter)
-        self._cpp_obj = thermoHMA_cls(self._simulation.state._cpp_sys_def,
-                                      group, self.kT, self.harmonic_pressure)
+        self._cpp_obj = thermoHMA_cls(
+            self._simulation.state._cpp_sys_def, group, self.kT, self.harmonic_pressure
+        )
 
     @log(requires_run=True)
     def potential_energy(self):
@@ -398,6 +400,6 @@ class HarmonicAveragedThermodynamicQuantities(Compute):
 
 
 __all__ = [
-    'HarmonicAveragedThermodynamicQuantities',
-    'ThermodynamicQuantities',
+    "HarmonicAveragedThermodynamicQuantities",
+    "ThermodynamicQuantities",
 ]

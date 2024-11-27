@@ -35,12 +35,12 @@ from .angular_step import AngularStep
 from .step import Step
 
 __all__ = [
-    'OPP',
-    'AngularStep',
-    'ExpandedGaussian',
-    'LJGauss',
-    'LennardJones',
-    'Pair',
-    'Step',
-    'Union',
+    "OPP",
+    "AngularStep",
+    "ExpandedGaussian",
+    "LJGauss",
+    "LennardJones",
+    "Pair",
+    "Step",
+    "Union",
 ]

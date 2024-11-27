@@ -25,14 +25,15 @@ from .external import External
 
 def _to_hpmc_cpp_wall(wall):
     if isinstance(wall, hoomd.wall.Sphere):
-        return hoomd.hpmc._hpmc.SphereWall(wall.radius, wall.origin.to_base(),
-                                           wall.inside)
+        return hoomd.hpmc._hpmc.SphereWall(
+            wall.radius, wall.origin.to_base(), wall.inside
+        )
     if isinstance(wall, hoomd.wall.Cylinder):
-        return hoomd.hpmc._hpmc.CylinderWall(wall.radius, wall.origin.to_base(),
-                                             wall.axis.to_base(), wall.inside)
+        return hoomd.hpmc._hpmc.CylinderWall(
+            wall.radius, wall.origin.to_base(), wall.axis.to_base(), wall.inside
+        )
     if isinstance(wall, hoomd.wall.Plane):
-        return hoomd.hpmc._hpmc.PlaneWall(wall.origin.to_base(),
-                                          wall.normal.to_base())
+        return hoomd.hpmc._hpmc.PlaneWall(wall.origin.to_base(), wall.normal.to_base())
     raise TypeError(f"Unknown wall type encountered {type(wall)}.")
 
 
@@ -44,16 +45,19 @@ class _HPMCWallsMetaList(_WallsMetaList):
     compatible with integrator in the simulation to which the `WallPotential` is
     attached.
     """
+
     _supported_shape_wall_pairs = {
         hpmc.integrate.Sphere: [
-            hoomd.wall.Sphere, hoomd.wall.Cylinder, hoomd.wall.Plane
+            hoomd.wall.Sphere,
+            hoomd.wall.Cylinder,
+            hoomd.wall.Plane,
         ],
         hpmc.integrate.ConvexPolyhedron: [
-            hoomd.wall.Sphere, hoomd.wall.Cylinder, hoomd.wall.Plane
+            hoomd.wall.Sphere,
+            hoomd.wall.Cylinder,
+            hoomd.wall.Plane,
         ],
-        hpmc.integrate.ConvexSpheropolyhedron: [
-            hoomd.wall.Sphere, hoomd.wall.Plane
-        ]
+        hpmc.integrate.ConvexSpheropolyhedron: [hoomd.wall.Sphere, hoomd.wall.Plane],
     }
 
     def _check_wall_compatibility(self, wall):
@@ -61,10 +65,9 @@ class _HPMCWallsMetaList(_WallsMetaList):
             return
         integrator = self._wall_potential._simulation.operations.integrator
         integrator_type = type(integrator)
-        if type(wall) not in self._supported_shape_wall_pairs.get(
-                integrator_type, []):
-            msg = f'Overlap checks between {type(wall)} and {integrator_type} '
-            msg += 'are not supported.'
+        if type(wall) not in self._supported_shape_wall_pairs.get(integrator_type, []):
+            msg = f"Overlap checks between {type(wall)} and {integrator_type} "
+            msg += "are not supported."
             raise NotImplementedError(msg)
 
     def _validate_walls(self):
@@ -172,13 +175,14 @@ class WallPotential(External):
         cpp_cls_name += integrator.__class__.__name__
         cpp_cls = getattr(hoomd.hpmc._hpmc, cpp_cls_name)
 
-        cpp_obj = cpp_cls(self._simulation.state._cpp_sys_def,
-                          integrator._cpp_obj)
-        self._walls._sync({
-            hoomd.wall.Sphere: cpp_obj.SphereWalls,
-            hoomd.wall.Cylinder: cpp_obj.CylinderWalls,
-            hoomd.wall.Plane: cpp_obj.PlaneWalls,
-        })
+        cpp_obj = cpp_cls(self._simulation.state._cpp_sys_def, integrator._cpp_obj)
+        self._walls._sync(
+            {
+                hoomd.wall.Sphere: cpp_obj.SphereWalls,
+                hoomd.wall.Cylinder: cpp_obj.CylinderWalls,
+                hoomd.wall.Plane: cpp_obj.PlaneWalls,
+            }
+        )
 
         return cpp_obj
 
@@ -200,11 +204,13 @@ class WallPotential(External):
             return
         self._walls = _HPMCWallsMetaList(self, wall_list, _to_hpmc_cpp_wall)
         if self._attached:
-            self._walls._sync({
-                hoomd.wall.Sphere: self._cpp_obj.SphereWalls,
-                hoomd.wall.Cylinder: self._cpp_obj.CylinderWalls,
-                hoomd.wall.Plane: self._cpp_obj.PlaneWalls,
-            })
+            self._walls._sync(
+                {
+                    hoomd.wall.Sphere: self._cpp_obj.SphereWalls,
+                    hoomd.wall.Cylinder: self._cpp_obj.CylinderWalls,
+                    hoomd.wall.Plane: self._cpp_obj.PlaneWalls,
+                }
+            )
 
     @log(requires_run=True)
     def overlaps(self):

@@ -45,6 +45,7 @@ class AnisotropicPair(Pair):
         This class should not be instantiated by users. The class can be used
         for `isinstance` or `issubclass` checks.
     """
+
     __doc__ += Pair._doc_inherited
     _accepted_modes = ("none", "shift")
 
@@ -93,8 +94,8 @@ class Dipole(AnisotropicPair):
 
         nl = nlist.Cell()
         dipole = md.pair.ansio.Dipole(nl, default_r_cut=3.0)
-        dipole.params[('A', 'B')] = dict(A=1.0, kappa=4.0)
-        dipole.mu['A'] = (4.0, 1.0, 0.0)
+        dipole.params[("A", "B")] = dict(A=1.0, kappa=4.0)
+        dipole.mu["A"] = (4.0, 1.0, 0.0)
 
     {inherited}
 
@@ -126,16 +127,20 @@ class Dipole(AnisotropicPair):
         Type: `TypeParameter` [``particle_type``, `tuple` [`float`, `float`,
         `float` ]]
     """
+
     _cpp_class_name = "AnisoPotentialPairDipole"
     __doc__ = __doc__.replace("{inherited}", AnisotropicPair._doc_inherited)
 
     def __init__(self, nlist, default_r_cut=None):
-        super().__init__(nlist, default_r_cut, 'none')
+        super().__init__(nlist, default_r_cut, "none")
         params = TypeParameter(
-            'params', 'particle_types',
-            TypeParameterDict(A=float, kappa=float, len_keys=2))
-        mu = TypeParameter('mu', 'particle_types',
-                           TypeParameterDict((float, float, float), len_keys=1))
+            "params",
+            "particle_types",
+            TypeParameterDict(A=float, kappa=float, len_keys=2),
+        )
+        mu = TypeParameter(
+            "mu", "particle_types", TypeParameterDict((float, float, float), len_keys=1)
+        )
         self._extend_typeparam((params, mu))
 
 
@@ -218,17 +223,17 @@ class GayBerne(AnisotropicPair):
         Type: `TypeParameter` [`tuple` [``particle_type``, ``particle_type``],
         `dict`]
     """
+
     _cpp_class_name = "AnisoPotentialPairGB"
     __doc__ = __doc__.replace("{inherited}", AnisotropicPair._doc_inherited)
 
-    def __init__(self, nlist, default_r_cut=None, mode='none'):
+    def __init__(self, nlist, default_r_cut=None, mode="none"):
         super().__init__(nlist, default_r_cut, mode)
         params = TypeParameter(
-            'params', 'particle_types',
-            TypeParameterDict(epsilon=float,
-                              lperp=float,
-                              lpar=float,
-                              len_keys=2))
+            "params",
+            "particle_types",
+            TypeParameterDict(epsilon=float, lperp=float, lpar=float, len_keys=2),
+        )
         self._add_typeparam(params)
 
     @log(category="object")
@@ -535,33 +540,43 @@ class ALJ(AnisotropicPair):
     # created in _attach based on the dimension of the associated simulation.
 
     def __init__(self, nlist, default_r_cut=None):
-        super().__init__(nlist, default_r_cut, 'none')
+        super().__init__(nlist, default_r_cut, "none")
         params = TypeParameter(
-            'params', 'particle_types',
-            TypeParameterDict(epsilon=float,
-                              sigma_i=float,
-                              sigma_j=float,
-                              alpha=int,
-                              contact_ratio_i=0.15,
-                              contact_ratio_j=0.15,
-                              average_simplices=True,
-                              len_keys=2))
+            "params",
+            "particle_types",
+            TypeParameterDict(
+                epsilon=float,
+                sigma_i=float,
+                sigma_j=float,
+                alpha=int,
+                contact_ratio_i=0.15,
+                contact_ratio_j=0.15,
+                average_simplices=True,
+                len_keys=2,
+            ),
+        )
 
         shape = TypeParameter(
-            'shape', 'particle_types',
-            TypeParameterDict(vertices=[(float, float, float)],
-                              faces=[[int]],
-                              rounding_radii=OnlyIf(
-                                  to_type_converter((float, float, float)),
-                                  preprocess=self._to_three_tuple),
-                              len_keys=1,
-                              _defaults={'rounding_radii': (0.0, 0.0, 0.0)}))
+            "shape",
+            "particle_types",
+            TypeParameterDict(
+                vertices=[(float, float, float)],
+                faces=[[int]],
+                rounding_radii=OnlyIf(
+                    to_type_converter((float, float, float)),
+                    preprocess=self._to_three_tuple,
+                ),
+                len_keys=1,
+                _defaults={"rounding_radii": (0.0, 0.0, 0.0)},
+            ),
+        )
 
         self._extend_typeparam((params, shape))
 
     def _attach_hook(self):
         self._cpp_class_name = "AnisoPotentialPairALJ{}".format(
-            "2D" if self._simulation.state.box.is2D else "3D")
+            "2D" if self._simulation.state.box.is2D else "3D"
+        )
 
         super()._attach_hook()
 
@@ -730,8 +745,11 @@ class Patchy(AnisotropicPair):
             patchy.directors['A'] = []
 
     """
+
     __doc__ = __doc__.replace("{inherited}", AnisotropicPair._doc_inherited)
-    _doc_inherited = AnisotropicPair._doc_inherited + r"""
+    _doc_inherited = (
+        AnisotropicPair._doc_inherited
+        + r"""
     ----------
 
     **Members inherited from** `Patchy <hoomd.md.pair.aniso.Patchy>`:
@@ -742,23 +760,29 @@ class Patchy(AnisotropicPair):
 
         `Read more... <hoomd.md.pair.aniso.Patchy.directors>`
     """
+    )
 
-    def __init__(self, nlist, default_r_cut=None, mode='none'):
+    def __init__(self, nlist, default_r_cut=None, mode="none"):
         super().__init__(nlist, default_r_cut, mode)
         params = TypeParameter(
-            'params', 'particle_types',
+            "params",
+            "particle_types",
             TypeParameterDict(
                 {
                     "pair_params": self._pair_params,
                     "envelope_params": {
                         "alpha": OnlyTypes(float, postprocess=self._check_0_pi),
                         "omega": float,
-                    }
+                    },
                 },
-                len_keys=2))
+                len_keys=2,
+            ),
+        )
         envelope = TypeParameter(
-            'directors', 'particle_types',
-            TypeParameterDict([(float, float, float)], len_keys=1))
+            "directors",
+            "particle_types",
+            TypeParameterDict([(float, float, float)], len_keys=1),
+        )
         self._extend_typeparam((params, envelope))
 
     @staticmethod
@@ -783,13 +807,14 @@ class PatchyLJ(Patchy):
     .. code-block:: python
 
         lj_params = dict(epsilon=1, sigma=1)
-        envelope_params=dict(alpha=math.pi/2, omega=20)
+        envelope_params = dict(alpha=math.pi / 2, omega=20)
 
-        patchylj = hoomd.md.pair.aniso.PatchyLJ(nlist=neighbor_list,
-                                                default_r_cut=3.0)
-        patchylj.params[('A', 'A')] = dict(pair_params=lj_params,
-                                           envelope_params=envelope_params)
-        patchylj.directors['A'] = [(1,0,0)]
+        patchylj = hoomd.md.pair.aniso.PatchyLJ(nlist=neighbor_list, default_r_cut=3.0)
+        patchylj.params[("A", "A")] = dict(
+            pair_params=lj_params,
+            envelope_params=envelope_params,
+        )
+        patchylj.directors["A"] = [(1, 0, 0)]
         simulation.operations.integrator.forces = [patchylj]
 
     {inherited}
@@ -835,16 +860,20 @@ class PatchyExpandedGaussian(Patchy):
 
     .. code-block:: python
 
-        gauss_params=dict(epsilon=1, sigma=1, delta=0.5)
-        envelope_params=dict(alpha=math.pi/2, omega=40)
+        gauss_params = dict(epsilon=1, sigma=1, delta=0.5)
+        envelope_params = dict(alpha=math.pi / 2, omega=40)
 
         patchy_expanded_gaussian = hoomd.md.pair.aniso.PatchyExpandedGaussian(
-            nlist=neighbor_list,
-            default_r_cut=3.0)
-        patchy_expanded_gaussian.params[('A', 'A')] = dict(
+            nlist=neighbor_list, default_r_cut=3.0
+        )
+        patchy_expanded_gaussian.params[("A", "A")] = dict(
             pair_params=gauss_params,
-            envelope_params=envelope_params)
-        patchy_expanded_gaussian.directors['A'] = [(1,0,0), (1,1,1)]
+            envelope_params=envelope_params,
+        )
+        patchy_expanded_gaussian.directors["A"] = [
+            (1, 0, 0),
+            (1, 1, 1),
+        ]
         simulation.operations.integrator.forces = [patchy_expanded_gaussian]
 
     {inherited}
@@ -875,6 +904,7 @@ class PatchyExpandedGaussian(Patchy):
         Type: `TypeParameter` [`tuple` [``particle_type``, ``particle_type``],
         `dict`]
     """
+
     __doc__ = __doc__.replace("{inherited}", Patchy._doc_inherited)
     _cpp_class_name = "AnisoPotentialPairPatchyExpandedGaussian"
     _pair_params = {"epsilon": float, "sigma": float, "delta": float}
@@ -892,14 +922,15 @@ class PatchyExpandedLJ(Patchy):
 
     .. code-block:: python
 
-        lj_params=dict(epsilon=1, sigma=1)
-        envelope_params=dict(alpha=math.pi/2, omega=20)
+        lj_params = dict(epsilon=1, sigma=1)
+        envelope_params = dict(alpha=math.pi / 2, omega=20)
 
-        patchylj = hoomd.md.pair.aniso.PatchyLJ(nlist=neighbor_list,
-                                                default_r_cut=3.0)
-        patchylj.params[('A', 'A')] = dict(pair_params=lj_params,
-                                           envelope_params=envelope_params)
-        patchylj.directors['A'] = [(1,0,0)]
+        patchylj = hoomd.md.pair.aniso.PatchyLJ(nlist=neighbor_list, default_r_cut=3.0)
+        patchylj.params[("A", "A")] = dict(
+            pair_params=lj_params,
+            envelope_params=envelope_params,
+        )
+        patchylj.directors["A"] = [(1, 0, 0)]
         simulation.operations.integrator.forces = [patchylj]
 
     {inherited}
@@ -930,6 +961,7 @@ class PatchyExpandedLJ(Patchy):
         Type: `TypeParameter` [`tuple` [``particle_type``, ``particle_type``],
         `dict`]
     """
+
     __doc__ = __doc__.replace("{inherited}", Patchy._doc_inherited)
     _cpp_class_name = "AnisoPotentialPairPatchyExpandedLJ"
     _pair_params = {"epsilon": float, "sigma": float, "delta": float}
@@ -947,16 +979,17 @@ class PatchyExpandedMie(Patchy):
 
     .. code-block:: python
 
-        expanded_mie_params = dict(epsilon=1, sigma=1,
-                               n=15, m=10, delta=1)
-        envelope_params = dict(alpha=math.pi/3, omega=20)
+        expanded_mie_params = dict(epsilon=1, sigma=1, n=15, m=10, delta=1)
+        envelope_params = dict(alpha=math.pi / 3, omega=20)
 
         patchy_expanded_mie = hoomd.md.pair.aniso.PatchyExpandedMie(
-            nlist=neighbor_list, default_r_cut=3.0)
-        patchy_expanded_mie.params[('A', 'A')] = dict(
+            nlist=neighbor_list, default_r_cut=3.0
+        )
+        patchy_expanded_mie.params[("A", "A")] = dict(
             pair_params=expanded_mie_params,
-            envelope_params=envelope_params)
-        patchy_expanded_mie.directors['A'] = [(1,0,0)]
+            envelope_params=envelope_params,
+        )
+        patchy_expanded_mie.directors["A"] = [(1, 0, 0)]
         simulation.operations.integrator.forces = [patchy_expanded_mie]
 
     {inherited}
@@ -991,6 +1024,7 @@ class PatchyExpandedMie(Patchy):
         Type: `TypeParameter` [`tuple` [``particle_type``, ``particle_type``],
         `dict`]
     """
+
     __doc__ = __doc__.replace("{inherited}", Patchy._doc_inherited)
     _cpp_class_name = "AnisoPotentialPairPatchyExpandedMie"
     _pair_params = {
@@ -998,7 +1032,7 @@ class PatchyExpandedMie(Patchy):
         "sigma": float,
         "n": float,
         "m": float,
-        "delta": float
+        "delta": float,
     }
 
 
@@ -1014,14 +1048,17 @@ class PatchyGaussian(Patchy):
 
     .. code-block:: python
 
-        gauss_params=dict(epsilon=1, sigma=1)
-        envelope_params=dict(alpha=math.pi/4, omega=30)
+        gauss_params = dict(epsilon=1, sigma=1)
+        envelope_params = dict(alpha=math.pi / 4, omega=30)
 
-        patchy_gaussian = hoomd.md.pair.aniso.PatchyGaussian(nlist=neighbor_list,
-                                                             default_r_cut=3.0)
-        patchy_gaussian.params[('A', 'A')] = dict(pair_params=gauss_params,
-                                                  envelope_params=envelope_params)
-        patchy_gaussian.directors['A'] = [(1,0,0)]
+        patchy_gaussian = hoomd.md.pair.aniso.PatchyGaussian(
+            nlist=neighbor_list, default_r_cut=3.0
+        )
+        patchy_gaussian.params[("A", "A")] = dict(
+            pair_params=gauss_params,
+            envelope_params=envelope_params,
+        )
+        patchy_gaussian.directors["A"] = [(1, 0, 0)]
         simulation.operations.integrator.forces = [patchy_gaussian]
 
     {inherited}
@@ -1056,6 +1093,7 @@ class PatchyGaussian(Patchy):
         Type: `TypeParameter` [`tuple` [``particle_type``, ``particle_type``],
         `dict`]
     """
+
     __doc__ = __doc__.replace("{inherited}", Patchy._doc_inherited)
     _cpp_class_name = "AnisoPotentialPairPatchyGauss"
     _pair_params = {"epsilon": float, "sigma": float}
@@ -1074,13 +1112,14 @@ class PatchyMie(Patchy):
     .. code-block:: python
 
         mie_params = dict(epsilon=1, sigma=1, n=15, m=10)
-        envelope_params = dict(alpha=math.pi/3, omega=20)
+        envelope_params = dict(alpha=math.pi / 3, omega=20)
 
-        patchy_mie = hoomd.md.pair.aniso.PatchyMie(nlist=neighbor_list,
-                                                   default_r_cut=3.0)
-        patchy_mie.params[('A', 'A')] = dict(pair_params=mie_params,
-                                             envelope_params = envelope_params)
-        patchy_mie.directors['A'] = [(1,0,0)]
+        patchy_mie = hoomd.md.pair.aniso.PatchyMie(nlist=neighbor_list, default_r_cut=3.0)
+        patchy_mie.params[("A", "A")] = dict(
+            pair_params=mie_params,
+            envelope_params=envelope_params,
+        )
+        patchy_mie.directors["A"] = [(1, 0, 0)]
         simulation.operations.integrator.forces = [patchy_mie]
 
     {inherited}
@@ -1131,13 +1170,16 @@ class PatchyYukawa(Patchy):
     .. code-block:: python
 
         yukawa_params = dict(epsilon=1, kappa=10)
-        envelope_params = dict(alpha=math.pi/4, omega=25)
+        envelope_params = dict(alpha=math.pi / 4, omega=25)
 
-        patchy_yukawa = hoomd.md.pair.aniso.PatchyYukawa(nlist=neighbor_list,
-                                                         default_r_cut=5.0)
-        patchy_yukawa.params[('A', 'A')] = dict(pair_params=yukawa_params,
-                                                envelope_params=envelope_params)
-        patchy_yukawa.directors['A'] = [(1,0,0)]
+        patchy_yukawa = hoomd.md.pair.aniso.PatchyYukawa(
+            nlist=neighbor_list, default_r_cut=5.0
+        )
+        patchy_yukawa.params[("A", "A")] = dict(
+            pair_params=yukawa_params,
+            envelope_params=envelope_params,
+        )
+        patchy_yukawa.directors["A"] = [(1, 0, 0)]
         simulation.operations.integrator.forces = [patchy_yukawa]
 
     {inherited}
@@ -1172,16 +1214,16 @@ class PatchyYukawa(Patchy):
 
 
 __all__ = [
-    'ALJ',
-    'AnisotropicPair',
-    'Dipole',
-    'GayBerne',
-    'Patchy',
-    'PatchyExpandedGaussian',
-    'PatchyExpandedLJ',
-    'PatchyExpandedMie',
-    'PatchyGaussian',
-    'PatchyLJ',
-    'PatchyMie',
-    'PatchyYukawa',
+    "ALJ",
+    "AnisotropicPair",
+    "Dipole",
+    "GayBerne",
+    "Patchy",
+    "PatchyExpandedGaussian",
+    "PatchyExpandedLJ",
+    "PatchyExpandedMie",
+    "PatchyGaussian",
+    "PatchyLJ",
+    "PatchyMie",
+    "PatchyYukawa",
 ]
