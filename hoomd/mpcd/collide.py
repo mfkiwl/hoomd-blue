@@ -29,8 +29,10 @@ class CellList(Compute):
     Args:
         shift (bool): When True, randomly shift underlying collision cells.
 
-    The MPCD `CellList` bins particles into cubic cells of edge length 1.0.
-    The simulation box must be orthorhombic, and its edges must be an integer.
+    The MPCD `CellList` bins particles into cells aligned with the lattice
+    vectors that define the simulation box. The default number of cells along
+    each lattice vector is computed from :math:`L_x`, :math:`L_y`, and
+    :math:`L_z` with a length of 1.0.
 
     When the total mean-free path of the MPCD particles is small, the cells
     should be randomly shifted in order to ensure Galilean invariance of the
@@ -84,6 +86,11 @@ class CellList(Compute):
         self._cpp_obj = cpp_class(sim.state._cpp_sys_def, 1.0, self.shift)
 
         super()._attach_hook()
+
+    @property
+    def num_cells(self):
+        """tuple[int]: Number of cells along each lattice vector."""
+        return self._cpp_obj.num_cells
 
 
 class CollisionMethod(Operation):
