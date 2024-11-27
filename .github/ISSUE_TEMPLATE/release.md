@@ -1,7 +1,7 @@
 ---
 name: Release checklist
 about: '[for maintainer use]'
-title: 'Release 4.9.1'
+title: 'Release 5.0.0'
 labels: ''
 assignees: 'joaander'
 
