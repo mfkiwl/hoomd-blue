@@ -34,6 +34,17 @@ class External(hoomd.operation._HOOMDBaseObject):
 
     _ext_module = _hpmc
 
+    _doc_inherited = """
+    ----------
+
+    **Members inherited from** `External <hoomd.hpmc.external.External>`:
+
+    .. py:property:: energy
+
+        Potential energy contributed by this potential :math:`[\\mathrm{energy}]`.
+        `Read more... <hoomd.hpmc.external.External.energy>`
+    """
+
     def _make_cpp_obj(self):
         cpp_sys_def = self._simulation.state._cpp_sys_def
         cls = getattr(self._ext_module, self._cpp_class_name)

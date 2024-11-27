@@ -34,7 +34,7 @@ class PYBIND11_EXPORT CellListGPU : public mpcd::CellList
 
     protected:
     //! Compute the cell list of particles on the GPU
-    virtual void buildCellList() override;
+    void buildCellList() override;
 
     //! Callback to sort cell list on the GPU when particle data is sorted
     virtual void sort(uint64_t timestep,

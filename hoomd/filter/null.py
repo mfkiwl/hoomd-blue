@@ -10,14 +10,14 @@ from hoomd._hoomd import ParticleFilterNull
 class Null(ParticleFilter, ParticleFilterNull):
     """Select no particles.
 
-    Base: `ParticleFilter`
-
     .. rubric:: Example:
 
     .. code-block:: python
 
         null = hoomd.filter.Null()
     """
+
+    __doc__ += ParticleFilter._doc_inherited
 
     def __init__(self):
         ParticleFilter.__init__(self)

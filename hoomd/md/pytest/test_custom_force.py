@@ -7,7 +7,7 @@ import numpy.testing as npt
 
 # cupy works implicitly to set values in GPU force arrays
 try:
-    import cupy  # noqa F401
+    import cupy
     CUPY_IMPORTED = True
 except ImportError:
     # Necessary to test failure of using GPU buffers in CPU simulation.

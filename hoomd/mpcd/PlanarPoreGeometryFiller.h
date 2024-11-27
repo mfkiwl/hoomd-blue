@@ -60,10 +60,10 @@ class PYBIND11_EXPORT PlanarPoreGeometryFiller : public mpcd::ManualVirtualParti
     GPUArray<uint2> m_ranges;                //!< Particle tag ranges for filling
 
     //! Compute the total number of particles to fill
-    virtual void computeNumFill() override;
+    void computeNumFill() override;
 
     //! Draw particles within the fill volume
-    virtual void drawParticles(uint64_t timestep) override;
+    void drawParticles(uint64_t timestep) override;
 
     private:
     bool m_needs_recompute;

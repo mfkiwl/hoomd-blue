@@ -101,7 +101,7 @@ class PYBIND11_EXPORT SRDCollisionMethod : public mpcd::CollisionMethod
     GPUVector<double> m_factors;  //!< Cell-level rescale factors
 
     //! Implementation of the collision rule
-    virtual void rule(uint64_t timestep) override;
+    void rule(uint64_t timestep) override;
 
     //! Randomly draw cell rotation vectors
     virtual void drawRotationVectors(uint64_t timestep);

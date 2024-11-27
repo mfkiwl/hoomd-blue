@@ -8,7 +8,7 @@ import hoomd
 
 
 class _ForceLocalAccessBase(hoomd.data.local_access._LocalAccess):
-    __slots__ = ('_entered', '_accessed_fields', '_cpp_obj', '_force_obj')
+    __slots__ = ('_accessed_fields', '_cpp_obj', '_entered', '_force_obj')
 
     @property
     @abstractmethod
@@ -39,7 +39,7 @@ class _ForceLocalAccessBase(hoomd.data.local_access._LocalAccess):
 
 
 class _NeighborListLocalAccessBase(hoomd.data.local_access._LocalAccess):
-    __slots__ = ('_entered', '_accessed_fields', '_cpp_obj', '_nlist_obj')
+    __slots__ = ('_accessed_fields', '_cpp_obj', '_entered', '_nlist_obj')
 
     @property
     @abstractmethod

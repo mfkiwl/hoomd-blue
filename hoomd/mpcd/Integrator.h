@@ -40,13 +40,13 @@ class PYBIND11_EXPORT Integrator : public hoomd::md::IntegratorTwoStep
     virtual ~Integrator();
 
     //! Take one timestep forward
-    virtual void update(uint64_t timestep) override;
+    void update(uint64_t timestep) override;
 
     //! Change the timestep
-    virtual void setDeltaT(Scalar deltaT) override;
+    void setDeltaT(Scalar deltaT) override;
 
     //! Prepare for the run
-    virtual void prepRun(uint64_t timestep) override;
+    void prepRun(uint64_t timestep) override;
 
     //! Start autotuning kernel launch parameters
     void startAutotuning() override;

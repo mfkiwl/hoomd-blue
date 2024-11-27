@@ -8,11 +8,12 @@ from hoomd.data.parameterdicts import ParameterDict
 from hoomd.data.typeconverter import (OnlyFrom, OnlyTypes, OnlyIf,
                                       to_type_converter)
 
-from hoomd.tune import _InternalCustomTuner
+from hoomd.tune.custom_tuner import _InternalCustomTuner
 from hoomd.tune import ScaleSolver, SecantSolver
 
 from hoomd.hpmc.integrate import HPMCIntegrator
 from hoomd.hpmc.tune import mc_move_tune
+from hoomd.operation import Tuner
 
 
 class _MoveSizeTuneDefinition(mc_move_tune._MCTuneDefinition):
@@ -184,7 +185,7 @@ class BoxMCMoveSize(_InternalCustomTuner):
     conditions change the move sizes will continue to change and the tuner will
     no longer be ``tuned``. The changes to the move size are completely
     controlled by the given `hoomd.tune.RootSolver` instance. See the
-    doumentation at `hoomd.tune` for more information.
+    documentation at `hoomd.tune` for more information.
 
     Warning:
         The tuner should be removed from the simulation once tuned to prevent
@@ -208,9 +209,22 @@ class BoxMCMoveSize(_InternalCustomTuner):
             the `moves` attribute documentation. Defaults to no maximum ``None``
             for each move type.
 
+    Warning:
+        Over-limiting the maximum move sizes can lead to the inability to
+        converge to the desired acceptance rate.
+
+    Warning:
+        Since each dimension of length and shear moves are tuned independently
+        but the acceptance statistics are collected collectively, the reachable
+        target acceptance rates is limited by the other dimensions.
+
+    {inherited}
+
+    ----------
+
+    **Members defined in** `BoxMCMoveSize`:
+
     Attributes:
-        trigger (hoomd.trigger.Trigger): ``Trigger`` to determine when to run
-            the tuner.
         boxmc (hoomd.hpmc.update.BoxMC): The `hoomd.hpmc.update.BoxMC` object to
             tune.
         moves (list[str]): A list of types of moves to tune. Available options
@@ -224,18 +238,10 @@ class BoxMCMoveSize(_InternalCustomTuner):
         max_move_size (float): The maximum volume move size
             to attempt for each move time. See the available moves in the
             `moves` attribute documentation.
-
-    Warning:
-        Over-limiting the maximum move sizes can lead to the inability to
-        converge to the desired acceptance rate.
-
-    Warning:
-        Since each dimension of length and shear moves are tuned independently
-        but the acceptance statistics are collected collectively, the reachable
-        target acceptance rates is limited by the other dimensions.
     """
     _internal_class = _InternalBoxMCMoveSize
     _wrap_methods = ("tuned",)
+    __doc__ = __doc__.replace("{inherited}", Tuner._doc_inherited)
 
     @classmethod
     def scale_solver(cls,

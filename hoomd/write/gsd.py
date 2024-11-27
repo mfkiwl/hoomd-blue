@@ -179,6 +179,12 @@ class GSD(Writer):
                               filename=gsd_filename)
         simulation.operations.writers.append(gsd)
 
+    {inherited}
+
+    ----------
+
+    **Members defined in** `GSD`:
+
     Attributes:
         filename (str): File name to write (*read-only*).
 
@@ -252,6 +258,8 @@ class GSD(Writer):
 
                 gsd.maximum_write_buffer_size = 128 * 1024**2
     """
+
+    __doc__ = __doc__.replace("{inherited}", Writer._doc_inherited)
 
     def __init__(self,
                  trigger,
@@ -453,14 +461,15 @@ class _GSDLogWriter:
                     # log/particles/{remaining namespace}. This preserves OVITO
                     # intergration.
                     if type_category in self._per_categories:
-                        log['/'.join((self._global_prepend, type_category.name
-                                      + 's') + key)] = log_value
+                        log['/'.join(
+                            (self._global_prepend, type_category.name + 's',
+                             *key))] = log_value
                     elif type_category in self._convert_categories:
                         self._log_convert_value(
-                            log, '/'.join((self._global_prepend,) + key),
+                            log, '/'.join((self._global_prepend, *key)),
                             type_category, log_value)
                     else:
-                        log['/'.join((self._global_prepend,) + key)] = \
+                        log['/'.join((self._global_prepend, *key))] = \
                             log_value
             else:
                 pass

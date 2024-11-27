@@ -58,6 +58,12 @@ class Harmonic(External):
     Note:
         `Harmonic` does not support execution on GPUs.
 
+    {inherited}
+
+    ----------
+
+    **Members defined in** `Harmonic`:
+
     Attributes:
         k_translational (hoomd.variant.Variant): The translational spring
             constant :math:`[\mathrm{energy} \cdot \mathrm{length}^{-2}]`.
@@ -74,6 +80,8 @@ class Harmonic(External):
             i.e., the rotation quaternions that leave the particles unchanged
             :math:`[\mathrm{dimensionless}]`.
     """
+
+    __doc__ = __doc__.replace("{inherited}", External._doc_inherited)
 
     def __init__(self, reference_positions, reference_orientations,
                  k_translational, k_rotational, symmetries):

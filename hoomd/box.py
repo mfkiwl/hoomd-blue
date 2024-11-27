@@ -1,7 +1,7 @@
 # Copyright (c) 2009-2024 The Regents of the University of Michigan.
 # Part of HOOMD-blue, released under the BSD 3-Clause License.
 
-"""Implement Box."""
+""":py:class:`Box`-adjacent types."""
 
 import abc
 import typing
@@ -67,7 +67,7 @@ class Box:
         xz (float): tilt factor xz :math:`[\\mathrm{dimensionless}]`.
         yz (float): tilt factor yz :math:`[\\mathrm{dimensionless}]`.
 
-    .. image:: box.svg
+    .. image:: /box.svg
        :alt: Example simulation box labelled with lengths and vectors.
 
     Particles in a simulation exist in a triclinic box with
@@ -389,7 +389,7 @@ class Box:
                 xz = box.get('xz', 0)
                 yz = box.get('yz', 0)
             except (IndexError, KeyError, TypeError):
-                if not len(box) in [2, 3, 6]:
+                if len(box) not in [2, 3, 6]:
                     raise ValueError(
                         "List-like objects must have length 2, 3, or 6 to be "
                         "converted to hoomd.Box.")
@@ -398,7 +398,7 @@ class Box:
                 Ly = box[1]
                 Lz = box[2] if len(box) > 2 else 0
                 xy, xz, yz = box[3:6] if len(box) == 6 else (0, 0, 0)
-        except:  # noqa
+        except:
             raise
 
         return cls(Lx=Lx, Ly=Ly, Lz=Lz, xy=xy, xz=xz, yz=yz)
@@ -760,3 +760,8 @@ Note:
     If any of ``Lz, xy, xz, yz`` for these different types are not provided,
     they are considered 0.
 """
+
+__all__ = [
+    'BoxInterface',
+    'box_like',
+]

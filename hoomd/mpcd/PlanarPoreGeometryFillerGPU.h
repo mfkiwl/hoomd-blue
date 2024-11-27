@@ -34,7 +34,7 @@ class PYBIND11_EXPORT PlanarPoreGeometryFillerGPU : public mpcd::PlanarPoreGeome
 
     protected:
     //! Draw particles within the fill volume on the GPU
-    virtual void drawParticles(uint64_t timestep) override;
+    void drawParticles(uint64_t timestep) override;
 
     private:
     std::shared_ptr<hoomd::Autotuner<1>> m_tuner; //!< Autotuner for drawing particles

@@ -164,6 +164,7 @@ __global__ void gpu_volume_reduce_partial_sum_kernel(Scalar* d_sum,
                 if (threadIdx.x < offs)
                     volume_sdata[threadIdx.x] += volume_sdata[threadIdx.x + offs];
                 offs >>= 1;
+                __syncthreads();
                 }
 
             // everybody sums up sum2K

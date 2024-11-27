@@ -149,4 +149,4 @@ def test_type_handling(tmp_path, create_md_sim):
         with h5py.File(fn, "r") as fh:
             for key in loggables:
                 type_ = key if key not in (float, int, bool) else np.dtype(key)
-                assert fh[f"hoomd-data/{str(key)}"].dtype == type_
+                assert fh[f"hoomd-data/{key!s}"].dtype == type_

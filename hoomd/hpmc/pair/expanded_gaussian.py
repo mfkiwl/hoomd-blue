@@ -48,6 +48,12 @@ class ExpandedGaussian(Pair):
                                                     r_cut=2.5)
         simulation.operations.integrator.pair_potentials = [expanded_gaussian]
 
+    {inherited}
+
+    ----------
+
+    **Members defined in** `ExpandedGaussian`:
+
     .. py:attribute:: params
 
         The potential parameters. The dictionary has the following keys:
@@ -82,6 +88,7 @@ class ExpandedGaussian(Pair):
         Type: `str`
     """
     _cpp_class_name = "PairPotentialExpandedGaussian"
+    __doc__ = __doc__.replace("{inherited}", Pair._doc_inherited)
 
     def __init__(self, default_r_cut=None, default_r_on=0.0, mode='none'):
         if default_r_cut is None:

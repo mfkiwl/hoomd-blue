@@ -1,9 +1,7 @@
 # Copyright (c) 2009-2024 The Regents of the University of Michigan.
 # Part of HOOMD-blue, released under the BSD 3-Clause License.
 
-r"""Wall forces.
-
-Wall potential classes compute forces, virials, and energies between all
+r"""Wall potential classes compute forces, virials, and energies between all
 particles and the given walls consistent with the energy:
 
 .. math::
@@ -65,12 +63,12 @@ Below we show the potential for a `hoomd.wall.Sphere` with radius 5 in 2D,
 using the Gaussian potential with :math:`\epsilon=1, \sigma=1` and
 ``inside=True``:
 
-.. image:: md-wall-potential.svg
+.. image:: /md-wall-potential.svg
     :alt: Example plot of wall potential.
 
 When ``inside=False``, the potential becomes:
 
-.. image:: md-wall-potential-outside.svg
+.. image:: /md-wall-potential-outside.svg
     :alt: Example plot of an outside wall potential.
 
 .. rubric:: Extrapolated Mode:
@@ -104,7 +102,7 @@ to the wall:
 Below is an example of extrapolation with ``r_extrap=1.1`` for a LJ
 potential with :math:`\epsilon=1, \sigma=1`.
 
-.. image:: md-wall-extrapolate.svg
+.. image:: /md-wall-extrapolate.svg
     :alt: Example plot demonstrating potential extrapolation.
 
 To use extrapolated mode ``r_extrap`` must be set per particle type.
@@ -178,6 +176,26 @@ class WallPotential(force.Force):
         `WallPotential` should not be used directly.  It is a base class that
         provides features and documentation common to all standard wall
         potentials.
+
+    {inherited}
+
+    ----------
+
+    **Members defined in** `WallPotential`:
+    """
+
+    __doc__ = __doc__.replace("{inherited}", force.Force._doc_inherited)
+
+    _doc_inherited = force.Force._doc_inherited + """
+    ----------
+
+    **Members inherited from**
+    `WallPotential <hoomd.md.external.wall.WallPotential>`:
+
+    .. py:attribute:: walls
+
+        A list of wall definitions to use for the force.
+        `Read more... <hoomd.md.external.wall.WallPotential.walls>`
     """
 
     # Module where the C++ class is defined. Reassign this when developing an
@@ -209,7 +227,8 @@ class WallPotential(force.Force):
     @property
     def walls(self):
         """`list` [`hoomd.wall.WallGeometry`]: \
-            The walls associated with this wall potential."""
+            The walls associated with this wall potential.
+        """
         return self._walls
 
     @walls.setter
@@ -251,6 +270,12 @@ class LJ(WallPotential):
         lj.params[['A','B']] = {"epsilon": 2.0, "sigma": 1.0, "r_cut": 2.8}
         lj.params["A"] = {"r_extrap": 1.1}
 
+    {inherited}
+
+    ----------
+
+    **Members defined in** `LJ`:
+
     .. py:attribute:: params
 
         The potential parameters per type. The dictionary has the following
@@ -270,6 +295,7 @@ class LJ(WallPotential):
     """
 
     _cpp_class_name = "WallsPotentialLJ"
+    __doc__ = __doc__.replace("{inherited}", WallPotential._doc_inherited)
 
     def __init__(self, walls):
 
@@ -304,9 +330,11 @@ class Gaussian(WallPotential):
         gaussian_wall.params[['A','B']] = {
             "epsilon": 2.0, "sigma": 1.0, "r_cut": 1.0}
 
-    Attributes:
-        walls (`list` [`hoomd.wall.WallGeometry` ]): A list of wall definitions
-            to use for the force.
+    {inherited}
+
+    ----------
+
+    **Members defined in** `Gaussian`:
 
     .. py:attribute:: params
 
@@ -327,6 +355,7 @@ class Gaussian(WallPotential):
     """
 
     _cpp_class_name = "WallsPotentialGauss"
+    __doc__ = __doc__.replace("{inherited}", WallPotential._doc_inherited)
 
     def __init__(self, walls):
 
@@ -362,9 +391,11 @@ class Yukawa(WallPotential):
         yukawa_wall.params[['A','B']] = {
             "epsilon": 0.5, "kappa": 3.0, "r_cut": 3.2}
 
-    Attributes:
-        walls (`list` [`hoomd.wall.WallGeometry` ]): A list of wall definitions
-            to use for the force.
+    {inherited}
+
+    ----------
+
+    **Members defined in** `Yukawa`:
 
     .. py:attribute:: params
 
@@ -385,6 +416,7 @@ class Yukawa(WallPotential):
     """
 
     _cpp_class_name = "WallsPotentialYukawa"
+    __doc__ = __doc__.replace("{inherited}", WallPotential._doc_inherited)
 
     def __init__(self, walls):
 
@@ -421,9 +453,11 @@ class Morse(WallPotential):
         morse_wall.params[['A','B']] = {
             "D0": 0.5, "alpha": 3.0, "r0": 1.0, "r_cut": 3.2}
 
-    Attributes:
-        walls (`list` [`hoomd.wall.WallGeometry` ]): A list of wall definitions
-            to use for the force.
+    {inherited}
+
+    ----------
+
+    **Members defined in** `Morse`:
 
     .. py:attribute:: params
 
@@ -444,6 +478,7 @@ class Morse(WallPotential):
     """
 
     _cpp_class_name = "WallsPotentialMorse"
+    __doc__ = __doc__.replace("{inherited}", WallPotential._doc_inherited)
 
     def __init__(self, walls):
 
@@ -482,9 +517,11 @@ class ForceShiftedLJ(WallPotential):
         shifted_lj_wall.params[['A','B']] = {
             "epsilon": 0.5, "sigma": 3.0, "r_cut": 3.2}
 
-    Attributes:
-        walls (`list` [`hoomd.wall.WallGeometry` ]): A list of wall definitions
-            to use for the force.
+    {inherited}
+
+    ----------
+
+    **Members defined in** `ForceShiftedLJ`:
 
     .. py:attribute:: params
 
@@ -505,6 +542,7 @@ class ForceShiftedLJ(WallPotential):
     """
 
     _cpp_class_name = "WallsPotentialForceShiftedLJ"
+    __doc__ = __doc__.replace("{inherited}", WallPotential._doc_inherited)
 
     def __init__(self, walls):
 
@@ -540,9 +578,11 @@ class Mie(WallPotential):
         mie_wall.params[['A','B']] = {
             "epsilon": 0.5, "sigma": 3.0, "n": 49, "m": 50, "r_cut": 3.2}
 
-    Attributes:
-        walls (`list` [`hoomd.wall.WallGeometry` ]): A list of wall definitions
-            to use for the force.
+    {inherited}
+
+    ----------
+
+    **Members defined in** `Mie`:
 
     .. py:attribute:: params
 
@@ -563,6 +603,7 @@ class Mie(WallPotential):
     """
 
     _cpp_class_name = "WallsPotentialMie"
+    __doc__ = __doc__.replace("{inherited}", WallPotential._doc_inherited)
 
     def __init__(self, walls):
 
@@ -579,3 +620,14 @@ class Mie(WallPotential):
                                                         r_extrap=0.0,
                                                         len_keys=1))
         self._add_typeparam(params)
+
+
+__all__ = [
+    'LJ',
+    'ForceShiftedLJ',
+    'Gaussian',
+    'Mie',
+    'Morse',
+    'WallPotential',
+    'Yukawa',
+]

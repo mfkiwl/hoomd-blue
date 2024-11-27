@@ -1,9 +1,9 @@
 # Copyright (c) 2009-2024 The Regents of the University of Michigan.
 # Part of HOOMD-blue, released under the BSD 3-Clause License.
 
-"""Module implements the `State` class.
+"""Module implements the :py:class:`State` class.
 
-`State` stores and exposes a parent `hoomd.Simulation` object's data (e.g.
+:py:class:`State` stores and exposes a parent `hoomd.Simulation` object's data (e.g.
 particle positions, system bonds).
 
 .. invisible-code-block: python
@@ -80,19 +80,19 @@ class State:
     Note:
         This object cannot be directly instantiated. Use
         `Simulation.create_state_from_gsd` and
-        `Simulation.create_state_from_snapshot` to instantiate a `State`
+        `Simulation.create_state_from_snapshot` to instantiate a :py:class:`State`
         object as part of a simulation.
 
     .. rubric:: Overview
 
-    `State` stores the data that describes the thermodynamic microstate of a
+    :py:class:`State` stores the data that describes the thermodynamic microstate of a
     `Simulation` object. This data consists of the box, particles, bonds,
     angles, dihedrals, impropers, special pairs, and constraints.
 
     .. rubric:: Box
 
-    The simulation `box` describes the space that contains the particles as a
-    `Box` object.
+    The simulation :py:attr:`box` describes the space that contains the particles as a
+    :py:class:`Box` object.
 
     .. rubric:: Particles
 
@@ -530,7 +530,7 @@ class State:
         """hoomd.Box: A copy of the current simulation box.
 
         Note:
-            The `box` property cannot be set. Call `set_box` to set a new
+            The :py:attr:`box` property cannot be set. Call `set_box` to set a new
             simulation box.
 
         .. rubric:: Example:
@@ -567,7 +567,7 @@ class State:
         try:
             box = Box.from_box(box)
         except Exception:
-            raise ValueError('{} is not convertable to hoomd.Box using '
+            raise ValueError('{} is not convertible to hoomd.Box using '
                              'hoomd.Box.from_box'.format(box))
 
         if box.dimensions != self._cpp_sys_def.getNDimensions():
@@ -660,7 +660,7 @@ class State:
         """hoomd.data.LocalSnapshot: Expose simulation data on the CPU.
 
         Provides access directly to the system state's particle, bond, angle,
-        dihedral, improper, constaint, and pair data through a context manager.
+        dihedral, improper, constraint, and pair data through a context manager.
         Data in `State.cpu_local_snapshot` is MPI rank local, and the
         `hoomd.data.LocalSnapshot` object is only usable within a context
         manager (i.e. ``with sim.state.cpu_local_snapshot as data:``). Attempts
@@ -684,7 +684,7 @@ class State:
 
         Note:
             The state's box and the number of particles, bonds, angles,
-            dihedrals, impropers, constaints, and pairs cannot
+            dihedrals, impropers, constraints, and pairs cannot
             change within the context manager.
 
         Note:
@@ -702,7 +702,7 @@ class State:
         """hoomd.data.LocalSnapshotGPU: Expose simulation data on the GPU.
 
         Provides access directly to the system state's particle, bond, angle,
-        dihedral, improper, constaint, and pair data through a context manager.
+        dihedral, improper, constraint, and pair data through a context manager.
         Data in `State.gpu_local_snapshot` is GPU local, and the
         `hoomd.data.LocalSnapshotGPU` object is only usable within a context
         manager (i.e. ``with sim.state.gpu_local_snapshot as data:``). Attempts
@@ -739,7 +739,7 @@ class State:
 
         Note:
             The state's box and the number of particles, bonds, angles,
-            dihedrals, impropers, constaints, and pairs cannot
+            dihedrals, impropers, constraints, and pairs cannot
             change within the context manager.
 
         Note:
@@ -778,7 +778,7 @@ class State:
         .. rubric:: Angular momentum
 
         `thermalize_particle_momenta` assigns random angular momenta to each
-        rotational degree of freedom that has a non-zero moment of intertia.
+        rotational degree of freedom that has a non-zero moment of inertia.
         Each particle can have 0, 1, 2, or 3 rotational degrees of freedom
         as determine by its moment of inertia.
 
@@ -802,7 +802,8 @@ class State:
     @property
     def domain_decomposition_split_fractions(self):
         """tuple(list[float], list[float], list[float]): Box fractions of the \
-        domain split planes in the x, y, and z directions."""
+        domain split planes in the x, y, and z directions.
+        """
         particle_data = self._cpp_sys_def.getParticleData()
 
         if (not hoomd.version.mpi_enabled
@@ -817,7 +818,8 @@ class State:
     @property
     def domain_decomposition(self):
         """tuple(int, int, int): Number of domains in the x, y, and z \
-        directions."""
+        directions.
+        """
         particle_data = self._cpp_sys_def.getParticleData()
 
         if (not hoomd.version.mpi_enabled

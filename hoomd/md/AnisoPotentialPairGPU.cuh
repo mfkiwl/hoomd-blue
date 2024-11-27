@@ -197,6 +197,7 @@ gpu_compute_pair_aniso_forces_kernel(Scalar4* d_force,
                 = ((int*)d_shape_params)[cur_offset + threadIdx.x];
             }
         }
+
     __syncthreads();
 
     // initialize extra shared mem
@@ -208,6 +209,8 @@ gpu_compute_pair_aniso_forces_kernel(Scalar4* d_force,
 
     for (unsigned int cur_type = 0; cur_type < ntypes; ++cur_type)
         s_shape_params[cur_type].load_shared(s_extra, available_bytes);
+
+    __syncthreads();
 
     // start by identifying which particle we are to handle
     unsigned int idx;

@@ -13,7 +13,8 @@
     custom_action = ExampleAction()
 """
 
-from hoomd.custom import (CustomOperation, _InternalCustomOperation, Action)
+from hoomd.custom import (CustomOperation, Action)
+from hoomd.custom.custom_operation import _InternalCustomOperation
 from hoomd.operation import Updater
 
 
@@ -64,6 +65,7 @@ class CustomUpdater(CustomOperation, _UpdaterProperty, Updater):
     """
     _cpp_list_name = 'updaters'
     _cpp_class_name = 'PythonUpdater'
+    __doc__ += CustomOperation._doc_inherited
 
 
 class _InternalCustomUpdater(_InternalCustomOperation, Updater):

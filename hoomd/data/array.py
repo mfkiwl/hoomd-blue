@@ -25,18 +25,18 @@ def _wrap_class_factory(methods_wrap_func_list,
 
     Applies the functor to each method given in methods. This occurs before
     class creation. The functor can take any number of arguments, but besides
-    for the method name must be the same accross all methods.
+    for the method name must be the same across all methods.
 
     Args:
         methods_wrap_func_list (Sequence[tuple(Sequence[str], Callable]): A
             sequence of method names, functor pairs. For each tuple in the list,
             the provided callable is used to wrap all the methods listed in the
             tuple.
-        ``*args`` (Any): Required position arguments for the functors.
+        *args (Any): Required position arguments for the functors.
         allow_exceptions (bool, optional): A key word only argument that
             defaults to False. When True exceptions are ignored when setting
             class methods, and the method raising the error is skipped.
-        ``**kwargs`` (Any): Required key word arguments for the functors.
+        **kwargs (Any): Required key word arguments for the functors.
     """
 
     class _WrapClass(type):
@@ -185,7 +185,7 @@ _ndarray_magic_unsafe_ = (
 
 # Operations that return an array pointing to the same buffer
 # ----------------------------------------------------------
-# These operation are guarenteed to return an array pointing to the same memory
+# These operation are guaranteed to return an array pointing to the same memory
 # buffer. They all modify arrays in place (e.g. +=). We always return a
 # HOOMDArray for these methods that return anything.
 
@@ -446,7 +446,7 @@ class HOOMDArray(metaclass=_wrap_class_factory(_wrap_list)):
 
         This ensures that calls to functions like `numpy.array` do not cause
         invalid access to the buffer. We must copy because ones we release
-        `numpy.ndarray` pointing to the underlying buffer we cannot guarentee
+        `numpy.ndarray` pointing to the underlying buffer we cannot guarantee
         safety.
         """
         return np.array(self._coerce_to_ndarray(),

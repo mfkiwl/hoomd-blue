@@ -25,7 +25,15 @@ class Tags(ParticleFilter, ParticleFilterTags):
     .. code-block:: python
 
         tags = hoomd.filter.Tags([0, 1, 2])
+
+    {inherited}
+
+    ----------
+
+    **Members defined in** `Tags`:
     """
+
+    __doc__ = __doc__.replace("{inherited}", ParticleFilter._doc_inherited)
 
     def __init__(self, tags):
         ParticleFilter.__init__(self)
