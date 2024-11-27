@@ -29,6 +29,9 @@ Change Log
 * ``hoomd.hpmc.pair.Pair.energy`` now computes the correct energy when there are multiple pair
   potentials with different ``r_cut`` values
   (`#1955 <https://github.com/glotzerlab/hoomd-blue/pull/1955>`__).
+* Initializing large numbers (~100+ million) of MPCD particles with domain decomposition no longer
+  causes a segmentation fault
+  (`#1897 <https://github.com/glotzerlab/hoomd-blue/pull/1897>`__).
 
 *Added*
 

@@ -1297,47 +1297,46 @@ Communicator::Communicator(std::shared_ptr<SystemDefinition> sysdef,
 
     initializeNeighborArrays();
 
-    /* create a type for pdata_element */
-    const int nitems = 14;
-    int blocklengths[14] = {4, 4, 3, 1, 1, 3, 1, 4, 4, 3, 1, 4, 4, 6};
-    MPI_Datatype types[14] = {MPI_HOOMD_SCALAR,
-                              MPI_HOOMD_SCALAR,
-                              MPI_HOOMD_SCALAR,
-                              MPI_HOOMD_SCALAR,
-                              MPI_HOOMD_SCALAR,
-                              MPI_INT,
-                              MPI_UNSIGNED,
-                              MPI_HOOMD_SCALAR,
-                              MPI_HOOMD_SCALAR,
-                              MPI_HOOMD_SCALAR,
-                              MPI_UNSIGNED,
-                              MPI_HOOMD_SCALAR,
-                              MPI_HOOMD_SCALAR,
-                              MPI_HOOMD_SCALAR};
-    MPI_Aint offsets[14];
+        // create a type for pdata_element
+        {
+        const MPI_Datatype mpi_scalar3 = m_exec_conf->getMPIConfig()->getScalar3Datatype();
+        const MPI_Datatype mpi_scalar4 = m_exec_conf->getMPIConfig()->getScalar4Datatype();
+        const unsigned int nitems = 14;
+        int blocklengths[nitems] = {1, 1, 1, 1, 1, 3, 1, 1, 1, 1, 1, 1, 1, 6};
+        MPI_Datatype types[nitems] = {mpi_scalar4,
+                                      mpi_scalar4,
+                                      mpi_scalar3,
+                                      MPI_HOOMD_SCALAR,
+                                      MPI_HOOMD_SCALAR,
+                                      MPI_INT,
+                                      MPI_UNSIGNED,
+                                      mpi_scalar4,
+                                      mpi_scalar4,
+                                      mpi_scalar3,
+                                      MPI_UNSIGNED,
+                                      mpi_scalar4,
+                                      mpi_scalar4,
+                                      MPI_HOOMD_SCALAR};
+        MPI_Aint offsets[nitems] = {offsetof(detail::pdata_element, pos),
+                                    offsetof(detail::pdata_element, vel),
+                                    offsetof(detail::pdata_element, accel),
+                                    offsetof(detail::pdata_element, charge),
+                                    offsetof(detail::pdata_element, diameter),
+                                    offsetof(detail::pdata_element, image),
+                                    offsetof(detail::pdata_element, body),
+                                    offsetof(detail::pdata_element, orientation),
+                                    offsetof(detail::pdata_element, angmom),
+                                    offsetof(detail::pdata_element, inertia),
+                                    offsetof(detail::pdata_element, tag),
+                                    offsetof(detail::pdata_element, net_force),
+                                    offsetof(detail::pdata_element, net_torque),
+                                    offsetof(detail::pdata_element, net_virial)};
 
-    offsets[0] = offsetof(detail::pdata_element, pos);
-    offsets[1] = offsetof(detail::pdata_element, vel);
-    offsets[2] = offsetof(detail::pdata_element, accel);
-    offsets[3] = offsetof(detail::pdata_element, charge);
-    offsets[4] = offsetof(detail::pdata_element, diameter);
-    offsets[5] = offsetof(detail::pdata_element, image);
-    offsets[6] = offsetof(detail::pdata_element, body);
-    offsets[7] = offsetof(detail::pdata_element, orientation);
-    offsets[8] = offsetof(detail::pdata_element, angmom);
-    offsets[9] = offsetof(detail::pdata_element, inertia);
-    offsets[10] = offsetof(detail::pdata_element, tag);
-    offsets[11] = offsetof(detail::pdata_element, net_force);
-    offsets[12] = offsetof(detail::pdata_element, net_torque);
-    offsets[13] = offsetof(detail::pdata_element, net_virial);
-
-    MPI_Datatype tmp;
-    MPI_Type_create_struct(nitems, blocklengths, offsets, types, &tmp);
-    MPI_Type_commit(&tmp);
-
-    MPI_Type_create_resized(tmp, 0, sizeof(detail::pdata_element), &m_mpi_pdata_element);
-    MPI_Type_commit(&m_mpi_pdata_element);
-    MPI_Type_free(&tmp);
+        MPI_Datatype tmp;
+        MPI_Type_create_struct(nitems, blocklengths, offsets, types, &tmp);
+        MPI_Type_create_resized(tmp, 0, sizeof(detail::pdata_element), &m_mpi_pdata_element);
+        MPI_Type_commit(&m_mpi_pdata_element);
+        }
     }
 
 //! Destructor
