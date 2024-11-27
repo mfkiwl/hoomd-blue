@@ -15,6 +15,7 @@ import hoomd.logging
 import hoomd.tune
 import hoomd.trigger
 from hoomd.md.nlist import NeighborList
+from hoomd.custom.custom_action import _InternalAction
 
 
 class _IntervalTPS:
@@ -57,7 +58,7 @@ class _IntervalTPS:
         return delta_t / delta_w
 
 
-class _NeighborListBufferInternal(hoomd.custom._InternalAction):
+class _NeighborListBufferInternal(_InternalAction):
     _skip_for_equality = {"_simulation", "_tunable"}
 
     def __init__(

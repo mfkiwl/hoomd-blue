@@ -36,7 +36,7 @@ def _proper_type_return(val):
     if len(val) == 0:
         return None
     elif len(val) == 1:
-        return list(val.values())[0]
+        return next(iter(val.values()))
     else:
         return val
 
@@ -60,7 +60,7 @@ def _raise_if_required_arg(value, current_context=()):
 
     if isinstance(value, Mapping):
         for key, item in value.items():
-            _raise_if_required_arg(item, current_context + (key,))
+            _raise_if_required_arg(item, (*current_context, key))
     # _is_iterable is required over isinstance(value, Sequence) because a
     # str of 1 character is still a sequence and results in infinite recursion.
     elif _is_iterable(value):
@@ -68,7 +68,7 @@ def _raise_if_required_arg(value, current_context=()):
         if len(value) == 1 and value[0] is RequiredArg:
             _raise_error_with_context(current_context)
         for index, item in enumerate(value):
-            _raise_if_required_arg(item, current_context + (index,))
+            _raise_if_required_arg(item, (*current_context, index))
 
 
 class _SmartTypeIndexer:
@@ -246,7 +246,7 @@ class _ValidatedDefaultDict(MutableMapping):
             validated_value = self._validate_values(item)
         except ValueError as err:
             raise TypeConversionError(
-                f"For types {list(keys)}: {str(err)}.") from err
+                f"For types {list(keys)}: {err!s}.") from err
         for key in keys:
             self._single_setitem(key, validated_value)
 
@@ -514,7 +514,7 @@ class TypeParameterDict(_ValidatedDefaultDict):
                 _raise_if_required_arg(parameters[key])
             except IncompleteSpecificationError as err:
                 self._cpp_obj = None
-                raise IncompleteSpecificationError(f"for key {key} {str(err)}")
+                raise IncompleteSpecificationError(f"for key {key} {err!s}")
             self._single_setitem(key, parameters[key])
 
     def _detach(self):

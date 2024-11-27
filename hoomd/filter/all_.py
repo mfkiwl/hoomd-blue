@@ -10,14 +10,14 @@ from hoomd._hoomd import ParticleFilterAll
 class All(ParticleFilter, ParticleFilterAll):
     """Select all particles in the system.
 
-    Base: `ParticleFilter`
-
     .. rubric:: Example:
 
     .. code-block:: python
 
         all_ = hoomd.filter.All()
     """
+
+    __doc__ += ParticleFilter._doc_inherited
 
     def __init__(self):
         ParticleFilter.__init__(self)

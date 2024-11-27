@@ -52,7 +52,7 @@ class TypeParameter(MutableMapping):
         lj = hoomd.md.pair.LJ(nlist=hoomd.md.nlist.Cell(buffer=0.4))
         langevin = hoomd.md.methods.Langevin(filter=hoomd.filter.All(), kT=1.0)
     """
-    __slots__ = ("name", "type_kind", "param_dict")
+    __slots__ = ("name", "param_dict", "type_kind")
 
     def __init__(self, name, type_kind, param_dict):
         self.name = name

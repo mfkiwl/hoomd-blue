@@ -3,13 +3,14 @@
 
 """Tune Newtonian event chain parameters."""
 
-from hoomd.custom import _InternalAction
+from hoomd.custom.custom_action import _InternalAction
 from hoomd.data.parameterdicts import ParameterDict
 from hoomd.data.typeconverter import OnlyTypes
-from hoomd.tune import _InternalCustomTuner
+from hoomd.tune.custom_tuner import _InternalCustomTuner
 from hoomd.tune.attr_tuner import _TuneDefinition
 from hoomd.tune import RootSolver, ScaleSolver, SecantSolver
 from hoomd.hpmc.nec.integrate import HPMCNECIntegrator
+from hoomd.operation import Tuner
 
 
 class _ChainTimeTuneDefinition(_TuneDefinition):
@@ -199,9 +200,13 @@ class ChainTime(_InternalCustomTuner):
             reach the specified target.
         max_chain_time (float): The maximum value of chain time to attempt.
 
+    {inherited}
+
+    ----------
+
+    **Members defined in** `ChainTime`:
+
     Attributes:
-        trigger (hoomd.trigger.Trigger): ``Trigger`` to determine when to run
-            the tuner.
         target (float): The acceptance rate for trial moves that is desired. The
             value should be between 0 and 1.
         solver (hoomd.tune.RootSolver): A solver that tunes move sizes to reach
@@ -209,6 +214,7 @@ class ChainTime(_InternalCustomTuner):
         max_chain_time (float): The maximum value of chain time to attempt.
     """
     _internal_class = _InternalChainTime
+    __doc__ = __doc__.replace("{inherited}", Tuner._doc_inherited)
 
     @classmethod
     def scale_solver(cls,
@@ -278,3 +284,8 @@ class ChainTime(_InternalCustomTuner):
         """
         solver = SecantSolver(gamma, tol)
         return cls(trigger, target, solver, max_chain_time)
+
+
+__all__ = [
+    'ChainTime',
+]

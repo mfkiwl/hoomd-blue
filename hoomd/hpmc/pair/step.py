@@ -45,6 +45,12 @@ class Step(Pair):
         step.params[('A', 'A')] = dict(epsilon=[1, -1], r=[0.5, 1.5])
         simulation.operations.integrator.pair_potentials = [step]
 
+    {inherited}
+
+    ----------
+
+    **Members defined in** `Step`:
+
     .. py:attribute:: params
 
         The potential parameters. The dictionary has the following keys:
@@ -59,6 +65,7 @@ class Step(Pair):
         `dict`]
     """
     _cpp_class_name = "PairPotentialStep"
+    __doc__ = __doc__.replace("{inherited}", Pair._doc_inherited)
 
     def __init__(self):
         params = hoomd.data.typeparam.TypeParameter(

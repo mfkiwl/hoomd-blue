@@ -65,6 +65,12 @@ class Burst(GSD):
     See Also:
         The base class `hoomd.write.GSD`
 
+    {inherited}
+
+    ----------
+
+    **Members defined in** `Burst`:
+
     Attributes:
         max_burst_size (int): The maximum number of frames to store before
             between writes. -1 represents no limit.
@@ -95,6 +101,8 @@ class Burst(GSD):
 
                     burst.clear_buffer_after_dump = False
     """
+
+    __doc__ = __doc__.replace("{inherited}", GSD._doc_inherited)
 
     def __init__(self,
                  trigger,

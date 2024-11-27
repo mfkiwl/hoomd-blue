@@ -4,3 +4,5 @@
 """Example python module."""
 
 from hoomd.pair_plugin import pair
+
+__all__ = ['pair']

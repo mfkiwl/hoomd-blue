@@ -61,6 +61,12 @@ class DCD(Writer):
                               filename=dcd_filename)
         simulation.operations.writers.append(dcd)
 
+    {inherited}
+
+    ----------
+
+    **Members defined in** `DCD`:
+
     Attributes:
         filename (str): File name to write (*read only*).
 
@@ -122,6 +128,8 @@ class DCD(Writer):
 
                 dcd.angle_z = True
     """
+
+    __doc__ = __doc__.replace("{inherited}", Writer._doc_inherited)
 
     def __init__(self,
                  trigger,

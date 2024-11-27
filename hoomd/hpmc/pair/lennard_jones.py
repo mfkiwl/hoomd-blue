@@ -44,6 +44,12 @@ class LennardJones(Pair):
         lennard_jones.params[('A', 'A')] = dict(epsilon=1, sigma=1, r_cut=2.5)
         simulation.operations.integrator.pair_potentials = [lennard_jones]
 
+    {inherited}
+
+    ----------
+
+    **Members defined in** `LennardJones`:
+
     .. py:attribute:: params
 
         The potential parameters. The dictionary has the following keys:
@@ -75,6 +81,7 @@ class LennardJones(Pair):
         Type: `str`
     """
     _cpp_class_name = "PairPotentialLennardJones"
+    __doc__ = __doc__.replace("{inherited}", Pair._doc_inherited)
 
     def __init__(self, default_r_cut=None, default_r_on=0.0, mode='none'):
         if default_r_cut is None:

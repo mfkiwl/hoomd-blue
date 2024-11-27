@@ -9,6 +9,7 @@ from hoomd.logging import log
 from hoomd.operation import _HOOMDBaseObject
 from hoomd.data.parameterdicts import ParameterDict
 from hoomd.md.pair import LJGauss as BaseLJGauss
+from typing import Optional
 
 
 def _modify_pair_cls_to_alchemical(cls):
@@ -37,8 +38,6 @@ class AlchemicalDOFStore(Mapping):
 
     The class acts as a cache so once an alchemical DOF is queried it is
     returned and not recreated when queried again.
-
-    .. versionadded:: 3.1.0
     """
 
     def __init__(self, name, pair_instance, dof_cls):
@@ -140,8 +139,6 @@ class AlchemicalDOF(_HOOMDBaseObject):
         To access an alchemical degree of freedom for a particular type pair,
         query the corresponding attribute in the alchemical pair force instance.
 
-    .. versionadded:: 3.1.0
-
     Attributes:
         mass (float): The mass of the alchemical degree of freedom.
         mu (float): The value of the alchemical potential.
@@ -152,9 +149,9 @@ class AlchemicalDOF(_HOOMDBaseObject):
     """
 
     def __init__(self,
-                 force: _AlchemicalPairForce,
+                 force,
                  name: str = '',
-                 typepair: tuple = None,
+                 typepair: Optional[tuple] = None,
                  alpha: float = 1.0,
                  mass: float = 1.0,
                  mu: float = 0.0):
@@ -238,7 +235,7 @@ class _AlchemicalNormalizedDOF(AlchemicalDOF):
     def __init__(self,
                  force: _AlchemicalPairForce,
                  name: str = '',
-                 typepair: tuple = None,
+                 typepair: Optional[tuple] = None,
                  alpha: float = 1.0,
                  norm_value: float = 0.0,
                  mass: float = 1.0,
@@ -287,7 +284,11 @@ class LJGauss(BaseLJGauss, _AlchemicalPairForce):
         `hoomd.md.alchemy.pair.LJGauss` does not support MPI parallel
         simulations.
 
-    .. versionadded:: 3.1.0
+    {inherited}
+
+    ----------
+
+    **Members defined in** `LJGauss`:
 
     .. py:attribute:: params
 
@@ -327,6 +328,7 @@ class LJGauss(BaseLJGauss, _AlchemicalPairForce):
         ``particle_type``], `AlchemicalDOF`])
     """
     _alchemical_dofs = ['epsilon', 'sigma', 'r0']
+    __doc__ = __doc__.replace("{inherited}", BaseLJGauss._doc_inherited)
 
     def __init__(self,
                  nlist,
@@ -364,3 +366,10 @@ class _NLJGauss(BaseLJGauss, _AlchemicalPairForce):
                  mode='none'):
         _AlchemicalPairForce.__init__(self)
         super().__init__(nlist, default_r_cut, default_r_on, mode)
+
+
+__all__ = [
+    'AlchemicalDOF',
+    'AlchemicalDOFStore',
+    'LJGauss',
+]

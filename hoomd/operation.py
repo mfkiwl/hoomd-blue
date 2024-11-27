@@ -1,9 +1,7 @@
 # Copyright (c) 2009-2024 The Regents of the University of Michigan.
 # Part of HOOMD-blue, released under the BSD 3-Clause License.
 
-"""Operation class types.
-
-Operations act on the state of the system at defined points during the
+"""Operations act on the state of the system at defined points during the
 simulation's run loop. Add operation objects to the `Simulation.operations`
 collection.
 
@@ -40,7 +38,7 @@ class _HOOMDGetSetAttrBase:
             `_param_dict` and `_typeparam_dict` keys by default.
         _override_setattr (set[str]): Attributes that should not use the
             provided `__setattr__`. `super().__setattr__` is called for them.
-            Likely, this wil no longer be necessary when triggers are added to
+            Likely, this will no longer be necessary when triggers are added to
             C++ Updaters and Analyzers.
         _param_dict (ParameterDict): The `ParameterDict` for the class/instance.
         _typeparam_dict (dict[str, TypeParameter]): A dict of all the
@@ -356,7 +354,7 @@ class _HOOMDBaseObject(_HOOMDGetSetAttrBase,
             except ValueError as err:
                 raise err.__class__(
                     f"For {type(self)} in TypeParameter {typeparam.name} "
-                    f"{str(err)}")
+                    f"{err!s}")
 
     def _unapply_typeparam_dict(self):
         for typeparam in self._typeparam_dict.values():
@@ -424,6 +422,27 @@ class AutotunedObject(_HOOMDBaseObject):
     See Also:
         * `hoomd.Operations.is_tuning_complete`
         * `hoomd.Operations.tune_kernel_parameters`
+    """
+
+    _doc_inherited = """
+    ----------
+
+    **Members inherited from** `AutotunedObject <hoomd.operation.AutotunedObject>`:
+
+    .. py:property:: kernel_parameters
+
+        Kernel parameters.
+        `Read more... <hoomd.operation.AutotunedObject.kernel_parameters>`
+
+    .. py:property:: is_tuning_complete
+
+        Check if kernel parameter tuning is complete.
+        `Read more... <hoomd.operation.AutotunedObject.is_tuning_complete>`
+
+    .. py:method:: tune_kernel_parameters
+
+        Start tuning kernel parameters.
+        `Read more... <hoomd.operation.AutotunedObject.tune_kernel_parameters>`
     """
 
     @property
@@ -516,23 +535,23 @@ class Operation(AutotunedObject):
     Warning:
         This class should not be instantiated by users. The class can be used
         for `isinstance` or `issubclass` checks.
-
-    Note:
-        Developers or those contributing to HOOMD-blue, see our architecture
-        `file`_ for information on HOOMD-blue's architecture decisions regarding
-        operations.
-
-    .. _file: https://github.com/glotzerlab/hoomd-blue/blob/trunk-minor/ \
-        ARCHITECTURE.md
     """
+
+    __doc__ += AutotunedObject._doc_inherited
 
 
 class TriggeredOperation(Operation):
-    """Operations that include a trigger to determine when to run.
+    """Operations that execute on timesteps determined by a trigger.
 
     Warning:
         This class should not be instantiated by users. The class can be used
         for `isinstance` or `issubclass` checks.
+
+    {inherited}
+
+    ----------
+
+    **Members defined in** `TriggeredOperation`:
 
     Attributes:
         trigger (hoomd.trigger.Trigger): The trigger to activate this operation.
@@ -542,6 +561,20 @@ class TriggeredOperation(Operation):
             .. code-block:: python
 
                 operation.trigger = hoomd.trigger.Periodic(10)
+    """
+
+    __doc__ = __doc__.replace("{inherited}", Operation._doc_inherited)
+
+    _doc_inherited = Operation._doc_inherited + """
+    ----------
+
+    **Members inherited from**
+    `Integrator <hoomd.md.Integrator>`:
+
+    .. py:attribute:: trigger
+
+        The trigger to activate this operation.
+        `Read more... <hoomd.operation.TriggeredOperation.trigger>`
     """
 
     def __init__(self, trigger):
@@ -561,6 +594,8 @@ class Updater(TriggeredOperation):
     """
     _cpp_list_name = 'updaters'
 
+    __doc__ += TriggeredOperation._doc_inherited
+
 
 class Writer(TriggeredOperation):
     """Write output that depends on the simulation's state.
@@ -573,6 +608,8 @@ class Writer(TriggeredOperation):
     """
     _cpp_list_name = 'analyzers'
 
+    __doc__ += TriggeredOperation._doc_inherited
+
 
 class Compute(Operation):
     """Compute properties of the simulation's state.
@@ -584,7 +621,7 @@ class Compute(Operation):
         This class should not be instantiated by users. The class can be used
         for `isinstance` or `issubclass` checks.
     """
-    pass
+    __doc__ += Operation._doc_inherited
 
 
 class Tuner(TriggeredOperation):
@@ -599,7 +636,7 @@ class Tuner(TriggeredOperation):
         This class should not be instantiated by users. The class can be used
         for `isinstance` or `issubclass` checks.
     """
-    pass
+    __doc__ += TriggeredOperation._doc_inherited
 
 
 class Integrator(Operation):
@@ -614,9 +651,22 @@ class Integrator(Operation):
         This class should not be instantiated by users. The class can be used
         for `isinstance` or `issubclass` checks.
     """
+    __doc__ += Operation._doc_inherited
 
     def _attach_hook(self):
         self._simulation._cpp_sys.setIntegrator(self._cpp_obj)
 
         # The integrator has changed, update the number of DOF in all groups
         self._simulation.state.update_group_dof()
+
+
+__all__ = [
+    'AutotunedObject',
+    'Compute',
+    'Integrator',
+    'Operation',
+    'TriggeredOperation',
+    'Tuner',
+    'Updater',
+    'Writer',
+]

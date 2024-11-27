@@ -46,7 +46,7 @@ def make_pppm_coulomb_forces(nlist, resolution, order, r_cut, alpha=0):
 
     Note:
         In HOOMD-blue, the :math:`\\frac{1}{4\\pi\\epsilon_0}` factor is
-        included in the `units of charge <units>`.
+        included in the `units of charge </units>`.
 
     The particle particle particle mesh (PPPM) method splits this computation
     into real space and reciprocal space components.
@@ -110,8 +110,8 @@ def make_pppm_coulomb_forces(nlist, resolution, order, r_cut, alpha=0):
         Add both of these forces to the integrator.
 
     Warning:
-        `make_pppm_coulomb_forces` sets all parameters for the returned `Force`
-        objects given the input resolution and order. Do not change the
+        :py:func:`make_pppm_coulomb_forces` sets all parameters for the returned
+        `Force` objects given the input resolution and order. Do not change the
         parameters of the returned objects directly.
 
     .. _J. W. Eastwood, R. W. Hockney, and D. N. Lawrence 1980:
@@ -142,9 +142,15 @@ class Coulomb(Force):
     """Reciprocal space part of the PPPM Coulomb forces.
 
     Note:
-        Use `make_pppm_coulomb_forces` to create a connected pair of
+        Use :py:func:`make_pppm_coulomb_forces` to create a connected pair of
         `md.pair.Ewald` and `md.long_range.pppm.Coulomb` instances that together
         implement the PPPM method for electrostatics.
+
+    {inherited}
+
+    ----------
+
+    **Members defined in** `Coulomb`:
 
     Attributes:
         resolution (tuple[int, int, int]): Number of grid points in the x, y,
@@ -156,6 +162,8 @@ class Coulomb(Force):
         alpha (float): Debye screening parameter
           :math:`\\mathrm{[length^{-1}]}`.
     """
+
+    __doc__ = __doc__.replace("{inherited}", Force._doc_inherited)
 
     def __init__(self, nlist, resolution, order, r_cut, alpha, pair_force):
         super().__init__()
@@ -324,3 +332,9 @@ def _rms(h, prd, N, order, kappa, q2):
     value = q2 * pow(h * kappa, order) * math.sqrt(
         kappa * prd * math.sqrt(2.0 * math.pi) * sum / N) / prd / prd
     return value
+
+
+__all__ = [
+    'Coulomb',
+    'make_pppm_coulomb_forces',
+]

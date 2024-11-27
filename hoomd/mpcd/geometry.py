@@ -1,9 +1,7 @@
 # Copyright (c) 2009-2024 The Regents of the University of Michigan.
 # Part of HOOMD-blue, released under the BSD 3-Clause License.
 
-r"""MPCD geometries.
-
-A geometry defines solid boundaries that cannot be penetrated. These
+r"""A geometry defines solid boundaries that cannot be penetrated. These
 geometries are used for various operations in the MPCD algorithm including:
 
 * Bounce-back streaming for MPCD particles
@@ -47,6 +45,18 @@ class Geometry(_HOOMDBaseObject):
             average *normal* velocity is zero at the surface, but there
             is no friction against the *tangential* velocity.
 
+    """
+
+    _doc_inherited = """
+    ----------
+
+    **Members inherited from**
+    `Geometry <hoomd.mpcd.geometry.Geometry>`:
+
+    .. py:attribute:: no_slip
+
+        Plates have a no-slip boundary condition when True.
+        `Read more... <hoomd.mpcd.geometry.Geometry.no_slip>`
     """
 
     def __init__(self, no_slip):
@@ -101,6 +111,12 @@ class ConcentricCylinders(Geometry):
         stream = hoomd.mpcd.stream.BounceBack(period=1, geometry=cylinders)
         simulation.operations.integrator.streaming_method = stream
 
+    {inherited}
+
+    ----------
+
+    **Members defined in** `ConcentricCylinders`:
+
     Attributes:
         inner_radius (float): Radius of inner cylinder (*read only*).
 
@@ -112,6 +128,8 @@ class ConcentricCylinders(Geometry):
             the slip surface cannot generate shear stress.
 
     """
+
+    __doc__ = __doc__.replace("{inherited}", Geometry._doc_inherited)
 
     def __init__(self,
                  inner_radius,
@@ -165,15 +183,21 @@ class CosineChannel(Geometry):
         stream = hoomd.mpcd.stream.BounceBack(period=1, geometry=channel)
         simulation.operations.integrator.streaming_method = stream
 
+    {inherited}
+
+    ----------
+
+    **Members defined in** `CosineChannel`:
+
     Attributes:
         amplitude (float): Amplitude of cosine (*read only*).
 
         repeat_length (float): Repeat length (period) of cosine. (*read only*).
 
         separation (float): Distance between walls (*read only*).
-
-
     """
+
+    __doc__ = __doc__.replace("{inherited}", Geometry._doc_inherited)
 
     def __init__(self, amplitude, repeat_length, separation, no_slip=True):
         super().__init__(no_slip)
@@ -224,6 +248,12 @@ class CosineExpansionContraction(Geometry):
         stream = hoomd.mpcd.stream.BounceBack(period=1, geometry=channel)
         simulation.operations.integrator.streaming_method = stream
 
+    {inherited}
+
+    ----------
+
+    **Members defined in** `CosineExpansionContraction`:
+
     Attributes:
         contraction_separation (float): Distance between channel walls at
             the minimum contraction (*read only*).
@@ -232,8 +262,9 @@ class CosineExpansionContraction(Geometry):
             maximum expansion (*read only*).
 
         repeat_length (float): Repeat length (period) of cosine. (*read only*).
-
     """
+
+    __doc__ = __doc__.replace("{inherited}", Geometry._doc_inherited)
 
     def __init__(self,
                  expansion_separation,
@@ -300,6 +331,12 @@ class ParallelPlates(Geometry):
         stream = hoomd.mpcd.stream.BounceBack(period=1, geometry=plates)
         simulation.operations.integrator.streaming_method = stream
 
+    {inherited}
+
+    ----------
+
+    **Members defined in** `ParallelPlates`:
+
     Attributes:
         separation (float): Distance between plates (*read only*).
 
@@ -309,6 +346,8 @@ class ParallelPlates(Geometry):
             surface cannot generate shear stress.
 
     """
+
+    __doc__ = __doc__.replace("{inherited}", Geometry._doc_inherited)
 
     def __init__(self, separation, speed=0.0, no_slip=True):
         super().__init__(no_slip)
@@ -349,12 +388,20 @@ class PlanarPore(Geometry):
         stream = hoomd.mpcd.stream.BounceBack(period=1, geometry=pore)
         simulation.operations.integrator.streaming_method = stream
 
+    {inherited}
+
+    ----------
+
+    **Members defined in** `PlanarPore`:
+
     Attributes:
         separation (float): Distance between pore walls (*read only*).
 
         length (float): Pore length (*read only*).
 
     """
+
+    __doc__ = __doc__.replace("{inherited}", Geometry._doc_inherited)
 
     def __init__(self, separation, length, no_slip=True):
         super().__init__(no_slip)
@@ -400,10 +447,18 @@ class Sphere(Geometry):
         stream = hoomd.mpcd.stream.BounceBack(period=1, geometry=sphere)
         simulation.operations.integrator.streaming_method = stream
 
+    {inherited}
+
+    ----------
+
+    **Members defined in** `Sphere`:
+
     Attributes:
         radius (float): Radius of sphere (*read only*).
 
     """
+
+    __doc__ = __doc__.replace("{inherited}", Geometry._doc_inherited)
 
     def __init__(self, radius, no_slip=True):
         super().__init__(no_slip)
@@ -413,3 +468,14 @@ class Sphere(Geometry):
     def _attach_hook(self):
         self._cpp_obj = _mpcd.Sphere(self.radius, self.no_slip)
         super()._attach_hook()
+
+
+__all__ = [
+    'ConcentricCylinders',
+    'CosineChannel',
+    'CosineExpansionContraction',
+    'Geometry',
+    'ParallelPlates',
+    'PlanarPore',
+    'Sphere',
+]

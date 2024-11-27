@@ -1,9 +1,7 @@
 # Copyright (c) 2009-2024 The Regents of the University of Michigan.
 # Part of HOOMD-blue, released under the BSD 3-Clause License.
 
-r"""Hard particle Monte Carlo integrators.
-
-.. rubric:: Metropolis Monte Carlo
+r""".. rubric:: Metropolis Monte Carlo
 
 The hard particle Monte Carlo (HPMC) integrator `HPMCIntegrator` samples
 equilibrium system states using the Metropolis Monte Carlo method. In this
@@ -160,12 +158,12 @@ External potentials apply to each particle individually:
         \sum_{i=0}^\mathrm{N_particles-1} U_{\mathrm{external},i}(\vec{r}_i,
                                                                  \mathbf{q}_i)
 
-Potential classes in :doc:`module-hpmc-pair` evaluate
+Potential classes in `hoomd.hpmc.pair` evaluate
 :math:`U_{\mathrm{pair},ij}`. HPMC sums all the `Pair <hoomd.hpmc.pair.Pair>`
 potentials in `pair_potentials <HPMCIntegrator.pair_potentials>` during
 integration.
 
-Similarly, potential classes in :doc:`module-hpmc-external` evaluate
+Similarly, potential classes in `hoomd.hpmc.external` evaluate
 :math:`U_{\mathrm{external},i}`. Add instances of these classes to
 `external_potentials <HPMCIntegrator.external_potentials>` to apply during
 integration.
@@ -304,7 +302,11 @@ class HPMCIntegrator(Integrator):
     All HPMC integrators use reduced precision floating point arithmetic when
     checking for particle overlaps in the local particle reference frame.
 
-    .. rubric:: Parameters
+    {inherited}
+
+    ----------
+
+    **Members defined in** `HPMCIntegrator`:
 
     Attributes:
         a (`TypeParameter` [``particle type``, `float`]):
@@ -330,13 +332,98 @@ class HPMCIntegrator(Integrator):
 
         kT (hoomd.variant.Variant): Temperature set point
             :math:`[\\mathrm{energy}]`.
-
-    .. rubric:: Attributes
     """
     _ext_module = _hpmc
-    _remove_for_pickling = Integrator._remove_for_pickling + ('_cpp_cell',)
+    _remove_for_pickling = (*Integrator._remove_for_pickling, '_cpp_cell')
     _skip_for_equality = Integrator._skip_for_equality | {'_cpp_cell'}
     _cpp_cls = None
+    __doc__ = __doc__.replace("{inherited}", Integrator._doc_inherited)
+    _doc_inherited = Integrator._doc_inherited + """
+    ----------
+
+    **Members inherited from**
+    `HPMCIntegrator <hoomd.hpmc.integrate.HPMCIntegrator>`:
+
+    .. py:attribute:: a
+
+        Maximum size of the rotation trial moves.
+        `Read more... <hoomd.hpmc.integrate.HPMCIntegrator.a>`
+
+    .. py:attribute:: d
+
+        Maximum size of displacement trial moves
+        `Read more... <hoomd.hpmc.integrate.HPMCIntegrator.d>`
+
+    .. py:attribute:: interaction_matrix
+
+        Set which types interact with other types.
+        `Read more... <hoomd.hpmc.integrate.HPMCIntegrator.interaction_matrix>`
+
+    .. py:attribute:: translation_move_probability
+
+        Fraction of moves to be selected as translation moves.
+        `Read more... <HPMCIntegrator.translation_move_probability>`
+
+    .. py:attribute:: nselect
+
+        Number of trial moves to perform per particle per timestep.
+        `Read more... <HPMCIntegrator.nselect>`
+
+    .. py:attribute:: kT
+
+        Temperature set point.
+        `Read more... <HPMCIntegrator.kT>`
+
+    .. py:property:: counters
+
+        Trial move counters.
+        `Read more... <HPMCIntegrator.counters>`
+
+    .. py:property:: external_energy
+
+        Total external energy contributed by all external potentials.
+        `Read more... <HPMCIntegrator.external_energy>`
+
+    .. py:property:: external_potentials
+
+        External potentials to apply.
+        `Read more... <HPMCIntegrator.external_potentials>`
+
+    .. py:property:: map_overlaps
+
+        List of overlapping particles.
+        `Read more... <HPMCIntegrator.map_overlaps>`
+
+    .. py:property:: mps
+
+        Number of trial moves performed per second.
+        `Read more... <HPMCIntegrator.mps>`
+
+    .. py:property:: overlaps
+
+        Number of overlapping particle pairs.
+        `Read more... <HPMCIntegrator.overlaps>`
+
+    .. py:property:: pair_energy
+
+        Total potential energy contributed by all pair potentials.
+        `Read more... <HPMCIntegrator.pair_energy>`
+
+    .. py:property:: pair_potentials
+
+        Pair potentials to apply.
+        `Read more... <HPMCIntegrator.pair_potentials>`
+
+    .. py:property:: rotate_moves
+
+        Count of the accepted and rejected rotate moves.
+        `Read more... <HPMCIntegrator.rotate_moves>`
+
+    .. py:property:: translate_moves
+
+        Count of the accepted and rejected translate moves.
+        `Read more... <HPMCIntegrator.translate_moves>`
+    """
 
     def __init__(self, default_d, default_a, translation_move_probability,
                  nselect, kT):
@@ -547,14 +634,16 @@ class HPMCIntegrator(Integrator):
     @log(requires_run=True)
     def pair_energy(self):
         """float: Total potential energy contributed by all pair potentials \
-        :math:`[\\mathrm{energy}]`."""
+        :math:`[\\mathrm{energy}]`.
+        """
         timestep = self._simulation.timestep
         return self._cpp_obj.computeTotalPairEnergy(timestep)
 
     @log(requires_run=True)
     def external_energy(self):
         """float: Total external energy contributed by all external potentials \
-        :math:`[\\mathrm{energy}]`."""
+        :math:`[\\mathrm{energy}]`.
+        """
         return self._cpp_obj.computeTotalExternalEnergy(
             self._simulation.timestep)
 
@@ -606,6 +695,12 @@ class Sphere(HPMCIntegrator):
         mc.shape["C"] = dict(diameter=1.0, orientable=True)
         print('diameter = ', mc.shape["A"]["diameter"])
 
+    {inherited}
+
+    ----------
+
+    **Members defined in** `Sphere`:
+
     Attributes:
         shape (`TypeParameter` [``particle type``, `dict`]):
             The shape parameters for each particle type. The dictionary has the
@@ -619,6 +714,7 @@ class Sphere(HPMCIntegrator):
               allow rotation moves on this particle type.
     """
     _cpp_cls = 'IntegratorHPMCMonoSphere'
+    __doc__ = __doc__.replace("{inherited}", HPMCIntegrator._doc_inherited)
 
     def __init__(self,
                  default_d=0.1,
@@ -673,7 +769,7 @@ class ConvexPolygon(HPMCIntegrator):
     of a convex polygon includes the points inside and on the surface of the
     convex hull of the vertices (see `shape`). For example:
 
-    .. image:: convex-polygon.svg
+    .. image:: /convex-polygon.svg
        :alt: Example of a convex polygon with vertex labels.
 
     Important:
@@ -694,6 +790,12 @@ class ConvexPolygon(HPMCIntegrator):
                                        (0.5, 0.5),
                                        (-0.5, 0.5)]);
         print('vertices = ', mc.shape["A"]["vertices"])
+
+    {inherited}
+
+    ----------
+
+    **Members defined in** `ConvexPolygon`:
 
     Attributes:
         shape (`TypeParameter` [``particle type``, `dict`]):
@@ -722,6 +824,7 @@ class ConvexPolygon(HPMCIntegrator):
 
     """
     _cpp_cls = 'IntegratorHPMCMonoConvexPolygon'
+    __doc__ = __doc__.replace("{inherited}", HPMCIntegrator._doc_inherited)
 
     def __init__(self,
                  default_d=0.1,
@@ -777,7 +880,7 @@ class ConvexSpheropolygon(HPMCIntegrator):
     surface of the convex hull of the vertices plus a disk (with radius
     ``sweep_radius``)swept along the perimeter (see `shape`). For example:
 
-    .. image:: convex-spheropolygon.svg
+    .. image:: /convex-spheropolygon.svg
        :alt: Example of a convex spheropolygon with vertex and sweep labels.
 
     Important:
@@ -812,6 +915,12 @@ class ConvexSpheropolygon(HPMCIntegrator):
 
         print('vertices = ', mc.shape["A"]["vertices"])
 
+    {inherited}
+
+    ----------
+
+    **Members defined in** `ConvexSpheropolygon`:
+
     Attributes:
         shape (`TypeParameter` [``particle type``, `dict`]):
             The shape parameters for each particle type. The dictionary has the
@@ -837,6 +946,7 @@ class ConvexSpheropolygon(HPMCIntegrator):
     """
 
     _cpp_cls = 'IntegratorHPMCMonoSpheropolygon'
+    __doc__ = __doc__.replace("{inherited}", HPMCIntegrator._doc_inherited)
 
     def __init__(self,
                  default_d=0.1,
@@ -890,7 +1000,7 @@ class SimplePolygon(HPMCIntegrator):
     a simple polygon includes the points inside and on the surface of the simple
     polygon defined by the vertices (see `shape`). For example:
 
-    .. image:: simple-polygon.svg
+    .. image:: /simple-polygon.svg
        :alt: Example of a simple polygon with vertex labels.
 
     Important:
@@ -912,6 +1022,11 @@ class SimplePolygon(HPMCIntegrator):
                                        (0.5, -0.5)]);
         print('vertices = ', mc.shape["A"]["vertices"])
 
+    {inherited}
+
+    ----------
+
+    **Members defined in** `SimplePolygon`:
 
     Attributes:
         shape (`TypeParameter` [``particle type``, `dict`]):
@@ -940,6 +1055,7 @@ class SimplePolygon(HPMCIntegrator):
     """
 
     _cpp_cls = 'IntegratorHPMCMonoSimplePolygon'
+    __doc__ = __doc__.replace("{inherited}", HPMCIntegrator._doc_inherited)
 
     def __init__(self,
                  default_d=0.1,
@@ -1033,6 +1149,12 @@ class Polyhedron(HPMCIntegrator):
         print('vertices = ', mc.shape["A"]["vertices"])
         print('faces = ', mc.shape["A"]["faces"])
 
+    {inherited}
+
+    ----------
+
+    **Members defined in** `Polyhedron`:
+
     Attributes:
         shape (`TypeParameter` [``particle type``, `dict`]):
             The shape parameters for each particle type. The dictionary has the
@@ -1078,6 +1200,7 @@ class Polyhedron(HPMCIntegrator):
     """
 
     _cpp_cls = 'IntegratorHPMCMonoPolyhedron'
+    __doc__ = __doc__.replace("{inherited}", HPMCIntegrator._doc_inherited)
 
     def __init__(self,
                  default_d=0.1,
@@ -1140,7 +1263,7 @@ class ConvexPolyhedron(HPMCIntegrator):
     of a convex polyhedron includes the points inside and on the surface of the
     convex hull of the vertices (see `shape`). For example:
 
-    .. image:: convex-polyhedron.svg
+    .. image:: /convex-polyhedron.svg
        :alt: Example of a convex polyhedron with vertex labels.
 
     See Also:
@@ -1158,6 +1281,12 @@ class ConvexPolyhedron(HPMCIntegrator):
                                        (-0.5, 0.5, -0.5),
                                        (-0.5, -0.5, 0.5)]);
         print('vertices = ', mc.shape["A"]["vertices"])
+
+    {inherited}
+
+    ----------
+
+    **Members defined in** `ConvexPolyhedron`:
 
     Attributes:
         shape (`TypeParameter` [``particle type``, `dict`]):
@@ -1184,6 +1313,7 @@ class ConvexPolyhedron(HPMCIntegrator):
     """
 
     _cpp_cls = 'IntegratorHPMCMonoConvexPolyhedron'
+    __doc__ = __doc__.replace("{inherited}", HPMCIntegrator._doc_inherited)
 
     def __init__(self,
                  default_d=0.1,
@@ -1274,6 +1404,12 @@ class FacetedEllipsoid(HPMCIntegrator):
         print('a = {}, b = {}, c = {}',
               mc.shape["A"]["a"], mc.shape["A"]["b"], mc.shape["A"]["c"])
 
+    {inherited}
+
+    ----------
+
+    **Members defined in** `FacetedEllipsoid`:
+
     Attributes:
         shape (TypeParameter[``particle type``, dict]):
             The shape parameters for each particle type. The dictionary has the
@@ -1314,6 +1450,7 @@ class FacetedEllipsoid(HPMCIntegrator):
     """
 
     _cpp_cls = 'IntegratorHPMCMonoFacetedEllipsoid'
+    __doc__ = __doc__.replace("{inherited}", HPMCIntegrator._doc_inherited)
 
     def __init__(self,
                  default_d=0.1,
@@ -1383,6 +1520,12 @@ class Sphinx(HPMCIntegrator):
         mc.shape["A"] = dict(centers=[(0,0,0),(1,0,0)], diameters=[1,.25])
         print('diameters = ', mc.shape["A"]["diameters"])
 
+    {inherited}
+
+    ----------
+
+    **Members defined in** `Sphinx`:
+
     Attributes:
         shape (`TypeParameter` [``particle type``, `dict`]):
             The shape parameters for each particle type. The dictionary has the
@@ -1399,6 +1542,7 @@ class Sphinx(HPMCIntegrator):
     """
 
     _cpp_cls = 'IntegratorHPMCMonoSphinx'
+    __doc__ = __doc__.replace("{inherited}", HPMCIntegrator._doc_inherited)
 
     def __init__(self,
                  default_d=0.1,
@@ -1459,6 +1603,12 @@ class ConvexSpheropolyhedron(HPMCIntegrator):
                                                  (-0.5, 0.5, -0.5),
                                                  (-0.5, -0.5, 0.5)]);
 
+    {inherited}
+
+    ----------
+
+    **Members defined in** `ConvexSpheropolyhedron`:
+
     Attributes:
         shape (`TypeParameter` [``particle type``, `dict`]):
             The shape parameters for each particle type. The dictionary has the
@@ -1485,6 +1635,7 @@ class ConvexSpheropolyhedron(HPMCIntegrator):
     """
 
     _cpp_cls = 'IntegratorHPMCMonoSpheropolyhedron'
+    __doc__ = __doc__.replace("{inherited}", HPMCIntegrator._doc_inherited)
 
     def __init__(self,
                  default_d=0.1,
@@ -1560,6 +1711,12 @@ class Ellipsoid(HPMCIntegrator):
               mc.shape["A"]["b"],
               mc.shape["A"]["c"])
 
+    {inherited}
+
+    ----------
+
+    **Members defined in** `Ellipsoid`:
+
     Attributes:
         shape (`TypeParameter` [``particle type``, `dict`]):
             The shape parameters for each particle type. The dictionary has the
@@ -1576,6 +1733,7 @@ class Ellipsoid(HPMCIntegrator):
     """
 
     _cpp_cls = 'IntegratorHPMCMonoEllipsoid'
+    __doc__ = __doc__.replace("{inherited}", HPMCIntegrator._doc_inherited)
 
     def __init__(self,
                  default_d=0.1,
@@ -1659,6 +1817,12 @@ class SphereUnion(HPMCIntegrator):
               mc.shape["A"]["shapes"][0]["diameter"])
         print('center of the first sphere = ', mc.shape["A"]["positions"][0])
 
+    {inherited}
+
+    ----------
+
+    **Members defined in** `SphereUnion`:
+
     Attributes:
         shape (`TypeParameter` [``particle type``, `dict`]):
             The shape parameters for each particle type. The dictionary has the
@@ -1689,6 +1853,7 @@ class SphereUnion(HPMCIntegrator):
     """
 
     _cpp_cls = 'IntegratorHPMCMonoSphereUnion'
+    __doc__ = __doc__.replace("{inherited}", HPMCIntegrator._doc_inherited)
 
     def __init__(self,
                  default_d=0.1,
@@ -1801,6 +1966,12 @@ class ConvexSpheropolyhedronUnion(HPMCIntegrator):
         print('orientation of the first cube = ',
               mc.shape_param["A"]["orientations"][0])
 
+    {inherited}
+
+    ----------
+
+    **Members defined in** `ConvexSpheropolyhedronUnion`:
+
     Attributes:
         shape (`TypeParameter` [``particle type``, `dict`]):
             The shape parameters for each particle type. The dictionary has the
@@ -1831,6 +2002,7 @@ class ConvexSpheropolyhedronUnion(HPMCIntegrator):
     """
 
     _cpp_cls = 'IntegratorHPMCMonoConvexPolyhedronUnion'
+    __doc__ = __doc__.replace("{inherited}", HPMCIntegrator._doc_inherited)
 
     def __init__(self,
                  default_d=0.1,
@@ -1954,6 +2126,12 @@ class FacetedEllipsoidUnion(HPMCIntegrator):
         print('vertices of the first faceted ellipsoid = ',
               mc.shape["A"]["shapes"][0]["vertices"]
 
+    {inherited}
+
+    ----------
+
+    **Members defined in** `FacetedEllipsoidUnion`:
+
     Attributes:
         shape (`TypeParameter` [``particle type``, `dict`]):
             The shape parameters for each particle type. The dictionary has the
@@ -1984,6 +2162,7 @@ class FacetedEllipsoidUnion(HPMCIntegrator):
     """
 
     _cpp_cls = 'IntegratorHPMCMonoFacetedEllipsoidUnion'
+    __doc__ = __doc__.replace("{inherited}", HPMCIntegrator._doc_inherited)
 
     def __init__(self,
                  default_d=0.1,
@@ -2025,3 +2204,21 @@ class FacetedEllipsoidUnion(HPMCIntegrator):
                                              'overlap': None
                                          }))
         self._add_typeparam(typeparam_shape)
+
+
+__all__ = [
+    'ConvexPolygon',
+    'ConvexPolyhedron',
+    'ConvexSpheropolygon',
+    'ConvexSpheropolyhedron',
+    'ConvexSpheropolyhedronUnion',
+    'Ellipsoid',
+    'FacetedEllipsoid',
+    'FacetedEllipsoidUnion',
+    'HPMCIntegrator',
+    'Polyhedron',
+    'SimplePolygon',
+    'Sphere',
+    'SphereUnion',
+    'Sphinx',
+]

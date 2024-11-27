@@ -4,11 +4,11 @@
 """Implement generic classes for move acceptance ratio tuning."""
 import abc
 
-from hoomd.custom import _InternalAction
 from hoomd.data.parameterdicts import ParameterDict
 from hoomd.data.typeconverter import OnlyTypes
 from hoomd.tune.attr_tuner import _TuneDefinition
 from hoomd.tune import RootSolver
+from hoomd.custom.custom_action import _InternalAction
 
 
 class _MCTuneDefinition(_TuneDefinition):
