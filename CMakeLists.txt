@@ -119,7 +119,7 @@ option(BUILD_MPCD "Build the mpcd package" ${BUILD_MD})
 endif()
 
 # Add list of plugins
-set(PLUGINS "example_plugins/pair_plugin;example_plugins/updater_plugin;example_plugins/shape_plugin" CACHE STRING "List of plugin directories.")
+set(PLUGINS "" CACHE STRING "List of plugin directories.")
 
 # this needs to go before CUDA setup
 include (HOOMDHIPSetup)
