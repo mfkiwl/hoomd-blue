@@ -4,8 +4,8 @@ Change Log
 5.x
 ---
 
-5.0.0 (not yet released)
-^^^^^^^^^^^^^^^^^^^^^^^^
+5.0.0 (2024-12-01)
+^^^^^^^^^^^^^^^^^^
 
 *Fixed*
 
@@ -35,7 +35,7 @@ Change Log
 
 *Added*
 
-* ``mpcd.geometry.ConcentricCylinders`` for concentric cylinders
+* ``mpcd.geometry.ConcentricCylinders``
   (`#1894 <https://github.com/glotzerlab/hoomd-blue/pull/1894>`__).
 * ``kT`` parameter to all HPMC integrators. All HPMC-related operations respect the set ``kT``
   (`#1869 <https://github.com/glotzerlab/hoomd-blue/pull/1869>`__).
@@ -51,11 +51,11 @@ Change Log
   (`#1869 <https://github.com/glotzerlab/hoomd-blue/pull/1869>`__)
 * ``hoomd.update.Clusters`` is now ``hoomd.update.GCA``
   (`#1926 <https://github.com/glotzerlab/hoomd-blue/pull/1926>`__)
-* ``hoomd.hpmc.external.wall.WallPotential`` is now ``hoomd.hpmc.external.WallPotential`` and works
-  with ``IntegratorHPMC.external_potentials``
+* ``hoomd.hpmc.external.wall.WallPotential`` is now ``hoomd.hpmc.external.WallPotential`` and
+  can be added to ``IntegratorHPMC.external_potentials``
   (`#1941 <https://github.com/glotzerlab/hoomd-blue/pull/1941>`__)
-* ``hoomd.hpmc.external.field.Harmonic`` is now ``hoomd.hpmc.external.Harmonic`` and works
-  with ``IntegratorHPMC.external_potentials``
+* ``hoomd.hpmc.external.field.Harmonic`` is now ``hoomd.hpmc.external.Harmonic`` and can be added
+  to ``IntegratorHPMC.external_potentials``
   (`#1941 <https://github.com/glotzerlab/hoomd-blue/pull/1941>`__).
 * Document one class per html page and show inherited members in class documentation
   (`#1952 <https://github.com/glotzerlab/hoomd-blue/pull/1952>`__).
