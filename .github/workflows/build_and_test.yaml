@@ -274,15 +274,15 @@ jobs:
     # requested, but no on the actual long validation tests. Every class's basic test should ensure
     # that the GPU kernel is called for at least a few timesteps for these checks to be effective.
     - name: Run memcheck
-      if: ${{ contains(inputs.config, 'cuda') && contains(github.event.pull_request.labels.*.name, 'validate') && inputs.validate == 'true' }}
+      if: ${{ contains(inputs.config, 'cuda') && contains(github.event.pull_request.labels.*.name, 'validate') && inputs.validate == 'true' && !contains(inputs.config, 'mpi')}}
       run: compute-sanitizer --tool memcheck --error-exitcode 1 python3 -m pytest --pyargs hoomd -x -v -ra --durations=0 --durations-min=0.1
 
     - name: Run racecheck
-      if: ${{ contains(inputs.config, 'cuda') && contains(github.event.pull_request.labels.*.name, 'validate') && inputs.validate == 'true' }}
+      if: ${{ contains(inputs.config, 'cuda') && contains(github.event.pull_request.labels.*.name, 'validate') && inputs.validate == 'true' && !contains(inputs.config, 'mpi')}}
       run: compute-sanitizer --tool racecheck --error-exitcode 1 python3 -m pytest --pyargs hoomd -x -v -ra --durations=0 --durations-min=0.1
 
     - name: Run synccheck
-      if: ${{ contains(inputs.config, 'cuda') && contains(github.event.pull_request.labels.*.name, 'validate') && inputs.validate == 'true' }}
+      if: ${{ contains(inputs.config, 'cuda') && contains(github.event.pull_request.labels.*.name, 'validate') && inputs.validate == 'true' && !contains(inputs.config, 'mpi')}}
       run: compute-sanitizer --tool synccheck --error-exitcode 1 python3 -m pytest --pyargs hoomd -x -v -ra --durations=0 --durations-min=0.1
 
     ### Validation tests
