@@ -75,5 +75,3 @@ foreach (CUR_TEST ${MPI_TEST_LIST})
              ${NProc_${CUR_TEST}} ${MPIEXEC_POSTFLAGS}
              $<TARGET_FILE:${CUR_TEST}>)
 endforeach(CUR_TEST)
-
-endif()
