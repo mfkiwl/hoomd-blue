@@ -6,7 +6,6 @@
 md_built = True
 hpmc_built = True
 mpcd_built = True
-metal_built = False
 
 compile_date = None
 git_branch = None

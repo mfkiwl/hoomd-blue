@@ -38,8 +38,6 @@ Attributes:
 
     install_dir (str): The installation directory.
 
-    metal_built (bool): ``True`` when the ``metal`` component is built.
-
     md_built (bool): ``True`` when the `md` component is built.
 
     mpcd_built (bool): ``True`` when the ``mpcd`` component is built.
@@ -60,7 +58,6 @@ from hoomd.version_config import (
     git_sha1,
     hpmc_built,
     md_built,
-    metal_built,
     mpcd_built,
 )
 
@@ -89,7 +86,6 @@ __all__ = [
     "hpmc_built",
     "install_dir",
     "md_built",
-    "metal_built",
     "mpcd_built",
     "mpi_enabled",
     "source_dir",
