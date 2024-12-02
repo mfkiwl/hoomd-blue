@@ -13,10 +13,11 @@ scripts to build the component, and GitHub Actions workflows.
 
 .. _hoomd-component-template: https://github.com/glotzerlab/hoomd-component-template
 
-The **HOOMD-Blue** source provides example component templates in the
-`example_plugins`_ subdirectory.
+The following repositories template various custom operations:
 
-.. _example_plugins: https://github.com/glotzerlab/hoomd-blue/tree/trunk-patch/example_plugins
+* `MD pair potential <https://github.com/glotzerlab/hoomd-md-pair-template>`__
+* `HPMC pair and external potentials <https://github.com/glotzerlab/hpmc-energy-template>`__
+* `HPMC hard shapes <https://github.com/glotzerlab/hoomd-hpmc-shape-template/>`__
 
 Building an external component
 ------------------------------
