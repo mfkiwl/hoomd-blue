@@ -27,4 +27,6 @@ All releases:
 - [ ] Update conda-forge recipe.
 - [ ] Update *glotzerlab-software*.
 - [ ] Update *hoomd-component-template*.
+- [ ] Update *hoomd-md-pair-template*.
+- [ ] Update *hoomd-hpmc-shape-template*.
 - [ ] Update *hpmc-energy-template*.
