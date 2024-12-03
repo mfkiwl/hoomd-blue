@@ -466,7 +466,6 @@ for more details. For example implementations look at `hoomd/ParticleData.h`.
 The top level directories are:
 
 * `CMake` - CMake scripts.
-* `example_plugin` - External developers to copy this to start developing an external component.
 * `hoomd` - Source code for the `hoomd` Python package. Subdirectories under `hoomd` follow the same
   layout as the final Python package.
 * `sphinx-doc` - Sphinx configuration and input files for the user-facing documentation.

@@ -75,7 +75,7 @@ The following people have contributed to HOOMD-blue:
 * Kwanghwi Je, University of Michigan
 * Kieran Nehil-Puleo, Vanderbilt University
 * Lin Yang, Iowa State University
-* Ludwig Schneider, Georg-August Univeristy Goettingen
+* Ludwig Schneider, Georg-August University Goettingen
 * Luis Y. Rivera-Rivera, University of Michigan
 * Malcolm Ramsay
 * Marco Klement, Friedrich-Alexander-Universität Erlangen-Nürnberg (FAU)
@@ -112,6 +112,7 @@ The following people have contributed to HOOMD-blue:
 * Stephen Thomas, Boise State University
 * Steve Barr, Princeton University
 * Sumedh R. Risbud, Massachusetts Institute of Technology
+* Suraj Kannur, University of Michigan
 * Thi Vo, University of Michigan
 * Tim Moore, University of Michigan
 * Tobias Dwyer, University of Michigan

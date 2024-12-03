@@ -26,12 +26,6 @@ else()
     set(_hpmc_built "False")
 endif()
 
-if (BUILD_METAL)
-    set(_metal_built "True")
-else()
-    set(_metal_built "False")
-endif()
-
 if (BUILD_MPCD)
     set(_mpcd_built "True")
 else()
@@ -380,10 +374,6 @@ endif()
 
 if (BUILD_HPMC)
     add_subdirectory(hpmc)
-endif()
-
-if (BUILD_METAL AND BUILD_MD)
-    add_subdirectory(metal)
 endif()
 
 if (BUILD_MPCD)
