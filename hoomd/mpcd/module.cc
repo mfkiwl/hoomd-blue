@@ -42,6 +42,7 @@ void export_ParallelPlateGeometry(pybind11::module&);
 void export_ParallelPlateGeometryFiller(pybind11::module&);
 void export_PlanarPoreGeometry(pybind11::module&);
 void export_PlanarPoreGeometryFiller(pybind11::module&);
+void export_ReverseNonequilibriumShearFlow(pybind11::module&);
 void export_Sorter(pybind11::module&);
 void export_SphereGeometry(pybind11::module&);
 void export_SphereGeometryFiller(pybind11::module&);
@@ -218,6 +219,7 @@ PYBIND11_MODULE(_mpcd, m)
     export_ParallelPlateGeometryFiller(m);
     export_PlanarPoreGeometry(m);
     export_PlanarPoreGeometryFiller(m);
+    export_ReverseNonequilibriumShearFlow(m);
     export_Sorter(m);
     export_SphereGeometry(m);
     export_SphereGeometryFiller(m);

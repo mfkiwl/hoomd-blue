@@ -15,6 +15,7 @@ set(_mpcd_cc_sources
     ManualVirtualParticleFiller.cc
     ParallelPlateGeometryFiller.cc
     PlanarPoreGeometryFiller.cc
+    ReverseNonequilibriumShearFlow.cc
     Sorter.cc
     SRDCollisionMethod.cc
     StreamingMethod.cc
@@ -41,6 +42,8 @@ set(_mpcd_headers
     ParallelPlateGeometryFiller.h
     PlanarPoreGeometryFiller.h
     RejectionVirtualParticleFiller.h
+    ReverseNonequilibriumShearFlow.h
+    ReverseNonequilibriumShearFlowUtilities.h
     Sorter.h
     SRDCollisionMethod.h
     StreamingMethod.h
@@ -265,6 +268,7 @@ set(files
     methods.py
     stream.py
     tune.py
+    update.py
     )
 install(FILES ${files} DESTINATION ${PYTHON_SITE_INSTALL_DIR}/mpcd)
 copy_files_to_build("${files}" "mpcd" "*.py")
