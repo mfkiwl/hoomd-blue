@@ -7,8 +7,6 @@ via the Python API. `FreeVolume` computes the free volume available to small
 particles and `SDF` samples the pressure.
 """
 
-from __future__ import print_function
-
 from hoomd import _hoomd
 from hoomd.operation import Compute
 from hoomd.hpmc import _hpmc
