@@ -11,6 +11,12 @@
 
 #include "hoomd/HOOMDMath.h"
 
+#ifdef __HIPCC__
+#define HOSTDEVICE __host__ __device__ inline
+#else
+#define HOSTDEVICE inline __attribute__((always_inline))
+#endif // __HIPCC__
+
 namespace hoomd
     {
 namespace mpcd
@@ -21,12 +27,12 @@ namespace detail
 class CompareMomentumToTarget
     {
     public:
-    CompareMomentumToTarget(Scalar target_momentum, const unsigned int* tags_)
+    HOSTDEVICE CompareMomentumToTarget(Scalar target_momentum, const unsigned int* tags_)
         : p(target_momentum), tags(tags_)
         {
         }
 
-    bool operator()(const Scalar2& in0, const Scalar2& in1) const
+    HOSTDEVICE bool operator()(const Scalar2& in0, const Scalar2& in1) const
         {
         const Scalar dp0 = std::fabs(in0.y - p);
         const Scalar dp1 = std::fabs(in1.y - p);
@@ -55,9 +61,9 @@ class CompareMomentumToTarget
 class MaximumMomentum
     {
     public:
-    MaximumMomentum(const unsigned int* tags_) : tags(tags_) { }
+    HOSTDEVICE MaximumMomentum(const unsigned int* tags_) : tags(tags_) { }
 
-    bool operator()(const Scalar2& in0, const Scalar2& in1) const
+    HOSTDEVICE bool operator()(const Scalar2& in0, const Scalar2& in1) const
         {
         const Scalar p0 = in0.y;
         const Scalar p1 = in1.y;
@@ -85,9 +91,9 @@ class MaximumMomentum
 class MinimumMomentum
     {
     public:
-    MinimumMomentum(const unsigned int* tags_) : tags(tags_) { }
+    HOSTDEVICE MinimumMomentum(const unsigned int* tags_) : tags(tags_) { }
 
-    bool operator()(const Scalar2& in0, const Scalar2& in1) const
+    HOSTDEVICE bool operator()(const Scalar2& in0, const Scalar2& in1) const
         {
         const Scalar p0 = in0.y;
         const Scalar p1 = in1.y;
@@ -115,5 +121,7 @@ class MinimumMomentum
     } // end namespace detail
     } // end namespace mpcd
     } // end namespace hoomd
+
+#undef HOSTDEVICE
 
 #endif // MPCD_REVERSE_NONEQUILIBRIUM_SHEAR_FLOW_UTILITIES_H_

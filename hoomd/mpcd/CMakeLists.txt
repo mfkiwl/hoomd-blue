@@ -76,6 +76,7 @@ if(ENABLE_HIP)
         CommunicatorGPU.cc
         ParallelPlateGeometryFillerGPU.cc
         PlanarPoreGeometryFillerGPU.cc
+        ReverseNonequilibriumShearFlowGPU.cc
         SorterGPU.cc
         SRDCollisionMethodGPU.cc
         )
@@ -84,6 +85,8 @@ if(ENABLE_HIP)
         ATCollisionMethodGPU.h
         BounceBackNVEGPU.cuh
         BounceBackNVEGPU.h
+        BounceBackStreamingMethodGPU.cuh
+        BounceBackStreamingMethodGPU.h
         BulkStreamingMethodGPU.h
         CellCommunicator.cuh
         CellThermoComputeGPU.cuh
@@ -92,15 +95,15 @@ if(ENABLE_HIP)
         CellListGPU.h
         CommunicatorGPU.cuh
         CommunicatorGPU.h
-        BounceBackStreamingMethodGPU.cuh
-        BounceBackStreamingMethodGPU.h
-        ParticleData.cuh
         ParallelPlateGeometryFillerGPU.cuh
         ParallelPlateGeometryFillerGPU.h
+        ParticleData.cuh
         PlanarPoreGeometryFillerGPU.cuh
         PlanarPoreGeometryFillerGPU.h
         RejectionVirtualParticleFillerGPU.cuh
         RejectionVirtualParticleFillerGPU.h
+        ReverseNonequilibriumShearFlowGPU.cuh
+        ReverseNonequilibriumShearFlowGPU.h
         SorterGPU.cuh
         SorterGPU.h
         SRDCollisionMethodGPU.cuh
@@ -116,6 +119,7 @@ if(ENABLE_HIP)
         ParallelPlateGeometryFillerGPU.cu
         PlanarPoreGeometryFillerGPU.cu
         RejectionVirtualParticleFillerGPU.cu
+        ReverseNonequilibriumShearFlowGPU.cu
         SorterGPU.cu
         SRDCollisionMethodGPU.cu
         )

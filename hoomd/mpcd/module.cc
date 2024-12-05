@@ -62,6 +62,7 @@ void export_CosineChannelGeometryFillerGPU(pybind11::module&);
 void export_CosineExpansionContractionGeometryFillerGPU(pybind11::module&);
 void export_ParallelPlateGeometryFillerGPU(pybind11::module&);
 void export_PlanarPoreGeometryFillerGPU(pybind11::module&);
+void export_ReverseNonequilibriumShearFlowGPU(pybind11::module&);
 void export_SorterGPU(pybind11::module&);
 void export_SphereGeometryFillerGPU(pybind11::module&);
 void export_SRDCollisionMethodGPU(pybind11::module&);
@@ -237,6 +238,7 @@ PYBIND11_MODULE(_mpcd, m)
     export_CosineExpansionContractionGeometryFillerGPU(m);
     export_ParallelPlateGeometryFillerGPU(m);
     export_PlanarPoreGeometryFillerGPU(m);
+    export_ReverseNonequilibriumShearFlowGPU(m);
     export_SorterGPU(m);
     export_SphereGeometryFillerGPU(m);
     export_SRDCollisionMethodGPU(m);

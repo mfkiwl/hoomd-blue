@@ -26,9 +26,9 @@ mpcd::ReverseNonequilibriumShearFlow::ReverseNonequilibriumShearFlow(
     Scalar slab_width,
     Scalar target_momentum)
     : Updater(sysdef, trigger), m_mpcd_pdata(sysdef->getMPCDParticleData()), m_num_swap(num_swap),
-      m_slab_width(slab_width), m_summed_momentum_exchange(0), m_num_lo(0),
-      m_particles_lo(m_exec_conf), m_num_hi(0), m_particles_hi(m_exec_conf),
-      m_target_momentum(target_momentum), m_update_slabs(true)
+      m_slab_width(slab_width), m_target_momentum(target_momentum), m_summed_momentum_exchange(0),
+      m_num_lo(0), m_particles_lo(m_exec_conf), m_num_hi(0), m_particles_hi(m_exec_conf),
+      m_update_slabs(true)
     {
     m_exec_conf->msg->notice(5) << "Constructing ReverseNonequilibriumShearFlow" << std::endl;
 
@@ -102,6 +102,7 @@ void mpcd::ReverseNonequilibriumShearFlow::update(uint64_t timestep)
         }
 
     findSwapParticles();
+    sortOutSwapParticles();
     stageSwapParticles();
     swapParticleMomentum();
     }
@@ -181,38 +182,50 @@ void mpcd::ReverseNonequilibriumShearFlow::findSwapParticles()
             }
 
         } while (!filled);
+    }
 
-        // sort the arrays
-        {
-        ArrayHandle<Scalar2> h_particles_lo(m_particles_lo,
-                                            access_location::host,
-                                            access_mode::readwrite);
-        ArrayHandle<Scalar2> h_particles_hi(m_particles_hi,
-                                            access_location::host,
-                                            access_mode::readwrite);
-        ArrayHandle<unsigned int> h_tag(m_mpcd_pdata->getTags(),
+void mpcd::ReverseNonequilibriumShearFlow::sortOutSwapParticles()
+    {
+    ArrayHandle<Scalar2> h_particles_lo(m_particles_lo,
                                         access_location::host,
-                                        access_mode::read);
+                                        access_mode::readwrite);
+    ArrayHandle<Scalar2> h_particles_hi(m_particles_hi,
+                                        access_location::host,
+                                        access_mode::readwrite);
+    ArrayHandle<unsigned int> h_tag(m_mpcd_pdata->getTags(),
+                                    access_location::host,
+                                    access_mode::read);
 
-        if (std::isinf(m_target_momentum))
-            {
-            std::sort(h_particles_lo.data,
-                      h_particles_lo.data + m_num_lo,
-                      detail::MaximumMomentum(h_tag.data));
-            std::sort(h_particles_hi.data,
-                      h_particles_hi.data + m_num_hi,
-                      detail::MinimumMomentum(h_tag.data));
-            }
-        else
-            {
-            std::sort(h_particles_lo.data,
-                      h_particles_lo.data + m_num_lo,
-                      detail::CompareMomentumToTarget(m_target_momentum, h_tag.data));
-            std::sort(h_particles_hi.data,
-                      h_particles_hi.data + m_num_hi,
-                      detail::CompareMomentumToTarget(-m_target_momentum, h_tag.data));
-            }
+    const unsigned int num_top_lo = std::min(m_num_swap, m_num_lo);
+    const unsigned int num_top_hi = std::min(m_num_swap, m_num_hi);
+    if (std::isinf(m_target_momentum))
+        {
+        std::partial_sort(h_particles_lo.data,
+                          h_particles_lo.data + num_top_lo,
+                          h_particles_lo.data + m_num_lo,
+                          detail::MaximumMomentum(h_tag.data));
+        std::partial_sort(h_particles_hi.data,
+                          h_particles_hi.data + num_top_hi,
+                          h_particles_hi.data + m_num_hi,
+                          detail::MinimumMomentum(h_tag.data));
         }
+    else
+        {
+        std::partial_sort(h_particles_lo.data,
+                          h_particles_lo.data + num_top_lo,
+                          h_particles_lo.data + m_num_lo,
+                          detail::CompareMomentumToTarget(m_target_momentum, h_tag.data));
+        std::partial_sort(h_particles_hi.data,
+                          h_particles_hi.data + num_top_hi,
+                          h_particles_hi.data + m_num_hi,
+                          detail::CompareMomentumToTarget(-m_target_momentum, h_tag.data));
+        }
+
+    m_top_particles_lo.resize(num_top_lo);
+    std::copy(h_particles_lo.data, h_particles_lo.data + num_top_lo, m_top_particles_lo.begin());
+
+    m_top_particles_hi.resize(num_top_hi);
+    std::copy(h_particles_hi.data, h_particles_hi.data + num_top_hi, m_top_particles_hi.begin());
     }
 
 /*!
@@ -221,21 +234,22 @@ void mpcd::ReverseNonequilibriumShearFlow::findSwapParticles()
 void mpcd::ReverseNonequilibriumShearFlow::stageSwapParticles()
     {
     // determine number of pairs to swap
-    unsigned int num_lo_global = m_num_lo;
-    unsigned int num_hi_global = m_num_hi;
+    const unsigned int num_top_lo = static_cast<unsigned int>(m_top_particles_lo.size());
+    const unsigned int num_top_hi = static_cast<unsigned int>(m_top_particles_hi.size());
+    unsigned int num_top_lo_global = num_top_lo;
+    unsigned int num_top_hi_global = num_top_hi;
 #ifdef ENABLE_MPI
     if (m_sysdef->isDomainDecomposed())
         {
         auto mpi_comm = m_exec_conf->getMPICommunicator();
-        MPI_Allreduce(MPI_IN_PLACE, &num_lo_global, 1, MPI_UNSIGNED, MPI_SUM, mpi_comm);
-        MPI_Allreduce(MPI_IN_PLACE, &num_hi_global, 1, MPI_UNSIGNED, MPI_SUM, mpi_comm);
+        MPI_Allreduce(MPI_IN_PLACE, &num_top_lo_global, 1, MPI_UNSIGNED, MPI_SUM, mpi_comm);
+        MPI_Allreduce(MPI_IN_PLACE, &num_top_hi_global, 1, MPI_UNSIGNED, MPI_SUM, mpi_comm);
         }
 #endif // ENABLE_MPI
-    const unsigned int num_pairs = std::min(m_num_swap, std::min(num_lo_global, num_hi_global));
+    const unsigned int num_pairs
+        = std::min(m_num_swap, std::min(num_top_lo_global, num_top_hi_global));
 
     // stage swaps into queue
-    ArrayHandle<Scalar2> h_particles_lo(m_particles_lo, access_location::host, access_mode::read);
-    ArrayHandle<Scalar2> h_particles_hi(m_particles_hi, access_location::host, access_mode::read);
     ArrayHandle<Scalar2> h_particles_staged(m_particles_staged,
                                             access_location::host,
                                             access_mode::overwrite);
@@ -257,13 +271,13 @@ void mpcd::ReverseNonequilibriumShearFlow::stageSwapParticles()
             if (std::isinf(m_target_momentum))
                 {
                 lo_op = MPI_MAXLOC;
-                lo_swap.s = (lo_idx < m_num_lo) ? h_particles_lo.data[lo_idx].y : Scalar(0.0);
+                lo_swap.s = (lo_idx < num_top_lo) ? m_top_particles_lo[lo_idx].y : Scalar(0.0);
                 }
             else
                 {
                 lo_op = MPI_MINLOC;
-                lo_swap.s = (lo_idx < m_num_lo)
-                                ? std::fabs(h_particles_lo.data[lo_idx].y - m_target_momentum)
+                lo_swap.s = (lo_idx < num_top_lo)
+                                ? std::fabs(m_top_particles_lo[lo_idx].y - m_target_momentum)
                                 : std::numeric_limits<Scalar>::max();
                 }
             MPI_Allreduce(MPI_IN_PLACE, &lo_swap, 1, MPI_HOOMD_SCALAR_INT, lo_op, mpi_comm);
@@ -271,11 +285,11 @@ void mpcd::ReverseNonequilibriumShearFlow::stageSwapParticles()
             // find particle in hi slab to swap (p < 0)
             Scalar_Int hi_swap;
             hi_swap.i = rank;
-            if (hi_idx < m_num_hi)
+            if (hi_idx < num_top_hi)
                 {
                 hi_swap.s = (std::isinf(m_target_momentum))
-                                ? h_particles_hi.data[hi_idx].y
-                                : std::fabs(h_particles_hi.data[hi_idx].y + m_target_momentum);
+                                ? m_top_particles_hi[hi_idx].y
+                                : std::fabs(m_top_particles_hi[hi_idx].y + m_target_momentum);
                 }
             else
                 {
@@ -291,12 +305,12 @@ void mpcd::ReverseNonequilibriumShearFlow::stageSwapParticles()
                     unsigned int dest;
                     if (lo_swap.i == rank)
                         {
-                        particle = h_particles_lo.data[lo_idx++];
+                        particle = m_top_particles_lo[lo_idx++];
                         dest = hi_swap.i;
                         }
                     else
                         {
-                        particle = h_particles_hi.data[hi_idx++];
+                        particle = m_top_particles_hi[hi_idx++];
                         dest = lo_swap.i;
                         }
 
@@ -314,8 +328,8 @@ void mpcd::ReverseNonequilibriumShearFlow::stageSwapParticles()
                     }
                 else // particles are on the same rank
                     {
-                    Scalar2 lo_particle = h_particles_lo.data[lo_idx++];
-                    Scalar2 hi_particle = h_particles_hi.data[hi_idx++];
+                    Scalar2 lo_particle = m_top_particles_lo[lo_idx++];
+                    Scalar2 hi_particle = m_top_particles_hi[hi_idx++];
                     std::swap(lo_particle.y, hi_particle.y);
                     h_particles_staged.data[m_num_staged++] = lo_particle;
                     h_particles_staged.data[m_num_staged++] = hi_particle;
@@ -325,8 +339,8 @@ void mpcd::ReverseNonequilibriumShearFlow::stageSwapParticles()
         else
 #endif // ENABLE_MPI
             {
-            Scalar2 lo_particle = h_particles_lo.data[lo_idx++];
-            Scalar2 hi_particle = h_particles_hi.data[hi_idx++];
+            Scalar2 lo_particle = m_top_particles_lo[lo_idx++];
+            Scalar2 hi_particle = m_top_particles_hi[hi_idx++];
             std::swap(lo_particle.y, hi_particle.y);
             h_particles_staged.data[m_num_staged++] = lo_particle;
             h_particles_staged.data[m_num_staged++] = hi_particle;

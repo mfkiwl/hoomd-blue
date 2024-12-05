@@ -10,7 +10,8 @@ r"""MPCD updaters.
 
 """
 
-from . import _mpcd
+import hoomd
+from hoomd.mpcd import _mpcd
 from hoomd.operation import Updater
 from hoomd.data.parameterdicts import ParameterDict
 from hoomd.logging import log
@@ -20,49 +21,41 @@ import math
 
 
 class ReverseNonequilibriumShearFlow(Updater):
-    r"""MPCD reverse nonequilibrium shear flow.
+    r"""Reverse nonequilibrium shear flow.
 
     Args:
-        trigger (hoomd.trigger.trigger_like): Trigger to swap momentum.
+        trigger (hoomd.trigger.trigger_like): Select the time steps on which to
+            to swap momentum.
 
-        num_swaps (int): Maximum number of times to swap momentum per update.
+        num_swaps (int): Maximum number of pairs to swap per update.
 
         slab_width (float): Width of momentum-exchange slabs.
 
-        target_momentum (float): Target momentum for swapped particles. This
-            argument has a default value of infinity but can be
-            redefined with positive real numbers only.
+        target_momentum (float): Target magnitude of momentum for swapped
+            particles (must be positive).
 
-    This updater generates a bidirectional shear flow in *x* by imposing a
-    momentum flux on the system in *y*.
-    There are two exchange slabs separated by a distance of :math:`L_y/2`. The
-    edges of these slabs are located at (:math:`-L_y/2`, :math:`-L_y/2` +
-    `slab_width`) and (:math:`0.0`, `slab_width`) along the *y*-direction
-    (gradient direction) of the simulation box. On each `trigger`, particles
-    are sorted into the exchange slabs based on their positions in the box.
-    Particles whose *x*-component momenta are near `target_momentum`
-    in the lower slab, and those near -`target_momentum` in the upper
-    slab, are selected for a pairwise momentum swap. Up to `num_swaps` swaps
-    are executed per update.
+    `ReverseNonequilibriumShearFlow` generates a bidirectional shear flow in
+    *x* by imposing a momentum flux on MPCD particles in *y*. Particles are
+    selected from two momentum-exchange slabs with normal to *y*, width *w*,
+    and separated by :math:`L_y/2`. The lower slab accordingly has particles
+    with :math:`-L_y/2 \le y < L_y/2 + w`, while the upper slab has particles
+    with :math:`0 \le y < w`.
 
-    The amount of momentum transferred from the lower slab to the upper slab is
-    known. Therefore `summed_exchanged_momentum`, which returns the accumulated
-    momentum exchanged till the current timestep, is used to calculate the
-    momentum flux, :math:`j_{xy}`. The shear rate, :math:`\dot{\gamma}`, is
-    also extracted as the gradient of the linear velocity profile developed
-    from the flow. The viscosity can then be computed from these two quantities
-    as:
+    MPCD particles are sorted into these slabs, and the particles whose *x*
+    momenta are closest to the `target_momentum` :math:`p_0` in the lower slab
+    and :math:`-p_0` in the upper slab are selected for a momentum swap.
+    Up to `num_swaps` swaps are executed each time.
 
-    .. math::
-
-        \eta (\dot{\gamma}) = \frac{j_{xy}}{\dot{\gamma}}.
+    The amount of momentum transferred from the lower slab to the upper slab
+    is accumulated into `summed_exchangeD_momentum`. This quantity can be used
+    to calculate the momentum flux and, in conjunction with the shear velocity
+    field that is generated, determine the shear viscosity.
 
     .. rubric:: Examples:
 
-    In the original implementation by
-    `Müller-Plathe <https://doi.org/10.1103/PhysRevE.59.4894>`_,
-    only the fastest particle and the slowest particle are swapped. This is
-    achieved by setting `num_swaps` to 1 and keeping `target_momentum` at its
+    To implement the method as originally proposed by `Müller-Plathe`_,
+    only the fastest particle and the slowest particle in the momentum-exchange
+    slabs are swapped. Set `num_swaps` to 1 and `target_momentum` at its
     default value of infinity.
 
     .. code-block:: python
@@ -72,8 +65,7 @@ class ReverseNonequilibriumShearFlow(Updater):
             )
             simulation.operations.updaters.append(flow)
 
-    An alternative approach proposed by
-    `Tenney and Maginn <https://doi.org/10.1063/1.3276454>`_ swaps particles
+    An alternative approach proposed by `Tenney and Maginn`_ swaps particles
     that are instead closest to the `target_momentum`, typically requiring more
     swaps per update.
 
@@ -123,31 +115,32 @@ class ReverseNonequilibriumShearFlow(Updater):
 
                 flow.target_momentum = 5
 
+    .. _Müller-Plathe: https://doi.org/10.1103/PhysRevE.59.4894
+    .. _Tenney and Maginn: https://doi.org/10.1063/1.3276454
+
     """
 
     __doc__ = __doc__.replace("{inherited}", Updater._doc_inherited)
 
-    # Constructor
     def __init__(self, trigger, num_swaps, slab_width, target_momentum=math.inf):
-        # Call the parent constructor with the trigger parameter
         super().__init__(trigger)
 
-        # Create a ParameterDict with the given parameters
         param_dict = ParameterDict(
             num_swaps=int(num_swaps),
             slab_width=float(slab_width),
             target_momentum=OnlyTypes(float, preprocess=positive_real),
         )
         param_dict["target_momentum"] = target_momentum
-
-        # Update the internal parameter dictionary created by the parent class
         self._param_dict.update(param_dict)
 
-    # Use the _attach_hook method to create the C++ version of the object
     def _attach_hook(self):
-        sim = self._simulation
-        self._cpp_obj = _mpcd.ReverseNonequilibriumShearFlow(
-            sim.state._cpp_sys_def,
+        if isinstance(self._simulation.device, hoomd.device.GPU):
+            class_ = _mpcd.ReverseNonequilibriumShearFlowGPU
+        else:
+            class_ = _mpcd.ReverseNonequilibriumShearFlow
+
+        self._cpp_obj = class_(
+            self._simulation.state._cpp_sys_def,
             self.trigger,
             self.num_swaps,
             self.slab_width,
@@ -160,9 +153,8 @@ class ReverseNonequilibriumShearFlow(Updater):
     def summed_exchanged_momentum(self):
         r"""float: Total momentum exchanged.
 
-        This quantity logs the total momentum exchanged between all swapped
-        particle pairs. The value reported is the total exchanged momentum
-        accumulated till the current timestep.
+        This quantity is the total momentum exchanged from the lower slab
+        to the upper slab.
 
         """
         return self._cpp_obj.summed_exchanged_momentum
