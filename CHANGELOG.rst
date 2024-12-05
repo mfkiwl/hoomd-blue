@@ -4,6 +4,15 @@ Change Log
 5.x
 ---
 
+5.0.1 (not yet released)
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+*Fixed*
+
+* Prevent ``missing 1 required positional argument: 'kT'`` errors when using NEC integrators
+  (`#1965 <https://github.com/glotzerlab/hoomd-blue/pull/1965>`__)
+
+
 5.0.0 (2024-12-02)
 ^^^^^^^^^^^^^^^^^^
 
