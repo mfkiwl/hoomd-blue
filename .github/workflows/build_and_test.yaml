@@ -89,6 +89,8 @@ jobs:
           case "${{ inputs.compiler_version }}" in
             125)
               echo "image=nvidia/cuda:12.5.0-devel-ubuntu22.04" >> "$GITHUB_OUTPUT";;
+            122)
+              echo "image=nvidia/cuda:12.2.2-devel-ubuntu22.04" >> "$GITHUB_OUTPUT";;
             *)
               echo "Unknown compiler" && exit 1;;
             esac
@@ -249,6 +251,10 @@ jobs:
     # - name: Install cupy
     #   if: ${{ contains(inputs.config, 'cuda') }}
     #   run: uv pip install --no-deps fastrlock==0.8.2 cupy-cuda12x==12.3.0
+
+    - name: Run nvidia-smi
+      if: ${{ contains(inputs.config, 'cuda') }}
+      run: nvidia-smi
 
     ### Python unit tests
     - name: Run pytest (serial)
