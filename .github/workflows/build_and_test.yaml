@@ -83,7 +83,7 @@ jobs:
         elif [[ "${{ inputs.compiler_family }}" == "cuda" ]]
         then
           echo "cuda=cuda${{ inputs.compiler_version }}" >> "$GITHUB_OUTPUT"
-          echo 'test_runner=["self-hosted", "GPU"]' >> "$GITHUB_OUTPUT"
+          echo 'test_runner=["self-hosted", "jetstream2", "GPU"]' >> "$GITHUB_OUTPUT"
           echo 'test_docker_options=--gpus=all' >> "$GITHUB_OUTPUT"
 
           case "${{ inputs.compiler_version }}" in
