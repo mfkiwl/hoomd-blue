@@ -16,7 +16,7 @@ with many `hoomd.Simulation` objects.
 
     device = hoomd.device.CPU()
 
-.. skip: next
+.. skip: next if(gpu_not_available)
 
 .. code-block:: python
 
@@ -325,7 +325,7 @@ class GPU(Device):
 
     .. rubric:: Example:
 
-    .. skip: next
+    .. skip: next if(gpu_not_available)
 
     .. code-block:: python
 
@@ -370,7 +370,7 @@ class GPU(Device):
 
         .. rubric:: Example:
 
-        .. skip: next
+        .. skip: next if(gpu_not_available)
 
         .. code-block:: python
 
@@ -431,7 +431,7 @@ class GPU(Device):
 
         .. rubric:: Example:
 
-        .. skip: next
+        .. skip: next if(gpu_not_available)
 
         .. code-block:: python
 
@@ -509,8 +509,6 @@ def auto_select(
         Instance of `GPU` if available, otherwise `CPU`.
 
     .. rubric:: Example:
-
-    .. skip: next
 
     .. code-block:: python
 
