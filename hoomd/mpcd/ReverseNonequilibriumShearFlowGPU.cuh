@@ -10,8 +10,10 @@
  */
 
 #include <cuda_runtime.h>
+#ifdef __HIPCC__
 #include <thrust/execution_policy.h>
 #include <thrust/sort.h>
+#endif // __HIPCC__
 
 #include "hoomd/HOOMDMath.h"
 
