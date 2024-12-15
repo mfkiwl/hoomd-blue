@@ -66,6 +66,7 @@ void export_PotentialPairTWF(pybind11::module& m);
 void export_PotentialPairLJGauss(pybind11::module& m);
 void export_PotentialPairForceShiftedLJ(pybind11::module& m);
 void export_PotentialPairTable(pybind11::module& m);
+void export_PotentialPairWangFrenkel(pybind11::module& m);
 
 void export_AnisoPotentialPairALJ2D(pybind11::module& m);
 void export_AnisoPotentialPairALJ3D(pybind11::module& m);
@@ -364,6 +365,7 @@ PYBIND11_MODULE(_md, m)
     export_PotentialPairLJGauss(m);
     export_PotentialPairForceShiftedLJ(m);
     export_PotentialPairTable(m);
+    export_PotentialPairWangFrenkel(m);
 
     export_AlchemicalMDParticles(m);
 

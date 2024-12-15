@@ -158,6 +158,7 @@ from .pair import (
     Table,
     TWF,
     LJGauss,
+    WangFrenkel,
 )
 
 __all__ = [
@@ -187,5 +188,6 @@ __all__ = [
     "ReactionField",
     "Table",
     "Yukawa",
+    "WangFrenkel",
     "aniso",
 ]
