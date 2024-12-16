@@ -72,7 +72,7 @@ class HPMCNECIntegrator(HPMCIntegrator):
         nselect=1,
     ):
         # initialize base class
-        super().__init__(default_d, default_a, 0.5, nselect)
+        super().__init__(default_d, default_a, 0.5, nselect, 1.0)
 
         # Set base parameter dict for hpmc chain integrators
         param_dict = ParameterDict(
