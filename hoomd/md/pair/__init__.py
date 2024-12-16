@@ -187,7 +187,7 @@ __all__ = [
     "Pair",
     "ReactionField",
     "Table",
-    "Yukawa",
     "WangFrenkel",
+    "Yukawa",
     "aniso",
 ]
