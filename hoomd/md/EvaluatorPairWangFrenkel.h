@@ -73,7 +73,8 @@ class EvaluatorPairWangFrenkel
             Scalar epsilon = v["epsilon"].cast<Scalar>();
             Scalar sigma = v["sigma"].cast<Scalar>();
             Scalar sigma_sq = sigma * sigma;
-            Scalar rcutsq = v["R"].cast<Scalar>();
+            Scalar rcut = v["R"].cast<Scalar>();
+            Scalar rcutsq = rcut * rcut;
             Scalar left = (1 + 2 * nu) / (2* nu * (fast::pow(rcutsq / sigma_sq, mu) - 1));
             Scalar alpha = 2 * nu * fast::pow(rcutsq / sigma_sq, mu) * fast::pow(left, 2*nu + 1);
 
@@ -139,7 +140,7 @@ class EvaluatorPairWangFrenkel
         if (rsq < rcutsq && prefactor != 0)
             {
             Scalar r2inv = Scalar(1.0) / rsq;
-            Scalar r2inv_pow_2m = fast::pow(r2inv, 2*mu);
+            Scalar r2inv_pow_2m = fast::pow(r2inv, mu);
             Scalar sigma_over_rsq_pow = sigma_sq_pow_2m * r2inv_pow_2m;
             Scalar rcutsq_over_rsq_pow = rcutsq_pow_2m * r2inv_pow_2m;
 
