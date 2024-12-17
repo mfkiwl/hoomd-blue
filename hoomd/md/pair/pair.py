@@ -2034,8 +2034,12 @@ class WangFrenkel(Pair):
     in the simulation state:
 
     .. math::
-        U(r) = \epsilon \left( \left[\frac{\sigma}{r}\right]^{2\mu} -1\right)
+        U(r) = \epsilon \alpha \left( \left[\frac{\sigma}{r}\right]^{2\mu} -1\right)
                \left(\left[\frac{R}{r}\right]^{2\mu} -1 \right)^{2\nu}
+
+    .. math::
+        \alpha = 2 \nu \left(\frac{R}{\sigma}\right)^{2\mu}
+                 \left(\frac{2 \nu + 1}{2\nu \left(\frac{R}{\sigma} - 1\right)}\right)^{2\nu + 1}
 
     Example::
 
