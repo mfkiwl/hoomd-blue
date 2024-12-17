@@ -2033,15 +2033,16 @@ class WangFrenkel(Pair):
     `WangFrenkel` computes the Wang-Frenkel pair force on every particle in the simulation state.
 
     .. math::
-        U(r) = \epsilon \left( \left[\frac{\sigma}{r}\right]^{2\mu} -1\right)\left(\left[\frac{R}{r}\right]^{2\mu} -1 \right)^{2\nu}
+        U(r) = \epsilon \left( \left[\frac{\sigma}{r}\right]^{2\mu} -1\right)
+               \left(\left[\frac{R}{r}\right]^{2\mu} -1 \right)^{2\nu}
 
     Example::
 
         nl = nlist.Cell()
         WangFrenkel = pair.WangFrenkel(nlist=nl, default_r_cut=3.0)
-        WangFrenkel.params[("A", "A")] = dict(epsilon=1.0, sigma=1.0, R = 2**(1/6), mu=12.0, nu=6.0)
+        WangFrenkel.params[("A", "A")] = dict(epsilon=1.0, sigma=1.0, R = 2**(1/6), mu=12, nu=6)
         WangFrenkel.r_cut[("A", "A")] = 2 ** (1.0 / 6.0)
-        WangFrenkel.params[(["A", "B"], ["C", "D"])] = dict(epsilon=1.5, sigma=2.0, R = 2.5, mu=2.8, nu=2.0)
+        WangFrenkel.params[(["A", "B"], ["C", "D"])] = dict(epsilon=1.5, sigma=2.0, R = 2.5, mu=2, nu=2)
 
     {inherited}
 
@@ -2059,9 +2060,9 @@ class WangFrenkel(Pair):
           :math:`[\mathrm{length}]`
         * ``R`` (`float`, **required**) - :math:`R`
           :math:`[\mathrm{length}]`
-        * ``mu`` (`float`, **required**) - :math:`\mu`
+        * ``mu`` (`int`, **required**) - :math:`\mu`
           :math:`[\mathrm{dimensionless}]`
-        * ``nu`` (`float`, **required**) - :math:`\nu`
+        * ``nu`` (`int`, **required**) - :math:`\nu`
           :math:`[\mathrm{dimensionless}]`
 
         Type: `TypeParameter` [`tuple` [``particle_type``, ``particle_type``],
