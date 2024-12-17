@@ -49,7 +49,7 @@ class EvaluatorPairWangFrenkel
         {
         Scalar prefactor;
         Scalar sigma_pow_2m;
-        Scalar rc_pow_2m;
+        Scalar R_pow_2m;
         int mu;
         int nu;
 
@@ -63,12 +63,13 @@ class EvaluatorPairWangFrenkel
 #endif
 
 #ifndef __HIPCC__
-        param_type() : prefactor(0.0), sigma_pow_2m(0.0), rc_pow_2m(0.0), mu(0.0), nu(0.0) { }
+        param_type() : prefactor(0.0), sigma_pow_2m(0.0), R_pow_2m(0.0), mu(0.0), nu(0.0) { }
 
         param_type(pybind11::dict v, bool managed = false)
             {
-            mu = v["mu"].cast<int>();
-            nu = v["nu"].cast<int>();
+            // should probably send a warning if exponents are large (eg >256)
+            mu = v["mu"].cast<unsigned int>();
+            nu = v["nu"].cast<unsigned int>();
 
             Scalar epsilon = v["epsilon"].cast<Scalar>();
             Scalar sigma = v["sigma"].cast<Scalar>();
@@ -79,7 +80,7 @@ class EvaluatorPairWangFrenkel
             Scalar alpha = 2 * nu * fast::pow(rcutsq / sigma_sq, mu) * fast::pow(left, 2*nu + 1);
 
             prefactor = epsilon * alpha;
-            rc_pow_2m = fast::pow(rcutsq, mu);
+            R_pow_2m = fast::pow(rcutsq, mu);
             sigma_pow_2m = fast::pow(sigma_sq, mu);
             }
 
@@ -88,11 +89,11 @@ class EvaluatorPairWangFrenkel
             pybind11::dict v;
             v["mu"] = mu;
             v["nu"] = nu;
-            Scalar sigma =  fast::pow(sigma_pow_2m, 1 / (2*mu));
+            Scalar sigma =  fast::pow(sigma_pow_2m, 1.0 / (2.0*Scalar(mu)));
             v["sigma"] = sigma;
             Scalar sigma_sq = sigma * sigma;
-            v["R"] = fast::pow(rc_pow_2m, 1/(2*mu));
-            Scalar rcutsq = fast::pow(rc_pow_2m, 1/mu);
+            v["R"] = fast::pow(R_pow_2m, 1/Scalar(2*mu));
+            Scalar rcutsq = fast::pow(R_pow_2m, 1/Scalar(mu));
             Scalar left = (1 + 2 * nu) / (2* nu * (fast::pow(rcutsq / sigma_sq, mu) - 1));
             Scalar alpha = 2 * nu * fast::pow(rcutsq / sigma_sq, mu) * fast::pow(left, 2*nu + 1);
 
@@ -109,8 +110,8 @@ class EvaluatorPairWangFrenkel
         \param _params Per type pair parameters of this potential
     */
     DEVICE EvaluatorPairWangFrenkel(Scalar _rsq, Scalar _rcutsq, const param_type& _params)
-        : rsq(_rsq), rcutsq(_rcutsq), prefactor(_params.prefactor), sigma_sq_pow_2m(_params.sigma_pow_2m),
-          rcutsq_pow_2m(_params.rc_pow_2m), mu(_params.mu), nu(_params.nu)
+        : rsq(_rsq), rcutsq(_rcutsq), prefactor(_params.prefactor),
+          sigma_pow_2m(_params.sigma_pow_2m), R_pow_2m(_params.R_pow_2m), mu(_params.mu), nu(_params.nu)
         {
         }
 
@@ -140,22 +141,24 @@ class EvaluatorPairWangFrenkel
         if (rsq < rcutsq && prefactor != 0)
             {
             Scalar r2inv = Scalar(1.0) / rsq;
-            Scalar r2inv_pow_2m = fast::pow(r2inv, mu);
-            Scalar sigma_over_rsq_pow = sigma_sq_pow_2m * r2inv_pow_2m;
-            Scalar rcutsq_over_rsq_pow = rcutsq_pow_2m * r2inv_pow_2m;
+            Scalar rinv_pow_2m = fast::pow(r2inv, mu);
+            Scalar sigma_over_rsq_pow = sigma_pow_2m * rinv_pow_2m;
+            Scalar rcutsq_over_rsq_pow = R_pow_2m * rinv_pow_2m;
 
-            Scalar right = fast::pow(rcutsq_over_rsq_pow - 1, 2*nu);
+            Scalar sigma_term = sigma_over_rsq_pow - 1;
+            Scalar R_term = rcutsq_over_rsq_pow - 1;
 
-            //printf("Pair values; sigma/rsq^(2mu): %f rcutsq / rsq^(2mu): %f, right: %f, \n", sigma_over_rsq_pow, rcutsq_over_rsq_pow, right);
+            Scalar R_term_2num1 = fast::pow(R_term, 2*nu - 1);
+            Scalar R_term_2nu = R_term_2num1 * R_term;
 
-            pair_eng = prefactor * (sigma_over_rsq_pow - 1) * right;
-            force_divr = 2 * prefactor * mu * (right / (rcutsq_over_rsq_pow - 1)) * (2 * nu * rcutsq_over_rsq_pow * (sigma_over_rsq_pow - 1) + (rcutsq_over_rsq_pow - 1) * sigma_over_rsq_pow) * r2inv;
+            pair_eng = prefactor * sigma_term * R_term_2nu;
+            force_divr = 2 * prefactor * mu * R_term_2num1 * (2 * nu * rcutsq_over_rsq_pow * sigma_term + R_term * sigma_over_rsq_pow) * r2inv;
 
             if(energy_shift)
                 {
-                Scalar rc2inv = fast::pow(rcutsq, -2*mu);
-                Scalar rc_sigma_pow = sigma_sq_pow_2m * rc2inv;
-                Scalar rc_rcutsq_over_rsq_pow = rcutsq_pow_2m * rc2inv;
+                Scalar rc2inv = fast::pow(Scalar(1.0) / rcutsq, 2*mu);
+                Scalar rc_sigma_pow = sigma_pow_2m * rc2inv;
+                Scalar rc_rcutsq_over_rsq_pow = R_pow_2m * rc2inv;
                 Scalar rc_right = fast::pow(rc_rcutsq_over_rsq_pow - 1, 2*nu);
                 pair_eng -= prefactor * (rc_sigma_pow - 1) * rc_right;
                 }
@@ -194,11 +197,11 @@ class EvaluatorPairWangFrenkel
     Scalar rsq;    //!< Stored rsq from the constructor
     Scalar rcutsq; //!< Stored rcutsq from the constructor
 
-    Scalar prefactor;
-    Scalar sigma_sq_pow_2m;
-    Scalar rcutsq_pow_2m;
-    int mu;
-    int nu;
+    Scalar prefactor; //!< Prefactor (epsilon * alpha)
+    Scalar sigma_pow_2m; //!< sigma^(2m) stored
+    Scalar R_pow_2m; //!< R^(2m) stored
+    unsigned int mu; //!< mu exponent
+    unsigned int nu; //!< nu exponent
     };
 
     } // end namespace md
