@@ -349,6 +349,7 @@ inline HOSTDEVICE double pow(double x, double y)
     return ::exp(y * log(x));
     }
 
+//! Compute the pow of x,y in double precision when y is an integer using squaring
 inline HOSTDEVICE double pow(double x, unsigned int y){
         double result = 1.0;
         for(;;){
@@ -370,7 +371,8 @@ inline HOSTDEVICE double pow(double x, int y){
         return pow(x,_y);
     }
 
-inline HOSTDEVICE double pow(float x, unsigned int y){
+//! Compute the pow of x,y in single precision when y is an integer using squaring
+inline HOSTDEVICE float pow(float x, unsigned int y){
     float result = 1.0f;
     for(;;){
         if(y & 1)
