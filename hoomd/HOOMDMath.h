@@ -349,6 +349,32 @@ inline HOSTDEVICE double pow(double x, double y)
     return ::exp(y * log(x));
     }
 
+inline HOSTDEVICE double pow(double x, int y){
+        double result = 1.0;
+        for(;;){
+                if( y & 1)
+                    result *= x;
+                y >>= 1;
+                if(!y)
+                    break;
+                x *= x;
+            }
+        return result;
+    }
+
+inline HOSTDEVICE double pow(float x, int y){
+    float result = 1.0f;
+    for(;;){
+        if( y & 1)
+            result *= x;
+        y >>= 1;
+        if(!y)
+            break;
+        x *= x;
+        }
+    return result;
+    }
+
 //! Compute the exp of x
 inline HOSTDEVICE float exp(float x)
     {

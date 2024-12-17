@@ -50,8 +50,8 @@ class EvaluatorPairWangFrenkel
         Scalar prefactor;
         Scalar sigma_pow_2m;
         Scalar rc_pow_2m;
-        Scalar mu;
-        Scalar nu;
+        int mu;
+        int nu;
 
         DEVICE void load_shared(char*& ptr, unsigned int& available_bytes) { }
 
@@ -67,8 +67,8 @@ class EvaluatorPairWangFrenkel
 
         param_type(pybind11::dict v, bool managed = false)
             {
-            mu = v["mu"].cast<Scalar>();
-            nu = v["nu"].cast<Scalar>();
+            mu = v["mu"].cast<int>();
+            nu = v["nu"].cast<int>();
 
             Scalar epsilon = v["epsilon"].cast<Scalar>();
             Scalar sigma = v["sigma"].cast<Scalar>();
@@ -146,6 +146,8 @@ class EvaluatorPairWangFrenkel
 
             Scalar right = fast::pow(rcutsq_over_rsq_pow - 1, 2*nu);
 
+            //printf("Pair values; sigma/rsq^(2mu): %f rcutsq / rsq^(2mu): %f, right: %f, \n", sigma_over_rsq_pow, rcutsq_over_rsq_pow, right);
+
             pair_eng = prefactor * (sigma_over_rsq_pow - 1) * right;
             force_divr = 2 * prefactor * mu * (right / (rcutsq_over_rsq_pow - 1)) * (2 * nu * rcutsq_over_rsq_pow * (sigma_over_rsq_pow - 1) + (rcutsq_over_rsq_pow - 1) * sigma_over_rsq_pow) * r2inv;
 
@@ -195,8 +197,8 @@ class EvaluatorPairWangFrenkel
     Scalar prefactor;
     Scalar sigma_sq_pow_2m;
     Scalar rcutsq_pow_2m;
-    Scalar mu;
-    Scalar nu;
+    int mu;
+    int nu;
     };
 
     } // end namespace md

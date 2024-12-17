@@ -2076,7 +2076,7 @@ class WangFrenkel(Pair):
         params = TypeParameter(
             "params",
             "particle_types",
-            TypeParameterDict(epsilon=float, sigma=float, R=float, mu=float, nu=float, len_keys=2),
+            TypeParameterDict(epsilon=float, sigma=float, R=float, mu=int, nu=int, len_keys=2),
         )
 
         self._add_typeparam(params)
