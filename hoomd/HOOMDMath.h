@@ -349,10 +349,10 @@ inline HOSTDEVICE double pow(double x, double y)
     return ::exp(y * log(x));
     }
 
-inline HOSTDEVICE double pow(double x, int y){
+inline HOSTDEVICE double pow(double x, unsigned int y){
         double result = 1.0;
         for(;;){
-                if( y & 1)
+                if(y & 1)
                     result *= x;
                 y >>= 1;
                 if(!y)
@@ -362,10 +362,18 @@ inline HOSTDEVICE double pow(double x, int y){
         return result;
     }
 
-inline HOSTDEVICE double pow(float x, int y){
+inline HOSTDEVICE double pow(double x, int y){
+    unsigned int _y = abs(y);
+    if(y < 0)
+        return 1.0 / pow(x, _y);
+    else
+        return pow(x,_y);
+    }
+
+inline HOSTDEVICE double pow(float x, unsigned int y){
     float result = 1.0f;
     for(;;){
-        if( y & 1)
+        if(y & 1)
             result *= x;
         y >>= 1;
         if(!y)
@@ -373,6 +381,14 @@ inline HOSTDEVICE double pow(float x, int y){
         x *= x;
         }
     return result;
+    }
+
+inline HOSTDEVICE float pow(float x, int y){
+    unsigned int _y = abs(y);
+    if(y < 0)
+        return 1.0f / pow(x, _y);
+    else
+        return pow(x,_y);
     }
 
 //! Compute the exp of x
