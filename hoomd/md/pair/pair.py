@@ -2041,6 +2041,14 @@ class WangFrenkel(Pair):
         \alpha = 2 \nu \left(\frac{R}{\sigma}\right)^{2\mu}
                  \left(\frac{2 \nu + 1}{2\nu \left(\frac{R}{\sigma} - 1\right)}\right)^{2\nu + 1}
 
+    The potential was introduced in `Xipeng Wang et al. 2020`_.
+
+    .. _Xipeng Wang et al. 2020:
+       https://dx.doi.org/10.1039/c9cp05445f
+
+    Note:
+        In the original paper, the parameter `R` is explicitly equal to the cutoff.
+
     Example::
 
         nl = nlist.Cell()
