@@ -2030,7 +2030,8 @@ class WangFrenkel(Pair):
         default_r_on (float): Default turn-on radius :math:`[\mathrm{length}]`.
         mode (str): Energy shifting/smoothing mode.
 
-    `WangFrenkel` computes the Wang-Frenkel pair force on every particle in the simulation state.
+    `WangFrenkel` computes the Wang-Frenkel pair force on every particle
+    in the simulation state:
 
     .. math::
         U(r) = \epsilon \left( \left[\frac{\sigma}{r}\right]^{2\mu} -1\right)
