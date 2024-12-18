@@ -11,6 +11,8 @@ Change Log
 
 * Prevent ``missing 1 required positional argument: 'kT'`` errors when using NEC integrators
   (`#1965 <https://github.com/glotzerlab/hoomd-blue/pull/1965>`__)
+* Note the current version of CUDA in the micromamba installation instructions
+  (`#1972 <https://github.com/glotzerlab/hoomd-blue/pull/1972>`__)
 
 
 5.0.0 (2024-12-02)
