@@ -71,6 +71,9 @@ class EvaluatorPairWangFrenkel
             mu = v["mu"].cast<unsigned int>();
             nu = v["nu"].cast<unsigned int>();
 
+            if(nu == 0 || mu == 0)
+                throw std::invalid_argument("Cannot set exponents nu or mu to zero");
+
             Scalar epsilon = v["epsilon"].cast<Scalar>();
             Scalar sigma = v["sigma"].cast<Scalar>();
             Scalar sigma_sq = sigma * sigma;
