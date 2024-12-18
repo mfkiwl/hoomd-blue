@@ -37,7 +37,7 @@ appropriate package. Override this and force the GPU enabled package installatio
 .. note::
 
     conda-forge_ may update to a new version of CUDA. If the above command results in an error,
-    replace `12.6` with the version noted in micromamba's error message.
+    replace ``12.6`` with the version noted in micromamba's error message.
 
 Similarly, you can force CPU-only package installation with:
 
