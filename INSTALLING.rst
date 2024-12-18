@@ -31,8 +31,13 @@ appropriate package. Override this and force the GPU enabled package installatio
 
 .. code-block:: bash
 
-    export CONDA_OVERRIDE_CUDA="12.0"
-    micromamba install "hoomd=5.0.0=*gpu*" "cuda-version=12.0"
+    export CONDA_OVERRIDE_CUDA="12.6"
+    micromamba install "hoomd=5.0.0=*gpu*" "cuda-version=12.6"
+
+.. note::
+
+    conda-forge_ may update to a new version of CUDA. If the above command results in an error,
+    replace `12.6` with the version noted in micromamba's error message.
 
 Similarly, you can force CPU-only package installation with:
 
@@ -44,8 +49,3 @@ Similarly, you can force CPU-only package installation with:
 
     CUDA 11.8 compatible packages are also available. Replace "12.0" with "11.8" above when
     installing HOOMD-blue on systems with CUDA 11 compatible drivers.
-
-.. note::
-
-    Run time compilation is no longer available on conda-forge builds starting with HOOMD-blue
-    4.7.0.
