@@ -145,25 +145,25 @@ class EvaluatorPairWangFrenkel
             {
             Scalar r2inv = Scalar(1.0) / rsq;
             Scalar rinv_pow_2m = fast::pow(r2inv, mu);
-            Scalar sigma_over_rsq_pow = sigma_pow_2m * rinv_pow_2m;
-            Scalar rcutsq_over_rsq_pow = R_pow_2m * rinv_pow_2m;
+            Scalar sigma_over_r_pow_2m = sigma_pow_2m * rinv_pow_2m;
+            Scalar R_over_r_pow_2m = R_pow_2m * rinv_pow_2m;
 
-            Scalar sigma_term = sigma_over_rsq_pow - 1;
-            Scalar R_term = rcutsq_over_rsq_pow - 1;
+            Scalar sigma_term = sigma_over_r_pow_2m - 1;
+            Scalar R_term = R_over_r_pow_2m - 1;
 
             Scalar R_term_2num1 = fast::pow(R_term, 2*nu - 1);
             Scalar R_term_2nu = R_term_2num1 * R_term;
 
             pair_eng = prefactor * sigma_term * R_term_2nu;
-            force_divr = 2 * prefactor * mu * R_term_2num1 * (2 * nu * rcutsq_over_rsq_pow * sigma_term + R_term * sigma_over_rsq_pow) * r2inv;
+            force_divr = 2 * prefactor * mu * R_term_2num1 * (2 * nu * R_over_r_pow_2m * sigma_term + R_term * sigma_over_r_pow_2m) * r2inv;
 
             if(energy_shift)
                 {
-                Scalar rc2inv = fast::pow(Scalar(1.0) / rcutsq, 2*mu);
-                Scalar rc_sigma_pow = sigma_pow_2m * rc2inv;
-                Scalar rc_rcutsq_over_rsq_pow = R_pow_2m * rc2inv;
-                Scalar rc_right = fast::pow(rc_rcutsq_over_rsq_pow - 1, 2*nu);
-                pair_eng -= prefactor * (rc_sigma_pow - 1) * rc_right;
+                Scalar rcinv_pow_2m = fast::pow(Scalar(1.0) / rcutsq, mu);
+                Scalar sigma_over_rc_pow_2m = sigma_pow_2m * rcinv_pow_2m;
+                Scalar R_over_rc_pow_2m = R_pow_2m * rcinv_pow_2m;
+                Scalar rc_R_term_2nu = fast::pow(R_over_rc_pow_2m - 1, 2*nu);
+                pair_eng -= prefactor * (sigma_over_rc_pow_2m - 1) * rc_R_term_2nu;
                 }
             return true;
             }
