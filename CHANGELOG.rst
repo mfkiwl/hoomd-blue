@@ -4,6 +4,9 @@ Change Log
 5.x
 ---
 
+*Added*
+* Wang-Frenkel potential
+
 5.0.1 (not yet released)
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
