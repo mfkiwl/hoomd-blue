@@ -2039,7 +2039,7 @@ class WangFrenkel(Pair):
 
     .. math::
         \alpha = 2 \nu \left(\frac{R}{\sigma}\right)^{2\mu}
-                 \left(\frac{2 \nu + 1}{2\nu \left(\frac{R}{\sigma} - 1\right)}\right)^{2\nu + 1}
+                 \left(\frac{2 \nu + 1}{2\nu \left(\left(\frac{R}{\sigma}\right)^{2\mu} - 1\right)}\right)^{2\nu + 1}
 
     The potential was introduced in `Xipeng Wang et al. 2020`_.
 
