@@ -7,7 +7,9 @@
  */
 
 #include "ReverseNonequilibriumShearFlowGPU.cuh"
-#include "ReverseNonequilibriumShearFlowUtilities.h"
+
+#include <thrust/execution_policy.h>
+#include <thrust/sort.h>
 
 namespace hoomd
     {
@@ -123,16 +125,32 @@ cudaError_t rnes_filter_particles(Scalar2* d_particles_lo,
     return cudaSuccess;
     }
 
-template void rnes_sort<mpcd::detail::MinimumMomentum>(Scalar2*,
-                                                       const unsigned int,
-                                                       const mpcd::detail::MinimumMomentum&);
-template void rnes_sort<mpcd::detail::MaximumMomentum>(Scalar2*,
-                                                       const unsigned int,
-                                                       const mpcd::detail::MaximumMomentum&);
-template void
-rnes_sort<mpcd::detail::CompareMomentumToTarget>(Scalar2*,
-                                                 const unsigned int,
-                                                 const mpcd::detail::CompareMomentumToTarget&);
+/*
+ * thrust doesn't like to be included in host code, so explicitly list the ones
+ * we need as wrappers to a template.
+ */
+template<class T> void rnes_thrust_sort(Scalar2* d_particles, const unsigned int N, const T& comp)
+    {
+    thrust::sort(thrust::device, d_particles, d_particles + N, comp);
+    }
+void rnes_sort(Scalar2* d_particles,
+               const unsigned int N,
+               const mpcd::detail::MinimumMomentum& comp)
+    {
+    rnes_thrust_sort(d_particles, N, comp);
+    }
+void rnes_sort(Scalar2* d_particles,
+               const unsigned int N,
+               const mpcd::detail::MaximumMomentum& comp)
+    {
+    rnes_thrust_sort(d_particles, N, comp);
+    }
+void rnes_sort(Scalar2* d_particles,
+               const unsigned int N,
+               const mpcd::detail::CompareMomentumToTarget& comp)
+    {
+    rnes_thrust_sort(d_particles, N, comp);
+    }
 
 cudaError_t rnes_copy_top_particles(Scalar2* h_top_particles,
                                     const Scalar2* d_particles,

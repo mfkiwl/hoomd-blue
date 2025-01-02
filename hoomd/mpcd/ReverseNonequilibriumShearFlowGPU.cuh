@@ -10,12 +10,10 @@
  */
 
 #include <cuda_runtime.h>
-#ifdef __HIPCC__
-#include <thrust/execution_policy.h>
-#include <thrust/sort.h>
-#endif // __HIPCC__
 
 #include "hoomd/HOOMDMath.h"
+
+#include "ReverseNonequilibriumShearFlowUtilities.h"
 
 namespace hoomd
     {
@@ -38,7 +36,11 @@ cudaError_t rnes_filter_particles(Scalar2* d_particles_lo,
                                   const unsigned int N,
                                   const unsigned int block_size);
 
-template<class T> void rnes_sort(Scalar2* d_particles, const unsigned int N, const T& comp);
+void rnes_sort(Scalar2* d_particles, const unsigned int N, const detail::MinimumMomentum& comp);
+void rnes_sort(Scalar2* d_particles, const unsigned int N, const detail::MaximumMomentum& comp);
+void rnes_sort(Scalar2* d_particles,
+               const unsigned int N,
+               const detail::CompareMomentumToTarget& comp);
 
 cudaError_t rnes_copy_top_particles(Scalar2* h_top_particles,
                                     const Scalar2* d_particles,
@@ -52,10 +54,7 @@ cudaError_t rnes_swap_particles(Scalar4* d_vel,
                                 const unsigned int block_size);
 
 #ifdef __HIPCC__
-template<class T> void rnes_sort(Scalar2* d_particles, const unsigned int N, const T& comp)
-    {
-    thrust::sort(thrust::device, d_particles, d_particles + N, comp);
-    }
+
 #endif
 
     } // end namespace gpu
