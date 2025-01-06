@@ -197,8 +197,10 @@ class ReversePerturbationFlow(Updater):
 
     def _preprocess_n_slabs(self, n_slabs):
         if n_slabs < 0:
-            raise ValueError(f"The number of slabs is negative, \
-                              n_slabs = {n_slabs}")
+            raise ValueError(
+                f"The number of slabs is negative, \
+                              n_slabs = {n_slabs}"
+            )
         return n_slabs
 
     def _preprocess_max_slab(self, max_slab):
@@ -214,8 +216,10 @@ class ReversePerturbationFlow(Updater):
         if min_slab <= -1 or min_slab > self.n_slabs:
             raise ValueError(f"Invalid min_slab of {min_slab}")
         if min_slab == self.max_slab:
-            raise ValueError(f"Min and max slab are equal. \
-                              min_slab = max_slab = {min_slab}")
+            raise ValueError(
+                f"Min and max slab are equal. \
+                              min_slab = max_slab = {min_slab}"
+            )
         return min_slab
 
     def _attach_hook(self):
