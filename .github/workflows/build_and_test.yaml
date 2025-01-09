@@ -89,6 +89,9 @@ jobs:
           case "${{ inputs.compiler_version }}" in
             125)
               echo "image=nvidia/cuda:12.5.0-devel-ubuntu22.04" >> "$GITHUB_OUTPUT";;
+            124)
+              echo "image=nvidia/cuda:12.4.1-devel-ubuntu22.04" >> "$GITHUB_OUTPUT";;
+            *)
             122)
               echo "image=nvidia/cuda:12.2.2-devel-ubuntu22.04" >> "$GITHUB_OUTPUT";;
             *)

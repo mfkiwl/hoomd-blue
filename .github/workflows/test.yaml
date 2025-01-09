@@ -53,13 +53,13 @@ jobs:
         - config: [gcc, 14, -py, 313, -nomd, -nohpmc]
         - config: [gcc, 10, -py, 39, -mpi]
 
-        - config: [cuda, 122, -py, 313, -mpi]
+        - config: [cuda, 124, -py, 313, -mpi]
           validate: true
 
-        - config: [cuda, 122, -py, 313]
+        - config: [cuda, 124, -py, 313]
           validate: true
 
-        - config: [cuda, 122, -py, 313, -mpi, -debug]
+        - config: [cuda, 124, -py, 313, -mpi, -debug]
 
 
   release:
