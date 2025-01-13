@@ -47,7 +47,7 @@ class ReverseNonequilibriumShearFlow(Updater):
     Up to `num_swaps` swaps are executed each time.
 
     The amount of momentum transferred from the lower slab to the upper slab
-    is accumulated into `summed_exchangeD_momentum`. This quantity can be used
+    is accumulated into `summed_exchanged_momentum`. This quantity can be used
     to calculate the momentum flux and, in conjunction with the shear velocity
     field that is generated, determine the shear viscosity.
 
