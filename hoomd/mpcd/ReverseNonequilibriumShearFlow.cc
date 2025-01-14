@@ -73,7 +73,7 @@ void mpcd::ReverseNonequilibriumShearFlow::setSlabWidth(Scalar slab_width)
 void mpcd::ReverseNonequilibriumShearFlow::setSlabs()
     {
     const BoxDim& global_box = m_pdata->getGlobalBox();
-    if (m_slab_width > Scalar(0.5) * global_box.getL().y)
+    if (m_slab_width > Scalar(0.5) * global_box.getNearestPlaneDistance().y)
         {
         throw std::runtime_error("Slab width cannot be larger than Ly/2");
         }

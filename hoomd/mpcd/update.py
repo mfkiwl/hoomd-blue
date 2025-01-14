@@ -83,14 +83,6 @@ class ReverseNonequilibriumShearFlow(Updater):
     **Members defined in** `ReverseNonequilibriumShearFlow`:
 
     Attributes:
-        trigger (hoomd.trigger.trigger_like): Trigger to swap momentum.
-
-            .. rubric:: Example:
-
-            .. code-block:: python
-
-                flow.trigger = 1
-
         num_swaps (int): Maximum number of times to swap momentum per update.
 
             .. rubric:: Example:
