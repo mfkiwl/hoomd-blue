@@ -4,6 +4,15 @@ Change Log
 5.x
 ---
 
+5.0.1 (not yet released)
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+*Added*
+
+* ``mpcd.update.ReverseNonequilibriumShearFlow``
+  (`#1983 <https://github.com/glotzerlab/hoomd-blue/pull/1983>`__).
+
+
 5.0.0 (2024-12-02)
 ^^^^^^^^^^^^^^^^^^
 
