@@ -13,12 +13,6 @@
 
 namespace hoomd
     {
-/*!
- * \param sysdata MPCD system data this updater will act on
- * \param num_swap Max number of swaps
- * \param slab_width Slab width
- * \param target_momentum Target momentum in x-direction for the two slabs
- */
 mpcd::ReverseNonequilibriumShearFlow::ReverseNonequilibriumShearFlow(
     std::shared_ptr<SystemDefinition> sysdef,
     std::shared_ptr<Trigger> trigger,
