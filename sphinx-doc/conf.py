@@ -34,6 +34,7 @@ extensions = [
     "sphinx.ext.todo",
     "IPython.sphinxext.ipython_console_highlighting",
     "sphinx_copybutton",
+    "notfound.extension",
 ]
 
 if os.getenv("READTHEDOCS"):
