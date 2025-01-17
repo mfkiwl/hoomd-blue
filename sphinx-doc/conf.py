@@ -34,6 +34,7 @@ extensions = [
     "sphinx.ext.todo",
     "IPython.sphinxext.ipython_console_highlighting",
     "sphinx_copybutton",
+    "notfound.extension",
 ]
 
 if os.getenv("READTHEDOCS"):
@@ -41,6 +42,14 @@ if os.getenv("READTHEDOCS"):
     googleanalytics_id = "G-ZR0DNZD21E"
 
 napoleon_include_special_with_doc = True
+
+notfound_context = {
+    "title": "Page not found",
+    "body": (
+        "<h1>Page not found</h1>\n\nThis URL is invalid, sorry. "
+        "Please use the navigation bar or search to continue."
+    ),
+}
 
 intersphinx_mapping = {
     "python": ("https://docs.python.org/3", None),
