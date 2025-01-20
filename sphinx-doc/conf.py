@@ -1,4 +1,4 @@
-# Copyright (c) 2009-2024 The Regents of the University of Michigan.
+# Copyright (c) 2009-2025 The Regents of the University of Michigan.
 # Part of HOOMD-blue, released under the BSD 3-Clause License.
 
 """Sphinx configuration."""
@@ -34,6 +34,7 @@ extensions = [
     "sphinx.ext.todo",
     "IPython.sphinxext.ipython_console_highlighting",
     "sphinx_copybutton",
+    "notfound.extension",
 ]
 
 if os.getenv("READTHEDOCS"):
@@ -41,6 +42,14 @@ if os.getenv("READTHEDOCS"):
     googleanalytics_id = "G-ZR0DNZD21E"
 
 napoleon_include_special_with_doc = True
+
+notfound_context = {
+    "title": "Page not found",
+    "body": (
+        "<h1>Page not found</h1>\n\nThis URL is invalid, sorry. "
+        "Please use the navigation bar or search to continue."
+    ),
+}
 
 intersphinx_mapping = {
     "python": ("https://docs.python.org/3", None),
@@ -72,8 +81,8 @@ year = datetime.date.today().year
 copyright = f"2009-{year} The Regents of the University of Michigan"
 author = "The Regents of the University of Michigan"
 
-version = "5.0.0"
-release = "5.0.0"
+version = "5.0.1"
+release = "5.0.1"
 
 language = "en"
 

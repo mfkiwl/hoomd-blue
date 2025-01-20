@@ -83,12 +83,16 @@ jobs:
         elif [[ "${{ inputs.compiler_family }}" == "cuda" ]]
         then
           echo "cuda=cuda${{ inputs.compiler_version }}" >> "$GITHUB_OUTPUT"
-          echo 'test_runner=["self-hosted", "GPU"]' >> "$GITHUB_OUTPUT"
+          echo 'test_runner=["self-hosted", "jetstream2", "GPU"]' >> "$GITHUB_OUTPUT"
           echo 'test_docker_options=--gpus=all' >> "$GITHUB_OUTPUT"
 
           case "${{ inputs.compiler_version }}" in
             125)
               echo "image=nvidia/cuda:12.5.0-devel-ubuntu22.04" >> "$GITHUB_OUTPUT";;
+            124)
+              echo "image=nvidia/cuda:12.4.1-devel-ubuntu22.04" >> "$GITHUB_OUTPUT";;
+            122)
+              echo "image=nvidia/cuda:12.2.2-devel-ubuntu22.04" >> "$GITHUB_OUTPUT";;
             *)
               echo "Unknown compiler" && exit 1;;
             esac
@@ -122,7 +126,7 @@ jobs:
         submodules: true
 
     - name: Create Python Environment
-      uses: mamba-org/setup-micromamba@06375d89d211a1232ef63355742e9e2e564bc7f7 # v2.0.2
+      uses: mamba-org/setup-micromamba@068f1ab4b37ed9b3d9f73da7db90a0cda0a48d29 # v2.0.3
       with:
         micromamba-version: '2.0.2-2'
         environment-name: test
@@ -184,13 +188,13 @@ jobs:
       run: tar --use-compress-program='zstd -10 -T0' -cvf install.tar install
 
     - name: 'Upload build'
-      uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882 # v4.4.3
+      uses: actions/upload-artifact@6f51ac03b9356f520e9adb1b1b7802705f340c2b # v4.5.0
       with:
         name: build-${{ inputs.config }}-${{ github.sha }}
         path: build.tar
         retention-days: 7
     - name: 'Upload install'
-      uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882 # v4.4.3
+      uses: actions/upload-artifact@6f51ac03b9356f520e9adb1b1b7802705f340c2b # v4.5.0
       with:
         name: install-${{ inputs.config }}-${{ github.sha }}
         path: install.tar
@@ -219,7 +223,7 @@ jobs:
         path: code
 
     - name: Create Python Environment
-      uses: mamba-org/setup-micromamba@06375d89d211a1232ef63355742e9e2e564bc7f7 # v2.0.2
+      uses: mamba-org/setup-micromamba@068f1ab4b37ed9b3d9f73da7db90a0cda0a48d29 # v2.0.3
       with:
         micromamba-version: '2.0.2-2'
         environment-name: test
@@ -250,6 +254,10 @@ jobs:
     #   if: ${{ contains(inputs.config, 'cuda') }}
     #   run: uv pip install --no-deps fastrlock==0.8.2 cupy-cuda12x==12.3.0
 
+    - name: Run nvidia-smi
+      if: ${{ contains(inputs.config, 'cuda') }}
+      run: nvidia-smi
+
     ### Python unit tests
     - name: Run pytest (serial)
       run: python3 -m pytest --pyargs hoomd -x -v -ra --durations=0 --durations-min=0.1
@@ -275,15 +283,15 @@ jobs:
     # that the GPU kernel is called for at least a few timesteps for these checks to be effective.
     - name: Run memcheck
       if: ${{ contains(inputs.config, 'cuda') && contains(github.event.pull_request.labels.*.name, 'validate') && inputs.validate == 'true' && !contains(inputs.config, 'mpi')}}
-      run: compute-sanitizer --tool memcheck --error-exitcode 1 python3 -m pytest --pyargs hoomd -x -v -ra --durations=0 --durations-min=0.1
+      run: compute-sanitizer --tool memcheck --launch-timeout=120 --error-exitcode 1 python3 -m pytest --pyargs hoomd -x -v -ra --durations=0 --durations-min=0.1
 
     - name: Run racecheck
       if: ${{ contains(inputs.config, 'cuda') && contains(github.event.pull_request.labels.*.name, 'validate') && inputs.validate == 'true' && !contains(inputs.config, 'mpi')}}
-      run: compute-sanitizer --tool racecheck --error-exitcode 1 python3 -m pytest --pyargs hoomd -x -v -ra --durations=0 --durations-min=0.1
+      run: compute-sanitizer --tool racecheck --launch-timeout=120 --error-exitcode 1 python3 -m pytest --pyargs hoomd -x -v -ra --durations=0 --durations-min=0.1
 
     - name: Run synccheck
       if: ${{ contains(inputs.config, 'cuda') && contains(github.event.pull_request.labels.*.name, 'validate') && inputs.validate == 'true' && !contains(inputs.config, 'mpi')}}
-      run: compute-sanitizer --tool synccheck --error-exitcode 1 python3 -m pytest --pyargs hoomd -x -v -ra --durations=0 --durations-min=0.1
+      run: compute-sanitizer --tool synccheck --launch-timeout=120 --error-exitcode 1 python3 -m pytest --pyargs hoomd -x -v -ra --durations=0 --durations-min=0.1
 
     ### Validation tests
     - name: Run pytest -m validate (serial)
