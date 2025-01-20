@@ -4,15 +4,17 @@ Change Log
 5.x
 ---
 
-5.0.1 (not yet released)
-^^^^^^^^^^^^^^^^^^^^^^^^
+5.0.1 (2025-01-20)
+^^^^^^^^^^^^^^^^^^
 
 *Fixed*
 
 * Prevent ``missing 1 required positional argument: 'kT'`` errors when using NEC integrators
-  (`#1965 <https://github.com/glotzerlab/hoomd-blue/pull/1965>`__)
+  (`#1965 <https://github.com/glotzerlab/hoomd-blue/pull/1965>`__).
 * Note the current version of CUDA in the micromamba installation instructions
-  (`#1972 <https://github.com/glotzerlab/hoomd-blue/pull/1972>`__)
+  (`#1972 <https://github.com/glotzerlab/hoomd-blue/pull/1972>`__).
+* Provide a navigation bar on the 404 not found page in the documentation
+  (`#1986 <https://github.com/glotzerlab/hoomd-blue/pull/1986>`__).
 
 
 5.0.0 (2024-12-02)
