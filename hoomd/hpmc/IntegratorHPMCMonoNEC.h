@@ -1,4 +1,4 @@
-// Copyright (c) 2009-2024 The Regents of the University of Michigan.
+// Copyright (c) 2009-2025 The Regents of the University of Michigan.
 // Part of HOOMD-blue, released under the BSD 3-Clause License.
 
 #ifndef __HPMC_MONO_NEC__H__
@@ -275,17 +275,12 @@ template<class Shape> void IntegratorHPMCMonoNEC<Shape>::update(uint64_t timeste
     this->m_exec_conf->msg->notice(10) << "HPMCMonoEC update: " << timestep << std::endl;
     IntegratorHPMC::update(timestep);
 
-    // get needed vars
-    ArrayHandle<hpmc_counters_t> h_counters(this->m_count_total,
-                                            access_location::host,
-                                            access_mode::readwrite);
-    hpmc_counters_t& counters = h_counters.data[0];
-
-    ArrayHandle<hpmc_nec_counters_t> h_nec_counters(m_nec_count_total,
-                                                    access_location::host,
-                                                    access_mode::readwrite);
-    hpmc_nec_counters_t& nec_counters = h_nec_counters.data[0];
-    m_nec_count_step_start = h_nec_counters.data[0];
+        {
+        ArrayHandle<hpmc_nec_counters_t> h_nec_counters(m_nec_count_total,
+                                                        access_location::host,
+                                                        access_mode::readwrite);
+        m_nec_count_step_start = h_nec_counters.data[0];
+        }
 
     const BoxDim& box = this->m_pdata->getBox();
     unsigned int ndim = this->m_sysdef->getNDimensions();
@@ -293,29 +288,6 @@ template<class Shape> void IntegratorHPMCMonoNEC<Shape>::update(uint64_t timeste
     // reset pressure statistics
     count_pressurevirial = 0.0;
     count_movelength = 0.0;
-
-    // access interaction matrix
-    ArrayHandle<unsigned int> h_overlaps(this->m_overlaps,
-                                         access_location::host,
-                                         access_mode::read);
-    ArrayHandle<int3> h_image(this->m_pdata->getImages(),
-                              access_location::host,
-                              access_mode::readwrite);
-
-    // access particle data
-    ArrayHandle<Scalar4> h_postype(this->m_pdata->getPositions(),
-                                   access_location::host,
-                                   access_mode::readwrite);
-    ArrayHandle<Scalar4> h_velocities(this->m_pdata->getVelocities(),
-                                      access_location::host,
-                                      access_mode::readwrite);
-    ArrayHandle<Scalar4> h_orientation(this->m_pdata->getOrientationArray(),
-                                       access_location::host,
-                                       access_mode::readwrite);
-
-    // access move sizes
-    ArrayHandle<Scalar> h_d(this->m_d, access_location::host, access_mode::read);
-    ArrayHandle<Scalar> h_a(this->m_a, access_location::host, access_mode::read);
 
     uint16_t seed = this->m_sysdef->getSeed();
 
@@ -332,6 +304,40 @@ template<class Shape> void IntegratorHPMCMonoNEC<Shape>::update(uint64_t timeste
         this->limitMoveDistances();
         // update the image list
         this->updateImageList();
+
+        // get needed vars
+        ArrayHandle<hpmc_counters_t> h_counters(this->m_count_total,
+                                                access_location::host,
+                                                access_mode::readwrite);
+        hpmc_counters_t& counters = h_counters.data[0];
+
+        ArrayHandle<hpmc_nec_counters_t> h_nec_counters(m_nec_count_total,
+                                                        access_location::host,
+                                                        access_mode::readwrite);
+        hpmc_nec_counters_t& nec_counters = h_nec_counters.data[0];
+
+        // access interaction matrix
+        ArrayHandle<unsigned int> h_overlaps(this->m_overlaps,
+                                             access_location::host,
+                                             access_mode::read);
+        ArrayHandle<int3> h_image(this->m_pdata->getImages(),
+                                  access_location::host,
+                                  access_mode::readwrite);
+
+        // access particle data
+        ArrayHandle<Scalar4> h_postype(this->m_pdata->getPositions(),
+                                       access_location::host,
+                                       access_mode::readwrite);
+        ArrayHandle<Scalar4> h_velocities(this->m_pdata->getVelocities(),
+                                          access_location::host,
+                                          access_mode::readwrite);
+        ArrayHandle<Scalar4> h_orientation(this->m_pdata->getOrientationArray(),
+                                           access_location::host,
+                                           access_mode::readwrite);
+
+        // access move sizes
+        ArrayHandle<Scalar> h_d(this->m_d, access_location::host, access_mode::read);
+        ArrayHandle<Scalar> h_a(this->m_a, access_location::host, access_mode::read);
 
         // loop through N particles in a shuffled order
         for (unsigned int cur_chain = 0; cur_chain < this->m_pdata->getN() * m_update_fraction;

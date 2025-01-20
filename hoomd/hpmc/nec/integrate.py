@@ -1,4 +1,4 @@
-# Copyright (c) 2009-2024 The Regents of the University of Michigan.
+# Copyright (c) 2009-2025 The Regents of the University of Michigan.
 # Part of HOOMD-blue, released under the BSD 3-Clause License.
 
 """Newtonain Event-Chain Integrators for Hard Particle Monte Carlo."""
@@ -72,7 +72,7 @@ class HPMCNECIntegrator(HPMCIntegrator):
         nselect=1,
     ):
         # initialize base class
-        super().__init__(default_d, default_a, 0.5, nselect)
+        super().__init__(default_d, default_a, 0.5, nselect, 1.0)
 
         # Set base parameter dict for hpmc chain integrators
         param_dict = ParameterDict(

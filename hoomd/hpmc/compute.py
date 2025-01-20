@@ -1,4 +1,4 @@
-# Copyright (c) 2009-2024 The Regents of the University of Michigan.
+# Copyright (c) 2009-2025 The Regents of the University of Michigan.
 # Part of HOOMD-blue, released under the BSD 3-Clause License.
 
 """The HPMC compute classes analyze the system configuration and provide results
@@ -6,8 +6,6 @@ as loggable quantities for use with `hoomd.logging.Logger` or by direct access
 via the Python API. `FreeVolume` computes the free volume available to small
 particles and `SDF` samples the pressure.
 """
-
-from __future__ import print_function
 
 from hoomd import _hoomd
 from hoomd.operation import Compute
