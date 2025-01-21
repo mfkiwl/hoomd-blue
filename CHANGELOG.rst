@@ -4,6 +4,14 @@ Change Log
 5.x
 ---
 
+5.1.0 (not yet released)
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+*Added*
+
+* ``mpcd.update.ReverseNonequilibriumShearFlow``
+  (`#1983 <https://github.com/glotzerlab/hoomd-blue/pull/1983>`__).
+
 5.0.1 (2025-01-20)
 ^^^^^^^^^^^^^^^^^^
 
@@ -15,6 +23,7 @@ Change Log
   (`#1972 <https://github.com/glotzerlab/hoomd-blue/pull/1972>`__).
 * Provide a navigation bar on the 404 not found page in the documentation
   (`#1986 <https://github.com/glotzerlab/hoomd-blue/pull/1986>`__).
+
 
 
 5.0.0 (2024-12-02)
