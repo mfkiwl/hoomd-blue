@@ -2047,8 +2047,9 @@ class WangFrenkel(Pair):
     .. _Xipeng Wang et al. 2020:
        https://dx.doi.org/10.1039/c9cp05445f
 
-    Note:
-        In the original paper, the pair parameter R is explicitly equal to the cutoff.
+    Warning:
+        Set `R` and `r_cut` to the same value so the potential goes to
+        0 smoothly at the cutoff.
 
     Example::
 
