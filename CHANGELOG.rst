@@ -4,6 +4,14 @@ Change Log
 5.x
 ---
 
+5.0.2 (not yet released)
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+* Correctly reference ``TriggeredOperation`` in inherited documentation
+  (`#1990 <https://github.com/glotzerlab/hoomd-blue/pull/1990>`__).
+
+*Fixed*
+
 5.0.1 (2025-01-20)
 ^^^^^^^^^^^^^^^^^^
 
