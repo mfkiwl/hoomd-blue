@@ -12,8 +12,6 @@
 
 /*! \file EvaluatorPairWangFrenkel.h
     \brief Defines the pair evaluator class for Wang-Frenkel potentials
-    \details As the prototypical example of a MD pair potential, this also serves as the primary
-   documentation and base reference for the implementation of pair evaluators.
 */
 
 // need to declare these class methods with __device__ qualifiers when building in nvcc
