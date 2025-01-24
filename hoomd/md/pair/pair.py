@@ -2050,7 +2050,7 @@ class WangFrenkel(Pair):
        https://dx.doi.org/10.1039/c9cp05445f
 
     Warning:
-        Set `R` and `r_cut` to the same value so the potential goes to
+        Set ``R`` and `r_cut` to the same value so the potential goes to
         0 smoothly at the cutoff.
 
     Example::
