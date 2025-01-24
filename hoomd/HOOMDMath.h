@@ -350,47 +350,53 @@ inline HOSTDEVICE double pow(double x, double y)
     }
 
 //! Compute the pow of x,y in double precision when y is an integer using squaring
-inline HOSTDEVICE double pow(double x, unsigned int y){
-        double result = 1.0;
-        for(;;){
-                if(y & 1)
-                    result *= x;
-                y >>= 1;
-                if(!y)
-                    break;
-                x *= x;
-            }
-        return result;
-    }
-
-inline HOSTDEVICE double pow(double x, int y){
-    unsigned int _y = abs(y);
-    if(y < 0)
-        return 1.0 / pow(x, _y);
-    else
-        return pow(x,_y);
-    }
-
-//! Compute the pow of x,y in single precision when y is an integer using squaring
-inline HOSTDEVICE float pow(float x, unsigned int y){
-    float result = 1.0f;
-    for(;;){
-        if(y & 1)
+inline HOSTDEVICE double pow(double x, unsigned int y)
+    {
+    double result = 1.0;
+    for (;;)
+        {
+        if (y & 1)
             result *= x;
         y >>= 1;
-        if(!y)
+        if (!y)
             break;
         x *= x;
         }
     return result;
     }
 
-inline HOSTDEVICE float pow(float x, int y){
+inline HOSTDEVICE double pow(double x, int y)
+    {
     unsigned int _y = abs(y);
-    if(y < 0)
+    if (y < 0)
+        return 1.0 / pow(x, _y);
+    else
+        return pow(x, _y);
+    }
+
+//! Compute the pow of x,y in single precision when y is an integer using squaring
+inline HOSTDEVICE float pow(float x, unsigned int y)
+    {
+    float result = 1.0f;
+    for (;;)
+        {
+        if (y & 1)
+            result *= x;
+        y >>= 1;
+        if (!y)
+            break;
+        x *= x;
+        }
+    return result;
+    }
+
+inline HOSTDEVICE float pow(float x, int y)
+    {
+    unsigned int _y = abs(y);
+    if (y < 0)
         return 1.0f / pow(x, _y);
     else
-        return pow(x,_y);
+        return pow(x, _y);
     }
 
 //! Compute the exp of x

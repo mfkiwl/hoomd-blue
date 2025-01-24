@@ -2021,6 +2021,7 @@ class LJGauss(Pair):
         )
         self._add_typeparam(params)
 
+
 class WangFrenkel(Pair):
     r"""Wang-Frenkel pair potential.
 
@@ -2040,7 +2041,8 @@ class WangFrenkel(Pair):
     .. math::
         \alpha = 2 \nu \left(\frac{R}{\sigma}\right)^{2\mu}
                  \left(\frac{2 \nu + 1}
-                 {2\nu \left(\left(\frac{R}{\sigma}\right)^{2\mu} - 1\right)}\right)^{2\nu + 1}
+                 {2\nu \left(\left(\frac{R}{\sigma}\right)^{2\mu} - 1\right)}\right)
+                 ^{2\nu + 1}
 
     The potential was introduced in `Xipeng Wang et al. 2020`_.
 
@@ -2055,9 +2057,13 @@ class WangFrenkel(Pair):
 
         nl = nlist.Cell()
         WangFrenkel = pair.WangFrenkel(nlist=nl, default_r_cut=3.0)
-        WangFrenkel.params[("A", "A")] = dict(epsilon=1.0, sigma=1.0, R = 2**(1/6), mu=12, nu=6)
+        WangFrenkel.params[("A", "A")] = dict(
+            epsilon=1.0, sigma=1.0, R=2 ** (1 / 6), mu=12, nu=6
+        )
         WangFrenkel.r_cut[("A", "A")] = 2 ** (1.0 / 6.0)
-        WangFrenkel.params[(["A", "B"], ["C", "D"])] = dict(epsilon=1.5, sigma=2.0, R = 2.5, mu=2, nu=2)
+        WangFrenkel.params[(["A", "B"], ["C", "D"])] = dict(
+            epsilon=1.5, sigma=2.0, R=2.5, mu=2, nu=2
+        )
 
     {inherited}
 
@@ -2092,7 +2098,9 @@ class WangFrenkel(Pair):
         params = TypeParameter(
             "params",
             "particle_types",
-            TypeParameterDict(epsilon=float, sigma=float, R=float, mu=int, nu=int, len_keys=2),
+            TypeParameterDict(
+                epsilon=float, sigma=float, R=float, mu=int, nu=int, len_keys=2
+            ),
         )
 
         self._add_typeparam(params)
