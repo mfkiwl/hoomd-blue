@@ -109,7 +109,9 @@ def nonnegative_real(number):
 def positive_int(number):
     """Ensures that a value is a positive integer"""
     if isinstance(number, float) and not number.is_integer():
-        raise TypeConversionError(f"Expected integer, {number} has a non-zero decimal part")
+        raise TypeConversionError(
+            f"Expected integer, {number} has a non-zero decimal part"
+        )
     try:
         int_number = int(number)
     except Exception as err:

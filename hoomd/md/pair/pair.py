@@ -12,7 +12,12 @@ from hoomd.md import force
 from hoomd.data.parameterdicts import ParameterDict, TypeParameterDict
 from hoomd.data.typeparam import TypeParameter
 import numpy as np
-from hoomd.data.typeconverter import OnlyFrom, nonnegative_real, positive_real, positive_int
+from hoomd.data.typeconverter import (
+    OnlyFrom,
+    nonnegative_real,
+    positive_real,
+    positive_int,
+)
 
 
 class Pair(force.Force):
@@ -2099,7 +2104,12 @@ class WangFrenkel(Pair):
             "params",
             "particle_types",
             TypeParameterDict(
-                epsilon=float, sigma=float, R=float, mu=positive_int, nu=positive_int, len_keys=2
+                epsilon=float,
+                sigma=float,
+                R=float,
+                mu=positive_int,
+                nu=positive_int,
+                len_keys=2,
             ),
         )
 
