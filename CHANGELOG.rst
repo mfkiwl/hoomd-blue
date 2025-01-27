@@ -9,8 +9,11 @@ Change Log
 
 *Added*
 
+* The ``WangFrenkel`` potential
+  (`#1970 <https://github.com/glotzerlab/hoomd-blue/pull/1970>`__).
 * ``mpcd.update.ReverseNonequilibriumShearFlow``
   (`#1983 <https://github.com/glotzerlab/hoomd-blue/pull/1983>`__).
+
 
 5.0.1 (2025-01-20)
 ^^^^^^^^^^^^^^^^^^
