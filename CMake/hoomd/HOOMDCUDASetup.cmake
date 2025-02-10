@@ -51,11 +51,12 @@ if (ENABLE_HIP)
             set(CMAKE_CUDA_FLAGS "${CMAKE_CUDA_FLAGS} -gencode=arch=compute_${_cuda_max_arch},code=compute_${_cuda_max_arch}")
         endif()
 
-    elseif(HIP_PLATFORM STREQUAL "hip-clang")
+    elseif(HIP_PLATFORM STREQUAL "amd")
         set(_cuda_min_arch 35)
 
         # ignore warnings about unused results
-        set(CMAKE_HIP_FLAGS "${CMAKE_CUDA_FLAGS} -Wno-unused-result")
+        set(CMAKE_HIP_FLAGS "${CMAKE_CUDA_FLAGS} -Wno-unused-result -D__HIP_PLATFORM_HCC__")
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D__HIP_PLATFORM_HCC__")
     endif()
 endif (ENABLE_HIP)
 
