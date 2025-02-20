@@ -732,15 +732,15 @@ HOSTDEVICE inline hoomd::Scalar3& operator+=(hoomd::Scalar3& a, const hoomd::Sca
 
 //! Vector multiplication (component-wise)
 HOSTDEVICE inline hoomd::Scalar3 operator*(const hoomd::Scalar3& a, const hoomd::Scalar3& b)
-{
+    {
     return hoomd::make_scalar3(a.x * b.x, a.y * b.y, a.z * b.z);
-}
+    }
 
 //! Vector division (component-wise)
 HOSTDEVICE inline hoomd::Scalar3 operator/(const hoomd::Scalar3& a, const hoomd::Scalar3& b)
-{
+    {
     return hoomd::make_scalar3(a.x / b.x, a.y / b.y, a.z / b.z);
-}
+    }
 
 #endif
 
@@ -758,8 +758,6 @@ HOSTDEVICE inline hoomd::Scalar3& operator-=(hoomd::Scalar3& a, const hoomd::Sca
     return a;
     }
 
-
-
 //! Vector multiplication
 HOSTDEVICE inline hoomd::Scalar3& operator*=(hoomd::Scalar3& a, const hoomd::Scalar3& b)
     {
@@ -768,7 +766,6 @@ HOSTDEVICE inline hoomd::Scalar3& operator*=(hoomd::Scalar3& a, const hoomd::Sca
     a.z *= b.z;
     return a;
     }
-
 
 //! Scalar - vector multiplication
 HOSTDEVICE inline hoomd::Scalar3 operator*(const hoomd::Scalar& a, const hoomd::Scalar3& b)
