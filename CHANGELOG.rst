@@ -13,12 +13,18 @@ Change Log
   (`#1970 <https://github.com/glotzerlab/hoomd-blue/pull/1970>`__).
 * ``mpcd.update.ReverseNonequilibriumShearFlow``
   (`#1983 <https://github.com/glotzerlab/hoomd-blue/pull/1983>`__).
+* Support rocm 6
+  (`#2002 <https://github.com/glotzerlab/hoomd-blue/pull/2002>`__).
 
 *Fixed*
 
 * Correctly reference ``TriggeredOperation`` in inherited documentation
   (`#1990 <https://github.com/glotzerlab/hoomd-blue/pull/1990>`__).
 
+*Removed*
+
+* Support for rocm5
+  (`#2002 <https://github.com/glotzerlab/hoomd-blue/pull/2002>`__).
 
 5.0.1 (2025-01-20)
 ^^^^^^^^^^^^^^^^^^
