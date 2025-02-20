@@ -237,6 +237,8 @@ inline HOSTDEVICE float rsqrt(float x)
     return ::rsqrtf(x);
 #elif defined(__HIP_PLATFORM_HCC__)
     return ::__frsqrt_rn(x);
+#elif defined(__HIP_PLATFORM_AMD__)
+    return ::__frsqrt_rn(x);
 #endif
 #else
     return 1.0f / ::sqrtf(x);
@@ -727,6 +729,19 @@ HOSTDEVICE inline hoomd::Scalar3& operator+=(hoomd::Scalar3& a, const hoomd::Sca
     a.z += b.z;
     return a;
     }
+
+//! Vector multiplication (component-wise)
+HOSTDEVICE inline hoomd::Scalar3 operator*(const hoomd::Scalar3& a, const hoomd::Scalar3& b)
+    {
+    return hoomd::make_scalar3(a.x * b.x, a.y * b.y, a.z * b.z);
+    }
+
+//! Vector division (component-wise)
+HOSTDEVICE inline hoomd::Scalar3 operator/(const hoomd::Scalar3& a, const hoomd::Scalar3& b)
+    {
+    return hoomd::make_scalar3(a.x / b.x, a.y / b.y, a.z / b.z);
+    }
+
 #endif
 
 //! Vector subtraction
@@ -743,12 +758,6 @@ HOSTDEVICE inline hoomd::Scalar3& operator-=(hoomd::Scalar3& a, const hoomd::Sca
     return a;
     }
 
-//! Vector multiplication (component-wise)
-HOSTDEVICE inline hoomd::Scalar3 operator*(const hoomd::Scalar3& a, const hoomd::Scalar3& b)
-    {
-    return hoomd::make_scalar3(a.x * b.x, a.y * b.y, a.z * b.z);
-    }
-
 //! Vector multiplication
 HOSTDEVICE inline hoomd::Scalar3& operator*=(hoomd::Scalar3& a, const hoomd::Scalar3& b)
     {
@@ -758,11 +767,6 @@ HOSTDEVICE inline hoomd::Scalar3& operator*=(hoomd::Scalar3& a, const hoomd::Sca
     return a;
     }
 
-//! Vector division (component-wise)
-HOSTDEVICE inline hoomd::Scalar3 operator/(const hoomd::Scalar3& a, const hoomd::Scalar3& b)
-    {
-    return hoomd::make_scalar3(a.x / b.x, a.y / b.y, a.z / b.z);
-    }
 //! Scalar - vector multiplication
 HOSTDEVICE inline hoomd::Scalar3 operator*(const hoomd::Scalar& a, const hoomd::Scalar3& b)
     {
