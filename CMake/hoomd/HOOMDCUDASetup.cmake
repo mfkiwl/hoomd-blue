@@ -54,7 +54,8 @@ if (ENABLE_HIP)
     elseif(HIP_PLATFORM STREQUAL "amd")
         set(_cuda_min_arch 35)
 
-        # ignore warnings about unused results
+        # ignore warnings about unused results and set HIP_PLATFORM_HCC (which was previously
+        # set by rocm < 6.0.0)
         set(CMAKE_HIP_FLAGS "${CMAKE_CUDA_FLAGS} -Wno-unused-result -D__HIP_PLATFORM_HCC__")
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D__HIP_PLATFORM_HCC__")
     endif()

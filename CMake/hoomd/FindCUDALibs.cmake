@@ -110,7 +110,6 @@ if (HIP_PLATFORM STREQUAL "amd")
     include_directories("${hipfft_INCLUDE_DIR}")
     include_directories("${hipfft_INCLUDE_DIR}/hipfft")
     message("Found hipfft includes: ${hipfft_INCLUDE_DIR}")
-    ##set(CMAKE_CXX_FLAGS )"${hipfft_INCLUDE_DIR}"
 endif()
 
 if (HIP_PLATFORM STREQUAL "nvcc")
