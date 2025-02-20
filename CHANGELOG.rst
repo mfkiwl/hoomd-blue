@@ -14,6 +14,11 @@ Change Log
 * ``mpcd.update.ReverseNonequilibriumShearFlow``
   (`#1983 <https://github.com/glotzerlab/hoomd-blue/pull/1983>`__).
 
+*Fixed*
+
+* Correctly reference ``TriggeredOperation`` in inherited documentation
+  (`#1990 <https://github.com/glotzerlab/hoomd-blue/pull/1990>`__).
+
 
 5.0.1 (2025-01-20)
 ^^^^^^^^^^^^^^^^^^
