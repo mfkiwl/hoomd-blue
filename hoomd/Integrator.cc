@@ -854,23 +854,6 @@ void Integrator::computeCallback(uint64_t timestep)
     }
 #endif
 
-bool Integrator::areForcesAnisotropic()
-    {
-    bool aniso = false;
-
-    for (const auto& force : m_forces)
-        {
-        aniso |= force->isAnisotropic();
-        }
-
-    for (const auto& constraint_force : m_constraint_forces)
-        {
-        aniso |= constraint_force->isAnisotropic();
-        }
-
-    return aniso;
-    }
-
 namespace detail
     {
 void export_Integrator(pybind11::module& m)
