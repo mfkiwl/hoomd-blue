@@ -43,8 +43,6 @@ template<class evaluator> class PotentialExternal : public ForceCompute
     typedef typename evaluator::param_type param_type;
     typedef typename evaluator::field_type field_type;
 
-    bool isAnisotropic();
-
     //! Sets parameters of the evaluator
     pybind11::object getParams(std::string type);
 
@@ -168,13 +166,6 @@ void PotentialExternal<evaluator>::validateType(unsigned int type, std::string a
         {
         throw std::runtime_error("Invalid type encountered when " + action);
         }
-    }
-
-//! Returns true if this ForceCompute requires anisotropic integration
-template<class evaluator> bool PotentialExternal<evaluator>::isAnisotropic()
-    {
-    // by default, only translational degrees of freedom are integrated
-    return evaluator::isAnisotropic();
     }
 
 //! Set the parameters for this potential

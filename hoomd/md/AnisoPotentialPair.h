@@ -195,12 +195,6 @@ template<class aniso_evaluator> class AnisoPotentialPair : public ForceCompute
     virtual CommFlags getRequestedCommFlags(uint64_t timestep);
 #endif
 
-    //! Returns true because we compute the torque
-    virtual bool isAnisotropic()
-        {
-        return true;
-        }
-
     /// Start autotuning kernel launch parameters
     virtual void startAutotuning()
         {
