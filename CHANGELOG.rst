@@ -4,6 +4,15 @@ Change Log
 5.x
 ---
 
+5.1.1 (not yet released)
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+*Fixed*
+
+* Prevent warnings about forces that provide torques (or not)
+  (`#2015 <https://github.com/glotzerlab/hoomd-blue/pull/2015>`__).
+
+
 5.1.0 (2025-02-20)
 ^^^^^^^^^^^^^^^^^^
 
