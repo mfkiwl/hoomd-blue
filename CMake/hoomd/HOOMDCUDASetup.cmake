@@ -1,8 +1,3 @@
-option(ENABLE_NVTOOLS "Enable NVTools profiler integration" off)
-
-option(ALWAYS_USE_MANAGED_MEMORY "Use CUDA managed memory also when running on single GPU" OFF)
-MARK_AS_ADVANCED(ALWAYS_USE_MANAGED_MEMORY)
-
 # setup CUDA compile options
 if (ENABLE_HIP)
     if (HIP_PLATFORM STREQUAL "nvcc")
