@@ -11,7 +11,8 @@ Change Log
 
 * Prevent warnings about forces that provide torques (or not)
   (`#2015 <https://github.com/glotzerlab/hoomd-blue/pull/2015>`__).
-
+* Compile without errors or warnings with CUDA 12.8
+  (`#2019 <https://github.com/glotzerlab/hoomd-blue/pull/2019>`__).
 
 5.1.0 (2025-02-20)
 ^^^^^^^^^^^^^^^^^^
