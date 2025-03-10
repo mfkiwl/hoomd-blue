@@ -59,8 +59,7 @@ struct vel_search_un_opt
         return result;
         }
     };
-template<typename CMP>
-struct vel_search_binary_opt
+template<typename CMP> struct vel_search_binary_opt
     {
     vel_search_binary_opt(const unsigned int* const d_rtag,
                           const Scalar4* const d_pos,
