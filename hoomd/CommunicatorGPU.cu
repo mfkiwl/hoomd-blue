@@ -70,7 +70,7 @@ __global__ void gpu_select_particle_migrate(unsigned int N,
     }
 
 //! Select a particle for migration
-struct get_migrate_key_gpu : public thrust::unary_function<const unsigned int, unsigned int>
+struct get_migrate_key_gpu
     {
     const uint3 my_pos;               //!< My domain decomposition position
     const Index3D di;                 //!< Domain indexer

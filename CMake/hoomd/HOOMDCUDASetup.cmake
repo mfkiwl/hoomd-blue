@@ -2,12 +2,10 @@
 if (ENABLE_HIP)
     if (HIP_PLATFORM STREQUAL "nvcc")
         # setup nvcc to build for all CUDA architectures. Allow user to modify the list if desired
-        if (CMAKE_CUDA_COMPILER_VERSION VERSION_GREATER_EQUAL 11.0)
+        if (CMAKE_CUDA_COMPILER_VERSION VERSION_GREATER_EQUAL 12.8)
+            set(CUDA_ARCH_LIST 80 CACHE STRING "List of target sm_ architectures to compile CUDA code for. Separate with semicolons.")
+        elseif (CMAKE_CUDA_COMPILER_VERSION VERSION_GREATER_EQUAL 11.0)
             set(CUDA_ARCH_LIST 60 70 80 CACHE STRING "List of target sm_ architectures to compile CUDA code for. Separate with semicolons.")
-        elseif (CMAKE_CUDA_COMPILER_VERSION VERSION_GREATER_EQUAL 9.0)
-            set(CUDA_ARCH_LIST 60 70 CACHE STRING "List of target sm_ architectures to compile CUDA code for. Separate with semicolons.")
-        elseif (CMAKE_CUDA_COMPILER_VERSION VERSION_GREATER_EQUAL 8.0)
-            set(CUDA_ARCH_LIST 60 CACHE STRING "List of target sm_ architectures to compile CUDA code for. Separate with semicolons.")
         endif()
 
         # ignore warnings about unused results
