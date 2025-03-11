@@ -138,8 +138,8 @@ template<class evaluator> void PotentialPairDPDThermo<evaluator>::computeForces(
     ArrayHandle<Scalar> h_rcutsq(this->m_rcutsq, access_location::host, access_mode::read);
 
     // need to start from a zero force, energy and virial
-    memset((void*)h_force.data, 0, sizeof(Scalar4) * this->m_force.getNumElements());
-    memset((void*)h_virial.data, 0, sizeof(Scalar) * this->m_virial.getNumElements());
+    this->m_force.zeroFill();
+    this->m_virial.zeroFill();
 
     uint16_t seed = this->m_sysdef->getSeed();
 
