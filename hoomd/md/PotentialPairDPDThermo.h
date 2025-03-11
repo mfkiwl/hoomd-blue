@@ -243,7 +243,7 @@ template<class evaluator> void PotentialPairDPDThermo<evaluator>::computeForces(
 
                 // add the force to particle j if we are using the third law (MEM TRANSFER: 10
                 // scalars / FLOPS: 8)
-                if (third_law)
+                if (third_law && j < this->m_pdata->getN())
                     {
                     unsigned int mem_idx = j;
                     h_force.data[mem_idx].x -= dx.x * force_divr;

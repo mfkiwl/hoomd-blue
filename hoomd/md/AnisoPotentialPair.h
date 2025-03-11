@@ -574,7 +574,7 @@ void AnisoPotentialPair<aniso_evaluator>::computeForces(uint64_t timestep)
 
                     // add the force to particle j if we are using the third law (MEM TRANSFER: 10
                     // scalars / FLOPS: 8)
-                    if (third_law)
+                    if (third_law && j < m_pdata->getN())
                         {
                         h_force.data[j].x -= force.x;
                         h_force.data[j].y -= force.y;
