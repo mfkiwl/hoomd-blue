@@ -13,6 +13,8 @@ Change Log
   (`#2015 <https://github.com/glotzerlab/hoomd-blue/pull/2015>`__).
 * Compile without errors or warnings with CUDA 12.8
   (`#2019 <https://github.com/glotzerlab/hoomd-blue/pull/2019>`__).
+* `force.Active` applies torques correctly when the filter is not `All`
+  (`#2020 <https://github.com/glotzerlab/hoomd-blue/pull/2020>`__).
 
 5.1.0 (2025-02-20)
 ^^^^^^^^^^^^^^^^^^
