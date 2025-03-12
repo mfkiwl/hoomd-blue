@@ -455,9 +455,9 @@ void AnisoPotentialPair<aniso_evaluator>::computeForces(uint64_t timestep)
     ArrayHandle<Scalar> h_rcutsq(m_rcutsq, access_location::host, access_mode::read);
         {
         // need to start from a zero force, energy and virial
-        memset(&h_force.data[0], 0, sizeof(Scalar4) * m_pdata->getN());
-        memset(&h_torque.data[0], 0, sizeof(Scalar4) * m_pdata->getN());
-        memset(&h_virial.data[0], 0, sizeof(Scalar) * m_virial.getNumElements());
+        m_force.zeroFill();
+        m_torque.zeroFill();
+        m_virial.zeroFill();
 
         PDataFlags flags = this->m_pdata->getFlags();
         bool compute_virial = flags[pdata_flag::pressure_tensor];
@@ -574,7 +574,7 @@ void AnisoPotentialPair<aniso_evaluator>::computeForces(uint64_t timestep)
 
                     // add the force to particle j if we are using the third law (MEM TRANSFER: 10
                     // scalars / FLOPS: 8)
-                    if (third_law)
+                    if (third_law && j < m_pdata->getN())
                         {
                         h_force.data[j].x -= force.x;
                         h_force.data[j].y -= force.y;
