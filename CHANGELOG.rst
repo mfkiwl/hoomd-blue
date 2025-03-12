@@ -15,6 +15,8 @@ Change Log
   (`#2019 <https://github.com/glotzerlab/hoomd-blue/pull/2019>`__).
 * `force.Active` applies torques correctly when the filter is not `All`
   (`#2020 <https://github.com/glotzerlab/hoomd-blue/pull/2020>`__).
+* MD integrators no longer integrate the z degree of freedom in 2D simulation boxes
+  (`#2021 <https://github.com/glotzerlab/hoomd-blue/pull/2021>`__).
 
 5.1.0 (2025-02-20)
 ^^^^^^^^^^^^^^^^^^
