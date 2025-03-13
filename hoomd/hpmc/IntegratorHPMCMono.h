@@ -250,15 +250,13 @@ template<class Shape> class IntegratorHPMCMono : public IntegratorHPMC
 #ifdef ENABLE_MPI
         if (m_sysdef->isDomainDecomposed())
             {
-            // this is kludgy but necessary since we are calling the communications methods directly
-            m_comm->setFlags(getCommFlags(0));
-
             if (migrate)
-                m_comm->migrateParticles();
-            else
-                m_pdata->removeAllGhostParticles();
+                {
+                m_comm->forceMigrate();
+                }
 
-            m_comm->exchangeGhosts();
+            // The timestep flag is not used in HPMC simulations, pass 0.
+            m_comm->communicate(0);
 
             m_aabb_tree_invalid = true;
             }
