@@ -440,7 +440,9 @@ template<class Shape> void IntegratorHPMCMono<Shape>::update(uint64_t timestep)
     m_update_order.resize(m_pdata->getN());
     m_update_order.shuffle(timestep, m_sysdef->getSeed(), m_exec_conf->getRank());
 
-    // update the AABB Tree
+    // update the AABB Tree. Assume that it is invalid as previously called Updaters may have
+    // moved particles.
+    m_aabb_tree_invalid = true;
     buildAABBTree();
     // limit m_d entries so that particles cannot possibly wander more than one box image in one
     // time step
