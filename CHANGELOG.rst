@@ -4,6 +4,14 @@ Change Log
 5.x
 ---
 
+5.1.2 (not yet released)
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+*Fixed*
+
+* Remove the error message that NEC prints when one particle simultaneously collides with two
+  others (`#2029 <https://github.com/glotzerlab/hoomd-blue/pull/2029>`__).
+
 5.1.1 (2025-03-19)
 ^^^^^^^^^^^^^^^^^^
 
