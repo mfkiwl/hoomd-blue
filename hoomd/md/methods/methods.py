@@ -119,7 +119,7 @@ class Thermostatted(Method):
             return
 
         if new_thermostat._attached:
-            raise RuntimeError("Trying to set a thermostat that is " "already attached")
+            raise RuntimeError("Trying to set a thermostat that is already attached")
         if self._attached:
             new_thermostat._set_thermo(self.filter, self._thermo)
             new_thermostat._attach(self._simulation)
@@ -644,9 +644,7 @@ class ConstantPressure(Thermostatted):
             `hoomd.md.methods.thermostats.MTTK.thermalize_dof`
         """
         if not self._attached:
-            raise RuntimeError(
-                "Call Simulation.run(0) before" "thermalize_barostat_dof"
-            )
+            raise RuntimeError("Call Simulation.run(0) beforethermalize_barostat_dof")
 
         self._simulation._warn_if_seed_unset()
         self._cpp_obj.thermalizeBarostatDOF(self._simulation.timestep)

@@ -226,7 +226,7 @@ class Coulomb(Force):
         fmid = _diffpr(hx, hy, hz, Lx, Ly, Lz, N, order, kappa, q2, rcut)
 
         if f * fmid >= 0.0:
-            raise RuntimeError("Cannot compute PPPM Coloumb forces,\n" "f*fmid >= 0.0")
+            raise RuntimeError("Cannot compute PPPM Coloumb forces,\nf*fmid >= 0.0")
 
         if f < 0.0:
             dgew = gew2 - gew1
@@ -246,7 +246,7 @@ class Coulomb(Force):
                 rtb = kappa
             ncount += 1
             if ncount > 10000.0:
-                raise RuntimeError("Cannot compute PPPM\n" "kappa is not converging")
+                raise RuntimeError("Cannot compute PPPM\nkappa is not converging")
 
         # set parameters
         particle_types = self._simulation.state.particle_types
