@@ -227,7 +227,7 @@ class Box:
            The created box will be rotated with respect to the lattice basis. As
            a consequence the output of `to_matrix` will not be the same as the
            input provided to this function. This function also returns a
-           rotation matrix comensurate with this transformation. Using this
+           rotation matrix commensurate with this transformation. Using this
            rotation matrix users can rotate the original points into the new box
            by applying the rotation to the points.
 
@@ -461,14 +461,14 @@ class Box:
         return _vec3_to_array(self._cpp_obj.getL())
 
     @L.setter
-    def L(self, new_L):  # noqa: N802: Allow function name
+    def L(self, new_L):  # noqa: N802 - Allow function name
         newL = _make_scalar3(new_L)
         if newL.z == 0 and not self.is2D:
             self.tilts = [self.xy, 0, 0]
         self._cpp_obj.setL(newL)
 
     @property
-    def Lx(self):  # noqa: N802: Allow function name
+    def Lx(self):  # noqa: N802 - Allow function name
         """float: The length of the box in the x dimension \
         :math:`[\\mathrm{length}]`.
 
@@ -481,13 +481,13 @@ class Box:
         return self.L[0]
 
     @Lx.setter
-    def Lx(self, value):  # noqa: N802: Allow function name
+    def Lx(self, value):  # noqa: N802 - Allow function name
         L = self.L
         L[0] = float(value)
         self.L = L
 
     @property
-    def Ly(self):  # noqa: N802: Allow function name
+    def Ly(self):  # noqa: N802 - Allow function name
         """float: The length of the box in the y dimension \
         :math:`[\\mathrm{length}]`.
 
@@ -500,13 +500,13 @@ class Box:
         return self.L[1]
 
     @Ly.setter
-    def Ly(self, value):  # noqa: N802: Allow function name
+    def Ly(self, value):  # noqa: N802 - Allow function name
         L = self.L
         L[1] = float(value)
         self.L = L
 
     @property
-    def Lz(self):  # noqa: N802: Allow function name
+    def Lz(self):  # noqa: N802 - Allow function name
         """float: The length of the box in the z dimension \
         :math:`[\\mathrm{length}]`.
 
@@ -519,7 +519,7 @@ class Box:
         return self.L[2]
 
     @Lz.setter
-    def Lz(self, value):  # noqa: N802: Allow function name
+    def Lz(self, value):  # noqa: N802 - Allow function name
         L = self.L
         L[2] = float(value)
         self.L = L
@@ -717,19 +717,19 @@ class BoxInterface(abc.ABC):
 
     @property
     @abc.abstractmethod
-    def Lx(self) -> float:  # noqa: N802: Allow function name
+    def Lx(self) -> float:  # noqa: N802 - Allow function name
         """Length in x direction."""
         pass
 
     @property
     @abc.abstractmethod
-    def Ly(self) -> float:  # noqa: N802: Allow function name
+    def Ly(self) -> float:  # noqa: N802 - Allow function name
         """Length in y direction."""
         pass
 
     @property
     @abc.abstractmethod
-    def Lz(self) -> float:  # noqa: N802: Allow function name
+    def Lz(self) -> float:  # noqa: N802 - Allow function name
         """Length in z direction."""
         pass
 

@@ -41,7 +41,7 @@ class _ParticleFilterSetOperations(ParticleFilter):
 
         if f == g:
             raise ValueError(
-                "Cannot use same filter for {}" "".format(self.__class__.__name__)
+                "Cannot use same filter for {}".format(self.__class__.__name__)
             )
         else:
             self._f = f

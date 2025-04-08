@@ -79,7 +79,7 @@ class MeshPotential(Force):
                 typeparam._attach(cpp_obj, self.mesh)
             except ValueError as err:
                 raise err.__class__(
-                    f"For {type(self)} in TypeParameter {typeparam.name} " f"{err!s}"
+                    f"For {type(self)} in TypeParameter {typeparam.name} {err!s}"
                 )
 
     @property
