@@ -258,6 +258,11 @@ jobs:
       if: ${{ contains(inputs.config, 'cuda') }}
       run: nvidia-smi
 
+    - name: Check for devices
+      if: ${{ contains(inputs.config, 'cuda') }}
+      run: >
+        python3 -c "import hoomd; print('available:', hoomd.device.GPU.get_available_devices()); print('unavailable:', hoomd.device.GPU.get_unavailable_device_reasons());"
+
     ### Python unit tests
     - name: Run pytest (serial)
       run: python3 -m pytest --pyargs hoomd -x -v -ra --durations=0 --durations-min=0.1
