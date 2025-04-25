@@ -2819,7 +2819,7 @@ void Communicator::beginUpdateGhosts(uint64_t timestep)
 
                 assert(idx < m_pdata->getN() + m_pdata->getNGhosts());
 
-                // copy velocity into send buffer
+                // copy angmom into send buffer
                 h_angmom_copybuf.data[ghost_idx] = h_angmom.data[idx];
                 }
             }
