@@ -4,6 +4,14 @@ Change Log
 5.x
 ---
 
+5.2.0 (not released yet)
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+*Added*
+
+* Set constituent particle velocities for rigid bodies
+  (`#2024 <https://github.com/glotzerlab/hoomd-blue/pull/2024>`__).
+
 5.1.1 (2025-03-19)
 ^^^^^^^^^^^^^^^^^^
 
