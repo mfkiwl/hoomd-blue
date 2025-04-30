@@ -23,6 +23,7 @@ from hoomd.data.typeparam import TypeParameter
 from hoomd.data.typeconverter import OnlyIf, to_type_converter
 from hoomd.md.force import Force
 import hoomd
+import inspect
 
 
 class Constraint(Force):
@@ -111,7 +112,7 @@ class Distance(Constraint):
     """
 
     _cpp_class_name = "ForceDistanceConstraint"
-    __doc__ = __doc__.replace("{inherited}", Constraint._doc_inherited)
+    __doc__ = inspect.cleandoc(__doc__.replace("{inherited}", inspect.cleandoc(Constraint._doc_inherited)))
 
     def __init__(self, tolerance=1e-3):
         self._param_dict.update(ParameterDict(tolerance=float(tolerance)))
@@ -299,7 +300,7 @@ class Rigid(Constraint):
     """
 
     _cpp_class_name = "ForceComposite"
-    __doc__ = __doc__.replace("{inherited}", Constraint._doc_inherited)
+    __doc__ = inspect.cleandoc(__doc__.replace("{inherited}", inspect.cleandoc(Constraint._doc_inherited)))
 
     def __init__(self):
         body = TypeParameter(

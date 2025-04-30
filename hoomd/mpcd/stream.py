@@ -34,6 +34,7 @@ from hoomd.mpcd import _mpcd
 from hoomd.mpcd.force import BodyForce
 from hoomd.mpcd.geometry import Geometry
 from hoomd.operation import Operation
+import inspect
 
 
 class StreamingMethod(Operation):
@@ -69,7 +70,7 @@ class StreamingMethod(Operation):
             modified.
     """
 
-    __doc__ = __doc__.replace("{inherited}", Operation._doc_inherited)
+    __doc__ = inspect.cleandoc(__doc__.replace("{inherited}", inspect.cleandoc(Operation._doc_inherited)))
 
     _doc_inherited = (
         Operation._doc_inherited
@@ -256,7 +257,7 @@ class BounceBack(StreamingMethod):
     """
 
     _cpp_class_map = {}
-    __doc__ = __doc__.replace("{inherited}", StreamingMethod._doc_inherited)
+    __doc__ = inspect.cleandoc(__doc__.replace("{inherited}", inspect.cleandoc(StreamingMethod._doc_inherited)))
 
     def __init__(self, period, geometry, mpcd_particle_force=None):
         super().__init__(period, mpcd_particle_force)

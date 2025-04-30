@@ -21,6 +21,7 @@ See Also:
 from copy import copy
 import itertools
 import weakref
+import inspect
 
 import hoomd
 from hoomd.logging import Loggable
@@ -570,7 +571,7 @@ class TriggeredOperation(Operation):
                 operation.trigger = hoomd.trigger.Periodic(10)
     """
 
-    __doc__ = __doc__.replace("{inherited}", Operation._doc_inherited)
+    __doc__ = inspect.cleandoc(__doc__.replace("{inherited}", inspect.cleandoc(Operation._doc_inherited)))
 
     _doc_inherited = (
         Operation._doc_inherited

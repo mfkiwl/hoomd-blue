@@ -50,6 +50,7 @@ and similarly for virials.
 from hoomd.md.mesh.potential import MeshPotential
 from hoomd.data.typeparam import TypeParameter
 from hoomd.data.parameterdicts import TypeParameterDict
+import inspect
 
 
 class Harmonic(MeshPotential):
@@ -88,7 +89,7 @@ class Harmonic(MeshPotential):
     """
 
     _cpp_class_name = "PotentialMeshBondHarmonic"
-    __doc__ = __doc__.replace("{inherited}", MeshPotential._doc_inherited)
+    __doc__ = inspect.cleandoc(__doc__.replace("{inherited}", inspect.cleandoc(MeshPotential._doc_inherited)))
 
     def __init__(self, mesh):
         params = TypeParameter(
@@ -146,7 +147,7 @@ class FENEWCA(MeshPotential):
     """
 
     _cpp_class_name = "PotentialMeshBondFENE"
-    __doc__ = __doc__.replace("{inherited}", MeshPotential._doc_inherited)
+    __doc__ = inspect.cleandoc(__doc__.replace("{inherited}", inspect.cleandoc(MeshPotential._doc_inherited)))
 
     def __init__(self, mesh):
         params = TypeParameter(
@@ -208,7 +209,7 @@ class Tether(MeshPotential):
     """
 
     _cpp_class_name = "PotentialMeshBondTether"
-    __doc__ = __doc__.replace("{inherited}", MeshPotential._doc_inherited)
+    __doc__ = inspect.cleandoc(__doc__.replace("{inherited}", inspect.cleandoc(MeshPotential._doc_inherited)))
 
     def __init__(self, mesh):
         params = TypeParameter(

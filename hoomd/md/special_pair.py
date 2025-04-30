@@ -41,6 +41,7 @@ from hoomd.md.force import Force
 from hoomd.data.typeparam import TypeParameter
 from hoomd.data.parameterdicts import TypeParameterDict
 import hoomd
+import inspect
 
 
 class SpecialPair(Force):
@@ -125,7 +126,7 @@ class LJ(SpecialPair):
     """
 
     _cpp_class_name = "PotentialSpecialPairLJ"
-    __doc__ = __doc__.replace("{inherited}", SpecialPair._doc_inherited)
+    __doc__ = inspect.cleandoc(__doc__.replace("{inherited}", inspect.cleandoc(SpecialPair._doc_inherited)))
 
     def __init__(self):
         super().__init__()
@@ -187,7 +188,7 @@ class Coulomb(SpecialPair):
     """
 
     _cpp_class_name = "PotentialSpecialPairCoulomb"
-    __doc__ = __doc__.replace("{inherited}", SpecialPair._doc_inherited)
+    __doc__ = inspect.cleandoc(__doc__.replace("{inherited}", inspect.cleandoc(SpecialPair._doc_inherited)))
 
     def __init__(self):
         super().__init__()

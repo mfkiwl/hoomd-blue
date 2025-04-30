@@ -14,6 +14,7 @@ from hoomd.md import _md
 from hoomd.md import force
 from hoomd.data.parameterdicts import TypeParameterDict
 from hoomd.data.typeparam import TypeParameter
+import inspect
 
 
 class Field(force.Force):
@@ -96,7 +97,7 @@ class Periodic(Field):
     """
 
     _cpp_class_name = "PotentialExternalPeriodic"
-    __doc__ = __doc__.replace("{inherited}", Field._doc_inherited)
+    __doc__ = inspect.cleandoc(__doc__.replace("{inherited}", inspect.cleandoc(Field._doc_inherited)))
 
     def __init__(self):
         params = TypeParameter(
@@ -147,7 +148,7 @@ class Electric(Field):
     """
 
     _cpp_class_name = "PotentialExternalElectricField"
-    __doc__ = __doc__.replace("{inherited}", Field._doc_inherited)
+    __doc__ = inspect.cleandoc(__doc__.replace("{inherited}", inspect.cleandoc(Field._doc_inherited)))
 
     def __init__(self):
         params = TypeParameter(
@@ -202,7 +203,7 @@ class Magnetic(Field):
     """
 
     _cpp_class_name = "PotentialExternalMagneticField"
-    __doc__ = __doc__.replace("{inherited}", Field._doc_inherited)
+    __doc__ = inspect.cleandoc(__doc__.replace("{inherited}", inspect.cleandoc(Field._doc_inherited)))
 
     def __init__(self):
         params = TypeParameter(

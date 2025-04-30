@@ -10,6 +10,7 @@ from hoomd.data.typeconverter import OnlyTypes
 import hoomd
 import warnings
 import copy
+import inspect
 
 validate_mesh = OnlyTypes(Mesh)
 
@@ -30,7 +31,7 @@ class MeshPotential(Force):
     **Members defined in** `MeshPotential`:
     """
 
-    __doc__ = __doc__.replace("{inherited}", Force._doc_inherited)
+    __doc__ = inspect.cleandoc(__doc__.replace("{inherited}", inspect.cleandoc(Force._doc_inherited)))
     _doc_inherited = (
         Force._doc_inherited
         + """
