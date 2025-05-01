@@ -207,10 +207,12 @@ class InverseVolumeRamp(_hoomd.VectorVariantBoxInverseVolumeRamp, BoxVariant):
 
     .. math::
 
+        \\begin{split}
         V(t) &= \\begin{cases} V_0 & t < t_{\\mathrm{start}} \\\\ \\left(
         \\lambda V_f^{-1} + (1 - \\lambda) V_0^{-1} \\right)^{-1} &
         t_{\\mathrm{start}} \\leq t < t_{\\mathrm{start}} + t_{\\mathrm{ramp}}
         \\\\ V_f & t \\geq t_{\\mathrm{start}} + t_{\\mathrm{ramp}} \\end{cases}
+        \\end{split}
 
     where :math:`\\lambda = \\frac{t - t_{\\mathrm{start}}}{t_{\\mathrm{ramp}} -
     t_{\\mathrm{start}}}`.

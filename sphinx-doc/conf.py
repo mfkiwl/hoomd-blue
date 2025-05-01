@@ -7,6 +7,7 @@ import sys
 import os
 import sphinx
 import datetime
+from importlib.util import find_spec
 
 from sphinx.domains.python import PythonDomain
 
@@ -30,9 +31,13 @@ extensions = [
     "sphinx.ext.autosummary",
     "sphinx.ext.napoleon",
     "sphinx.ext.intersphinx",
-    "sphinx.ext.mathjax",
     "sphinx.ext.todo",
 ]
+
+if find_spec("sphinxcontrib.katex") is not None:
+    extensions.append("sphinxcontrib.katex")
+else:
+    extensions.append("sphinx.ext.mathjax")
 
 if os.getenv("READTHEDOCS"):
     extensions.append("sphinx_copybutton")
