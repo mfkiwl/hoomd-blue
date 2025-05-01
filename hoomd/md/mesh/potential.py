@@ -107,7 +107,7 @@ class MeshConservationPotential(MeshPotential):
         for `isinstance` or `issubclass` checks.
     """
 
-    __doc__ += MeshPotential._doc_inherited
+    __doc__ = inspect.cleandoc(__doc__ + "\n" + inspect.cleandoc(MeshPotential._doc_inherited))
 
     def __init__(self, mesh, ignore_type):
         super().__init__(mesh)

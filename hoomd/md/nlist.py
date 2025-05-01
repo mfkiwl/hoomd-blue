@@ -663,7 +663,7 @@ class Tree(NeighborList):
         nl_t = nlist.Tree(check_dist=False)
     """
 
-    __doc__ += NeighborList._doc_inherited
+    __doc__ = inspect.cleandoc(__doc__ + "\n" + inspect.cleandoc(NeighborList._doc_inherited))
 
     def __init__(
         self,

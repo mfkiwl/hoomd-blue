@@ -36,7 +36,7 @@ class Constraint(Force):
         for `isinstance` or `issubclass` checks.
     """
 
-    __doc__ += Force._doc_inherited
+    __doc__ = inspect.cleandoc(__doc__ + "\n" + inspect.cleandoc(Force._doc_inherited))
 
     # Module where the C++ class is defined. Reassign this when developing an
     # external plugin.

@@ -134,7 +134,7 @@ class Bulk(StreamingMethod):
         simulation.operations.integrator.streaming_method = stream
     """
 
-    __doc__ += StreamingMethod._doc_inherited
+    __doc__ = inspect.cleandoc(__doc__ + "\n" + inspect.cleandoc(StreamingMethod._doc_inherited))
 
     def _attach_hook(self):
         sim = self._simulation

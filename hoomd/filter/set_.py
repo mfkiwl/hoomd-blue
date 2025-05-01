@@ -12,6 +12,7 @@
 
 from hoomd.filter.filter_ import ParticleFilter
 from hoomd import _hoomd
+import inspect
 
 
 class _ParticleFilterSetOperations(ParticleFilter):
@@ -91,7 +92,7 @@ class SetDifference(_ParticleFilterSetOperations, _hoomd.ParticleFilterSetDiffer
 
     _cpp_cls_name = "ParticleFilterSetDifference"
     _symmetric = False
-    __doc__ += ParticleFilter._doc_inherited
+    __doc__ = inspect.cleandoc(__doc__ + "\n" + inspect.cleandoc(ParticleFilter._doc_inherited))
 
 
 class Union(_ParticleFilterSetOperations, _hoomd.ParticleFilterUnion):
@@ -113,7 +114,7 @@ class Union(_ParticleFilterSetOperations, _hoomd.ParticleFilterUnion):
 
     _cpp_cls_name = "ParticleFilterUnion"
     _symmetric = True
-    __doc__ += ParticleFilter._doc_inherited
+    __doc__ = inspect.cleandoc(__doc__ + "\n" + inspect.cleandoc(ParticleFilter._doc_inherited))
 
 
 class Intersection(_ParticleFilterSetOperations, _hoomd.ParticleFilterIntersection):
@@ -135,4 +136,4 @@ class Intersection(_ParticleFilterSetOperations, _hoomd.ParticleFilterIntersecti
 
     _cpp_cls_name = "ParticleFilterIntersection"
     _symmetric = True
-    __doc__ += ParticleFilter._doc_inherited
+    __doc__ = inspect.cleandoc(__doc__ + "\n" + inspect.cleandoc(ParticleFilter._doc_inherited))

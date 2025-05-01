@@ -47,7 +47,7 @@ class AnisotropicPair(Pair):
         for `isinstance` or `issubclass` checks.
     """
 
-    __doc__ += Pair._doc_inherited
+    __doc__ = inspect.cleandoc(__doc__ + "\n" + inspect.cleandoc(Pair._doc_inherited))
     _accepted_modes = ("none", "shift")
 
     def __init__(self, nlist, default_r_cut=None, mode="none"):

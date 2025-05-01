@@ -47,7 +47,7 @@ class ZeroMomentum(Updater):
         )
     """
 
-    __doc__ += Updater._doc_inherited
+    __doc__ = inspect.cleandoc(__doc__ + "\n" + inspect.cleandoc(Updater._doc_inherited))
 
     def __init__(self, trigger):
         # initialize base class

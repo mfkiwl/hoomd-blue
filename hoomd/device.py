@@ -471,7 +471,7 @@ class CPU(Device):
         cpu = hoomd.device.CPU()
     """
 
-    __doc__ += Device._doc_inherited
+    __doc__ = inspect.cleandoc(__doc__ + '\n' + inspect.cleandoc(Device._doc_inherited))
 
     def __init__(
         self,
