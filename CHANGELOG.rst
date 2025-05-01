@@ -12,6 +12,11 @@ Change Log
 * Set constituent particle velocities for rigid bodies
   (`#2024 <https://github.com/glotzerlab/hoomd-blue/pull/2024>`__).
 
+*Changed*
+
+* Use KaTeX to render math equations in the documentation
+  (`#2053 <https://github.com/glotzerlab/hoomd-blue/pull/2053>`__).
+
 *Fixed*
 
 * The documentation builds without warnings in Python 3.13 environments
