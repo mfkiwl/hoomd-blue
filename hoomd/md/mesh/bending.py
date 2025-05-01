@@ -72,7 +72,7 @@ class BendingRigidity(MeshPotential):
     """
 
     _cpp_class_name = "BendingRigidityMeshForceCompute"
-    __doc__ = inspect.cleandoc(__doc__.replace("{inherited}", inspect.cleandoc(MeshPotential._doc_inherited)))
+    __doc__ = inspect.cleandoc(__doc__).replace("{inherited}", inspect.cleandoc(MeshPotential._doc_inherited))
 
     def __init__(self, mesh):
         params = TypeParameter(
@@ -139,7 +139,7 @@ class Helfrich(MeshPotential):
     """
 
     _cpp_class_name = "HelfrichMeshForceCompute"
-    __doc__ = inspect.cleandoc(__doc__.replace("{inherited}", inspect.cleandoc(MeshPotential._doc_inherited)))
+    __doc__ = inspect.cleandoc(__doc__).replace("{inherited}", inspect.cleandoc(MeshPotential._doc_inherited))
 
     def __init__(self, mesh):
         params = TypeParameter(

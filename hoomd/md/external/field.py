@@ -28,7 +28,7 @@ class Field(force.Force):
         for `isinstance` or `issubclass` checks.
     """
 
-    __doc__ = inspect.cleandoc(__doc__ + "\n" + inspect.cleandoc(force.Force._doc_inherited))
+    __doc__ = inspect.cleandoc(__doc__) + "\n" + inspect.cleandoc(force.Force._doc_inherited)
 
     # Module where the C++ class is defined. Reassign this when developing an
     # external plugin.
@@ -97,7 +97,7 @@ class Periodic(Field):
     """
 
     _cpp_class_name = "PotentialExternalPeriodic"
-    __doc__ = inspect.cleandoc(__doc__.replace("{inherited}", inspect.cleandoc(Field._doc_inherited)))
+    __doc__ = inspect.cleandoc(__doc__).replace("{inherited}", inspect.cleandoc(Field._doc_inherited))
 
     def __init__(self):
         params = TypeParameter(
@@ -148,7 +148,7 @@ class Electric(Field):
     """
 
     _cpp_class_name = "PotentialExternalElectricField"
-    __doc__ = inspect.cleandoc(__doc__.replace("{inherited}", inspect.cleandoc(Field._doc_inherited)))
+    __doc__ = inspect.cleandoc(__doc__).replace("{inherited}", inspect.cleandoc(Field._doc_inherited))
 
     def __init__(self):
         params = TypeParameter(
@@ -203,7 +203,7 @@ class Magnetic(Field):
     """
 
     _cpp_class_name = "PotentialExternalMagneticField"
-    __doc__ = inspect.cleandoc(__doc__.replace("{inherited}", inspect.cleandoc(Field._doc_inherited)))
+    __doc__ = inspect.cleandoc(__doc__).replace("{inherited}", inspect.cleandoc(Field._doc_inherited))
 
     def __init__(self):
         params = TypeParameter(

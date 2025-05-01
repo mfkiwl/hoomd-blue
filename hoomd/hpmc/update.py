@@ -278,7 +278,7 @@ class BoxMC(Updater):
               disable shear reduction.
     """
 
-    __doc__ = inspect.cleandoc(__doc__.replace("{inherited}", inspect.cleandoc(Updater._doc_inherited)))
+    __doc__ = inspect.cleandoc(__doc__).replace("{inherited}", inspect.cleandoc(Updater._doc_inherited))
 
     def __init__(self, trigger, P):
         super().__init__(trigger)
@@ -432,7 +432,7 @@ class MuVT(Updater):
           from/to the reservoir or between boxes
     """
 
-    __doc__ = inspect.cleandoc(__doc__.replace("{inherited}", inspect.cleandoc(Updater._doc_inherited)))
+    __doc__ = inspect.cleandoc(__doc__).replace("{inherited}", inspect.cleandoc(Updater._doc_inherited))
 
     def __init__(
         self,
@@ -603,7 +603,7 @@ class Shape(Updater):
             triggered timesteps.
     """
 
-    __doc__ = inspect.cleandoc(__doc__.replace("{inherited}", inspect.cleandoc(Updater._doc_inherited)))
+    __doc__ = inspect.cleandoc(__doc__).replace("{inherited}", inspect.cleandoc(Updater._doc_inherited))
 
     def __init__(self, trigger, shape_move, pretend=False, type_select=1, nsweeps=1):
         super().__init__(trigger)
@@ -722,7 +722,7 @@ class GCA(Updater):
 
     _remove_for_pickling = (*Updater._remove_for_pickling, "_cpp_cell")
     _skip_for_equality = Updater._skip_for_equality | {"_cpp_cell"}
-    __doc__ = inspect.cleandoc(__doc__.replace("{inherited}", inspect.cleandoc(Updater._doc_inherited)))
+    __doc__ = inspect.cleandoc(__doc__).replace("{inherited}", inspect.cleandoc(Updater._doc_inherited))
 
     def __init__(self, pivot_move_probability=0.5, flip_probability=0.5, trigger=1):
         super().__init__(trigger)
@@ -960,7 +960,7 @@ class QuickCompress(Updater):
             independent of particle translational move sizes.
     """
 
-    __doc__ = inspect.cleandoc(__doc__.replace("{inherited}", inspect.cleandoc(Updater._doc_inherited)))
+    __doc__ = inspect.cleandoc(__doc__).replace("{inherited}", inspect.cleandoc(Updater._doc_inherited))
 
     def __init__(
         self,

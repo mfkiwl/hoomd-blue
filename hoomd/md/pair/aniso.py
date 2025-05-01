@@ -47,7 +47,7 @@ class AnisotropicPair(Pair):
         for `isinstance` or `issubclass` checks.
     """
 
-    __doc__ = inspect.cleandoc(__doc__ + "\n" + inspect.cleandoc(Pair._doc_inherited))
+    __doc__ = inspect.cleandoc(__doc__) + "\n" + inspect.cleandoc(Pair._doc_inherited)
     _accepted_modes = ("none", "shift")
 
     def __init__(self, nlist, default_r_cut=None, mode="none"):
@@ -130,7 +130,7 @@ class Dipole(AnisotropicPair):
     """
 
     _cpp_class_name = "AnisoPotentialPairDipole"
-    __doc__ = inspect.cleandoc(__doc__.replace("{inherited}", inspect.cleandoc(AnisotropicPair._doc_inherited)))
+    __doc__ = inspect.cleandoc(__doc__).replace("{inherited}", inspect.cleandoc(AnisotropicPair._doc_inherited))
 
     def __init__(self, nlist, default_r_cut=None):
         super().__init__(nlist, default_r_cut, "none")
@@ -226,7 +226,7 @@ class GayBerne(AnisotropicPair):
     """
 
     _cpp_class_name = "AnisoPotentialPairGB"
-    __doc__ = inspect.cleandoc(__doc__.replace("{inherited}", inspect.cleandoc(AnisotropicPair._doc_inherited)))
+    __doc__ = inspect.cleandoc(__doc__).replace("{inherited}", inspect.cleandoc(AnisotropicPair._doc_inherited))
 
     def __init__(self, nlist, default_r_cut=None, mode="none"):
         super().__init__(nlist, default_r_cut, mode)
@@ -534,7 +534,7 @@ class ALJ(AnisotropicPair):
         Type: `hoomd.data.typeparam.TypeParameter` [``particle_types``, `dict`]
     """
 
-    __doc__ = inspect.cleandoc(__doc__.replace("{inherited}", inspect.cleandoc(AnisotropicPair._doc_inherited)))
+    __doc__ = inspect.cleandoc(__doc__).replace("{inherited}", inspect.cleandoc(AnisotropicPair._doc_inherited))
 
     # We don't define a _cpp_class_name since the dimension is a template
     # parameter in C++, so use an instance level attribute instead that is
@@ -747,7 +747,7 @@ class Patchy(AnisotropicPair):
 
     """
 
-    __doc__ = inspect.cleandoc(__doc__.replace("{inherited}", inspect.cleandoc(AnisotropicPair._doc_inherited)))
+    __doc__ = inspect.cleandoc(__doc__).replace("{inherited}", inspect.cleandoc(AnisotropicPair._doc_inherited))
     _doc_inherited = (
         AnisotropicPair._doc_inherited
         + r"""
@@ -846,7 +846,7 @@ class PatchyLJ(Patchy):
         `dict`]
     """
 
-    __doc__ = inspect.cleandoc(__doc__.replace("{inherited}", inspect.cleandoc(Patchy._doc_inherited)))
+    __doc__ = inspect.cleandoc(__doc__).replace("{inherited}", inspect.cleandoc(Patchy._doc_inherited))
     _cpp_class_name = "AnisoPotentialPairPatchyLJ"
     _pair_params = {"epsilon": float, "sigma": float}
 
@@ -908,7 +908,7 @@ class PatchyExpandedGaussian(Patchy):
         `dict`]
     """
 
-    __doc__ = inspect.cleandoc(__doc__.replace("{inherited}", inspect.cleandoc(Patchy._doc_inherited)))
+    __doc__ = inspect.cleandoc(__doc__).replace("{inherited}", inspect.cleandoc(Patchy._doc_inherited))
     _cpp_class_name = "AnisoPotentialPairPatchyExpandedGaussian"
     _pair_params = {"epsilon": float, "sigma": float, "delta": float}
 
@@ -967,7 +967,7 @@ class PatchyExpandedLJ(Patchy):
         `dict`]
     """
 
-    __doc__ = inspect.cleandoc(__doc__.replace("{inherited}", inspect.cleandoc(Patchy._doc_inherited)))
+    __doc__ = inspect.cleandoc(__doc__).replace("{inherited}", inspect.cleandoc(Patchy._doc_inherited))
     _cpp_class_name = "AnisoPotentialPairPatchyExpandedLJ"
     _pair_params = {"epsilon": float, "sigma": float, "delta": float}
 
@@ -1030,7 +1030,7 @@ class PatchyExpandedMie(Patchy):
         `dict`]
     """
 
-    __doc__ = inspect.cleandoc(__doc__.replace("{inherited}", inspect.cleandoc(Patchy._doc_inherited)))
+    __doc__ = inspect.cleandoc(__doc__).replace("{inherited}", inspect.cleandoc(Patchy._doc_inherited))
     _cpp_class_name = "AnisoPotentialPairPatchyExpandedMie"
     _pair_params = {
         "epsilon": float,
@@ -1099,7 +1099,7 @@ class PatchyGaussian(Patchy):
         `dict`]
     """
 
-    __doc__ = inspect.cleandoc(__doc__.replace("{inherited}", inspect.cleandoc(Patchy._doc_inherited)))
+    __doc__ = inspect.cleandoc(__doc__).replace("{inherited}", inspect.cleandoc(Patchy._doc_inherited))
     _cpp_class_name = "AnisoPotentialPairPatchyGauss"
     _pair_params = {"epsilon": float, "sigma": float}
 
@@ -1159,7 +1159,7 @@ class PatchyMie(Patchy):
         `dict`]
     """
 
-    __doc__ = inspect.cleandoc(__doc__.replace("{inherited}", inspect.cleandoc(Patchy._doc_inherited)))
+    __doc__ = inspect.cleandoc(__doc__).replace("{inherited}", inspect.cleandoc(Patchy._doc_inherited))
     _cpp_class_name = "AnisoPotentialPairPatchyMie"
     _pair_params = {"epsilon": float, "sigma": float, "n": float, "m": float}
 
@@ -1215,7 +1215,7 @@ class PatchyYukawa(Patchy):
         `dict`]
     """
 
-    __doc__ = inspect.cleandoc(__doc__.replace("{inherited}", inspect.cleandoc(Patchy._doc_inherited)))
+    __doc__ = inspect.cleandoc(__doc__).replace("{inherited}", inspect.cleandoc(Patchy._doc_inherited))
     _cpp_class_name = "AnisoPotentialPairPatchyYukawa"
     _pair_params = {"epsilon": float, "kappa": float}
 

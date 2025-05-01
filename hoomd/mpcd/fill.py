@@ -84,7 +84,7 @@ class VirtualParticleFiller(Operation):
 
     """
 
-    __doc__ = inspect.cleandoc(__doc__.replace("{inherited}", inspect.cleandoc(Operation._doc_inherited)))
+    __doc__ = inspect.cleandoc(__doc__).replace("{inherited}", inspect.cleandoc(Operation._doc_inherited))
     _doc_inherited = (
         Operation._doc_inherited
         + """
@@ -165,7 +165,7 @@ class GeometryFiller(VirtualParticleFiller):
             (*read only*).
     """
 
-    __doc__ = inspect.cleandoc(__doc__.replace("{inherited}", inspect.cleandoc(VirtualParticleFiller._doc_inherited)))
+    __doc__ = inspect.cleandoc(__doc__).replace("{inherited}", inspect.cleandoc(VirtualParticleFiller._doc_inherited))
     _cpp_class_map = {}
 
     def __init__(self, type, density, kT, geometry):

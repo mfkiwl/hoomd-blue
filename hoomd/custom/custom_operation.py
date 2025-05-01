@@ -42,7 +42,7 @@ class CustomOperation(TriggeredOperation, metaclass=_AbstractLoggable):
     **Members defined in** `CustomOperation`:
     """
 
-    __doc__ = inspect.cleandoc(__doc__.replace("{inherited}", inspect.cleandoc(TriggeredOperation._doc_inherited)))
+    __doc__ = inspect.cleandoc(__doc__).replace("{inherited}", inspect.cleandoc(TriggeredOperation._doc_inherited))
 
     _doc_inherited = (
         TriggeredOperation._doc_inherited

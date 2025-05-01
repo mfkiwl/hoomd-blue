@@ -82,7 +82,7 @@ class Harmonic(External):
             :math:`[\mathrm{dimensionless}]`.
     """
 
-    __doc__ = inspect.cleandoc(__doc__.replace("{inherited}", inspect.cleandoc(External._doc_inherited)))
+    __doc__ = inspect.cleandoc(__doc__).replace("{inherited}", inspect.cleandoc(External._doc_inherited))
 
     def __init__(
         self,

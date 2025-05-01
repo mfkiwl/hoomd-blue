@@ -212,7 +212,7 @@ class ChainTime(_InternalCustomTuner):
     """
 
     _internal_class = _InternalChainTime
-    __doc__ = inspect.cleandoc(__doc__.replace("{inherited}", inspect.cleandoc(Tuner._doc_inherited)))
+    __doc__ = inspect.cleandoc(__doc__).replace("{inherited}", inspect.cleandoc(Tuner._doc_inherited))
 
     @classmethod
     def scale_solver(

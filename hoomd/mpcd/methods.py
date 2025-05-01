@@ -87,7 +87,7 @@ class BounceBack(Method):
     """
 
     _cpp_class_map = {}
-    __doc__ = inspect.cleandoc(__doc__.replace("{inherited}", inspect.cleandoc(Method._doc_inherited)))
+    __doc__ = inspect.cleandoc(__doc__).replace("{inherited}", inspect.cleandoc(Method._doc_inherited))
 
     def __init__(self, filter, geometry):
         super().__init__()

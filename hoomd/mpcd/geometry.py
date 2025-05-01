@@ -138,7 +138,7 @@ class ConcentricCylinders(Geometry):
 
     """
 
-    __doc__ = inspect.cleandoc(__doc__.replace("{inherited}", inspect.cleandoc(Geometry._doc_inherited)))
+    __doc__ = inspect.cleandoc(__doc__).replace("{inherited}", inspect.cleandoc(Geometry._doc_inherited))
 
     def __init__(self, inner_radius, outer_radius, angular_speed=0.0, no_slip=True):
         super().__init__(no_slip)
@@ -200,7 +200,7 @@ class CosineChannel(Geometry):
         separation (float): Distance between walls (*read only*).
     """
 
-    __doc__ = inspect.cleandoc(__doc__.replace("{inherited}", inspect.cleandoc(Geometry._doc_inherited)))
+    __doc__ = inspect.cleandoc(__doc__).replace("{inherited}", inspect.cleandoc(Geometry._doc_inherited))
 
     def __init__(self, amplitude, repeat_length, separation, no_slip=True):
         super().__init__(no_slip)
@@ -269,7 +269,7 @@ class CosineExpansionContraction(Geometry):
         repeat_length (float): Repeat length (period) of cosine. (*read only*).
     """
 
-    __doc__ = inspect.cleandoc(__doc__.replace("{inherited}", inspect.cleandoc(Geometry._doc_inherited)))
+    __doc__ = inspect.cleandoc(__doc__).replace("{inherited}", inspect.cleandoc(Geometry._doc_inherited))
 
     def __init__(
         self, expansion_separation, contraction_separation, repeat_length, no_slip=True
@@ -355,7 +355,7 @@ class ParallelPlates(Geometry):
 
     """
 
-    __doc__ = inspect.cleandoc(__doc__.replace("{inherited}", inspect.cleandoc(Geometry._doc_inherited)))
+    __doc__ = inspect.cleandoc(__doc__).replace("{inherited}", inspect.cleandoc(Geometry._doc_inherited))
 
     def __init__(self, separation, speed=0.0, no_slip=True):
         super().__init__(no_slip)
@@ -408,7 +408,7 @@ class PlanarPore(Geometry):
 
     """
 
-    __doc__ = inspect.cleandoc(__doc__.replace("{inherited}", inspect.cleandoc(Geometry._doc_inherited)))
+    __doc__ = inspect.cleandoc(__doc__).replace("{inherited}", inspect.cleandoc(Geometry._doc_inherited))
 
     def __init__(self, separation, length, no_slip=True):
         super().__init__(no_slip)
@@ -464,7 +464,7 @@ class Sphere(Geometry):
 
     """
 
-    __doc__ = inspect.cleandoc(__doc__.replace("{inherited}", inspect.cleandoc(Geometry._doc_inherited)))
+    __doc__ = inspect.cleandoc(__doc__).replace("{inherited}", inspect.cleandoc(Geometry._doc_inherited))
 
     def __init__(self, radius, no_slip=True):
         super().__init__(no_slip)

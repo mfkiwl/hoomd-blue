@@ -29,7 +29,7 @@ class Type(ParticleFilter, ParticleFilterType):
     **Members defined in** `Type`:
     """
 
-    __doc__ = inspect.cleandoc(__doc__.replace("{inherited}", inspect.cleandoc(ParticleFilter._doc_inherited)))
+    __doc__ = inspect.cleandoc(__doc__).replace("{inherited}", inspect.cleandoc(ParticleFilter._doc_inherited))
 
     def __init__(self, types):
         ParticleFilter.__init__(self)

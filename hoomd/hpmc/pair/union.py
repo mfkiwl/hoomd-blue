@@ -139,7 +139,7 @@ class Union(Pair):
     """
 
     _cpp_class_name = "PairPotentialUnion"
-    __doc__ = inspect.cleandoc(__doc__.replace("{inherited}", inspect.cleandoc(Pair._doc_inherited)))
+    __doc__ = inspect.cleandoc(__doc__).replace("{inherited}", inspect.cleandoc(Pair._doc_inherited))
 
     def __init__(self, constituent_potential, leaf_capacity=0):
         body = TypeParameter(

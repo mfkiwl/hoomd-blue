@@ -51,7 +51,7 @@ class ParticleSorter(TriggeredOperation):
         simulation.operations.integrator.mpcd_particle_sorter = sorter
     """
 
-    __doc__ = inspect.cleandoc(__doc__ + "\n" + inspect.cleandoc(TriggeredOperation._doc_inherited))
+    __doc__ = inspect.cleandoc(__doc__) + "\n\n" + inspect.cleandoc(TriggeredOperation._doc_inherited)
 
     def __init__(self, trigger):
         super().__init__(trigger)

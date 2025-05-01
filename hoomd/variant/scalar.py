@@ -130,7 +130,7 @@ class Constant(_hoomd.VariantConstant, Variant):
         _hoomd.VariantConstant.__init__(self, value)
 
     __eq__ = Variant._private_eq
-    __doc__ = inspect.cleandoc(__doc__.replace("{inherited}", inspect.cleandoc(Variant._doc_inherited)))
+    __doc__ = inspect.cleandoc(__doc__).replace("{inherited}", inspect.cleandoc(Variant._doc_inherited))
 
 
 class Ramp(_hoomd.VariantRamp, Variant):
@@ -170,7 +170,7 @@ class Ramp(_hoomd.VariantRamp, Variant):
     """
 
     _eq_attrs = ("A", "B", "t_start", "t_ramp")
-    __doc__ = inspect.cleandoc(__doc__.replace("{inherited}", inspect.cleandoc(Variant._doc_inherited)))
+    __doc__ = inspect.cleandoc(__doc__).replace("{inherited}", inspect.cleandoc(Variant._doc_inherited))
 
     def __init__(self, A, B, t_start, t_ramp):
         Variant.__init__(self)
@@ -231,7 +231,7 @@ class Cycle(_hoomd.VariantCycle, Variant):
     """
 
     _eq_attrs = ("A", "B", "t_start", "t_A", "t_AB", "t_B", "t_BA")
-    __doc__ = inspect.cleandoc(__doc__.replace("{inherited}", inspect.cleandoc(Variant._doc_inherited)))
+    __doc__ = inspect.cleandoc(__doc__).replace("{inherited}", inspect.cleandoc(Variant._doc_inherited))
 
     def __init__(self, A, B, t_start, t_A, t_AB, t_B, t_BA):
         Variant.__init__(self)
@@ -280,7 +280,7 @@ class Power(_hoomd.VariantPower, Variant):
     """
 
     _eq_attrs = ("A", "B", "power", "t_start", "t_ramp")
-    __doc__ = inspect.cleandoc(__doc__.replace("{inherited}", inspect.cleandoc(Variant._doc_inherited)))
+    __doc__ = inspect.cleandoc(__doc__).replace("{inherited}", inspect.cleandoc(Variant._doc_inherited))
 
     def __init__(self, A, B, power, t_start, t_ramp):
         Variant.__init__(self)

@@ -17,7 +17,7 @@ class Null(ParticleFilter, ParticleFilterNull):
         null = hoomd.filter.Null()
     """
 
-    __doc__ = inspect.cleandoc(__doc__ + "\n" + inspect.cleandoc(ParticleFilter._doc_inherited))
+    __doc__ = inspect.cleandoc(__doc__) + "\n\n" + inspect.cleandoc(ParticleFilter._doc_inherited)
 
     def __init__(self):
         ParticleFilter.__init__(self)

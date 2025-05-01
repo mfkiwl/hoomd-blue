@@ -339,7 +339,7 @@ class GPU(Device):
     **Members defined in** `GPU`:
     """
 
-    __doc__ = inspect.cleandoc(__doc__.replace("{inherited}", inspect.cleandoc(Device._doc_inherited)))
+    __doc__ = inspect.cleandoc(__doc__).replace("{inherited}", inspect.cleandoc(Device._doc_inherited))
 
     def __init__(
         self,
@@ -471,7 +471,7 @@ class CPU(Device):
         cpu = hoomd.device.CPU()
     """
 
-    __doc__ = inspect.cleandoc(__doc__ + '\n' + inspect.cleandoc(Device._doc_inherited))
+    __doc__ = inspect.cleandoc(__doc__) + '\n\n' + inspect.cleandoc(Device._doc_inherited)
 
     def __init__(
         self,

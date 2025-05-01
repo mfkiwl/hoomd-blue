@@ -78,7 +78,7 @@ class Linear(External):
     """
 
     _cpp_class_name = "ExternalPotentialLinear"
-    __doc__ = inspect.cleandoc(__doc__.replace("{inherited}", inspect.cleandoc(External._doc_inherited)))
+    __doc__ = inspect.cleandoc(__doc__).replace("{inherited}", inspect.cleandoc(External._doc_inherited))
 
     def __init__(
         self, default_alpha=None, plane_origin=(0, 0, 0), plane_normal=(0, 1, 0)

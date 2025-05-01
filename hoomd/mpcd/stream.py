@@ -70,7 +70,7 @@ class StreamingMethod(Operation):
             modified.
     """
 
-    __doc__ = inspect.cleandoc(__doc__.replace("{inherited}", inspect.cleandoc(Operation._doc_inherited)))
+    __doc__ = inspect.cleandoc(__doc__).replace("{inherited}", inspect.cleandoc(Operation._doc_inherited))
 
     _doc_inherited = (
         Operation._doc_inherited
@@ -134,7 +134,7 @@ class Bulk(StreamingMethod):
         simulation.operations.integrator.streaming_method = stream
     """
 
-    __doc__ = inspect.cleandoc(__doc__ + "\n" + inspect.cleandoc(StreamingMethod._doc_inherited))
+    __doc__ = inspect.cleandoc(__doc__) + "\n\n" + inspect.cleandoc(StreamingMethod._doc_inherited)
 
     def _attach_hook(self):
         sim = self._simulation
@@ -257,7 +257,7 @@ class BounceBack(StreamingMethod):
     """
 
     _cpp_class_map = {}
-    __doc__ = inspect.cleandoc(__doc__.replace("{inherited}", inspect.cleandoc(StreamingMethod._doc_inherited)))
+    __doc__ = inspect.cleandoc(__doc__).replace("{inherited}", inspect.cleandoc(StreamingMethod._doc_inherited))
 
     def __init__(self, period, geometry, mpcd_particle_force=None):
         super().__init__(period, mpcd_particle_force)

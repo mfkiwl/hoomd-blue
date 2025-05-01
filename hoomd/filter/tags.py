@@ -34,7 +34,7 @@ class Tags(ParticleFilter, ParticleFilterTags):
     **Members defined in** `Tags`:
     """
 
-    __doc__ = inspect.cleandoc(__doc__.replace("{inherited}", inspect.cleandoc(ParticleFilter._doc_inherited)))
+    __doc__ = inspect.cleandoc(__doc__).replace("{inherited}", inspect.cleandoc(ParticleFilter._doc_inherited))
 
     def __init__(self, tags):
         ParticleFilter.__init__(self)

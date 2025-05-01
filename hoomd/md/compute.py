@@ -45,7 +45,7 @@ class ThermodynamicQuantities(Compute):
     **Members defined in** `ThermodynamicQuantities`:
     """
 
-    __doc__ = inspect.cleandoc(__doc__.replace("{inherited}", inspect.cleandoc(Compute._doc_inherited)))
+    __doc__ = inspect.cleandoc(__doc__).replace("{inherited}", inspect.cleandoc(Compute._doc_inherited))
 
     def __init__(self, filter):
         super().__init__()
@@ -363,7 +363,7 @@ class HarmonicAveragedThermodynamicQuantities(Compute):
             :math:`[\\mathrm{pressure}]`.
     """
 
-    __doc__ = inspect.cleandoc(__doc__.replace("{inherited}", inspect.cleandoc(Compute._doc_inherited)))
+    __doc__ = inspect.cleandoc(__doc__).replace("{inherited}", inspect.cleandoc(Compute._doc_inherited))
 
     def __init__(self, filter, kT, harmonic_pressure=0):
         # store metadata

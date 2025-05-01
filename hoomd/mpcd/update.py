@@ -113,7 +113,7 @@ class ReverseNonequilibriumShearFlow(Updater):
 
     """
 
-    __doc__ = inspect.cleandoc(__doc__.replace("{inherited}", inspect.cleandoc(Updater._doc_inherited)))
+    __doc__ = inspect.cleandoc(__doc__).replace("{inherited}", inspect.cleandoc(Updater._doc_inherited))
 
     def __init__(self, trigger, num_swaps, slab_width, target_momentum=math.inf):
         super().__init__(trigger)

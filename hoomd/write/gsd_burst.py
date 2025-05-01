@@ -105,7 +105,7 @@ class Burst(GSD):
                     burst.clear_buffer_after_dump = False
     """
 
-    __doc__ = inspect.cleandoc(__doc__.replace("{inherited}", inspect.cleandoc(GSD._doc_inherited)))
+    __doc__ = inspect.cleandoc(__doc__).replace("{inherited}", inspect.cleandoc(GSD._doc_inherited))
 
     def __init__(
         self,

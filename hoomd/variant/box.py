@@ -80,7 +80,7 @@ class Constant(_hoomd.VectorVariantBoxConstant, BoxVariant):
 
     _eq_attrs = ("box",)
     __eq__ = BoxVariant._private_eq
-    __doc__ = inspect.cleandoc(__doc__.replace("{inherited}", inspect.cleandoc(BoxVariant._doc_inherited)))
+    __doc__ = inspect.cleandoc(__doc__).replace("{inherited}", inspect.cleandoc(BoxVariant._doc_inherited))
 
     def __init__(self, box):
         box = hoomd.data.typeconverter.box_preprocessing(box)
@@ -147,7 +147,7 @@ class Interpolate(_hoomd.VectorVariantBoxInterpolate, BoxVariant):
         "final_box",
     )
     __eq__ = BoxVariant._private_eq
-    __doc__ = inspect.cleandoc(__doc__.replace("{inherited}", inspect.cleandoc(BoxVariant._doc_inherited)))
+    __doc__ = inspect.cleandoc(__doc__).replace("{inherited}", inspect.cleandoc(BoxVariant._doc_inherited))
 
     def __init__(self, initial_box, final_box, variant):
         box1 = hoomd.data.typeconverter.box_preprocessing(initial_box)
@@ -225,7 +225,7 @@ class InverseVolumeRamp(_hoomd.VectorVariantBoxInverseVolumeRamp, BoxVariant):
 
     _eq_attrs = ("initial_box", "final_volume", "t_start", "t_ramp")
     __eq__ = BoxVariant._private_eq
-    __doc__ = inspect.cleandoc(__doc__.replace("{inherited}", inspect.cleandoc(BoxVariant._doc_inherited)))
+    __doc__ = inspect.cleandoc(__doc__).replace("{inherited}", inspect.cleandoc(BoxVariant._doc_inherited))
 
     def __init__(self, initial_box, final_volume, t_start, t_ramp):
         BoxVariant.__init__(self)

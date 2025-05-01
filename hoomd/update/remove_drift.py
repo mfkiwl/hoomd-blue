@@ -75,7 +75,7 @@ class RemoveDrift(Updater):
                 ]
     """
 
-    __doc__ = inspect.cleandoc(__doc__.replace("{inherited}", inspect.cleandoc(Updater._doc_inherited)))
+    __doc__ = inspect.cleandoc(__doc__).replace("{inherited}", inspect.cleandoc(Updater._doc_inherited))
 
     def __init__(self, reference_positions, trigger=1):
         super().__init__(trigger)
