@@ -971,7 +971,8 @@ class Brownian(Method):
     .. math::
 
         \begin{split}
-        \frac{d\vec{r}}{dt} &= \frac{\vec{F}_\mathrm{C} + \vec{F}_\mathrm{R}}{\gamma}, \\
+        \frac{d\vec{r}}{dt} &= \frac{\vec{F}_\mathrm{C}
+        + \vec{F}_\mathrm{R}}{\gamma}, \\
         \langle \vec{F}_\mathrm{R} \rangle &= 0, \\
         \langle |\vec{F}_\mathrm{R}|^2 \rangle &= 2 d k T \gamma / \delta t, \\
         \langle \vec{v}(t) \rangle &= 0, \\
