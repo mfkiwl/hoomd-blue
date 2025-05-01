@@ -405,8 +405,7 @@ class Loggable(type):
                 while lines[cnt] == "":
                     cnt += 1
                 indent = len(lines[cnt]) - len(lines[cnt].lstrip())
-            getattr(new_cls, attr).__doc__ = inspect.cleandoc(__doc__ + "\n" + inspect.cleandoc(str_msg.format(" " * indent)))
-
+            getattr(new_cls, attr).__doc__ += str_msg.format(" " * indent)
 
 def log(
     func=None, *, is_property=True, category="scalar", default=True, requires_run=False
