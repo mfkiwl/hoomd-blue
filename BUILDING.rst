@@ -58,7 +58,7 @@ To build the documentation from source (optional):
 
    .. code-block:: bash
 
-       micromamba install sphinx furo nbsphinx
+       micromamba install sphinx furo nbsphinx ipython
 
 2. `Build the documentation`_:
 
@@ -92,7 +92,7 @@ Install additional packages needed to build the documentation:
 
 .. code-block:: bash
 
-   micromamba install sphinx furo nbsphinx
+   micromamba install sphinx furo nbsphinx ipython
 
 .. note::
 
@@ -146,6 +146,7 @@ Install additional packages needed to build the documentation:
 - **sphinx**
 - **furo**
 - **nbsphinx**
+- **ipython**
 
 .. _Obtain the source:
 
