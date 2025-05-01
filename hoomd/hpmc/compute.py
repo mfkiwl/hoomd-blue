@@ -102,7 +102,9 @@ class FreeVolume(Compute):
 
     """
 
-    __doc__ = inspect.cleandoc(__doc__).replace("{inherited}", inspect.cleandoc(Compute._doc_inherited))
+    __doc__ = inspect.cleandoc(__doc__).replace(
+        "{inherited}", inspect.cleandoc(Compute._doc_inherited)
+    )
 
     def __init__(self, test_particle_type, num_samples):
         # store metadata
@@ -333,7 +335,9 @@ class SDF(Compute):
         dx (float): Bin width :math:`[\mathrm{length}]`.
     """
 
-    __doc__ = inspect.cleandoc(__doc__).replace("{inherited}", inspect.cleandoc(Compute._doc_inherited))
+    __doc__ = inspect.cleandoc(__doc__).replace(
+        "{inherited}", inspect.cleandoc(Compute._doc_inherited)
+    )
 
     def __init__(self, xmax, dx):
         # store metadata

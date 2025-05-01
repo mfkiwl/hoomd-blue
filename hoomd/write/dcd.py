@@ -132,7 +132,9 @@ class DCD(Writer):
                 dcd.angle_z = True
     """
 
-    __doc__ = inspect.cleandoc(__doc__).replace("{inherited}", inspect.cleandoc(Writer._doc_inherited))
+    __doc__ = inspect.cleandoc(__doc__).replace(
+        "{inherited}", inspect.cleandoc(Writer._doc_inherited)
+    )
 
     def __init__(
         self,

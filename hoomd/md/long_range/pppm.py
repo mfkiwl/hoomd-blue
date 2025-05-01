@@ -166,7 +166,9 @@ class Coulomb(Force):
           :math:`\\mathrm{[length^{-1}]}`.
     """
 
-    __doc__ = inspect.cleandoc(__doc__).replace("{inherited}", inspect.cleandoc(Force._doc_inherited))
+    __doc__ = inspect.cleandoc(__doc__).replace(
+        "{inherited}", inspect.cleandoc(Force._doc_inherited)
+    )
 
     def __init__(self, nlist, resolution, order, r_cut, alpha, pair_force):
         super().__init__()

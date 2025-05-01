@@ -65,7 +65,9 @@ class MethodRATTLE(Method):
             function. Defaults to 1e-6
     """
 
-    __doc__ = inspect.cleandoc(__doc__).replace("{inherited}", inspect.cleandoc(Method._doc_inherited))
+    __doc__ = inspect.cleandoc(__doc__).replace(
+        "{inherited}", inspect.cleandoc(Method._doc_inherited)
+    )
 
     _doc_inherited = (
         Method._doc_inherited
@@ -147,7 +149,9 @@ class NVE(MethodRATTLE):
             this method.
     """
 
-    __doc__ = inspect.cleandoc(__doc__).replace("{inherited}", inspect.cleandoc(MethodRATTLE._doc_inherited))
+    __doc__ = inspect.cleandoc(__doc__).replace(
+        "{inherited}", inspect.cleandoc(MethodRATTLE._doc_inherited)
+    )
     _doc_inherited = (
         MethodRATTLE._doc_inherited
         + """
@@ -250,7 +254,9 @@ class DisplacementCapped(NVE):
             :math:`[\mathrm{length}]`.
     """
 
-    __doc__ = inspect.cleandoc(__doc__).replace("{inherited}", inspect.cleandoc(NVE._doc_inherited))
+    __doc__ = inspect.cleandoc(__doc__).replace(
+        "{inherited}", inspect.cleandoc(NVE._doc_inherited)
+    )
 
     def __init__(
         self,
@@ -345,7 +351,9 @@ class Langevin(MethodRATTLE):
             :math:`[\mathrm{time}^{-1}]`.
     """
 
-    __doc__ = inspect.cleandoc(__doc__).replace("{inherited}", inspect.cleandoc(MethodRATTLE._doc_inherited))
+    __doc__ = inspect.cleandoc(__doc__).replace(
+        "{inherited}", inspect.cleandoc(MethodRATTLE._doc_inherited)
+    )
 
     def __init__(
         self,
@@ -481,7 +489,9 @@ class Brownian(MethodRATTLE):
             :math:`[\mathrm{time}^{-1}]`.
     """
 
-    __doc__ = inspect.cleandoc(__doc__).replace("{inherited}", inspect.cleandoc(MethodRATTLE._doc_inherited))
+    __doc__ = inspect.cleandoc(__doc__).replace(
+        "{inherited}", inspect.cleandoc(MethodRATTLE._doc_inherited)
+    )
 
     def __init__(
         self,
@@ -607,7 +617,9 @@ class OverdampedViscous(MethodRATTLE):
             :math:`[\mathrm{time}^{-1}]`.
     """
 
-    __doc__ = inspect.cleandoc(__doc__).replace("{inherited}", inspect.cleandoc(MethodRATTLE._doc_inherited))
+    __doc__ = inspect.cleandoc(__doc__).replace(
+        "{inherited}", inspect.cleandoc(MethodRATTLE._doc_inherited)
+    )
 
     def __init__(
         self,

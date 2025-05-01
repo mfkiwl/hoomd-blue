@@ -89,7 +89,9 @@ class Harmonic(MeshPotential):
     """
 
     _cpp_class_name = "PotentialMeshBondHarmonic"
-    __doc__ = inspect.cleandoc(__doc__).replace("{inherited}", inspect.cleandoc(MeshPotential._doc_inherited))
+    __doc__ = inspect.cleandoc(__doc__).replace(
+        "{inherited}", inspect.cleandoc(MeshPotential._doc_inherited)
+    )
 
     def __init__(self, mesh):
         params = TypeParameter(
@@ -147,7 +149,9 @@ class FENEWCA(MeshPotential):
     """
 
     _cpp_class_name = "PotentialMeshBondFENE"
-    __doc__ = inspect.cleandoc(__doc__).replace("{inherited}", inspect.cleandoc(MeshPotential._doc_inherited))
+    __doc__ = inspect.cleandoc(__doc__).replace(
+        "{inherited}", inspect.cleandoc(MeshPotential._doc_inherited)
+    )
 
     def __init__(self, mesh):
         params = TypeParameter(
@@ -209,7 +213,9 @@ class Tether(MeshPotential):
     """
 
     _cpp_class_name = "PotentialMeshBondTether"
-    __doc__ = inspect.cleandoc(__doc__).replace("{inherited}", inspect.cleandoc(MeshPotential._doc_inherited))
+    __doc__ = inspect.cleandoc(__doc__).replace(
+        "{inherited}", inspect.cleandoc(MeshPotential._doc_inherited)
+    )
 
     def __init__(self, mesh):
         params = TypeParameter(

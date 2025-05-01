@@ -165,7 +165,9 @@ class WallPotential(External):
     **Members defined in** `WallPotential`:
     """
 
-    __doc__ = inspect.cleandoc(__doc__).replace("{inherited}", inspect.cleandoc(External._doc_inherited))
+    __doc__ = inspect.cleandoc(__doc__).replace(
+        "{inherited}", inspect.cleandoc(External._doc_inherited)
+    )
 
     def __init__(self, walls):
         self._walls = _HPMCWallsMetaList(self, walls, _to_hpmc_cpp_wall)

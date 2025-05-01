@@ -61,7 +61,9 @@ class HPMCNECIntegrator(HPMCIntegrator):
     """
     )
 
-    __doc__ = inspect.cleandoc(__doc__).replace("{inherited}", inspect.cleandoc(HPMCIntegrator._doc_inherited))
+    __doc__ = inspect.cleandoc(__doc__).replace(
+        "{inherited}", inspect.cleandoc(HPMCIntegrator._doc_inherited)
+    )
 
     def __init__(
         self,
@@ -227,7 +229,9 @@ class Sphere(HPMCNECIntegrator):
     """
 
     _cpp_cls = "IntegratorHPMCMonoNECSphere"
-    __doc__ = inspect.cleandoc(__doc__).replace("{inherited}", inspect.cleandoc(HPMCNECIntegrator._doc_inherited))
+    __doc__ = inspect.cleandoc(__doc__).replace(
+        "{inherited}", inspect.cleandoc(HPMCNECIntegrator._doc_inherited)
+    )
 
     def __init__(self, default_d=0.1, chain_time=0.5, update_fraction=0.5, nselect=1):
         # initialize base class
@@ -353,7 +357,9 @@ class ConvexPolyhedron(HPMCNECIntegrator):
     """
 
     _cpp_cls = "IntegratorHPMCMonoNECConvexPolyhedron"
-    __doc__ = inspect.cleandoc(__doc__).replace("{inherited}", inspect.cleandoc(HPMCNECIntegrator._doc_inherited))
+    __doc__ = inspect.cleandoc(__doc__).replace(
+        "{inherited}", inspect.cleandoc(HPMCNECIntegrator._doc_inherited)
+    )
 
     def __init__(
         self,

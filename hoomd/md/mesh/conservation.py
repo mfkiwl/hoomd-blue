@@ -73,7 +73,9 @@ class Area(MeshConservationPotential):
     """
 
     _cpp_class_name = "AreaConservationMeshForceCompute"
-    __doc__ = inspect.cleandoc(__doc__).replace("{inherited}", inspect.cleandoc(MeshConservationPotential._doc_inherited))
+    __doc__ = inspect.cleandoc(__doc__).replace(
+        "{inherited}", inspect.cleandoc(MeshConservationPotential._doc_inherited)
+    )
 
     def __init__(self, mesh, ignore_type=False):
         params = TypeParameter(
@@ -137,7 +139,9 @@ class TriangleArea(MeshPotential):
     """
 
     _cpp_class_name = "TriangleAreaConservationMeshForceCompute"
-    __doc__ = inspect.cleandoc(__doc__).replace("{inherited}", inspect.cleandoc(MeshConservationPotential._doc_inherited))
+    __doc__ = inspect.cleandoc(__doc__).replace(
+        "{inherited}", inspect.cleandoc(MeshConservationPotential._doc_inherited)
+    )
 
     def __init__(self, mesh):
         params = TypeParameter(
@@ -195,7 +199,9 @@ class Volume(MeshConservationPotential):
     """
 
     _cpp_class_name = "VolumeConservationMeshForceCompute"
-    __doc__ = inspect.cleandoc(__doc__).replace("{inherited}", inspect.cleandoc(MeshConservationPotential._doc_inherited))
+    __doc__ = inspect.cleandoc(__doc__).replace(
+        "{inherited}", inspect.cleandoc(MeshConservationPotential._doc_inherited)
+    )
 
     def __init__(self, mesh, ignore_type=False):
         params = TypeParameter(

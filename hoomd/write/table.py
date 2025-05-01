@@ -504,7 +504,9 @@ class Table(_InternalCustomWriter):
     """
 
     _internal_class = _TableInternal
-    __doc__ = inspect.cleandoc(__doc__).replace("{inherited}", inspect.cleandoc(Writer._doc_inherited))
+    __doc__ = inspect.cleandoc(__doc__).replace(
+        "{inherited}", inspect.cleandoc(Writer._doc_inherited)
+    )
 
     def write(self):
         """Write out data to ``self.output``.

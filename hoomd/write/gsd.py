@@ -264,7 +264,9 @@ class GSD(Writer):
                 gsd.maximum_write_buffer_size = 128 * 1024**2
     """
 
-    __doc__ = inspect.cleandoc(__doc__).replace("{inherited}", inspect.cleandoc(Writer._doc_inherited))
+    __doc__ = inspect.cleandoc(__doc__).replace(
+        "{inherited}", inspect.cleandoc(Writer._doc_inherited)
+    )
 
     def __init__(
         self,

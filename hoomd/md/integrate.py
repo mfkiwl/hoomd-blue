@@ -273,7 +273,9 @@ class Integrator(_DynamicIntegrator):
             simulation associated with the integrator.
     """
 
-    __doc__ = inspect.cleandoc(__doc__).replace("{inherited}", inspect.cleandoc(hoomd.operation.Integrator._doc_inherited))
+    __doc__ = inspect.cleandoc(__doc__).replace(
+        "{inherited}", inspect.cleandoc(hoomd.operation.Integrator._doc_inherited)
+    )
     _doc_inherited = (
         hoomd.operation.Integrator._doc_inherited
         + """

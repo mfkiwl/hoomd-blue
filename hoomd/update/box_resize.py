@@ -108,7 +108,9 @@ class BoxResize(Updater):
                 filter_ = box_resize.filter
     """
 
-    __doc__ = inspect.cleandoc(__doc__).replace("{inherited}", inspect.cleandoc(Updater._doc_inherited))
+    __doc__ = inspect.cleandoc(__doc__).replace(
+        "{inherited}", inspect.cleandoc(Updater._doc_inherited)
+    )
 
     def __init__(
         self,

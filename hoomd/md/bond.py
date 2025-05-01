@@ -40,6 +40,7 @@ import hoomd
 import numpy
 import inspect
 
+
 class Bond(Force):
     """Base class bond force.
 
@@ -104,7 +105,9 @@ class Harmonic(Bond):
     """
 
     _cpp_class_name = "PotentialBondHarmonic"
-    __doc__ = inspect.cleandoc(__doc__).replace("{inherited}", inspect.cleandoc(Bond._doc_inherited))
+    __doc__ = inspect.cleandoc(__doc__).replace(
+        "{inherited}", inspect.cleandoc(Bond._doc_inherited)
+    )
 
     def __init__(self):
         super().__init__()
@@ -176,7 +179,9 @@ class FENEWCA(Bond):
     """
 
     _cpp_class_name = "PotentialBondFENE"
-    __doc__ = inspect.cleandoc(__doc__).replace("{inherited}", inspect.cleandoc(Bond._doc_inherited))
+    __doc__ = inspect.cleandoc(__doc__).replace(
+        "{inherited}", inspect.cleandoc(Bond._doc_inherited)
+    )
 
     def __init__(self):
         super().__init__()
@@ -268,7 +273,9 @@ class Table(Bond):
         width (int): Number of points in the table.
     """
 
-    __doc__ = inspect.cleandoc(__doc__).replace("{inherited}", inspect.cleandoc(Bond._doc_inherited))
+    __doc__ = inspect.cleandoc(__doc__).replace(
+        "{inherited}", inspect.cleandoc(Bond._doc_inherited)
+    )
 
     def __init__(self, width):
         super().__init__()
@@ -369,7 +376,9 @@ class Tether(Bond):
     """
 
     _cpp_class_name = "PotentialBondTether"
-    __doc__ = inspect.cleandoc(__doc__).replace("{inherited}", inspect.cleandoc(Bond._doc_inherited))
+    __doc__ = inspect.cleandoc(__doc__).replace(
+        "{inherited}", inspect.cleandoc(Bond._doc_inherited)
+    )
 
     def __init__(self):
         super().__init__()

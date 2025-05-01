@@ -112,7 +112,9 @@ class Distance(Constraint):
     """
 
     _cpp_class_name = "ForceDistanceConstraint"
-    __doc__ = inspect.cleandoc(__doc__).replace("{inherited}", inspect.cleandoc(Constraint._doc_inherited))
+    __doc__ = inspect.cleandoc(__doc__).replace(
+        "{inherited}", inspect.cleandoc(Constraint._doc_inherited)
+    )
 
     def __init__(self, tolerance=1e-3):
         self._param_dict.update(ParameterDict(tolerance=float(tolerance)))
@@ -300,7 +302,9 @@ class Rigid(Constraint):
     """
 
     _cpp_class_name = "ForceComposite"
-    __doc__ = inspect.cleandoc(__doc__).replace("{inherited}", inspect.cleandoc(Constraint._doc_inherited))
+    __doc__ = inspect.cleandoc(__doc__).replace(
+        "{inherited}", inspect.cleandoc(Constraint._doc_inherited)
+    )
 
     def __init__(self):
         body = TypeParameter(

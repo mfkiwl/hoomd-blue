@@ -68,7 +68,9 @@ class Pair(force.Force):
         `float`])
     """
 
-    __doc__ = inspect.cleandoc(__doc__).replace("{inherited}", inspect.cleandoc(force.Force._doc_inherited))
+    __doc__ = inspect.cleandoc(__doc__).replace(
+        "{inherited}", inspect.cleandoc(force.Force._doc_inherited)
+    )
     _doc_inherited = (
         force.Force._doc_inherited
         + """
@@ -263,7 +265,9 @@ class LJ(Pair):
     """
 
     _cpp_class_name = "PotentialPairLJ"
-    __doc__ = inspect.cleandoc(__doc__).replace("{inherited}", inspect.cleandoc(Pair._doc_inherited))
+    __doc__ = inspect.cleandoc(__doc__).replace(
+        "{inherited}", inspect.cleandoc(Pair._doc_inherited)
+    )
 
     def __init__(
         self,
@@ -327,7 +331,9 @@ class Gaussian(Pair):
     """
 
     _cpp_class_name = "PotentialPairGauss"
-    __doc__ = inspect.cleandoc(__doc__).replace("{inherited}", inspect.cleandoc(Pair._doc_inherited))
+    __doc__ = inspect.cleandoc(__doc__).replace(
+        "{inherited}", inspect.cleandoc(Pair._doc_inherited)
+    )
 
     def __init__(self, nlist, default_r_cut=None, default_r_on=0.0, mode="none"):
         super().__init__(nlist, default_r_cut, default_r_on, mode)
@@ -387,7 +393,9 @@ class ExpandedGaussian(Pair):
     """
 
     _cpp_class_name = "PotentialPairExpandedGaussian"
-    __doc__ = inspect.cleandoc(__doc__).replace("{inherited}", inspect.cleandoc(Pair._doc_inherited))
+    __doc__ = inspect.cleandoc(__doc__).replace(
+        "{inherited}", inspect.cleandoc(Pair._doc_inherited)
+    )
 
     def __init__(self, nlist, default_r_cut=None, default_r_on=0.0, mode="none"):
         super().__init__(nlist, default_r_cut, default_r_on, mode)
@@ -452,7 +460,9 @@ class ExpandedLJ(Pair):
     """
 
     _cpp_class_name = "PotentialPairExpandedLJ"
-    __doc__ = inspect.cleandoc(__doc__).replace("{inherited}", inspect.cleandoc(Pair._doc_inherited))
+    __doc__ = inspect.cleandoc(__doc__).replace(
+        "{inherited}", inspect.cleandoc(Pair._doc_inherited)
+    )
 
     def __init__(self, nlist, default_r_cut=None, default_r_on=0.0, mode="none"):
         super().__init__(nlist, default_r_cut, default_r_on, mode)
@@ -510,7 +520,9 @@ class Yukawa(Pair):
     """
 
     _cpp_class_name = "PotentialPairYukawa"
-    __doc__ = inspect.cleandoc(__doc__).replace("{inherited}", inspect.cleandoc(Pair._doc_inherited))
+    __doc__ = inspect.cleandoc(__doc__).replace(
+        "{inherited}", inspect.cleandoc(Pair._doc_inherited)
+    )
 
     def __init__(self, nlist, default_r_cut=None, default_r_on=0.0, mode="none"):
         super().__init__(nlist, default_r_cut, default_r_on, mode)
@@ -572,7 +584,9 @@ class Ewald(Pair):
     """
 
     _cpp_class_name = "PotentialPairEwald"
-    __doc__ = inspect.cleandoc(__doc__).replace("{inherited}", inspect.cleandoc(Pair._doc_inherited))
+    __doc__ = inspect.cleandoc(__doc__).replace(
+        "{inherited}", inspect.cleandoc(Pair._doc_inherited)
+    )
     _accepted_modes = ("none",)
 
     def __init__(self, nlist, default_r_cut=None):
@@ -677,7 +691,9 @@ class Table(Pair):
     """
 
     _cpp_class_name = "PotentialPairTable"
-    __doc__ = inspect.cleandoc(__doc__).replace("{inherited}", inspect.cleandoc(Pair._doc_inherited))
+    __doc__ = inspect.cleandoc(__doc__).replace(
+        "{inherited}", inspect.cleandoc(Pair._doc_inherited)
+    )
     _accepted_modes = ("none",)
 
     def __init__(self, nlist, default_r_cut=None):
@@ -743,7 +759,9 @@ class Morse(Pair):
     """
 
     _cpp_class_name = "PotentialPairMorse"
-    __doc__ = inspect.cleandoc(__doc__).replace("{inherited}", inspect.cleandoc(Pair._doc_inherited))
+    __doc__ = inspect.cleandoc(__doc__).replace(
+        "{inherited}", inspect.cleandoc(Pair._doc_inherited)
+    )
 
     def __init__(self, nlist, default_r_cut=None, default_r_on=0.0, mode="none"):
         super().__init__(nlist, default_r_cut, default_r_on, mode)
@@ -836,7 +854,9 @@ class DPD(Pair):
     """
 
     _cpp_class_name = "PotentialPairDPDThermoDPD"
-    __doc__ = inspect.cleandoc(__doc__).replace("{inherited}", inspect.cleandoc(Pair._doc_inherited))
+    __doc__ = inspect.cleandoc(__doc__).replace(
+        "{inherited}", inspect.cleandoc(Pair._doc_inherited)
+    )
     _accepted_modes = ("none",)
 
     def __init__(
@@ -907,7 +927,9 @@ class DPDConservative(Pair):
     """
 
     _cpp_class_name = "PotentialPairConservativeDPD"
-    __doc__ = inspect.cleandoc(__doc__).replace("{inherited}", inspect.cleandoc(Pair._doc_inherited))
+    __doc__ = inspect.cleandoc(__doc__).replace(
+        "{inherited}", inspect.cleandoc(Pair._doc_inherited)
+    )
     _accepted_modes = ("none",)
 
     def __init__(self, nlist, default_r_cut=None):
@@ -996,7 +1018,9 @@ class DPDLJ(Pair):
     """
 
     _cpp_class_name = "PotentialPairDPDThermoLJ"
-    __doc__ = inspect.cleandoc(__doc__).replace("{inherited}", inspect.cleandoc(Pair._doc_inherited))
+    __doc__ = inspect.cleandoc(__doc__).replace(
+        "{inherited}", inspect.cleandoc(Pair._doc_inherited)
+    )
     _accepted_modes = ("none", "shift")
 
     def __init__(self, nlist, kT, default_r_cut=None, mode="none"):
@@ -1074,7 +1098,9 @@ class ForceShiftedLJ(Pair):
     """
 
     _cpp_class_name = "PotentialPairForceShiftedLJ"
-    __doc__ = inspect.cleandoc(__doc__).replace("{inherited}", inspect.cleandoc(Pair._doc_inherited))
+    __doc__ = inspect.cleandoc(__doc__).replace(
+        "{inherited}", inspect.cleandoc(Pair._doc_inherited)
+    )
     _accepted_modes = ("none",)
 
     def __init__(self, nlist, default_r_cut=None):
@@ -1159,7 +1185,9 @@ class Moliere(Pair):
     """
 
     _cpp_class_name = "PotentialPairMoliere"
-    __doc__ = inspect.cleandoc(__doc__).replace("{inherited}", inspect.cleandoc(Pair._doc_inherited))
+    __doc__ = inspect.cleandoc(__doc__).replace(
+        "{inherited}", inspect.cleandoc(Pair._doc_inherited)
+    )
 
     def __init__(self, nlist, default_r_cut=None, default_r_on=0.0, mode="none"):
         super().__init__(nlist, default_r_cut, default_r_on, mode)
@@ -1238,7 +1266,9 @@ class ZBL(Pair):
     """
 
     _cpp_class_name = "PotentialPairZBL"
-    __doc__ = inspect.cleandoc(__doc__).replace("{inherited}", inspect.cleandoc(Pair._doc_inherited))
+    __doc__ = inspect.cleandoc(__doc__).replace(
+        "{inherited}", inspect.cleandoc(Pair._doc_inherited)
+    )
     _accepted_modes = ("none",)
 
     def __init__(self, nlist, default_r_cut=None, default_r_on=0.0):
@@ -1301,7 +1331,9 @@ class Mie(Pair):
     """
 
     _cpp_class_name = "PotentialPairMie"
-    __doc__ = inspect.cleandoc(__doc__).replace("{inherited}", inspect.cleandoc(Pair._doc_inherited))
+    __doc__ = inspect.cleandoc(__doc__).replace(
+        "{inherited}", inspect.cleandoc(Pair._doc_inherited)
+    )
 
     def __init__(self, nlist, default_r_cut=None, default_r_on=0.0, mode="none"):
         super().__init__(nlist, default_r_cut, default_r_on, mode)
@@ -1380,7 +1412,9 @@ class ExpandedMie(Pair):
     """
 
     _cpp_class_name = "PotentialPairExpandedMie"
-    __doc__ = inspect.cleandoc(__doc__).replace("{inherited}", inspect.cleandoc(Pair._doc_inherited))
+    __doc__ = inspect.cleandoc(__doc__).replace(
+        "{inherited}", inspect.cleandoc(Pair._doc_inherited)
+    )
 
     def __init__(self, nlist, default_r_cut=None, default_r_on=0.0, mode="none"):
         super().__init__(nlist, default_r_cut, default_r_on, mode)
@@ -1464,7 +1498,9 @@ class ReactionField(Pair):
     """
 
     _cpp_class_name = "PotentialPairReactionField"
-    __doc__ = inspect.cleandoc(__doc__).replace("{inherited}", inspect.cleandoc(Pair._doc_inherited))
+    __doc__ = inspect.cleandoc(__doc__).replace(
+        "{inherited}", inspect.cleandoc(Pair._doc_inherited)
+    )
 
     def __init__(self, nlist, default_r_cut=None, default_r_on=0.0, mode="none"):
         super().__init__(nlist, default_r_cut, default_r_on, mode)
@@ -1544,7 +1580,9 @@ class DLVO(Pair):
     """
 
     _cpp_class_name = "PotentialPairDLVO"
-    __doc__ = inspect.cleandoc(__doc__).replace("{inherited}", inspect.cleandoc(Pair._doc_inherited))
+    __doc__ = inspect.cleandoc(__doc__).replace(
+        "{inherited}", inspect.cleandoc(Pair._doc_inherited)
+    )
     _accepted_modes = ("none", "shift")
 
     def __init__(self, nlist, default_r_cut=None, default_r_on=0.0, mode="none"):
@@ -1610,7 +1648,9 @@ class Buckingham(Pair):
     """
 
     _cpp_class_name = "PotentialPairBuckingham"
-    __doc__ = inspect.cleandoc(__doc__).replace("{inherited}", inspect.cleandoc(Pair._doc_inherited))
+    __doc__ = inspect.cleandoc(__doc__).replace(
+        "{inherited}", inspect.cleandoc(Pair._doc_inherited)
+    )
 
     def __init__(self, nlist, default_r_cut=None, default_r_on=0.0, mode="none"):
         super().__init__(nlist, default_r_cut, default_r_on, mode)
@@ -1668,7 +1708,9 @@ class LJ1208(Pair):
     """
 
     _cpp_class_name = "PotentialPairLJ1208"
-    __doc__ = inspect.cleandoc(__doc__).replace("{inherited}", inspect.cleandoc(Pair._doc_inherited))
+    __doc__ = inspect.cleandoc(__doc__).replace(
+        "{inherited}", inspect.cleandoc(Pair._doc_inherited)
+    )
 
     def __init__(self, nlist, default_r_cut=None, default_r_on=0.0, mode="none"):
         super().__init__(nlist, default_r_cut, default_r_on, mode)
@@ -1727,7 +1769,9 @@ class LJ0804(Pair):
     """
 
     _cpp_class_name = "PotentialPairLJ0804"
-    __doc__ = inspect.cleandoc(__doc__).replace("{inherited}", inspect.cleandoc(Pair._doc_inherited))
+    __doc__ = inspect.cleandoc(__doc__).replace(
+        "{inherited}", inspect.cleandoc(Pair._doc_inherited)
+    )
 
     def __init__(self, nlist, default_r_cut=None, default_r_on=0.0, mode="none"):
         super().__init__(nlist, default_r_cut, default_r_on, mode)
@@ -1792,7 +1836,9 @@ class Fourier(Pair):
     """
 
     _cpp_class_name = "PotentialPairFourier"
-    __doc__ = inspect.cleandoc(__doc__).replace("{inherited}", inspect.cleandoc(Pair._doc_inherited))
+    __doc__ = inspect.cleandoc(__doc__).replace(
+        "{inherited}", inspect.cleandoc(Pair._doc_inherited)
+    )
     _accepted_modes = ("none", "xplor")
 
     def __init__(self, nlist, default_r_cut=None, default_r_on=0.0, mode="none"):
@@ -1874,7 +1920,9 @@ class OPP(Pair):
     """
 
     _cpp_class_name = "PotentialPairOPP"
-    __doc__ = inspect.cleandoc(__doc__).replace("{inherited}", inspect.cleandoc(Pair._doc_inherited))
+    __doc__ = inspect.cleandoc(__doc__).replace(
+        "{inherited}", inspect.cleandoc(Pair._doc_inherited)
+    )
 
     def __init__(self, nlist, default_r_cut=None, default_r_on=0.0, mode="none"):
         super().__init__(nlist, default_r_cut, default_r_on, mode)
@@ -1950,7 +1998,9 @@ class TWF(Pair):
     """
 
     _cpp_class_name = "PotentialPairTWF"
-    __doc__ = inspect.cleandoc(__doc__).replace("{inherited}", inspect.cleandoc(Pair._doc_inherited))
+    __doc__ = inspect.cleandoc(__doc__).replace(
+        "{inherited}", inspect.cleandoc(Pair._doc_inherited)
+    )
 
     def __init__(self, nlist, default_r_cut=None, default_r_on=0.0, mode="none"):
         super().__init__(nlist, default_r_cut, default_r_on, mode)
@@ -2016,7 +2066,9 @@ class LJGauss(Pair):
     """
 
     _cpp_class_name = "PotentialPairLJGauss"
-    __doc__ = inspect.cleandoc(__doc__).replace("{inherited}", inspect.cleandoc(Pair._doc_inherited))
+    __doc__ = inspect.cleandoc(__doc__).replace(
+        "{inherited}", inspect.cleandoc(Pair._doc_inherited)
+    )
 
     def __init__(self, nlist, default_r_cut=None, default_r_on=0.0, mode="none"):
         super().__init__(nlist, default_r_cut, default_r_on, mode)
@@ -2097,7 +2149,9 @@ class WangFrenkel(Pair):
     """
 
     _cpp_class_name = "PotentialPairWangFrenkel"
-    __doc__ = inspect.cleandoc(__doc__).replace("{inherited}", inspect.cleandoc(Pair._doc_inherited))
+    __doc__ = inspect.cleandoc(__doc__).replace(
+        "{inherited}", inspect.cleandoc(Pair._doc_inherited)
+    )
 
     def __init__(self, nlist, default_r_cut=None, default_r_on=0.0, mode="none"):
         super().__init__(nlist, default_r_cut, default_r_on, mode)

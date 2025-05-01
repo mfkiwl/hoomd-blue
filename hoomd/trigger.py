@@ -135,7 +135,9 @@ class Periodic(_hoomd.PeriodicTrigger, Trigger):
         phase (int): phase in time step.
     """
 
-    __doc__ = inspect.cleandoc(__doc__).replace("{inherited}", inspect.cleandoc(Trigger._doc_inherited))
+    __doc__ = inspect.cleandoc(__doc__).replace(
+        "{inherited}", inspect.cleandoc(Trigger._doc_inherited)
+    )
 
     def __init__(self, period, phase=0):
         Trigger.__init__(self)
@@ -180,7 +182,9 @@ class Before(_hoomd.BeforeTrigger, Trigger):
         timestep (int): The step after the trigger ends.
     """
 
-    __doc__ = inspect.cleandoc(__doc__).replace("{inherited}", inspect.cleandoc(Trigger._doc_inherited))
+    __doc__ = inspect.cleandoc(__doc__).replace(
+        "{inherited}", inspect.cleandoc(Trigger._doc_inherited)
+    )
 
     def __init__(self, timestep):
         Trigger.__init__(self)
@@ -224,7 +228,9 @@ class On(_hoomd.OnTrigger, Trigger):
         timestep (int): The timestep to trigger on.
     """
 
-    __doc__ = inspect.cleandoc(__doc__).replace("{inherited}", inspect.cleandoc(Trigger._doc_inherited))
+    __doc__ = inspect.cleandoc(__doc__).replace(
+        "{inherited}", inspect.cleandoc(Trigger._doc_inherited)
+    )
 
     def __init__(self, timestep):
         Trigger.__init__(self)
@@ -268,7 +274,9 @@ class After(_hoomd.AfterTrigger, Trigger):
         timestep (int): The step before the trigger will start.
     """
 
-    __doc__ = inspect.cleandoc(__doc__).replace("{inherited}", inspect.cleandoc(Trigger._doc_inherited))
+    __doc__ = inspect.cleandoc(__doc__).replace(
+        "{inherited}", inspect.cleandoc(Trigger._doc_inherited)
+    )
 
     def __init__(self, timestep):
         Trigger.__init__(self)
@@ -312,7 +320,9 @@ class Not(_hoomd.NotTrigger, Trigger):
         trigger (hoomd.trigger.Trigger): The trigger object to negate.
     """
 
-    __doc__ = inspect.cleandoc(__doc__).replace("{inherited}", inspect.cleandoc(Trigger._doc_inherited))
+    __doc__ = inspect.cleandoc(__doc__).replace(
+        "{inherited}", inspect.cleandoc(Trigger._doc_inherited)
+    )
 
     def __init__(self, trigger):
         Trigger.__init__(self)
@@ -362,7 +372,9 @@ class And(_hoomd.AndTrigger, Trigger):
         triggers (list[hoomd.trigger.Trigger]): List of triggers.
     """
 
-    __doc__ = inspect.cleandoc(__doc__).replace("{inherited}", inspect.cleandoc(Trigger._doc_inherited))
+    __doc__ = inspect.cleandoc(__doc__).replace(
+        "{inherited}", inspect.cleandoc(Trigger._doc_inherited)
+    )
 
     def __init__(self, triggers):
         Trigger.__init__(self)
@@ -418,7 +430,9 @@ class Or(_hoomd.OrTrigger, Trigger):
         triggers (`list` [`Trigger`]): List of triggers.
     """
 
-    __doc__ = inspect.cleandoc(__doc__).replace("{inherited}", inspect.cleandoc(Trigger._doc_inherited))
+    __doc__ = inspect.cleandoc(__doc__).replace(
+        "{inherited}", inspect.cleandoc(Trigger._doc_inherited)
+    )
 
     def __init__(self, triggers):
         Trigger.__init__(self)

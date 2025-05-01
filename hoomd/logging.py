@@ -22,7 +22,6 @@ from enum import Flag, auto
 from itertools import count
 from functools import reduce, wraps
 import weakref
-import inspect
 
 import hoomd
 from hoomd.util import _SafeNamespaceDict
@@ -406,6 +405,7 @@ class Loggable(type):
                     cnt += 1
                 indent = len(lines[cnt]) - len(lines[cnt].lstrip())
             getattr(new_cls, attr).__doc__ += str_msg.format(" " * indent)
+
 
 def log(
     func=None, *, is_property=True, category="scalar", default=True, requires_run=False

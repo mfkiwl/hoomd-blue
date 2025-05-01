@@ -151,7 +151,9 @@ class Elastic(ShapeMove):
     """
 
     _supported_shapes = {"ConvexPolyhedron"}
-    __doc__ = inspect.cleandoc(__doc__).replace("{inherited}", inspect.cleandoc(ShapeMove._doc_inherited))
+    __doc__ = inspect.cleandoc(__doc__).replace(
+        "{inherited}", inspect.cleandoc(ShapeMove._doc_inherited)
+    )
 
     def __init__(self, stiffness, mc, default_step_size=None, normal_shear_ratio=0.5):
         super().__init__(default_step_size)
@@ -265,7 +267,9 @@ class ShapeSpace(ShapeMove):
     """
 
     _supported_shapes = {"ConvexPolyhedron", "ConvexSpheropolyhedron", "Ellipsoid"}
-    __doc__ = inspect.cleandoc(__doc__).replace("{inherited}", inspect.cleandoc(ShapeMove._doc_inherited))
+    __doc__ = inspect.cleandoc(__doc__).replace(
+        "{inherited}", inspect.cleandoc(ShapeMove._doc_inherited)
+    )
 
     def __init__(self, callback, default_step_size=None, param_move_probability=1):
         super().__init__(default_step_size)
@@ -340,7 +344,9 @@ class Vertex(ShapeMove):
     """
 
     _supported_shapes = {"ConvexPolyhedron"}
-    __doc__ = inspect.cleandoc(__doc__).replace("{inherited}", inspect.cleandoc(ShapeMove._doc_inherited))
+    __doc__ = inspect.cleandoc(__doc__).replace(
+        "{inherited}", inspect.cleandoc(ShapeMove._doc_inherited)
+    )
 
     def __init__(self, default_step_size=None, vertex_move_probability=1):
         super().__init__(default_step_size)

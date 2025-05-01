@@ -31,7 +31,9 @@ class MeshPotential(Force):
     **Members defined in** `MeshPotential`:
     """
 
-    __doc__ = inspect.cleandoc(__doc__).replace("{inherited}", inspect.cleandoc(Force._doc_inherited))
+    __doc__ = inspect.cleandoc(__doc__).replace(
+        "{inherited}", inspect.cleandoc(Force._doc_inherited)
+    )
     _doc_inherited = (
         Force._doc_inherited
         + """
@@ -107,7 +109,11 @@ class MeshConservationPotential(MeshPotential):
         for `isinstance` or `issubclass` checks.
     """
 
-    __doc__ = inspect.cleandoc(__doc__) + "\n" + inspect.cleandoc(MeshPotential._doc_inherited)
+    __doc__ = (
+        inspect.cleandoc(__doc__)
+        + "\n"
+        + inspect.cleandoc(MeshPotential._doc_inherited)
+    )
 
     def __init__(self, mesh, ignore_type):
         super().__init__(mesh)

@@ -89,7 +89,9 @@ class LJGauss(Pair):
     """
 
     _cpp_class_name = "PairPotentialLJGauss"
-    __doc__ = inspect.cleandoc(__doc__).replace("{inherited}", inspect.cleandoc(Pair._doc_inherited))
+    __doc__ = inspect.cleandoc(__doc__).replace(
+        "{inherited}", inspect.cleandoc(Pair._doc_inherited)
+    )
 
     def __init__(self, default_r_cut=None, default_r_on=0.0, mode="none"):
         if default_r_cut is None:

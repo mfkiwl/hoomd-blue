@@ -46,7 +46,9 @@ class ParticleSorter(Tuner):
             of the system).
     """
 
-    __doc__ = inspect.cleandoc(__doc__).replace("{inherited}", inspect.cleandoc(Tuner._doc_inherited))
+    __doc__ = inspect.cleandoc(__doc__).replace(
+        "{inherited}", inspect.cleandoc(Tuner._doc_inherited)
+    )
 
     def __init__(self, trigger=200, grid=None):
         super().__init__(trigger)

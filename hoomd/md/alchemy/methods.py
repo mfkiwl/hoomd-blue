@@ -27,7 +27,9 @@ class Alchemostat(Method):
     **Members defined in** `Alchemostat`:
     """
 
-    __doc__ = inspect.cleandoc(__doc__).replace("{inherited}", inspect.cleandoc(Method._doc_inherited))
+    __doc__ = inspect.cleandoc(__doc__).replace(
+        "{inherited}", inspect.cleandoc(Method._doc_inherited)
+    )
 
     _doc_inherited = (
         Method._doc_inherited
@@ -115,7 +117,9 @@ class NVT(Alchemostat):
         period (int): Timesteps between applications of the alchemostat.
     """
 
-    __doc__ = inspect.cleandoc(__doc__).replace("{inherited}", inspect.cleandoc(Alchemostat._doc_inherited))
+    __doc__ = inspect.cleandoc(__doc__).replace(
+        "{inherited}", inspect.cleandoc(Alchemostat._doc_inherited)
+    )
 
     def __init__(self, alchemical_kT, alchemical_dof, period=1):
         # store metadata

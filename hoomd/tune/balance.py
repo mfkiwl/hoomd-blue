@@ -90,7 +90,9 @@ class LoadBalancer(Tuner):
             attempt in a single step.
     """
 
-    __doc__ = inspect.cleandoc(__doc__).replace("{inherited}", inspect.cleandoc(Tuner._doc_inherited))
+    __doc__ = inspect.cleandoc(__doc__).replace(
+        "{inherited}", inspect.cleandoc(Tuner._doc_inherited)
+    )
 
     def __init__(
         self, trigger, x=True, y=True, z=True, tolerance=1.02, max_iterations=1

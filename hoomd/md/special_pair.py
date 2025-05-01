@@ -126,7 +126,9 @@ class LJ(SpecialPair):
     """
 
     _cpp_class_name = "PotentialSpecialPairLJ"
-    __doc__ = inspect.cleandoc(__doc__).replace("{inherited}", inspect.cleandoc(SpecialPair._doc_inherited))
+    __doc__ = inspect.cleandoc(__doc__).replace(
+        "{inherited}", inspect.cleandoc(SpecialPair._doc_inherited)
+    )
 
     def __init__(self):
         super().__init__()
@@ -188,7 +190,9 @@ class Coulomb(SpecialPair):
     """
 
     _cpp_class_name = "PotentialSpecialPairCoulomb"
-    __doc__ = inspect.cleandoc(__doc__).replace("{inherited}", inspect.cleandoc(SpecialPair._doc_inherited))
+    __doc__ = inspect.cleandoc(__doc__).replace(
+        "{inherited}", inspect.cleandoc(SpecialPair._doc_inherited)
+    )
 
     def __init__(self):
         super().__init__()
