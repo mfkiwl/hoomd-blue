@@ -45,6 +45,8 @@ if os.getenv("READTHEDOCS"):
     extensions.append("sphinxcontrib.googleanalytics")
     googleanalytics_id = "G-ZR0DNZD21E"
 
+    katex_prerender = True
+
 napoleon_include_special_with_doc = True
 
 notfound_context = {
