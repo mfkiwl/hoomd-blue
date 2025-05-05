@@ -4,7 +4,8 @@ Change Log
 5.x
 ---
 
-5.2.0 (not released yet)
+<<<<<<< HEAD
+5.2.0 (not yet released)
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
 *Added*
@@ -21,6 +22,10 @@ Change Log
 
 * The documentation builds without warnings in Python 3.13 environments
   (`#2049 <https://github.com/glotzerlab/hoomd-blue/pull/2049>`__).
+* Remove the error message that NEC prints when one particle simultaneously collides with two
+  others (`#2029 <https://github.com/glotzerlab/hoomd-blue/pull/2029>`__).
+* Compile without errors with recent versions of clang
+  (`#2042 <https://github.com/glotzerlab/hoomd-blue/pull/2042>`__).
 
 5.1.1 (2025-03-19)
 ^^^^^^^^^^^^^^^^^^
@@ -31,7 +36,7 @@ Change Log
   (`#2015 <https://github.com/glotzerlab/hoomd-blue/pull/2015>`__).
 * Compile without errors or warnings with CUDA 12.8
   (`#2019 <https://github.com/glotzerlab/hoomd-blue/pull/2019>`__).
-* `force.Active` applies torques correctly when the filter is not `All`
+* ``force.Active`` applies torques correctly when the filter is not ``All``
   (`#2020 <https://github.com/glotzerlab/hoomd-blue/pull/2020>`__).
 * MD integrators no longer integrate the z degree of freedom in 2D simulation boxes
   (`#2021 <https://github.com/glotzerlab/hoomd-blue/pull/2021>`__).
