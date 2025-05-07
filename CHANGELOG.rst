@@ -4,19 +4,22 @@ Change Log
 5.x
 ---
 
-<<<<<<< HEAD
-5.2.0 (not yet released)
-^^^^^^^^^^^^^^^^^^^^^^^^
+5.2.0 (2025-05-06)
+^^^^^^^^^^^^^^^^^^
 
 *Added*
 
 * Set constituent particle velocities for rigid bodies
   (`#2024 <https://github.com/glotzerlab/hoomd-blue/pull/2024>`__).
+* Mesh tutorial
+  (`hoomd-examples#160 <https://github.com/glotzerlab/hoomd-examples/pull/160>`__).
 
 *Changed*
 
 * Use KaTeX to render math equations in the documentation
   (`#2053 <https://github.com/glotzerlab/hoomd-blue/pull/2053>`__).
+* The "Organizing and Executing Simulations" tutorial now demonstrates the use of **row**
+  (`hoomd-examples#155 <https://github.com/glotzerlab/hoomd-examples/pull/155>`__).
 
 *Fixed*
 
